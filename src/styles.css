@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+  
+  body, p, a, span, div, button, input, textarea, select, label {
+    @apply font-body;
+  }
+}
+
 @font-face {
   font-family: 'Mark-Geo';
   src: url('/assets/fonts/Mark-Geo.woff2') format('woff2');
@@ -18,9 +28,6 @@
 }
 
 
-* {
-  font-family: 'Mark-Geo', 'NotoSans-Geo';
-}
 
 body {
   overscroll-behavior-y: none;
