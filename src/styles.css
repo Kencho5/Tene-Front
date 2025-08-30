@@ -1,3 +1,54 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Mark-Geo';
+  src: url('/assets/fonts/Mark-Geo.woff2') format('woff2');
+  font-style: normal;
+  font-display: swap;
+}
+
+
+@font-face {
+  font-family: 'NotoSans-Geo';
+  src: url('/assets/fonts/NotoSans-Geo.woff2') format('woff2');
+  font-style: normal;
+  font-display: swap;
+}
+
+
+* {
+  font-family: 'Mark-Geo', 'NotoSans-Geo';
+}
+
+body {
+  overscroll-behavior-y: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.05) inset !important;
+  box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.05) inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #ffffff !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
