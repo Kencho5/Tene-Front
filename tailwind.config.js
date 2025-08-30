@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        pastel: {
+        green: {
           10: "#E8FEE7",
           20: "#D8FFD8",
           30: "#7AF87A",

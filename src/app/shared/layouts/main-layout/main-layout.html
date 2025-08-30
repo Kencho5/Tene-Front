@@ -1,1 +1,17 @@
 <app-navbar />
+
+<main class="relative flex-1">
+  @if (!this.loadingService.loading()) {
+  <router-outlet />
+  } @else {
+  <div
+    class="bg-background absolute inset-0 z-0 flex items-center justify-center"
+  >
+    <app-spinner
+      [size]="46"
+      [textColor]="'text-white'"
+      [fillColor]="'fill-green-60'"
+    />
+  </div>
+  }
+</main>
