@@ -3,7 +3,7 @@
     class="mx-auto flex h-full max-w-[1280px] items-center justify-between px-4 lg:px-8"
   >
     <!-- Logo and Navigation Links -->
-    <div class="flex items-center gap-16">
+    <div class="flex items-center gap-12">
       <a routerLink="">
         <img
           src="/logo.svg"
@@ -14,12 +14,46 @@
 
       <!-- Desktop Navigation Links -->
       <div
-        class="text-platinum-90 hidden items-center space-x-8 font-medium lg:flex"
+        class="text-platinum-50 bg-platinum-10 hidden h-11 items-center gap-2.5 rounded-full p-1 text-sm font-semibold lg:flex"
       >
-        <!-- Products Dropdown -->
-        <div class="group relative">
+        <a
+          routerLink="/"
+          class="text-platinum-90 flex items-center gap-1.5 rounded-full bg-white px-3 py-2 shadow-md"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M20 0V20H0V0H20Z" fill="white" fill-opacity="0.01" />
+            <path
+              d="M2.50318 8.33358C2.50275 8.33358 2.50237 8.33331 2.50223 8.3329L2.50218 8.33276C2.50205 8.33236 2.50218 8.33191 2.50252 8.33165L9.3861 2.97775C9.74721 2.69689 10.2529 2.69689 10.614 2.97775L17.4976 8.33165C17.4979 8.33191 17.498 8.33236 17.4979 8.33276L17.4978 8.3329C17.4977 8.33331 17.4973 8.33358 17.4969 8.33358H15.8334V15.6669C15.8334 16.2192 15.3857 16.6669 14.8334 16.6669H5.1667C4.61442 16.6669 4.1667 16.2192 4.1667 15.6669V8.33358H2.50318Z"
+              stroke="#212121"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M8.33337 11.6669C8.33337 10.7464 9.07956 10.0002 10 10.0002V10.0002C10.9205 10.0002 11.6667 10.7464 11.6667 11.6669V16.6669H8.33337V11.6669Z"
+              stroke="#212121"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          მთავარი</a
+        >
+        <a routerLink="/" class="px-3 py-2">ურნები</a>
+        <a routerLink="/" class="px-3 py-2">ტენე ქულები</a>
+        <a routerLink="/" class="px-3 py-2">პროდუქტები</a>
+        <a routerLink="/" class="px-3 py-2">გადადნობა</a>
+        <a routerLink="/" class="px-3 py-2">გამოიმუშავე თანხა</a>
+
+        <!-- More Dropdown -->
+        <div class="group relative pr-3">
           <button class="flex items-center">
-            პროდუქტი
+            მეტი
             <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fill-rule="evenodd"
@@ -51,10 +85,6 @@
             </div>
           </div>
         </div>
-
-        <a href="#">ჩვენს შესახებ</a>
-        <a href="#">ბლოგი</a>
-        <a href="#">კონტაქტი</a>
       </div>
     </div>
 
