@@ -16,3 +16,31 @@
     />
   </div>
 </section>
+
+<section id="cards " class="mb-10 flex flex-wrap justify-center gap-6">
+  @for(card of homeCards; track $index) {
+  <div
+    class="flex h-[496px] w-[628px] flex-col items-center justify-between gap-6 rounded-2xl bg-platinum-10 px-8 py-6"
+  >
+    <app-image
+      src="/assets/images/home-cards/{{card.image}}.webp"
+      [width]="220"
+      [height]="220"
+      loading="lazy"
+    />
+
+    <div class="flex flex-col items-center gap-4 text-center">
+      <h2 class="text-4xl font-semibold text-platinum-90">{{card.title}}</h2>
+      <p class="font-normal text-platinum-50">{{card.subtext}}</p>
+    </div>
+
+    <a
+      routerLink=""
+      class="inline-flex items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all duration-200 hover:scale-105"
+      style="background: linear-gradient(90deg, #0AD810 0%, #0BB705 35%, #0BB705 65%, #0AD810 100%); box-shadow: 0px 20px 16px -8px #0AD10426;"
+    >
+      {{card.button}}
+    </a>
+  </div>
+  }
+</section>
