@@ -4,6 +4,6 @@ import { SharedModule } from '../../shared.module';
 @Component({
   selector: 'app-navbar',
   imports: [SharedModule],
-  templateUrl: './navbar.html',
+  templateUrl: './navbar.component.html',
 })
-export class Navbar {}
+export class NavbarComponent {}

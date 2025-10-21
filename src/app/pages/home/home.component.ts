@@ -6,8 +6,8 @@ import { homeCards } from '@utils/homeCards';
 @Component({
   selector: 'app-home',
   imports: [SharedModule, Image],
-  templateUrl: './home.html',
+  templateUrl: './home.component.html',
 })
-export class Home {
+export class HomeComponent {
   homeCards = homeCards;
 }
