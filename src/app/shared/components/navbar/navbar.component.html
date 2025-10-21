@@ -18,7 +18,9 @@
       >
         <a
           routerLink="/"
-          class="flex items-center gap-1.5 rounded-full bg-white px-3 py-2 text-platinum-90 shadow-md"
+          routerLinkActive="bg-white text-platinum-90 shadow-md"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="flex items-center gap-1.5 rounded-full px-3 py-2 transition-all"
         >
           <svg
             width="20"
@@ -44,11 +46,36 @@
 
           მთავარი</a
         >
-        <a routerLink="/" class="px-3 py-2">ურნები</a>
-        <a routerLink="/" class="px-3 py-2">ტენე ქულები</a>
-        <a routerLink="/" class="px-3 py-2">პროდუქტები</a>
-        <a routerLink="/" class="px-3 py-2">გადადნობა</a>
-        <a routerLink="/" class="px-3 py-2">გამოიმუშავე თანხა</a>
+        <a
+          routerLink="/bins"
+          routerLinkActive="bg-white text-platinum-90 shadow-md"
+          class="flex items-center gap-1.5 rounded-full px-3 py-2 transition-all"
+          >ურნები</a
+        >
+        <a
+          routerLink="/coins"
+          routerLinkActive="bg-white text-platinum-90 shadow-md"
+          class="flex items-center gap-1.5 rounded-full px-3 py-2 transition-all"
+          >ტენე ქულები</a
+        >
+        <a
+          routerLink="/products"
+          routerLinkActive="bg-white text-platinum-90 shadow-md"
+          class="flex items-center gap-1.5 rounded-full px-3 py-2 transition-all"
+          >პროდუქტები</a
+        >
+        <a
+          routerLink="/recycle"
+          routerLinkActive="bg-white text-platinum-90 shadow-md"
+          class="flex items-center gap-1.5 rounded-full px-3 py-2 transition-all"
+          >გადადნობა</a
+        >
+        <a
+          routerLink="/earn"
+          routerLinkActive="bg-white text-platinum-90 shadow-md"
+          class="flex items-center gap-1.5 rounded-full px-3 py-2 transition-all"
+          >გამოიმუშავე თანხა</a
+        >
 
         <!-- More Dropdown -->
         <div class="group relative pr-3">

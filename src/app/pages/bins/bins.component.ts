@@ -4,8 +4,5 @@ import { Component } from '@angular/core';
   selector: 'app-bins',
   imports: [],
   templateUrl: './bins.component.html',
-  styles: ``
 })
-export class BinsComponent {
-
-}
+export class BinsComponent {}
