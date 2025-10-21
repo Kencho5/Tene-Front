@@ -117,7 +117,7 @@
     class="container mx-auto flex flex-col-reverse items-center justify-center gap-5 px-4 sm:py-20 lg:flex-col lg:px-8"
   >
     <div
-      class="flex flex-col items-center text-[28px] font-extrabold sm:text-[64px]"
+      class="flex flex-col items-center text-[28px] font-semibold sm:text-[64px]"
     >
       <h1 class="text-platinum-90">პირველი ქართული</h1>
       <h1 class="text-green-60">USB კაბელი</h1>
@@ -133,42 +133,42 @@
 </section>
 
 <section id="cards" class="flex flex-wrap justify-center gap-6 p-4">
-  @for(card of homeCards; track $index) {
-  <div
-    class="flex flex-col items-center justify-between gap-6 rounded-2xl bg-platinum-10 px-4 py-6 sm:h-[496px] sm:w-[628px] sm:px-8 sm:py-6"
-  >
-    <app-image
-      src="/assets/images/home-cards/{{card.image}}.webp"
-      [width]="220"
-      [height]="220"
-      loading="lazy"
-    />
-
-    <div class="flex flex-col items-center gap-4 text-center">
-      <h2 class="text-[28px] font-semibold text-platinum-90 sm:text-4xl">
-        {{card.title}}
-      </h2>
-      <p class="text-[14px] font-normal text-platinum-50 sm:text-base">
-        {{card.subtext}}
-      </p>
-    </div>
-
-    <a
-      routerLink=""
-      class="inline-flex items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 text-[16px] font-medium text-white transition-all duration-200 hover:scale-[102%] sm:text-base"
-      style="
-        background: linear-gradient(
-          90deg,
-          #0ad810 0%,
-          #0bb705 35%,
-          #0bb705 65%,
-          #0ad810 100%
-        );
-        box-shadow: 0px 20px 16px -8px #0ad10426;
-      "
+  @for (card of homeCards; track $index) {
+    <div
+      class="flex flex-col items-center justify-between gap-6 rounded-2xl bg-platinum-10 px-4 py-6 sm:h-[496px] sm:w-[628px] sm:px-8 sm:py-6"
     >
-      {{card.button}}
-    </a>
-  </div>
+      <app-image
+        src="/assets/images/home-cards/{{ card.image }}.webp"
+        [width]="220"
+        [height]="220"
+        loading="lazy"
+      />
+
+      <div class="flex flex-col items-center gap-4 text-center">
+        <h2 class="text-[28px] font-semibold text-platinum-90 sm:text-4xl">
+          {{ card.title }}
+        </h2>
+        <p class="text-[14px] font-normal text-platinum-50 sm:text-base">
+          {{ card.subtext }}
+        </p>
+      </div>
+
+      <a
+        routerLink=""
+        class="inline-flex items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 text-[16px] font-medium text-white transition-all duration-200 hover:scale-[102%] sm:text-base"
+        style="
+          background: linear-gradient(
+            90deg,
+            #0ad810 0%,
+            #0bb705 35%,
+            #0bb705 65%,
+            #0ad810 100%
+          );
+          box-shadow: 0px 20px 16px -8px #0ad10426;
+        "
+      >
+        {{ card.button }}
+      </a>
+    </div>
   }
 </section>

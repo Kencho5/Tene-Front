@@ -78,8 +78,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: ["Mark-Geo"],
-        body: ["NotoSans-Geo"],
+        heading: ["NotoSans-Geo"],
+        body: ["Mark-Geo"],
       },
     },
   },
