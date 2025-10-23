@@ -34,6 +34,13 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Mark-Geo';
+  src: url('/assets/fonts/Mark-Geo-Semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-display: swap;
+}
+
 
 @font-face {
   font-family: 'NotoSans-Geo';
@@ -42,10 +49,9 @@
   font-display: swap;
 }
 
-
-
 body {
   overscroll-behavior-y: none;
+  color: #212121;
 }
 
 input::-webkit-outer-spin-button,
