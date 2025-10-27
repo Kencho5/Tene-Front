@@ -5,7 +5,7 @@
     <div
       class="mx-auto flex max-w-[1024px] flex-col items-center gap-4 px-4 pt-6 text-center sm:pt-20"
     >
-      <h1 class="text-[28px] font-semibold sm:text-[64px]">მწვანე ურნები</h1>
+      <h1 class="text-[28px] sm:text-[64px]">მწვანე ურნები</h1>
       <p class="font-normal text-platinum-50 sm:max-w-[768px] sm:text-lg">
         საქართველოში არ მოქმედებს ნარჩენების მართვის ერთიანი გეგმა, ამიტომ
         მნიშვნელოვანია კერძო კომპანიებმა საკუთარი ინიციატივით შეაგროვონ და
@@ -23,7 +23,7 @@
   </div>
 
   <div class="container mx-auto space-y-6 px-4 sm:space-y-10">
-    <h2 class="text-[28px] font-semibold sm:text-4xl">როგორ მუშაობს?</h2>
+    <h2 class="text-[28px] sm:text-4xl">როგორ მუშაობს?</h2>
 
     <div class="flex flex-col items-center gap-8 sm:flex-row">
       <!--STEP 1-->
@@ -31,7 +31,7 @@
         class="shadow-low relative flex flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,theme(colors.green.30)_-4.78%,theme(colors.white)_64.12%,theme(colors.white)_90.79%)] px-6 py-4"
       >
         <div
-          class="absolute left-5 rounded-full bg-green-60 px-2.5 py-[5px] text-sm font-semibold text-white"
+          class="absolute left-5 rounded-full bg-green-60 px-2.5 py-[5px] text-sm text-white"
         >
           01
         </div>
@@ -43,7 +43,7 @@
           height="90"
         />
 
-        <h2 class="text-xl font-semibold">შეავსე ურნა</h2>
+        <h2 class="text-xl">შეავსე ურნა</h2>
         <p class="font-light text-platinum-50">
           შეავსე ურნა სწორი მასალებით - პლასტმასა, ალუმინი და ქაღალდი
         </p>
@@ -82,7 +82,7 @@
           height="90"
         />
 
-        <h2 class="text-xl font-semibold">გამოიძახე</h2>
+        <h2 class="text-xl">გამოიძახე</h2>
         <p class="font-light text-platinum-50">
           დაგვიკავშირდი ტელეფონით ან აპლიკაციით ურნის შევსებისას.
         </p>
@@ -121,11 +121,50 @@
           height="90"
         />
 
-        <h2 class="text-xl font-semibold">გაატანე კურიერს</h2>
+        <h2 class="text-xl">გაატანე კურიერს</h2>
         <p class="font-light text-platinum-50">
           ჩვენი კურიერი 24 საათში მოვა და წაიღებს შეგოვებულ ნარჩენებს.
         </p>
       </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto space-y-6 px-4 sm:space-y-10">
+    <h2 class="text-[28px] sm:text-4xl">აირჩიე ურნები ტიპების მიხედვით</h2>
+
+    <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
+      @for (binCard of binCards; track $index) {
+        <div
+          class="shadow-low relative flex h-[436px] w-[302px] flex-col justify-end rounded-2xl bg-white px-6 py-4"
+        >
+          <img
+            src="/assets/images/bins/star-banner-{{ binCard.binType }}.svg"
+            class="absolute left-1/2 top-3 -translate-x-1/2"
+          />
+
+          <img
+            src="/assets/images/bins/{{ binCard.binType }}-bin.webp"
+            width="210"
+            height="210"
+            class="absolute left-1/2 top-9 -translate-x-1/2"
+          />
+
+          <div class="flex flex-col gap-6">
+            <div class="space-y-1.5">
+              <h2 class="text-lg">{{ binCard.title }}</h2>
+              <p class="text-platinum-50">
+                {{ binCard.subtext }}
+              </p>
+            </div>
+
+            <a
+              href=""
+              class="rounded-full border border-green-60 px-4 py-2.5 font-semibold text-green-60"
+              >დეტალები</a
+            >
+          </div>
+        </div>
+      }
     </div>
   </div>
 </div>
