@@ -1,4 +1,4 @@
-<nav class="sticky top-0 z-50 h-[72px] bg-white lg:h-20">
+<nav class="fixed top-0 z-50 h-[72px] w-full bg-white lg:h-20">
   <div
     class="container mx-auto flex h-full items-center justify-between px-4 lg:px-8"
   >
@@ -94,7 +94,7 @@
             class="invisible absolute left-0 top-full z-50 mt-2 w-[280px] rounded-2xl border border-platinum-20 bg-white text-sm text-platinum-90 opacity-0 shadow-sm transition-all duration-200 group-hover:visible group-hover:opacity-100"
           >
             <a
-              routerLink=""
+              routerLink="about"
               class="flex items-center justify-between px-4 py-2"
             >
               <div class="flex items-center gap-4">
@@ -133,7 +133,7 @@
               </svg>
             </a>
             <a
-              routerLink=""
+              routerLink="blog"
               class="flex items-center justify-between px-4 py-2"
             >
               <div class="flex items-center gap-4">
@@ -171,7 +171,7 @@
               </svg>
             </a>
             <a
-              routerLink=""
+              routerLink="contact"
               class="flex items-center justify-between px-4 py-2"
             >
               <div class="flex items-center gap-4">
@@ -314,23 +314,116 @@
       </button>
 
       <!-- Hamburger Menu -->
-      <button class="p-2 text-platinum-60 hover:text-platinum-100">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M3 12H21M3 6H21M3 18H21"
-            stroke="#212121"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+      <button
+        class="p-2 text-platinum-60 hover:text-platinum-100"
+        (click)="toggleMobileMenu()"
+        [attr.aria-label]="mobileMenuOpen() ? 'Close menu' : 'Open menu'"
+      >
+        @if (mobileMenuOpen()) {
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M18 6L6 18M6 6L18 18"
+              stroke="#212121"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        } @else {
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 12H21M3 6H21M3 18H21"
+              stroke="#212121"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        }
       </button>
     </div>
   </div>
 </nav>
+
+<!-- Mobile Menu -->
+@if (mobileMenuOpen()) {
+  <div
+    class="fixed left-0 right-0 top-[72px] z-50 h-[calc(100vh-72px)] overflow-y-auto bg-white lg:hidden"
+  >
+    <div class="mb-14 flex h-full flex-col">
+      <!-- Mobile Menu Links -->
+      <nav class="flex-1 space-y-1">
+        @for (navUrl of navUrls; track $index) {
+          <a
+            [routerLink]="navUrl.url"
+            routerLinkActive="text-green-600"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="closeMobileMenu()"
+            class="flex h-14 items-center justify-between gap-3 rounded-lg px-4 py-2 text-base font-semibold text-platinum-90 hover:bg-platinum-10"
+          >
+            <div class="flex items-center gap-4">
+              <div
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-green-10"
+              >
+                <img src="/assets/images/navbar/{{ navUrl.url }}.svg" />
+              </div>
+
+              {{ navUrl.name }}
+            </div>
+
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 18L14.6854 12.7071C15.1049 12.3166 15.1049 11.6834 14.6854 11.2929L9 6"
+                stroke="#888888"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </a>
+        }
+      </nav>
+
+      <!-- Auth Buttons -->
+      <div class="space-y-3 border-t border-platinum-20 px-4 pt-6">
+        <a
+          class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white"
+          style="
+            background: linear-gradient(
+              90deg,
+              #0ad810 0%,
+              #0bb705 35%,
+              #0bb705 65%,
+              #0ad810 100%
+            );
+            box-shadow: 0px 20px 16px -8px #0ad10426;
+          "
+        >
+          რეგისტრაცია
+        </a>
+        <a
+          class="inline-flex w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-green-60 px-6 py-3 font-medium text-green-60"
+        >
+          ავტორიზაცია
+        </a>
+      </div>
+    </div>
+  </div>
+}
