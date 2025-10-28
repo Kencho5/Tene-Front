@@ -84,6 +84,15 @@ module.exports = {
       boxShadow: {
         low: "0px 1px 8px 0px #14141414, 0px 0px 1px 0px #1414141F",
       },
+      container: {
+        center: true,
+        screens: {
+          sm: "640px",
+          md: "768px",
+          lg: "1024px",
+          xl: "1280px",
+        },
+      },
     },
   },
   plugins: [],
