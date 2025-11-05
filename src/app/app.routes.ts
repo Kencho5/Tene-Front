@@ -10,6 +10,7 @@ export const routes: Routes = [
     children: [
       { path: '', component: HomeComponent },
       { path: 'bins', component: BinsComponent },
+      { path: 'product/:id', component: BinsComponent },
     ],
   },
 ];
