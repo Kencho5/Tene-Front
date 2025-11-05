@@ -19,6 +19,7 @@ import { AuthService } from '@core/services/auth-service.service';
 import { AuthInputComponent } from '@shared/components/auth/auth-input/auth-input.component';
 import { RegisterFields } from '@core/interfaces/auth.interface';
 import { SharedModule } from '@shared/shared.module';
+import { GoogleAuthService } from '@core/services/google-auth-service.service';
 
 interface RegisterForm {
   name: FormControl<string>;
@@ -34,6 +35,7 @@ interface RegisterForm {
 })
 export class RegisterComponent implements OnInit {
   private readonly authService = inject(AuthService);
+  private readonly googleAuthService = inject(GoogleAuthService);
   private readonly authTitleService = inject(AuthTitleService);
   private readonly fb = inject(NonNullableFormBuilder);
 
@@ -81,5 +83,9 @@ export class RegisterComponent implements OnInit {
           );
         },
       });
+  }
+
+  registerWithGoogle(): void {
+    this.googleAuthService.init();
   }
 }

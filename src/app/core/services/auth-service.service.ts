@@ -59,6 +59,12 @@ export class AuthService {
     return this.http.post<AuthResponse>(apiUrl('/auth/register'), userData);
   }
 
+  registerGoogle(id_token: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(apiUrl('/auth/google'), {
+      id_token,
+    });
+  }
+
   login(token: string): void {
     const decodedUser = this.decodeToken(token);
     if (decodedUser) {

@@ -1,16 +1,16 @@
-<div class="relative flex min-h-screen items-center justify-center p-4">
+<div class="relative flex min-h-screen items-center justify-center sm:p-4">
   <div
-    class="absolute left-1/2 top-0 h-52 w-52 rounded-full bg-green-40 opacity-40 blur-[120px]"
+    class="absolute left-1/2 top-0 h-32 w-32 rounded-full bg-green-40 opacity-50 blur-[100px] sm:h-52 sm:w-52"
   ></div>
   <div
-    class="absolute bottom-10 right-1/2 h-52 w-52 rounded-full bg-cream-40 opacity-40 blur-[120px]"
+    class="absolute bottom-10 right-1/2 h-20 w-20 rounded-full bg-cream-40 opacity-50 blur-[100px] sm:h-52 sm:w-52"
   ></div>
   <div
-    class="absolute bottom-0 left-0 h-44 w-44 rounded-full bg-green-40 opacity-30 blur-[100px]"
+    class="bottom-0 left-0 hidden h-44 w-44 rounded-full bg-green-40 opacity-50 blur-[100px] sm:absolute"
   ></div>
 
   <div
-    class="shadow-low relative flex w-full max-w-md flex-col items-center gap-6 rounded-2xl bg-white p-8"
+    class="sm:shadow-low relative flex w-full flex-col items-center gap-6 rounded-2xl p-4 sm:w-[520px] sm:bg-white sm:p-8"
   >
     <a routerLink=""> <img src="/logo.svg" /> </a>
     @if (title()) {
