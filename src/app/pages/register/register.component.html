@@ -58,7 +58,7 @@
     [disabled]="isGoogleLoading()"
     [attr.aria-label]="'Google-ით რეგისტრაცია'"
     [ngClass]="{
-      'cursor-not-allowed opacity-50': isGoogleLoading()
+      'cursor-not-allowed opacity-50': isGoogleLoading(),
     }"
     class="flex w-full items-center justify-center gap-3 rounded-full border border-platinum-20 px-4 py-2.5 font-medium transition-all hover:bg-platinum-10"
   >
@@ -87,4 +87,11 @@
     </svg>
     Google-ით შესვლა
   </button>
+
+  <p class="text-center text-sm text-platinum-50">
+    უკვე გაქვს ანგარიში?
+    <a routerLink="/auth/login" class="font-semibold text-green-60"
+      >ავტორიზაცია</a
+    >
+  </p>
 </form>
