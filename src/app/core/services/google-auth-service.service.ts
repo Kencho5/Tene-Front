@@ -45,27 +45,40 @@ export class GoogleAuthService {
     }
   }
 
-  async init() {
+  async init(): Promise<void> {
     try {
       await this.loadGoogleScript();
 
-      const callback = (res: any) => {
-        const token = res.access_token;
-        if (!token) return;
-        this.authService.registerGoogle(token).subscribe((response) => {
-          this.authService.login(response.token);
-        });
-      };
+      return new Promise((resolve, reject) => {
+        const callback = (res: any) => {
+          const token = res.access_token;
+          if (!token) {
+            reject(new Error('No access token received'));
+            return;
+          }
 
-      google.accounts.oauth2
-        .initTokenClient({
-          client_id: environment.google_client_id,
-          scope: 'openid email profile',
-          callback,
-        })
-        .requestAccessToken();
+          this.authService.registerGoogle(token).subscribe({
+            next: (response) => {
+              this.authService.login(response.token);
+              resolve();
+            },
+            error: (error) => {
+              reject(error);
+            }
+          });
+        };
+
+        google.accounts.oauth2
+          .initTokenClient({
+            client_id: environment.google_client_id,
+            scope: 'openid email profile',
+            callback,
+          })
+          .requestAccessToken();
+      });
     } catch (error) {
       console.error('Failed to initialize Google Auth:', error);
+      throw error;
     }
   }
 }

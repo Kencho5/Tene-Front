@@ -41,6 +41,7 @@ export class RegisterComponent implements OnInit {
 
   readonly submitted = signal(false);
   readonly isLoading = signal(false);
+  readonly isGoogleLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);
 
   readonly registerForm: FormGroup<RegisterForm> = this.fb.group({
@@ -86,6 +87,16 @@ export class RegisterComponent implements OnInit {
   }
 
   registerWithGoogle(): void {
-    this.googleAuthService.init();
+    this.errorMessage.set(null);
+    this.isGoogleLoading.set(true);
+
+    this.googleAuthService
+      .init()
+      .catch((_) => {
+        this.errorMessage.set('Google-ით რეგისტრაცია ვერ მოხერხდა');
+      })
+      .finally(() => {
+        this.isGoogleLoading.set(false);
+      });
   }
 }
