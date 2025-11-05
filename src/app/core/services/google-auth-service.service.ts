@@ -50,31 +50,58 @@ export class GoogleAuthService {
       await this.loadGoogleScript();
 
       return new Promise((resolve, reject) => {
-        const callback = (res: any) => {
-          const token = res.access_token;
-          if (!token) {
-            reject(new Error('No access token received'));
+        const callback = (response: any) => {
+          const idToken = response.credential;
+          if (!idToken) {
+            reject(new Error('No ID token received'));
             return;
           }
 
-          this.authService.registerGoogle(token).subscribe({
-            next: (response) => {
-              this.authService.login(response.token);
+          this.authService.registerGoogle(idToken).subscribe({
+            next: (authResponse) => {
+              this.authService.login(authResponse.token);
               resolve();
             },
             error: (error) => {
               reject(error);
-            }
+            },
           });
         };
 
-        google.accounts.oauth2
-          .initTokenClient({
-            client_id: environment.google_client_id,
-            scope: 'openid email profile',
-            callback,
-          })
-          .requestAccessToken();
+        google.accounts.id.initialize({
+          client_id: environment.google_client_id,
+          callback,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+
+        // Create invisible container for popup
+        const parent = document.createElement('div');
+        parent.style.position = 'fixed';
+        parent.style.top = '0';
+        parent.style.left = '0';
+        parent.style.width = '0';
+        parent.style.height = '0';
+        parent.style.opacity = '0';
+        parent.style.pointerEvents = 'none';
+        parent.style.overflow = 'hidden';
+        document.body.appendChild(parent);
+
+        google.accounts.id.renderButton(parent, {
+          type: 'standard',
+          size: 'large',
+        });
+
+        setTimeout(() => {
+          const button = parent.querySelector(
+            'div[role="button"]',
+          ) as HTMLElement;
+          if (button) {
+            button.click();
+          } else {
+            reject(new Error('Failed to render Google button'));
+          }
+        }, 100);
       });
     } catch (error) {
       console.error('Failed to initialize Google Auth:', error);
