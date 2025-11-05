@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '@shared/shared.module';
 
@@ -6,11 +6,12 @@ import { SharedModule } from '@shared/shared.module';
   selector: 'app-auth-input',
   imports: [ReactiveFormsModule, SharedModule],
   templateUrl: './auth-input.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthInputComponent {
-  @Input() control = new FormControl();
-  @Input() type: string = 'text';
-  @Input() placeholder!: string;
-  @Input() error?: boolean;
-  @Input() customClass: string = '';
+  readonly control = input.required<FormControl<string>>();
+  readonly type = input<string>('text');
+  readonly placeholder = input.required<string>();
+  readonly error = input<boolean>(false);
+  readonly customClass = input<string>('');
 }

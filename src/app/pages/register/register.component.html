@@ -1,8 +1,55 @@
-<div class="space-y-4">
+<form
+  [formGroup]="registerForm"
+  (ngSubmit)="onSubmit()"
+  class="flex flex-col gap-4"
+>
+  @if (errorMessage()) {
+    <div
+      role="alert"
+      aria-live="polite"
+      class="rounded-lg border border-valencia-50 bg-valencia-50/10 px-4 py-3 text-sm text-valencia-50"
+    >
+      {{ errorMessage() }}
+    </div>
+  }
+
   <app-auth-input
-    [control]="loginForm.controls.email"
-    [type]="'email'"
-    [placeholder]="'სახელი'"
-    [error]="submitted && loginForm.controls.email.invalid"
+    [control]="registerForm.controls.name"
+    type="text"
+    placeholder="სახელი"
+    [error]="submitted() && registerForm.controls.name.invalid"
   />
-</div>
+
+  <app-auth-input
+    [control]="registerForm.controls.email"
+    type="email"
+    placeholder="ელ. ფოსტა"
+    [error]="submitted() && registerForm.controls.email.invalid"
+  />
+
+  <app-auth-input
+    [control]="registerForm.controls.password"
+    type="password"
+    placeholder="პაროლი"
+    [error]="submitted() && registerForm.controls.password.invalid"
+  />
+
+  <button
+    type="submit"
+    [disabled]="isLoading()"
+    [ngClass]="{
+      'cursor-not-allowed bg-green-80': isLoading(),
+      'hover:opacity-90': !isLoading(),
+    }"
+    [style.background]="
+      !isLoading() ? 'linear-gradient(90deg, #0BB705 0%, #0AD810 100%)' : null
+    "
+    class="w-full rounded-full px-4 py-2.5 font-medium text-white transition-all"
+  >
+    @if (isLoading()) {
+      <span>იტვირთება...</span>
+    } @else {
+      <span>რეგისტრაცია</span>
+    }
+  </button>
+</form>
