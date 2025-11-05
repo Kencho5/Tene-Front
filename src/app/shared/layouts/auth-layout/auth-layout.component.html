@@ -1,1 +1,21 @@
-<router-outlet />
+<div class="relative flex min-h-screen items-center justify-center p-4">
+  <div
+    class="absolute left-1/2 top-0 h-52 w-52 rounded-full bg-green-40 opacity-40 blur-[120px]"
+  ></div>
+  <div
+    class="absolute bottom-10 right-1/2 h-52 w-52 rounded-full bg-cream-40 opacity-40 blur-[120px]"
+  ></div>
+  <div
+    class="absolute bottom-0 left-0 h-44 w-44 rounded-full bg-green-40 opacity-30 blur-[100px]"
+  ></div>
+
+  <div
+    class="shadow-low relative flex w-full max-w-md flex-col items-center gap-6 rounded-2xl bg-white p-8"
+  >
+    <a routerLink=""> <img src="/logo.svg" /> </a>
+    @if (title()) {
+      <h1 class="text-2xl">{{ title() }}</h1>
+    }
+    <router-outlet />
+  </div>
+</div>

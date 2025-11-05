@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { AuthTitleService } from '@core/services/auth-title.service';
 import { SharedModule } from '@shared/shared.module';
 
 @Component({
@@ -6,4 +7,8 @@ import { SharedModule } from '@shared/shared.module';
   imports: [SharedModule],
   templateUrl: './auth-layout.component.html',
 })
-export class AuthLayoutComponent {}
+export class AuthLayoutComponent {
+  authTitleService = inject(AuthTitleService);
+
+  title = this.authTitleService.title;
+}
