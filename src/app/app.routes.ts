@@ -12,6 +12,13 @@ export const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'bins', component: BinsComponent },
       { path: 'product/:id', component: BinsComponent },
+      {
+        path: '404',
+        loadComponent: () =>
+          import('./pages/not-found/not-found.component').then(
+            (m) => m.NotFoundComponent,
+          ),
+      },
     ],
   },
   {
@@ -25,4 +32,5 @@ export const routes: Routes = [
       },
     ],
   },
+  { path: '**', redirectTo: '/404' },
 ];

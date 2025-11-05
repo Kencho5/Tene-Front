@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
 
 @Component({
-  selector: 'app-auth-layout',
+  selector: 'app-not-found',
   imports: [SharedModule],
-  templateUrl: './auth-layout.component.html',
+  templateUrl: './not-found.component.html',
 })
-export class AuthLayoutComponent {}
+export class NotFoundComponent {}
