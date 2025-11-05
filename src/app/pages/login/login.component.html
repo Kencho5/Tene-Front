@@ -1,1 +1,8 @@
-<p>login works!</p>
+<div class="space-y-4">
+  <app-auth-input
+    [control]="loginForm.controls.email"
+    [type]="'email'"
+    [placeholder]="'სახელი'"
+    [error]="submitted && loginForm.controls.email.invalid"
+  />
+</div>

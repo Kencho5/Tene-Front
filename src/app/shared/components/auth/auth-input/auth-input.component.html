@@ -1,0 +1,13 @@
+<input
+  [type]="type"
+  [placeholder]="placeholder"
+  [formControl]="control"
+  [class]="customClass"
+  [ngClass]="{
+    'border-valencia-50 hover:border-valencia-50 focus:border-valencia-50 focus:ring-1 focus:ring-valencia-50':
+      error,
+    'focus:border-platinum-40 focus:ring-1 focus:ring-platinum-40': !error,
+    'cursor-not-allowed': control.disabled,
+  }"
+  class="w-full rounded-xl border border-platinum-20 px-3.5 py-2.5 text-platinum-100 placeholder:text-platinum-50"
+/>
