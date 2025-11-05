@@ -1,4 +1,10 @@
-import { Injectable, inject, signal, computed, PLATFORM_ID } from '@angular/core';
+import {
+  Injectable,
+  inject,
+  signal,
+  computed,
+  PLATFORM_ID,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
@@ -50,7 +56,7 @@ export class AuthService {
   }
 
   register(userData: RegisterFields): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(apiUrl('/register'), userData);
+    return this.http.post<AuthResponse>(apiUrl('/auth/register'), userData);
   }
 
   login(token: string): void {

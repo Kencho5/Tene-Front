@@ -74,9 +74,9 @@ export class RegisterComponent implements OnInit {
         next: (response) => {
           this.authService.login(response.token);
         },
-        error: (error: HttpErrorResponse) => {
+        error: (errorResponse: HttpErrorResponse) => {
           this.errorMessage.set(
-            error.error?.message ||
+            errorResponse.error.error ||
               'რეგისტრაცია ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან.',
           );
         },
