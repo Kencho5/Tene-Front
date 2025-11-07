@@ -3,16 +3,6 @@
   (ngSubmit)="onSubmit()"
   class="flex flex-col gap-4"
 >
-  @if (errorMessage()) {
-    <div
-      role="alert"
-      aria-live="polite"
-      class="rounded-lg border border-valencia-50 bg-valencia-50/10 px-4 py-3 text-sm text-valencia-50"
-    >
-      {{ errorMessage() }}
-    </div>
-  }
-
   <app-auth-input
     [control]="registerForm.controls.name"
     type="text"
@@ -33,6 +23,29 @@
     placeholder="პაროლი"
     [error]="submitted() && registerForm.controls.password.invalid"
   />
+
+  @if (errorMessage()) {
+    <div
+      role="alert"
+      aria-live="polite"
+      class="flex items-start gap-3 rounded-xl border border-valencia-50/30 bg-valencia-50/5 px-4 py-3.5 backdrop-blur-sm"
+    >
+      <svg
+        class="mt-0.5 h-5 w-5 flex-shrink-0 text-valencia-50"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <p class="text-sm text-valencia-50">{{ errorMessage() }}</p>
+    </div>
+  }
 
   <button
     type="submit"
