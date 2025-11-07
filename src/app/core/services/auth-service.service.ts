@@ -12,6 +12,7 @@ import { jwtDecode } from 'jwt-decode';
 import { isPlatformBrowser } from '@angular/common';
 import {
   AuthResponse,
+  LoginFields,
   RegisterFields,
   User,
 } from '@core/interfaces/auth.interface';
@@ -59,18 +60,22 @@ export class AuthService {
     return this.http.post<AuthResponse>(apiUrl('/auth/register'), userData);
   }
 
-  registerGoogle(id_token: string): Observable<AuthResponse> {
+  authorizeGoogle(id_token: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(apiUrl('/auth/google'), {
       id_token,
     });
   }
 
-  login(token: string): void {
+  login(userData: LoginFields): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(apiUrl('/auth/login'), userData);
+  }
+
+  authorize(token: string): void {
     const decodedUser = this.decodeToken(token);
     if (decodedUser) {
       this.userSignal.set(decodedUser);
       this.storeToken(token);
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/profile']);
     }
   }
 

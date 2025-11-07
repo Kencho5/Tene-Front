@@ -75,7 +75,7 @@ export class RegisterComponent implements OnInit {
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (response) => {
-          this.authService.login(response.token);
+          this.authService.authorize(response.token);
         },
         error: (errorResponse: HttpErrorResponse) => {
           this.errorMessage.set(
@@ -86,7 +86,7 @@ export class RegisterComponent implements OnInit {
       });
   }
 
-  registerWithGoogle(): void {
+  authorizeWithGoogle(): void {
     this.errorMessage.set(null);
     this.isGoogleLoading.set(true);
 

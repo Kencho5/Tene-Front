@@ -57,9 +57,9 @@ export class GoogleAuthService {
             return;
           }
 
-          this.authService.registerGoogle(idToken).subscribe({
+          this.authService.authorizeGoogle(idToken).subscribe({
             next: (authResponse) => {
-              this.authService.login(authResponse.token);
+              this.authService.authorize(authResponse.token);
               resolve();
             },
             error: (error) => {
