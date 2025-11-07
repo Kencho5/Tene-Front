@@ -50,19 +50,42 @@ export class GoogleAuthService {
       await this.loadGoogleScript();
 
       return new Promise((resolve, reject) => {
+        const parent = document.createElement('div');
+        parent.style.position = 'fixed';
+        parent.style.top = '0';
+        parent.style.left = '0';
+        parent.style.width = '0';
+        parent.style.height = '0';
+        parent.style.opacity = '0';
+        parent.style.pointerEvents = 'none';
+        parent.style.overflow = 'hidden';
+        document.body.appendChild(parent);
+
+        const cleanup = () => {
+          parent.remove();
+          // Remove Google's injected styles
+          const googleStyles = document.getElementById('googleidentityservice_button_styles');
+          if (googleStyles) {
+            googleStyles.remove();
+          }
+        };
+
         const callback = (response: any) => {
           const idToken = response.credential;
           if (!idToken) {
+            cleanup();
             reject(new Error('No ID token received'));
             return;
           }
 
           this.authService.authorizeGoogle(idToken).subscribe({
             next: (authResponse) => {
+              cleanup();
               this.authService.authorize(authResponse.token);
               resolve();
             },
             error: (error) => {
+              cleanup();
               reject(error);
             },
           });
@@ -74,18 +97,6 @@ export class GoogleAuthService {
           auto_select: false,
           cancel_on_tap_outside: true,
         });
-
-        // Create invisible container for popup
-        const parent = document.createElement('div');
-        parent.style.position = 'fixed';
-        parent.style.top = '0';
-        parent.style.left = '0';
-        parent.style.width = '0';
-        parent.style.height = '0';
-        parent.style.opacity = '0';
-        parent.style.pointerEvents = 'none';
-        parent.style.overflow = 'hidden';
-        document.body.appendChild(parent);
 
         google.accounts.id.renderButton(parent, {
           type: 'standard',
@@ -99,6 +110,7 @@ export class GoogleAuthService {
           if (button) {
             button.click();
           } else {
+            cleanup();
             reject(new Error('Failed to render Google button'));
           }
         }, 100);
