@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { AuthTitleService } from '@core/services/auth-title.service';
 import { AuthInputComponent } from '@shared/components/auth/auth-input/auth-input.component';
 import {
@@ -24,6 +24,7 @@ interface LoginForm {
   selector: 'app-login',
   imports: [SharedModule, AuthInputComponent, ReactiveFormsModule],
   templateUrl: './login.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit {
   private readonly authService = inject(AuthService);
@@ -71,7 +72,7 @@ export class LoginComponent implements OnInit {
         error: (errorResponse: HttpErrorResponse) => {
           this.errorMessage.set(
             errorResponse.error.error ||
-              'რეგისტრაცია ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან.',
+              'ავტორიზაცია ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან.',
           );
         },
       });
