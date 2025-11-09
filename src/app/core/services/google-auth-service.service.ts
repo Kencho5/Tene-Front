@@ -81,7 +81,7 @@ export class GoogleAuthService {
           this.authService.authorizeGoogle(idToken).subscribe({
             next: (authResponse) => {
               cleanup();
-              this.authService.authorize(authResponse.token);
+              this.authService.setAuth(authResponse.token);
               resolve();
             },
             error: (error) => {

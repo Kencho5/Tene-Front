@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (response) => {
-          this.authService.authorize(response.token);
+          this.authService.setAuth(response.token);
         },
         error: (errorResponse: HttpErrorResponse) => {
           this.errorMessage.set(

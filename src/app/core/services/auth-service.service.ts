@@ -18,6 +18,8 @@ import {
 } from '@core/interfaces/auth.interface';
 import { apiUrl } from '@utils/buildUrl';
 
+const TOKEN_KEY = 'token';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -25,95 +27,88 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
-  // Signal-based state management
   private readonly userSignal = signal<User | null>(null);
+  private readonly tokenSignal = signal<string | null>(null);
 
-  // Public readonly signals
   readonly user = this.userSignal.asReadonly();
-  readonly isAuthenticated = computed(() => this.userSignal() !== null);
-  readonly isTokenExpired = computed(() => {
-    const currentUser = this.userSignal();
-    if (!currentUser?.exp) return true;
-    return Date.now() >= currentUser.exp * 1000;
+  readonly token = this.tokenSignal.asReadonly();
+  readonly isAuthenticated = computed(() => {
+    const user = this.userSignal();
+    return user !== null && !this.isExpired(user);
   });
 
   constructor() {
-    this.initUser();
+    this.initializeAuth();
   }
 
-  private initUser(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const token = this.getStoredToken();
-      if (token) {
-        const decodedUser = this.decodeToken(token);
-        if (decodedUser && !this.isTokenExpiredCheck(decodedUser)) {
-          this.userSignal.set(decodedUser);
-        } else {
-          this.clearStoredToken();
-        }
-      }
-    }
-  }
-
+  // API Methods
   register(userData: RegisterFields): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(apiUrl('/auth/register'), userData);
-  }
-
-  authorizeGoogle(id_token: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(apiUrl('/auth/google'), {
-      id_token,
-    });
   }
 
   login(userData: LoginFields): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(apiUrl('/auth/login'), userData);
   }
 
-  authorize(token: string): void {
-    const decodedUser = this.decodeToken(token);
-    if (decodedUser) {
-      this.userSignal.set(decodedUser);
-      this.storeToken(token);
-      this.router.navigate(['/profile']);
+  authorizeGoogle(idToken: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(apiUrl('/auth/google'), {
+      id_token: idToken,
+    });
+  }
+
+  setAuth(token: string): void {
+    const user = this.decodeToken(token);
+
+    if (!user || this.isExpired(user)) {
+      console.error('Invalid or expired token');
+      this.userSignal.set(null);
+      this.tokenSignal.set(null);
+      if (this.isBrowser) localStorage.removeItem(TOKEN_KEY);
+      return;
     }
+
+    this.userSignal.set(user);
+    this.tokenSignal.set(token);
+    if (this.isBrowser) localStorage.setItem(TOKEN_KEY, token);
+    this.router.navigate(['/profile']);
   }
 
   logout(): void {
     this.userSignal.set(null);
-    this.clearStoredToken();
+    this.tokenSignal.set(null);
+    if (this.isBrowser) localStorage.removeItem(TOKEN_KEY);
     this.router.navigate(['/auth/login']);
   }
 
-  private decodeToken(token: string | null): User | null {
-    if (!token) return null;
+  private initializeAuth(): void {
+    if (!this.isBrowser) return;
 
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) return;
+
+    const user = this.decodeToken(token);
+    if (!user || this.isExpired(user)) {
+      localStorage.removeItem(TOKEN_KEY);
+      return;
+    }
+
+    this.userSignal.set(user);
+    this.tokenSignal.set(token);
+  }
+
+  private decodeToken(token: string): User | null {
     try {
       return jwtDecode<User>(token);
     } catch (error) {
-      console.error('Failed to decode token:', error);
+      console.error('Token decode failed:', error);
       return null;
     }
   }
 
-  private isTokenExpiredCheck(user: User): boolean {
+  private isExpired(user: User): boolean {
+    if (!user.exp) return true;
     return Date.now() >= user.exp * 1000;
-  }
-
-  private getStoredToken(): string | null {
-    if (!isPlatformBrowser(this.platformId)) return null;
-    return localStorage.getItem('token');
-  }
-
-  private storeToken(token: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem('token', token);
-    }
-  }
-
-  private clearStoredToken(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('token');
-    }
   }
 }
