@@ -132,10 +132,10 @@
   </div>
 </section>
 
-<section id="cards" class="flex flex-wrap justify-center gap-6 p-4">
+<section id="cards" class="container mx-auto grid grid-cols-1 gap-6 p-4 md:grid-cols-2">
   @for (card of homeCards; track $index) {
     <div
-      class="flex flex-col items-center justify-between gap-6 rounded-2xl bg-platinum-10 px-4 py-6 sm:h-[496px] sm:w-[628px] sm:px-8 sm:py-6"
+      class="flex flex-col items-center justify-between gap-6 rounded-2xl bg-platinum-10 px-4 py-6 sm:h-[496px] sm:px-8 sm:py-6"
     >
       <app-image
         src="/assets/images/home-cards/{{ card.image }}.webp"
