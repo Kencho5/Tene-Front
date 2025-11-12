@@ -14,7 +14,7 @@
 
       <!-- Desktop Navigation Links -->
       <div
-        class="hidden h-11 items-center gap-2.5 rounded-full bg-platinum-10 p-1 text-sm font-semibold text-platinum-50 lg:flex"
+        class="hidden h-11 flex-nowrap items-center gap-2.5 rounded-full bg-platinum-10 p-1 text-sm font-semibold text-platinum-50 xl:flex"
       >
         <a
           routerLink="/"
@@ -213,7 +213,7 @@
     </div>
 
     <!-- Desktop Action Buttons -->
-    <div class="hidden items-center space-x-6 lg:flex">
+    <div class="hidden items-center space-x-6 xl:flex">
       <!-- Search Icon -->
       <button>
         <svg
@@ -285,7 +285,7 @@
     </div>
 
     <!-- Mobile Action Buttons -->
-    <div class="flex items-center space-x-2 lg:hidden">
+    <div class="flex items-center space-x-2 xl:hidden">
       <!-- Search Icon -->
       <button class="p-2 text-platinum-60 hover:text-platinum-100">
         <svg
@@ -368,7 +368,7 @@
 <!-- Mobile Menu -->
 @if (mobileMenuOpen()) {
   <div
-    class="fixed left-0 right-0 top-[72px] z-50 h-[calc(100vh-72px)] overflow-y-auto bg-white lg:hidden"
+    class="fixed left-0 right-0 top-[72px] z-50 h-[calc(100vh-72px)] overflow-y-auto bg-white xl:hidden"
   >
     <div class="mb-14 flex h-full flex-col">
       <!-- Mobile Menu Links -->
