@@ -11,7 +11,13 @@ export const routes: Routes = [
     children: [
       { path: '', component: HomeComponent },
       { path: 'bins', component: BinsComponent },
-      { path: 'product/:id', component: BinsComponent },
+      {
+        path: 'product/:id',
+        loadComponent: () =>
+          import('./pages/product/product.component').then(
+            (m) => m.ProductComponent,
+          ),
+      },
       {
         path: '404',
         loadComponent: () =>
