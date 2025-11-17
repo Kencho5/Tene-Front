@@ -16,7 +16,6 @@ import {
   RegisterFields,
   User,
 } from '@core/interfaces/auth.interface';
-import { apiUrl } from '@utils/buildUrl';
 
 const TOKEN_KEY = 'token';
 
@@ -45,15 +44,15 @@ export class AuthService {
 
   // API Methods
   register(userData: RegisterFields): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(apiUrl('/auth/register'), userData);
+    return this.http.post<AuthResponse>('/auth/register', userData);
   }
 
   login(userData: LoginFields): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(apiUrl('/auth/login'), userData);
+    return this.http.post<AuthResponse>('/auth/login', userData);
   }
 
   authorizeGoogle(idToken: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(apiUrl('/auth/google'), {
+    return this.http.post<AuthResponse>('/auth/google', {
       id_token: idToken,
     });
   }
