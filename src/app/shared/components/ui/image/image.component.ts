@@ -3,9 +3,9 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-image',
   imports: [],
-  templateUrl: './image.html',
+  templateUrl: './image.component.html',
 })
-export class Image {
+export class ImageComponent {
   @Input() src!: string;
   @Input() width?: number = 200;
   @Input() height?: number = 200;

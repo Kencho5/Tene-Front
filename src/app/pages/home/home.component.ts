@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { Image } from '@shared/components/ui/image/image';
+import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { SharedModule } from '@shared/shared.module';
 import { homeCards } from '@utils/homeCards';
 
 @Component({
   selector: 'app-home',
-  imports: [SharedModule, Image],
+  imports: [SharedModule, ImageComponent],
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
