@@ -29,6 +29,7 @@ export class ProductComponent implements OnInit {
   readonly product = signal<ProductResponse | null>(null);
   readonly isLoading = signal(true);
   readonly images = computed(() => this.product()?.images ?? []);
+  readonly selectedImage = signal<string | null>(null);
 
   readonly imageUrl = environment.product_image_url;
 
@@ -55,6 +56,10 @@ export class ProductComponent implements OnInit {
 
   navigateBack(): void {
     this.location.back();
+  }
+
+  selectImage(imageUuid: string): void {
+    this.selectedImage.set(imageUuid);
   }
 
   getImageSrc(image_uuid: string): string {
