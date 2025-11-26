@@ -30,6 +30,7 @@ export class ProductComponent implements OnInit {
   readonly isLoading = signal(true);
   readonly selectedColor = signal<string | null>(null);
   readonly selectedImageUuid = signal<string | null>(null);
+  readonly productCount = signal(1);
 
   readonly availableColors = computed(() => {
     return this.product()?.product.colors ?? [];
@@ -106,5 +107,12 @@ export class ProductComponent implements OnInit {
   getImageSrc(image_uuid: string): string {
     const productId = this.product()?.product.id;
     return `${this.imageUrl}/products/${productId}/${image_uuid}.jpg`;
+  }
+
+  updateProductCount(delta: number): void {
+    const maxQuantity = this.product()?.product.quantity ?? 1;
+    this.productCount.update((current) =>
+      Math.max(1, Math.min(current + delta, maxQuantity))
+    );
   }
 }
