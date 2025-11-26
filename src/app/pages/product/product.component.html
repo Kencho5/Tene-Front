@@ -98,7 +98,7 @@
           <h2 class="text-xl">{{ productData.product.price }}₾</h2>
         } @else {
           <div class="flex items-center gap-3">
-            <h2 class="text-xl">{{ discountedPrice }}₾</h2>
+            <h2 class="text-xl">{{ discountedPrice() }}₾</h2>
             <p class="text-sm text-platinum-50 line-through">
               ₾{{ productData.product.price }}
             </p>

@@ -36,6 +36,14 @@ export class ProductComponent implements OnInit {
     return this.product()?.product.colors ?? [];
   });
 
+  readonly discountedPrice = computed(() => {
+    const prod = this.product()?.product;
+    if (!prod) return 0;
+
+    const discounted = prod.price - (prod.price * prod.discount) / 100;
+    return Math.floor(discounted) + 0.99;
+  });
+
   readonly colorImages = computed(() => {
     const images = this.product()?.images ?? [];
     const color = this.selectedColor();
@@ -114,12 +122,5 @@ export class ProductComponent implements OnInit {
     this.productCount.update((current) =>
       Math.max(1, Math.min(current + delta, maxQuantity)),
     );
-  }
-
-  get discountedPrice(): number {
-    const product = this.product()!.product;
-    const discounted =
-      product.price - (product.price * product?.discount) / 100;
-    return Math.floor(discounted) + 0.99;
   }
 }
