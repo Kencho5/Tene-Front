@@ -1,6 +1,8 @@
 <app-navbar />
 
-<main class="relative mt-[72px] min-h-[calc(100vh-72px)] flex-1 sm:mt-20 sm:min-h-[calc(100vh-80px)]">
+<main
+  class="relative mt-[72px] min-h-[calc(100vh-72px)] flex-1 sm:mt-20 sm:min-h-[calc(100vh-80px)]"
+>
   @if (!this.loadingService.loading()) {
     <router-outlet />
   } @else {
@@ -14,4 +16,6 @@
       />
     </div>
   }
+
+  <app-footer />
 </main>
