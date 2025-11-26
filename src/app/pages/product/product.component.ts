@@ -112,7 +112,14 @@ export class ProductComponent implements OnInit {
   updateProductCount(delta: number): void {
     const maxQuantity = this.product()?.product.quantity ?? 1;
     this.productCount.update((current) =>
-      Math.max(1, Math.min(current + delta, maxQuantity))
+      Math.max(1, Math.min(current + delta, maxQuantity)),
     );
+  }
+
+  get discountedPrice(): number {
+    const product = this.product()!.product;
+    const discounted =
+      product.price - (product.price * product?.discount) / 100;
+    return Math.floor(discounted) + 0.99;
   }
 }

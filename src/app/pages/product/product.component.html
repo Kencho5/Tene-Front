@@ -90,11 +90,26 @@
       <div class="flex flex-col gap-[28px] rounded-2xl bg-white p-6 shadow-low">
         <div>
           <h1 class="text-[28px]">{{ productData.product.name }}</h1>
-          <p class="text-platinum-50">
+          <p class="mt-2 text-platinum-50">
             სულ: {{ productData.product.quantity }}
           </p>
         </div>
-        <h2 class="text-xl">{{ productData.product.price }} ₾</h2>
+        @if (productData.product.discount == 0) {
+          <h2 class="text-xl">{{ productData.product.price }}₾</h2>
+        } @else {
+          <div class="flex items-center gap-3">
+            <h2 class="text-xl">{{ discountedPrice }}₾</h2>
+            <p class="text-sm text-platinum-50 line-through">
+              ₾{{ productData.product.price }}
+            </p>
+
+            <h2
+              class="rounded-full bg-valencia-20 px-2 py-1.5 font-bold text-valencia-60"
+            >
+              -{{ productData.product.discount | number }}%
+            </h2>
+          </div>
+        }
 
         <div class="h-px bg-platinum-20"></div>
 
