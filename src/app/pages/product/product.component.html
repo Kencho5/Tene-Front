@@ -89,7 +89,9 @@
 
       <div class="flex flex-col gap-[28px] rounded-2xl bg-white p-6 shadow-low">
         <div>
-          <h1 class="text-[28px]">{{ productData.product.name }}</h1>
+          <h1 class="text-2xl sm:text-[28px]">
+            {{ productData.product.name }}
+          </h1>
           <p class="mt-2 text-platinum-50">
             სულ: {{ productData.product.quantity }}
           </p>
@@ -138,7 +140,7 @@
 
         <div class="flex gap-3">
           <div
-            class="flex h-[46px] w-[126px] items-center justify-between rounded-full border border-platinum-20 p-2"
+            class="flex h-[46px] w-[126px] flex-shrink-0 items-center justify-between rounded-full border border-platinum-20 p-2"
           >
             <button type="button" (click)="updateProductCount(-1)">
               <svg
