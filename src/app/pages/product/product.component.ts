@@ -31,6 +31,7 @@ export class ProductComponent implements OnInit {
   readonly selectedColor = signal<string | null>(null);
   readonly selectedImageUuid = signal<string | null>(null);
   readonly productCount = signal(1);
+  readonly selectedTab = signal<'specifications' | 'description'>('specifications');
 
   readonly availableColors = computed(() => {
     return this.product()?.product.colors ?? [];
@@ -122,5 +123,9 @@ export class ProductComponent implements OnInit {
     this.productCount.update((current) =>
       Math.max(1, Math.min(current + delta, maxQuantity)),
     );
+  }
+
+  selectTab(tab: 'specifications' | 'description'): void {
+    this.selectedTab.set(tab);
   }
 }
