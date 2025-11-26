@@ -28,8 +28,36 @@ export class ProductComponent implements OnInit {
 
   readonly product = signal<ProductResponse | null>(null);
   readonly isLoading = signal(true);
-  readonly images = computed(() => this.product()?.images ?? []);
-  readonly selectedImage = signal<string | null>(null);
+  readonly selectedColor = signal<string | null>(null);
+  readonly selectedImageUuid = signal<string | null>(null);
+
+  readonly availableColors = computed(() => {
+    return this.product()?.product.colors ?? [];
+  });
+
+  readonly colorImages = computed(() => {
+    const images = this.product()?.images ?? [];
+    const color = this.selectedColor();
+
+    if (!color) {
+      const primaryImage = images.find((img) => img.is_primary);
+      return primaryImage ? [primaryImage] : images.slice(0, 1);
+    }
+
+    return images.filter((img) => img.color === color);
+  });
+
+  readonly displayImage = computed(() => {
+    const uuid = this.selectedImageUuid();
+    const images = this.colorImages();
+
+    if (uuid) {
+      const found = images.find((img) => img.image_uuid === uuid);
+      if (found) return found;
+    }
+
+    return images[0] || null;
+  });
 
   readonly imageUrl = environment.product_image_url;
 
@@ -51,15 +79,28 @@ export class ProductComponent implements OnInit {
         }),
         finalize(() => this.isLoading.set(false)),
       )
-      .subscribe((product) => this.product.set(product));
+      .subscribe((product) => {
+        this.product.set(product);
+        if (product?.images.length) {
+          const primaryImage = product.images.find((img) => img.is_primary);
+          if (primaryImage) {
+            this.selectedColor.set(primaryImage.color);
+          }
+        }
+      });
   }
 
   navigateBack(): void {
     this.location.back();
   }
 
+  selectColor(color: string): void {
+    this.selectedColor.set(color);
+    this.selectedImageUuid.set(null);
+  }
+
   selectImage(imageUuid: string): void {
-    this.selectedImage.set(imageUuid);
+    this.selectedImageUuid.set(imageUuid);
   }
 
   getImageSrc(image_uuid: string): string {

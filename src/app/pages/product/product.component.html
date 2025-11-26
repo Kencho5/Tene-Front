@@ -58,9 +58,10 @@
 
   <div class="mt-5 flex flex-col gap-6 sm:mt-8 sm:flex-row sm:gap-8">
     <!--IMAGES SECTION-->
-    <div class="flex flex-col sm:flex-row">
-      <div class="flex flex-row sm:flex-col">
-        @for (image of images(); track image.image_uuid) {
+    <div class="flex flex-col-reverse gap-6 sm:flex-row">
+      <!-- Thumbnail images -->
+      <div class="flex flex-row gap-2.5 sm:flex-col sm:gap-4">
+        @for (image of colorImages(); track image.image_uuid) {
           <button type="button" (click)="selectImage(image.image_uuid)">
             <app-image
               [src]="getImageSrc(image.image_uuid)"
@@ -72,9 +73,11 @@
           </button>
         }
       </div>
-      @if (selectedImage() || images()[0]) {
+
+      <!-- Main display image -->
+      @if (displayImage(); as mainImage) {
         <app-image
-          [src]="getImageSrc(selectedImage() || images()[0]?.image_uuid || '')"
+          [src]="getImageSrc(mainImage.image_uuid)"
           [width]="642"
           [height]="642"
           loading="lazy"
@@ -82,5 +85,20 @@
         />
       }
     </div>
+
+    <!-- Color selector -->
+    <!--<div class="mt-4 flex gap-2">-->
+    <!--  @for (color of availableColors(); track color) {-->
+    <!--    <button-->
+    <!--      type="button"-->
+    <!--      (click)="selectColor(color)"-->
+    <!--      [class]="-->
+    <!--        'h-10 w-10 rounded-full border-2 transition-all ' +-->
+    <!--        (selectedColor() === color ? 'border-green-50 scale-110' : 'border-platinum-20')-->
+    <!--      "-->
+    <!--      [style.background-color]="color"-->
+    <!--    ></button>-->
+    <!--  }-->
+    <!--</div>-->
   </div>
 </div>
