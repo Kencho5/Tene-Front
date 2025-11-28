@@ -3,11 +3,11 @@ import {
   inject,
   signal,
   computed,
-  OnInit,
+  input,
+  effect,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
 import { catchError, of, finalize } from 'rxjs';
 import { SharedModule } from '@shared/shared.module';
 import { ProductsService } from '@core/services/products.service';
@@ -21,10 +21,11 @@ import { environment } from '@environments/environment';
   templateUrl: './product.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductComponent implements OnInit {
+export class ProductComponent {
   private readonly location = inject(Location);
-  private readonly route = inject(ActivatedRoute);
   private readonly productsService = inject(ProductsService);
+
+  readonly product_id = input.required<string>();
 
   readonly product = signal<ProductResponse | null>(null);
   readonly isLoading = signal(true);
@@ -71,9 +72,10 @@ export class ProductComponent implements OnInit {
 
   readonly imageUrl = environment.product_image_url;
 
-  ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      this.loadProduct(params['product_id']);
+  constructor() {
+    effect(() => {
+      const productId = this.product_id();
+      this.loadProduct(productId);
     });
   }
 
