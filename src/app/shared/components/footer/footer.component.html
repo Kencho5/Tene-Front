@@ -1,34 +1,53 @@
 <footer
-  class="container mt-20 flex flex-col items-center justify-center gap-10"
+  class="container mt-12 flex flex-col items-center justify-center gap-6 px-4 sm:mt-20 sm:gap-10"
 >
-  <div class="flex items-start">
+  <!-- Main content: Logo + Links -->
+  <div
+    class="flex w-full flex-col gap-8 sm:flex-row sm:items-start sm:justify-between lg:justify-start"
+  >
+    <!-- Logo -->
     <img
       src="/logo.svg"
       width="80"
       height="34"
-      class="mr-[320px] flex-shrink-0"
+      class="flex-shrink-0"
       alt="Logo"
     />
 
-    <div class="flex gap-4">
+    <!-- Links sections -->
+    <div
+      class="grid grid-cols-2 gap-8 sm:grid-cols-3 sm:gap-4 lg:ml-auto lg:gap-8"
+    >
       @for (title of titles; track $index) {
-        <div class="w-[288px]">
-          <h2 class="mb-6">{{ title }}</h2>
+        <div class="sm:w-[200px] lg:w-[288px]">
+          <h2 class="mb-4 sm:mb-6">{{ title }}</h2>
 
-          <div class="flex flex-col gap-4 text-sm text-platinum-50">
+          <div class="flex flex-col gap-3 text-sm text-platinum-50 sm:gap-4">
             @for (link of links[title]; track $index) {
-              <a routerLink="">{{ link }}</a>
+              <a routerLink="" class="transition-colors hover:text-green-60">{{
+                link
+              }}</a>
             }
           </div>
         </div>
       }
     </div>
   </div>
-  <div class="mt-10 h-px w-full bg-platinum-20"></div>
 
-  <div class="mb-10 flex w-full items-center justify-between">
+  <!-- Divider -->
+  <div class="mt-4 h-px w-full bg-platinum-20 sm:mt-10"></div>
+
+  <!-- Bottom section: Social + Copyright -->
+  <div
+    class="mb-6 flex w-full flex-col items-start gap-6 sm:mb-10 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <!-- Social media links -->
     <div class="flex items-center gap-4">
-      <a href="">
+      <a
+        href=""
+        aria-label="Facebook"
+        class="transition-transform hover:scale-110"
+      >
         <svg
           width="24"
           height="24"
@@ -50,8 +69,12 @@
         </svg>
       </a>
 
-      <a href=""
-        ><svg
+      <a
+        href=""
+        aria-label="Messenger"
+        class="transition-transform hover:scale-110"
+      >
+        <svg
           width="24"
           height="24"
           viewBox="0 0 24 24"
@@ -78,7 +101,11 @@
         </svg>
       </a>
 
-      <a href="">
+      <a
+        href=""
+        aria-label="Instagram"
+        class="transition-transform hover:scale-110"
+      >
         <svg
           width="24"
           height="24"
@@ -109,6 +136,9 @@
       </a>
     </div>
 
-    <p class="text-platinum-50">© 2025 TENE. ყველა პირობა დაცულია</p>
+    <!-- Copyright -->
+    <p class="text-left text-sm text-platinum-50">
+      © 2025 TENE. ყველა პირობა დაცულია
+    </p>
   </div>
 </footer>
