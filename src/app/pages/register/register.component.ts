@@ -1,7 +1,6 @@
 import {
   Component,
   inject,
-  OnInit,
   signal,
   ChangeDetectionStrategy,
 } from '@angular/core';
@@ -33,7 +32,7 @@ interface RegisterForm {
   templateUrl: './register.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   private readonly authService = inject(AuthService);
   private readonly googleAuthService = inject(GoogleAuthService);
   private readonly authTitleService = inject(AuthTitleService);
@@ -53,7 +52,7 @@ export class RegisterComponent implements OnInit {
     ]),
   });
 
-  ngOnInit(): void {
+  constructor() {
     this.authTitleService.setTitle('რეგისტრაცია');
   }
 

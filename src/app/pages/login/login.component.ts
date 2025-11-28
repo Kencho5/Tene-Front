@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { AuthTitleService } from '@core/services/auth-title.service';
 import { AuthInputComponent } from '@shared/components/auth/auth-input/auth-input.component';
 import {
@@ -26,7 +26,7 @@ interface LoginForm {
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   private readonly authService = inject(AuthService);
   private readonly googleAuthService = inject(GoogleAuthService);
   private readonly authTitleService = inject(AuthTitleService);
@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
     ]),
   });
 
-  ngOnInit(): void {
+  constructor() {
     this.authTitleService.setTitle('ავტორიზაცია');
   }
 
