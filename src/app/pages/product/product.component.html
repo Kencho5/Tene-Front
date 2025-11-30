@@ -65,7 +65,14 @@
         <!-- Thumbnail images -->
         <div class="flex flex-row gap-2.5 sm:flex-col sm:gap-4">
           @for (image of colorImages(); track image.image_uuid) {
-            <button type="button" (click)="selectImage(image.image_uuid)">
+            <button
+              type="button"
+              (click)="selectImage(image.image_uuid)"
+              class="rounded-2xl border-2"
+              [ngClass]="{
+                'border-green-60/50': selectedImageUuid() == image.image_uuid,
+              }"
+            >
               <app-image
                 [src]="getImageSrc(image.image_uuid)"
                 [width]="92"

@@ -14,6 +14,7 @@ import { ProductsService } from '@core/services/products/products.service';
 import { ProductResponse } from '@core/interfaces/products.interface';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { environment } from '@environments/environment';
+import { CartService } from '@core/services/products/cart.service';
 
 @Component({
   selector: 'app-product',
@@ -24,6 +25,7 @@ import { environment } from '@environments/environment';
 export class ProductComponent {
   private readonly location = inject(Location);
   private readonly productsService = inject(ProductsService);
+  private readonly cartService = inject(CartService);
 
   readonly product_id = input.required<string>();
 
@@ -97,6 +99,7 @@ export class ProductComponent {
         this.product.set(product);
         if (product?.images.length) {
           const primaryImage = product.images.find((img) => img.is_primary);
+          this.selectedImageUuid.set(primaryImage?.image_uuid || null);
           if (primaryImage) {
             this.selectedColor.set(primaryImage.color);
           }

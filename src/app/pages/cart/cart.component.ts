@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CartService } from '@core/services/products/cart.service';
 import { SharedModule } from '@shared/shared.module';
 
 @Component({
@@ -6,4 +7,6 @@ import { SharedModule } from '@shared/shared.module';
   imports: [SharedModule],
   templateUrl: './cart.component.html',
 })
-export class CartComponent {}
+export class CartComponent {
+  private readonly cartService = inject(CartService);
+}
