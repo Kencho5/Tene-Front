@@ -1,5 +1,10 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { AuthTitleService } from '@core/services/auth-title.service';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { AuthTitleService } from '@core/services/auth/auth-title.service';
 import { AuthInputComponent } from '@shared/components/auth/auth-input/auth-input.component';
 import {
   FormControl,
@@ -8,8 +13,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { AuthService } from '@core/services/auth-service.service';
-import { GoogleAuthService } from '@core/services/google-auth-service.service';
+import { AuthService } from '@core/services/auth/auth-service.service';
+import { GoogleAuthService } from '@core/services/auth/google-auth-service.service';
 import { finalize } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoginFields } from '@core/interfaces/auth.interface';

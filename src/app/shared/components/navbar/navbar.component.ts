@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { SharedModule } from '../../shared.module';
 import { navUrls } from '@utils/navUrls';
-import { AuthService } from '@core/services/auth-service.service';
+import { AuthService } from '@core/services/auth/auth-service.service';
 
 @Component({
   selector: 'app-navbar',

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { AuthTitleService } from '@core/services/auth-title.service';
+import { AuthTitleService } from '@core/services/auth/auth-title.service';
 import { SharedModule } from '@shared/shared.module';
 
 @Component({

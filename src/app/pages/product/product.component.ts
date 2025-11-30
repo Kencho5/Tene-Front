@@ -10,7 +10,7 @@ import {
 import { Location } from '@angular/common';
 import { catchError, of, finalize } from 'rxjs';
 import { SharedModule } from '@shared/shared.module';
-import { ProductsService } from '@core/services/products.service';
+import { ProductsService } from '@core/services/products/products.service';
 import { ProductResponse } from '@core/interfaces/products.interface';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { environment } from '@environments/environment';
@@ -32,7 +32,9 @@ export class ProductComponent {
   readonly selectedColor = signal<string | null>(null);
   readonly selectedImageUuid = signal<string | null>(null);
   readonly productCount = signal(1);
-  readonly selectedTab = signal<'specifications' | 'description'>('specifications');
+  readonly selectedTab = signal<'specifications' | 'description'>(
+    'specifications',
+  );
 
   readonly availableColors = computed(() => {
     return this.product()?.product.colors ?? [];
