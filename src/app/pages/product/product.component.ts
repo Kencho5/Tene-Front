@@ -11,10 +11,15 @@ import { Location } from '@angular/common';
 import { catchError, of, finalize } from 'rxjs';
 import { SharedModule } from '@shared/shared.module';
 import { ProductsService } from '@core/services/products/products.service';
-import { ProductResponse } from '@core/interfaces/products.interface';
+import {
+  ProductResponse,
+  ProductImage,
+} from '@core/interfaces/products.interface';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { environment } from '@environments/environment';
 import { CartService } from '@core/services/products/cart.service';
+
+type TabName = 'specifications' | 'description';
 
 @Component({
   selector: 'app-product',
@@ -28,62 +33,82 @@ export class ProductComponent {
   private readonly cartService = inject(CartService);
 
   readonly product_id = input.required<string>();
+  readonly productData = signal<ProductResponse | null>(null);
 
-  readonly product = signal<ProductResponse | null>(null);
   readonly isLoading = signal(true);
   readonly selectedColor = signal<string | null>(null);
-  readonly selectedImageUuid = signal<string | null>(null);
-  readonly productCount = signal(1);
-  readonly selectedTab = signal<'specifications' | 'description'>(
-    'specifications',
-  );
+  readonly selectedImageId = signal<string | null>(null);
+  readonly quantity = signal(1);
+  readonly activeTab = signal<TabName>('specifications');
+
+  readonly imageBaseUrl = environment.product_image_url;
 
   readonly availableColors = computed(() => {
-    return this.product()?.product.colors ?? [];
+    const product = this.productData();
+    if (!product) return [];
+
+    const allImages = product.images;
+    const uniqueColors = [...new Set(allImages.map((img) => img.color))];
+    return uniqueColors;
   });
 
-  readonly discountedPrice = computed(() => {
-    const prod = this.product()?.product;
-    if (!prod) return 0;
+  readonly finalPrice = computed(() => {
+    const product = this.productData();
+    if (!product) return 0;
 
-    const discounted = prod.price - (prod.price * prod.discount) / 100;
-    return Math.floor(discounted) + 0.99;
+    const originalPrice = product.product.price;
+    const discountPercent = product.product.discount;
+
+    if (discountPercent === 0) {
+      return originalPrice;
+    }
+
+    const discountAmount = (originalPrice * discountPercent) / 100;
+    const priceAfterDiscount = originalPrice - discountAmount;
+
+    return Math.floor(priceAfterDiscount) + 0.99;
   });
 
   readonly colorImages = computed(() => {
-    const images = this.product()?.images ?? [];
+    const product = this.productData();
+    if (!product) return [];
+
+    const allImages = product.images;
     const color = this.selectedColor();
 
     if (!color) {
-      const primaryImage = images.find((img) => img.is_primary);
-      return primaryImage ? [primaryImage] : images.slice(0, 1);
+      const primaryImage = allImages.find((img) => img.is_primary);
+      return primaryImage ? [primaryImage] : allImages.slice(0, 1);
     }
 
-    return images.filter((img) => img.color === color);
+    const imagesMatchingColor = allImages.filter((img) => img.color === color);
+    return imagesMatchingColor;
   });
 
   readonly displayImage = computed(() => {
-    const uuid = this.selectedImageUuid();
-    const images = this.colorImages();
+    const availableImages = this.colorImages();
+    const imageId = this.selectedImageId();
 
-    if (uuid) {
-      const found = images.find((img) => img.image_uuid === uuid);
-      if (found) return found;
+    if (imageId) {
+      const matchingImage = availableImages.find(
+        (img) => img.image_uuid === imageId,
+      );
+      if (matchingImage) {
+        return matchingImage;
+      }
     }
 
-    return images[0] || null;
+    return availableImages[0] || null;
   });
-
-  readonly imageUrl = environment.product_image_url;
 
   constructor() {
     effect(() => {
       const productId = this.product_id();
-      this.loadProduct(productId);
+      this.fetchProduct(productId);
     });
   }
 
-  private loadProduct(productId: string): void {
+  private fetchProduct(productId: string): void {
     this.isLoading.set(true);
 
     this.productsService
@@ -95,16 +120,22 @@ export class ProductComponent {
         }),
         finalize(() => this.isLoading.set(false)),
       )
-      .subscribe((product) => {
-        this.product.set(product);
-        if (product?.images.length) {
-          const primaryImage = product.images.find((img) => img.is_primary);
-          this.selectedImageUuid.set(primaryImage?.image_uuid || null);
-          if (primaryImage) {
-            this.selectedColor.set(primaryImage.color);
-          }
+      .subscribe((productResponse) => {
+        this.productData.set(productResponse);
+
+        if (productResponse?.images.length) {
+          this.initializeImageSelection(productResponse.images);
         }
       });
+  }
+
+  private initializeImageSelection(images: ProductImage[]): void {
+    const primaryImage = images.find((img) => img.is_primary);
+
+    if (primaryImage) {
+      this.selectedImageId.set(primaryImage.image_uuid);
+      this.selectedColor.set(primaryImage.color);
+    }
   }
 
   navigateBack(): void {
@@ -113,26 +144,35 @@ export class ProductComponent {
 
   selectColor(color: string): void {
     this.selectedColor.set(color);
-    this.selectedImageUuid.set(null);
+    this.selectedImageId.set(null);
   }
 
-  selectImage(imageUuid: string): void {
-    this.selectedImageUuid.set(imageUuid);
+  selectImage(imageId: string): void {
+    this.selectedImageId.set(imageId);
   }
 
-  getImageSrc(image_uuid: string): string {
-    const productId = this.product()?.product.id;
-    return `${this.imageUrl}/products/${productId}/${image_uuid}.jpg`;
+  getImageSrc(imageId: string): string {
+    const product = this.productData();
+    if (!product) return '';
+
+    const productId = product.product.id;
+    return `${this.imageBaseUrl}/products/${productId}/${imageId}.jpg`;
   }
 
-  updateProductCount(delta: number): void {
-    const maxQuantity = this.product()?.product.quantity ?? 1;
-    this.productCount.update((current) =>
-      Math.max(1, Math.min(current + delta, maxQuantity)),
-    );
+  updateProductCount(changeAmount: number): void {
+    const product = this.productData();
+    if (!product) return;
+
+    const maxAvailable = product.product.quantity;
+    const currentQuantity = this.quantity();
+    const newQuantity = currentQuantity + changeAmount;
+
+    const clampedQuantity = Math.max(1, Math.min(newQuantity, maxAvailable));
+
+    this.quantity.set(clampedQuantity);
   }
 
-  selectTab(tab: 'specifications' | 'description'): void {
-    this.selectedTab.set(tab);
+  selectTab(tab: TabName): void {
+    this.activeTab.set(tab);
   }
 }
