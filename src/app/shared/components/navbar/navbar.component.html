@@ -212,10 +212,10 @@
       </div>
     </div>
 
-    <!-- Desktop Action Buttons -->
-    <div class="hidden items-center space-x-6 xl:flex">
+    <!-- Action Buttons -->
+    <div class="flex items-center space-x-2 xl:space-x-6">
       <!-- Search Icon -->
-      <button>
+      <button class="p-2 xl:p-0">
         <svg
           width="24"
           height="24"
@@ -234,7 +234,7 @@
       </button>
 
       <!-- Cart Icon -->
-      <button>
+      <a class="relative p-2 xl:p-0" routerLink="cart">
         <svg
           width="24"
           height="24"
@@ -247,83 +247,55 @@
             fill="#212121"
           />
         </svg>
-      </button>
 
-      @if (authService.isAuthenticated()) {
-        <!-- User Icon -->
-        <a routerLink="profile">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+        @if (cartService.itemCount() > 0) {
+          <span
+            class="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-valencia-50 text-[9px] font-semibold text-white"
           >
-            <path
-              d="M17.2356 20C17.8451 20 18.4071 19.6713 18.7059 19.1401V19.1401C19.0219 18.5784 18.9872 17.8849 18.5194 17.4417C17.5128 16.488 15.3978 15 12 15C8.60834 15 6.59708 16.4827 5.6541 17.4365C5.20946 17.8863 5.19264 18.5647 5.50271 19.1159C5.80123 19.6506 6.36323 20 6.97292 20H17.2356Z"
-              stroke="#212121"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M12.1111 11.1111C14.0748 11.1111 15.6667 9.51924 15.6667 7.55556C15.6667 5.59188 14.0748 4 12.1111 4C10.1474 4 8.55556 5.59188 8.55556 7.55556C8.55556 9.51924 10.1474 11.1111 12.1111 11.1111Z"
-              stroke="#212121"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </a>
-      } @else {
-        <a
-          routerLink="/auth/login"
-          class="flex h-[44px] items-center rounded-full border border-green-60 px-3.5 py-2 text-sm font-semibold text-green-60"
-          >შესვლა</a
-        >
-      }
-    </div>
+            {{ cartService.itemCount() }}
+          </span>
+        }
+      </a>
 
-    <!-- Mobile Action Buttons -->
-    <div class="flex items-center space-x-2 xl:hidden">
-      <!-- Search Icon -->
-      <button class="p-2 text-platinum-60 hover:text-platinum-100">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M20 20L16.1333 16.1333M18.2222 11.1111C18.2222 15.0385 15.0385 18.2222 11.1111 18.2222C7.18375 18.2222 4 15.0385 4 11.1111C4 7.18375 7.18375 4 11.1111 4C15.0385 4 18.2222 7.18375 18.2222 11.1111Z"
-            stroke="#212121"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </button>
+      <!-- User/Auth -->
+      <div class="hidden xl:block">
+        @if (authService.isAuthenticated()) {
+          <a routerLink="profile">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M17.2356 20C17.8451 20 18.4071 19.6713 18.7059 19.1401V19.1401C19.0219 18.5784 18.9872 17.8849 18.5194 17.4417C17.5128 16.488 15.3978 15 12 15C8.60834 15 6.59708 16.4827 5.6541 17.4365C5.20946 17.8863 5.19264 18.5647 5.50271 19.1159C5.80123 19.6506 6.36323 20 6.97292 20H17.2356Z"
+                stroke="#212121"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M12.1111 11.1111C14.0748 11.1111 15.6667 9.51924 15.6667 7.55556C15.6667 5.59188 14.0748 4 12.1111 4C10.1474 4 8.55556 5.59188 8.55556 7.55556C8.55556 9.51924 10.1474 11.1111 12.1111 11.1111Z"
+                stroke="#212121"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
+        } @else {
+          <a
+            routerLink="/auth/login"
+            class="flex h-[44px] items-center rounded-full border border-green-60 px-3.5 py-2 text-sm font-semibold text-green-60"
+            >შესვლა</a
+          >
+        }
+      </div>
 
-      <!-- Cart Icon -->
-      <button class="p-2 text-platinum-60 hover:text-platinum-100">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M16.0898 12C16.0898 11.4477 15.6421 11 15.0898 11C14.5375 11 14.0898 11.4477 14.0898 12H15.0898H16.0898ZM11.8898 15.2V16.2V15.2ZM9.68979 12C9.68979 11.4477 9.24207 11 8.68979 11C8.1375 11 7.68979 11.4477 7.68979 12H8.68979H9.68979ZM19.8735 8.57826L20.8313 8.29091V8.29091L19.8735 8.57826ZM4.00001 9.4403L5.00001 9.4403V9.4403H4.00001ZM4.12653 8.57827L3.1687 8.29092L4.12653 8.57827ZM4 17L5 17V17L4 17ZM19.1414 6.13795L18.1836 6.4253L19.1414 6.13795ZM4.85862 6.13796L5.81644 6.42531L4.85862 6.13796ZM15.0898 12H14.0898C14.0898 12.5835 13.858 13.1431 13.4454 13.5556L14.1525 14.2627L14.8596 14.9698C15.6473 14.1822 16.0898 13.1139 16.0898 12H15.0898ZM14.1525 14.2627L13.4454 13.5556C13.0328 13.9682 12.4733 14.2 11.8898 14.2V15.2V16.2C13.0037 16.2 14.072 15.7575 14.8596 14.9698L14.1525 14.2627ZM11.8898 15.2V14.2C11.3063 14.2 10.7467 13.9682 10.3342 13.5556L9.62705 14.2627L8.91994 14.9698C9.70759 15.7575 10.7759 16.2 11.8898 16.2V15.2ZM9.62705 14.2627L10.3342 13.5556C9.92157 13.1431 9.68979 12.5835 9.68979 12H8.68979H7.68979C7.68979 13.1139 8.13229 14.1822 8.91994 14.9698L9.62705 14.2627ZM4 9V10H19.7796V9V8H4V9ZM4.12653 8.57827L5.08436 8.86561L5.81644 6.42531L4.85862 6.13796L3.90079 5.85062L3.1687 8.29092L4.12653 8.57827ZM19.1414 6.13795L18.1836 6.4253L18.9157 8.86561L19.8735 8.57826L20.8313 8.29091L20.0992 5.8506L19.1414 6.13795ZM19.8735 8.57826L18.9157 8.86561C18.9716 9.05205 19 9.24566 19 9.44031H20H21C21 9.05101 20.9432 8.66379 20.8313 8.29091L19.8735 8.57826ZM4.00001 9.4403H5.00001C5.00001 9.24566 5.02843 9.05205 5.08436 8.86561L4.12653 8.57827L3.1687 8.29092C3.05684 8.6638 3.00001 9.05101 3.00001 9.4403H4.00001ZM4 17L3 17C3 19.2091 4.79086 21 7 21V20V19C5.89543 19 5 18.1046 5 17L4 17ZM20 17H19C19 18.1046 18.1046 19 17 19V20V21C19.2092 21 21 19.2091 21 17H20ZM16.2679 4V5C17.1511 5 17.9298 5.57933 18.1836 6.4253L19.1414 6.13795L20.0992 5.8506C19.5916 4.15867 18.0343 3 16.2679 3V4ZM7.7321 4V3C5.96566 3 4.40837 4.15868 3.90079 5.85062L4.85862 6.13796L5.81644 6.42531C6.07023 5.57934 6.84888 5 7.7321 5V4ZM20 9.44031H19V17H20H21V9.44031H20ZM4 17L5 17L5.00001 9.4403L4.00001 9.4403L3.00001 9.4403L3 17L4 17ZM7.7321 4V5H16.2679V4V3H7.7321V4ZM17 20V19H7V20V21H17V20Z"
-            fill="#212121"
-          />
-        </svg>
-      </button>
-
-      <!-- Hamburger Menu -->
+      <!-- Hamburger Menu (Mobile only) -->
       <button
-        class="p-2 text-platinum-60 hover:text-platinum-100"
+        class="p-2 xl:hidden"
         (click)="toggleMobileMenu()"
         [attr.aria-label]="mobileMenuOpen() ? 'Close menu' : 'Open menu'"
       >
