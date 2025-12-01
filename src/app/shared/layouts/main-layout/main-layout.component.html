@@ -5,6 +5,7 @@
 >
   @if (!this.loadingService.loading()) {
     <router-outlet />
+    <app-footer />
   } @else {
     <div
       class="bg-background absolute inset-0 z-0 flex items-center justify-center"
@@ -16,6 +17,4 @@
       />
     </div>
   }
-
-  <app-footer />
 </main>
