@@ -144,7 +144,15 @@ export class ProductComponent {
 
   selectColor(color: string): void {
     this.selectedColor.set(color);
-    this.selectedImageId.set(null);
+
+    const colorImages = this.productData()?.images.filter(
+      (img) => img.color === color,
+    );
+    if (colorImages && colorImages.length > 0) {
+      this.selectedImageId.set(colorImages[0].image_uuid);
+    } else {
+      this.selectedImageId.set(null);
+    }
   }
 
   selectImage(imageId: string): void {
