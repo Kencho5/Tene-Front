@@ -175,4 +175,21 @@ export class ProductComponent {
   selectTab(tab: TabName): void {
     this.activeTab.set(tab);
   }
+
+  addToCart(): void {
+    const productData = this.productData();
+    const color = this.selectedColor();
+    const imageId = this.selectedImageId();
+
+    if (!productData || !color || !imageId) return;
+
+    this.cartService.addItem({
+      product: productData.product,
+      quantity: this.quantity(),
+      selectedColor: color,
+      selectedImageId: imageId,
+    });
+
+    this.quantity.set(1);
+  }
 }

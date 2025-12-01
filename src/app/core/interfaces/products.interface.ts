@@ -23,3 +23,10 @@ export interface ProductResponse {
   product: Product;
   images: ProductImage[];
 }
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
+  selectedColor: string;
+  selectedImageId: string;
+}

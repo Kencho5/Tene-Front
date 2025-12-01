@@ -203,6 +203,7 @@
               );
               box-shadow: 0px 20px 16px -8px #0ad10426;
             "
+            (click)="addToCart()"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path
@@ -236,9 +237,7 @@
           type="button"
           (click)="selectTab('description')"
           [class]="
-            activeTab() === 'description'
-              ? 'text-green-60'
-              : 'text-platinum-50'
+            activeTab() === 'description' ? 'text-green-60' : 'text-platinum-50'
           "
         >
           აღწერა
