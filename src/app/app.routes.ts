@@ -1,6 +1,4 @@
 import { Routes } from '@angular/router';
-import { BinsComponent } from '@pages/bins/bins.component';
-import { HomeComponent } from '@pages/home/home.component';
 import { AuthLayoutComponent } from '@shared/layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from '@shared/layouts/main-layout/main-layout.component';
 
@@ -9,8 +7,21 @@ export const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     children: [
-      { path: '', component: HomeComponent },
-      { path: 'bins', component: BinsComponent },
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/home/home.component').then((m) => m.HomeComponent),
+      },
+      {
+        path: 'bins',
+        loadComponent: () =>
+          import('./pages/bins/bins.component').then((m) => m.BinsComponent),
+      },
+      {
+        path: 'cart',
+        loadComponent: () =>
+          import('./pages/cart/cart.component').then((m) => m.CartComponent),
+      },
       {
         path: 'product/:product_id',
         loadComponent: () =>
