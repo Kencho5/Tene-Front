@@ -1,0 +1,40 @@
+<div class="container my-40 flex justify-around">
+  @if (cartService.itemCount() == 0) {
+    <div class="max-w-[320px] space-y-6 text-center">
+      <app-image
+        src="/assets/images/cart/empty-cart.webp"
+        [width]="120"
+        [height]="120"
+        loading="lazy"
+        class="mx-auto"
+      />
+
+      <div>
+        <h1 class="text-xl">კალათა ცარიელია</h1>
+        <p class="mt-2 text-sm text-platinum-50">
+          ნივთების დამატებას შეძლებთ პროდუქტების გვერდიდან.
+        </p>
+      </div>
+
+      <a
+        routerLink="products"
+        class="inline-flex h-[44px] w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all duration-200 hover:scale-[102%]"
+        style="
+          background: linear-gradient(
+            90deg,
+            #0ad810 0%,
+            #0bb705 35%,
+            #0bb705 65%,
+            #0ad810 100%
+          );
+          box-shadow: 0px 20px 16px -8px #0ad10426;
+        "
+        >პროდუქტების გვერდი</a
+      >
+    </div>
+  } @else {
+    <div class="space-y-6 rounded-2xl bg-white p-6 shadow-low">
+      <h1 class="text-xl">გადახდა</h1>
+    </div>
+  }
+</div>
