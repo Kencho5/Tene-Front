@@ -1,3 +1,15 @@
+@if (cartService.itemCount() > 0) {
+  <div class="container my-36 space-y-8">
+    <div class="space-y-3">
+      <h1 class="text-4xl">ჩემი კალათა</h1>
+      <p class="text-[18px] text-platinum-50">
+        დამატებული ნივთები: {{ cartService.itemCount() }}
+      </p>
+    </div>
+
+    <div class="h-px bg-platinum-20"></div>
+  </div>
+}
 <div class="container my-40 flex justify-around">
   @if (cartService.itemCount() == 0) {
     <div class="max-w-[320px] space-y-6 text-center">
@@ -33,6 +45,7 @@
       >
     </div>
   } @else {
+    <div></div>
     <div class="space-y-6 rounded-2xl bg-white p-6 shadow-low">
       <h1 class="text-xl">გადახდა</h1>
     </div>
