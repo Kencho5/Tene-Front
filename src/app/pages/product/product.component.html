@@ -85,15 +85,26 @@
         </div>
 
         <!-- Main display image -->
-        @if (displayImage(); as mainImage) {
-          <app-image
-            [src]="getImageSrc(mainImage.image_uuid)"
-            [width]="642"
-            [height]="642"
-            loading="lazy"
-            class="rounded-2xl"
-          />
-        }
+        <div class="relative">
+          @if (imageLoading()) {
+            <div
+              class="absolute inset-0 flex items-center justify-center rounded-2xl bg-platinum-10"
+              style="width: 642px; height: 642px"
+            >
+              <div class="h-8 w-8 animate-spin rounded-full border-4 border-platinum-20 border-t-green-60"></div>
+            </div>
+          }
+          @if (displayImage(); as mainImage) {
+            <app-image
+              [src]="getImageSrc(mainImage.image_uuid)"
+              [width]="642"
+              [height]="642"
+              loading="lazy"
+              class="rounded-2xl"
+              (imageLoad)="onMainImageLoad()"
+            />
+          }
+        </div>
       </div>
 
       <div

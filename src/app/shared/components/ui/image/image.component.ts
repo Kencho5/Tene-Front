@@ -1,4 +1,4 @@
-import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-image',
@@ -14,9 +14,12 @@ export class ImageComponent {
   readonly class = input<string>('');
   readonly alt = input<string>('');
 
+  readonly imageLoad = output<void>();
+
   protected readonly imageLoaded = signal(false);
 
   protected onImageLoad(): void {
     this.imageLoaded.set(true);
+    this.imageLoad.emit();
   }
 }

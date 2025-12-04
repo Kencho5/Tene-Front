@@ -36,6 +36,7 @@ export class ProductComponent {
   readonly productData = signal<ProductResponse | null>(null);
 
   readonly isLoading = signal(true);
+  readonly imageLoading = signal(true);
   readonly selectedColor = signal<string | null>(null);
   readonly selectedImageId = signal<string | null>(null);
   readonly quantity = signal(1);
@@ -143,6 +144,7 @@ export class ProductComponent {
   }
 
   selectColor(color: string): void {
+    this.imageLoading.set(true);
     this.selectedColor.set(color);
 
     const colorImages = this.productData()?.images.filter(
@@ -156,7 +158,12 @@ export class ProductComponent {
   }
 
   selectImage(imageId: string): void {
+    this.imageLoading.set(true);
     this.selectedImageId.set(imageId);
+  }
+
+  onMainImageLoad(): void {
+    this.imageLoading.set(false);
   }
 
   getImageSrc(imageId: string): string {
