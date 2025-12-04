@@ -20,6 +20,20 @@ export class CartService {
     }, 0);
   });
 
+  readonly totalDiscount = computed(() => {
+    return this.items().reduce((total, item) => {
+      if (item.product.discount === 0) {
+        return total;
+      }
+
+      const originalPrice = item.product.price * item.quantity;
+      const discountedPrice = this.calculateItemPrice(item) * item.quantity;
+      const savings = originalPrice - discountedPrice;
+
+      return total + savings;
+    }, 0);
+  });
+
   constructor() {
     effect(() => {
       this.saveCartToStorage(this.items());
