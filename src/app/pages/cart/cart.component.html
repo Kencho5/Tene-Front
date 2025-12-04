@@ -1,252 +1,260 @@
-@if (cartService.itemCount() > 0) {
-  <div class="container mb-10 mt-36 space-y-8">
-    <div class="space-y-3">
-      <h1 class="text-4xl">ჩემი კალათა</h1>
-      <p class="text-[18px] text-platinum-50">
-        დამატებული ნივთები: {{ cartService.itemCount() }}
-      </p>
-    </div>
-
-    <div class="h-px bg-platinum-20"></div>
-  </div>
-}
-<div class="container flex justify-between">
-  @if (cartService.itemCount() == 0) {
-    <div class="mx-auto my-40 max-w-[320px] space-y-6 text-center">
-      <app-image
-        src="/assets/images/cart/empty-cart.webp"
-        [width]="120"
-        [height]="120"
-        loading="lazy"
-        class="mx-auto"
-      />
-
-      <div>
-        <h1 class="text-xl">კალათა ცარიელია</h1>
-        <p class="mt-2 text-sm text-platinum-50">
-          ნივთების დამატებას შეძლებთ პროდუქტების გვერდიდან.
+<div class="px-4 lg:px-0">
+  @if (cartService.itemCount() > 0) {
+    <div class="container mb-10 mt-24 space-y-8 md:mt-36">
+      <div class="space-y-3">
+        <h1 class="text-2xl md:text-4xl">ჩემი კალათა</h1>
+        <p class="text-platinum-50 md:text-[18px]">
+          დამატებული ნივთები: {{ cartService.itemCount() }}
         </p>
       </div>
 
-      <a
-        routerLink="products"
-        class="inline-flex h-[44px] w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all duration-200 hover:scale-[102%]"
-        style="
-          background: linear-gradient(
-            90deg,
-            #0ad810 0%,
-            #0bb705 35%,
-            #0bb705 65%,
-            #0ad810 100%
-          );
-          box-shadow: 0px 20px 16px -8px #0ad10426;
-        "
-        >პროდუქტების გვერდი</a
-      >
+      <div class="h-px bg-platinum-20"></div>
     </div>
-  } @else {
-    <div class="w-full max-w-[738px] space-y-8">
-      @for (item of cartService.items(); track $index) {
-        <div
-          class="relative flex items-center justify-between rounded-xl bg-white px-6 py-3 shadow-low"
+  }
+  <div class="container flex flex-col justify-between gap-6 lg:flex-row">
+    @if (cartService.itemCount() == 0) {
+      <div class="mx-auto my-40 max-w-[320px] space-y-6 text-center">
+        <app-image
+          src="/assets/images/cart/empty-cart.webp"
+          [width]="120"
+          [height]="120"
+          loading="lazy"
+          class="mx-auto"
+        />
+
+        <div>
+          <h1 class="text-xl">კალათა ცარიელია</h1>
+          <p class="mt-2 text-sm text-platinum-50">
+            ნივთების დამატებას შეძლებთ პროდუქტების გვერდიდან.
+          </p>
+        </div>
+
+        <a
+          routerLink="products"
+          class="inline-flex h-[44px] w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all duration-200 hover:scale-[102%]"
+          style="
+            background: linear-gradient(
+              90deg,
+              #0ad810 0%,
+              #0bb705 35%,
+              #0bb705 65%,
+              #0ad810 100%
+            );
+            box-shadow: 0px 20px 16px -8px #0ad10426;
+          "
+          >პროდუქტების გვერდი</a
         >
-          <div class="flex items-center gap-2">
-            <app-image
-              [src]="getImageSrc(item.selectedImageId, item.product.id)"
-              [width]="120"
-              [height]="120"
-              loading="lazy"
-              class="mx-auto rounded-2xl border border-platinum-10"
-            />
+      </div>
+    } @else {
+      <div class="w-full space-y-8 lg:max-w-[738px]">
+        @for (item of cartService.items(); track $index) {
+          <div
+            class="relative flex flex-col items-start justify-between gap-6 rounded-xl bg-white p-6 shadow-low md:flex-row md:items-center md:gap-0"
+          >
+            <div class="flex items-center gap-2">
+              <app-image
+                [src]="getImageSrc(item.selectedImageId, item.product.id)"
+                [width]="80"
+                [height]="80"
+                loading="lazy"
+                class="rounded-2xl border border-platinum-10"
+              />
 
-            <div class="space-y-0.5 sm:w-[342px]">
-              <h2 class="font-normal">{{ item.product.name }}</h2>
-              <p class="text-sm text-platinum-50">
-                ფერი: {{ item.selectedColor }}
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-10">
-            <div
-              class="flex h-[46px] w-[126px] flex-shrink-0 items-center justify-between rounded-full border border-platinum-20 p-2"
-            >
-              <button
-                type="button"
-                (click)="
-                  cartService.updateQuantity(
-                    item.product.id,
-                    item.selectedColor,
-                    item.selectedImageId,
-                    item.quantity - 1
-                  )
-                "
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M20 12L4 12"
-                    stroke="#0BB705"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </button>
-
-              <h2>{{ item.quantity }}</h2>
-
-              <button
-                type="button"
-                (click)="
-                  cartService.updateQuantity(
-                    item.product.id,
-                    item.selectedColor,
-                    item.selectedImageId,
-                    item.quantity + 1
-                  )
-                "
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 4L12 20M20 12L4 12"
-                    stroke="#0BB705"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <div class="w-[90px]">
-              @if (item.product.discount == 0) {
-                <h2 class="text-xl">
-                  {{
-                    calculateTotalPrice(item.product.price, item.quantity)
-                      | number: "1.2-2"
-                  }}₾
+              <div class="space-y-0.5 sm:w-[342px]">
+                <h2 class="text-sm font-normal md:text-base">
+                  {{ item.product.name }}
                 </h2>
-              } @else {
-                <div>
-                  <h2 class="text-xl">
-                    {{
-                      calculateTotalPrice(
-                        calculateFinalPrice(
-                          item.product.price,
-                          item.product.discount
-                        ),
-                        item.quantity
-                      ) | number: "1.2-2"
-                    }}₾
-                  </h2>
-                  <p class="text-sm text-platinum-50 line-through">
+                <p class="text-sm text-platinum-50">
+                  ფერი: {{ item.selectedColor }}
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="flex w-full items-center justify-end gap-10 md:justify-center"
+            >
+              <div
+                class="flex h-[36px] w-[114px] flex-shrink-0 items-center justify-between rounded-full border border-platinum-20 p-2 text-sm md:h-[44px] md:w-[126px] md:text-base"
+              >
+                <button
+                  type="button"
+                  (click)="
+                    cartService.updateQuantity(
+                      item.product.id,
+                      item.selectedColor,
+                      item.selectedImageId,
+                      item.quantity - 1
+                    )
+                  "
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    class="h-5 w-5 md:h-6 md:w-6"
+                  >
+                    <path
+                      d="M20 12L4 12"
+                      stroke="#0BB705"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </button>
+
+                <h2>{{ item.quantity }}</h2>
+
+                <button
+                  type="button"
+                  (click)="
+                    cartService.updateQuantity(
+                      item.product.id,
+                      item.selectedColor,
+                      item.selectedImageId,
+                      item.quantity + 1
+                    )
+                  "
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    class="h-5 w-5 md:h-6 md:w-6"
+                  >
+                    <path
+                      d="M12 4L12 20M20 12L4 12"
+                      stroke="#0BB705"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <div class="w-[90px]">
+                @if (item.product.discount == 0) {
+                  <h2 class="md:text-xl">
                     {{
                       calculateTotalPrice(item.product.price, item.quantity)
                         | number: "1.2-2"
                     }}₾
-                  </p>
-                </div>
+                  </h2>
+                } @else {
+                  <div>
+                    <h2 class="md:text-xl">
+                      {{
+                        calculateTotalPrice(
+                          calculateFinalPrice(
+                            item.product.price,
+                            item.product.discount
+                          ),
+                          item.quantity
+                        ) | number: "1.2-2"
+                      }}₾
+                    </h2>
+                    <p class="text-sm text-platinum-50 line-through">
+                      {{
+                        calculateTotalPrice(item.product.price, item.quantity)
+                          | number: "1.2-2"
+                      }}₾
+                    </p>
+                  </div>
 
-                <div
-                  class="absolute right-0 top-0 flex h-[32px] items-center rounded-full rounded-br-none border border-valencia-30 bg-valencia-10 px-2 py-2.5 text-sm font-semibold text-valencia-60"
-                >
-                  -{{ item.product.discount | number }}%
-                </div>
-              }
-            </div>
+                  <div
+                    class="absolute right-0 top-0 flex h-[32px] items-center rounded-full rounded-br-none border border-valencia-30 bg-valencia-10 px-2 py-2.5 text-sm font-semibold text-valencia-60"
+                  >
+                    -{{ item.product.discount | number }}%
+                  </div>
+                }
+              </div>
 
-            <!--DELETE BUTTON-->
-            <button
-              type="button"
-              (click)="
-                cartService.removeItem(
-                  item.product.id,
-                  item.selectedColor,
-                  item.selectedImageId
-                )
-              "
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+              <!--DELETE BUTTON-->
+              <button
+                type="button"
+                (click)="
+                  cartService.removeItem(
+                    item.product.id,
+                    item.selectedColor,
+                    item.selectedImageId
+                  )
+                "
               >
-                <path d="M20 0V20H0V0H20Z" fill="white" fill-opacity="0.01" />
-                <path
-                  d="M5.00065 5V15.5C5.00065 16.6046 5.89608 17.5 7.00065 17.5H13.0007C14.1052 17.5 15.0007 16.6046 15.0007 15.5V5M6.66732 5L7.27273 3.18377C7.40884 2.77543 7.79098 2.5 8.22141 2.5H11.7799C12.2103 2.5 12.5925 2.77543 12.7286 3.18377L13.334 5M3.33398 5H16.6673"
-                  stroke="#6D6D6D"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-      }
-    </div>
-    <div class="w-[448px] space-y-6 rounded-2xl bg-white p-6 shadow-low">
-      <h2 class="text-xl">გადახდა</h2>
-
-      <div class="space-y-2 text-sm">
-        <div class="flex items-center justify-between">
-          <p class="text-platinum-50">
-            ნივთები ({{ cartService.itemCount() }})
-          </p>
-          <p class="font-semibold">
-            {{ cartService.totalPrice() | number: "1.2-2" }}₾
-          </p>
-        </div>
-        <div class="flex items-center justify-between">
-          <p class="text-platinum-50">მიწოდება</p>
-          <p class="font-semibold">5.00₾</p>
-        </div>
-        @if (cartService.totalDiscount() > 0) {
-          <div class="flex items-center justify-between">
-            <p class="text-platinum-50">ფასდაკლება</p>
-            <p class="font-semibold text-valencia-50">
-              -{{ cartService.totalDiscount() | number: "1.2-2" }}₾
-            </p>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M20 0V20H0V0H20Z" fill="white" fill-opacity="0.01" />
+                  <path
+                    d="M5.00065 5V15.5C5.00065 16.6046 5.89608 17.5 7.00065 17.5H13.0007C14.1052 17.5 15.0007 16.6046 15.0007 15.5V5M6.66732 5L7.27273 3.18377C7.40884 2.77543 7.79098 2.5 8.22141 2.5H11.7799C12.2103 2.5 12.5925 2.77543 12.7286 3.18377L13.334 5M3.33398 5H16.6673"
+                    stroke="#6D6D6D"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         }
       </div>
-
-      <div class="h-px bg-platinum-20"></div>
-
-      <div class="flex items-center justify-between text-lg">
-        <h2>ჯამური ღირებულება</h2>
-        <p class="font-bold">
-          {{ cartService.totalPrice() + deliveryPrice | number: "1.2-2" }}₾
-        </p>
-      </div>
-
-      <button
-        type="button"
-        class="inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white"
-        style="
-          background: linear-gradient(
-            90deg,
-            #0ad810 0%,
-            #0bb705 35%,
-            #0bb705 65%,
-            #0ad810 100%
-          );
-          box-shadow: 0px 20px 16px -8px #0ad10426;
-        "
+      <div
+        class="w-full space-y-6 rounded-2xl bg-white p-6 shadow-low lg:w-[448px]"
       >
-        შეკვეთის გაფორმება
-      </button>
-    </div>
-  }
+        <h2 class="text-xl">გადახდა</h2>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex items-center justify-between">
+            <p class="text-platinum-50">
+              ნივთები ({{ cartService.itemCount() }})
+            </p>
+            <p class="font-semibold">
+              {{ cartService.totalPrice() | number: "1.2-2" }}₾
+            </p>
+          </div>
+          <div class="flex items-center justify-between">
+            <p class="text-platinum-50">მიწოდება</p>
+            <p class="font-semibold">5.00₾</p>
+          </div>
+          @if (cartService.totalDiscount() > 0) {
+            <div class="flex items-center justify-between">
+              <p class="text-platinum-50">ფასდაკლება</p>
+              <p class="font-semibold text-valencia-50">
+                -{{ cartService.totalDiscount() | number: "1.2-2" }}₾
+              </p>
+            </div>
+          }
+        </div>
+
+        <div class="h-px bg-platinum-20"></div>
+
+        <div class="flex items-center justify-between text-lg">
+          <h2 class="text-base">ჯამური ღირებულება</h2>
+          <p class="text-base font-bold">
+            {{ cartService.totalPrice() + deliveryPrice | number: "1.2-2" }}₾
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 text-base font-medium text-white"
+          style="
+            background: linear-gradient(
+              90deg,
+              #0ad810 0%,
+              #0bb705 35%,
+              #0bb705 65%,
+              #0ad810 100%
+            );
+            box-shadow: 0px 20px 16px -8px #0ad10426;
+          "
+        >
+          შეკვეთის გაფორმება
+        </button>
+      </div>
+    }
+  </div>
 </div>
