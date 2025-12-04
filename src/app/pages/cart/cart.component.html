@@ -48,7 +48,8 @@
     } @else {
       <div class="w-full space-y-8 lg:max-w-[738px]">
         @for (item of cartService.items(); track $index) {
-          <div
+          <a
+            routerLink="/product/{{ item.product.id }}"
             class="relative flex flex-col items-start justify-between gap-6 rounded-xl bg-white p-6 shadow-low md:flex-row md:items-center md:gap-0"
           >
             <div class="flex items-center gap-2">
@@ -198,7 +199,7 @@
                 </svg>
               </button>
             </div>
-          </div>
+          </a>
         }
       </div>
       <div
