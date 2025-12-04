@@ -131,20 +131,29 @@
             <div class="w-[90px]">
               @if (item.product.discount == 0) {
                 <h2 class="text-xl">
-                  {{ item.product.price * item.quantity }}₾
+                  {{
+                    calculateTotalPrice(item.product.price, item.quantity)
+                      | number: "1.2-2"
+                  }}₾
                 </h2>
               } @else {
                 <div>
                   <h2 class="text-xl">
                     {{
-                      calculateFinalPrice(
-                        item.product.price,
-                        item.product.discount
-                      ) * item.quantity
+                      calculateTotalPrice(
+                        calculateFinalPrice(
+                          item.product.price,
+                          item.product.discount
+                        ),
+                        item.quantity
+                      ) | number: "1.2-2"
                     }}₾
                   </h2>
                   <p class="text-sm text-platinum-50 line-through">
-                    {{ item.product.price * item.quantity }}₾
+                    {{
+                      calculateTotalPrice(item.product.price, item.quantity)
+                        | number: "1.2-2"
+                    }}₾
                   </p>
                 </div>
 

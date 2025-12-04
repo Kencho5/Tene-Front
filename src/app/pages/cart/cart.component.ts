@@ -28,6 +28,10 @@ export class CartComponent {
     const discountAmount = (price * discount) / 100;
     const priceAfterDiscount = price - discountAmount;
 
-    return Math.floor(priceAfterDiscount) + 0.99;
+    return Math.round((Math.floor(priceAfterDiscount) + 0.99) * 100) / 100;
+  }
+
+  calculateTotalPrice(price: number, quantity: number): number {
+    return Math.round(price * quantity * 100) / 100;
   }
 }
