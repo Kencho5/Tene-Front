@@ -175,6 +175,8 @@
               <button
                 type="button"
                 (click)="
+                  $event.preventDefault();
+                  $event.stopPropagation();
                   cartService.removeItem(
                     item.product.id,
                     item.selectedColor,
