@@ -80,6 +80,8 @@
                 <button
                   type="button"
                   (click)="
+                    $event.preventDefault();
+                    $event.stopPropagation();
                     cartService.updateQuantity(
                       item.product.id,
                       item.selectedColor,
@@ -109,6 +111,8 @@
                 <button
                   type="button"
                   (click)="
+                    $event.preventDefault();
+                    $event.stopPropagation();
                     cartService.updateQuantity(
                       item.product.id,
                       item.selectedColor,
