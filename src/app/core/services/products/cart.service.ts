@@ -9,6 +9,16 @@ const CART_STORAGE_KEY = 'tene_cart';
 export class CartService {
   readonly items = signal<CartItem[]>(this.loadCartFromStorage());
 
+  readonly isDeleteModalOpen = signal(false);
+  readonly itemToDelete = signal<CartItem | null>(null);
+
+  readonly deleteModalMessage = computed(() => {
+    const item = this.itemToDelete();
+    return item
+      ? `ნამდვილად გსურთ ${item.product.name} წაშლა თქვენი კალათიდან?`
+      : 'ნამდვილად გსურთ ამ ნივთის წაშლა თქვენი კალათიდან?';
+  });
+
   readonly itemCount = computed(() => {
     return this.items().reduce((total, item) => total + item.quantity, 0);
   });
@@ -109,6 +119,24 @@ export class CartService {
 
   clearCart(): void {
     this.items.set([]);
+  }
+
+  openDeleteModal(item: CartItem): void {
+    this.itemToDelete.set(item);
+    this.isDeleteModalOpen.set(true);
+  }
+
+  closeDeleteModal(): void {
+    this.isDeleteModalOpen.set(false);
+    this.itemToDelete.set(null);
+  }
+
+  confirmDelete(): void {
+    const item = this.itemToDelete();
+    if (item) {
+      this.removeItem(item.product.id, item.selectedColor, item.selectedImageId);
+      this.closeDeleteModal();
+    }
   }
 
   calculateItemPrice(item: CartItem): number {

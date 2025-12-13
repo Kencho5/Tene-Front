@@ -48,7 +48,7 @@
     } @else {
       <div class="w-full space-y-8 lg:max-w-[738px]">
         @for (item of cartService.items(); track $index) {
-          <app-cart-item [item]="item" (delete)="openDeleteModal(item)" />
+          <app-cart-item [item]="item" />
         }
       </div>
       <app-price-summary (checkout)="handleCheckout()" />
@@ -57,13 +57,13 @@
 </div>
 
 <app-confirmation-modal
-  [isOpen]="isDeleteModalOpen()"
+  [isOpen]="cartService.isDeleteModalOpen()"
   [title]="'ნივთის წაშლა'"
-  [message]="deleteModalMessage"
+  [message]="cartService.deleteModalMessage()"
   [confirmText]="'წაშლა'"
   [cancelText]="'გაუქმება'"
   [confirmButtonGradientStart]="'#EF1E07'"
   [confirmButtonGradientEnd]="'#FF5226'"
-  (confirm)="confirmDelete()"
-  (cancel)="closeDeleteModal()"
+  (confirm)="cartService.confirmDelete()"
+  (cancel)="cartService.closeDeleteModal()"
 />

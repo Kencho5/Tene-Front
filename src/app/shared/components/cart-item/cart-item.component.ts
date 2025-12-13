@@ -2,7 +2,6 @@ import {
   Component,
   ChangeDetectionStrategy,
   input,
-  output,
   inject,
 } from '@angular/core';
 import { CartItem } from '@core/interfaces/products.interface';
@@ -22,8 +21,6 @@ export class CartItemComponent {
   readonly showQuantityControls = input<boolean>(true);
   readonly clickable = input<boolean>(true);
 
-  readonly delete = output<void>();
-
   readonly cartService = inject(CartService);
   readonly imageBaseUrl = environment.product_image_url;
 
@@ -34,7 +31,7 @@ export class CartItemComponent {
   onDelete(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.delete.emit();
+    this.cartService.openDeleteModal(this.item());
   }
 
   onUpdateQuantity(event: MouseEvent, delta: number): void {
