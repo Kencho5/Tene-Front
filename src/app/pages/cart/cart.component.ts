@@ -1,54 +1,34 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Router } from '@angular/router';
 import { CartService } from '@core/services/products/cart.service';
+import { CartItem } from '@core/interfaces/products.interface';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { SharedModule } from '@shared/shared.module';
-import { environment } from '@environments/environment';
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
-
-interface ItemToDelete {
-  productId: number;
-  color: string;
-  imageId: string;
-  productName: string;
-}
+import { CartItemComponent } from '@shared/components/cart-item/cart-item.component';
+import { PriceSummaryComponent } from '@shared/components/price-summary/price-summary.component';
 
 @Component({
   selector: 'app-cart',
-  imports: [SharedModule, ImageComponent, ConfirmationModalComponent],
+  imports: [
+    SharedModule,
+    ImageComponent,
+    ConfirmationModalComponent,
+    CartItemComponent,
+    PriceSummaryComponent,
+  ],
   templateUrl: './cart.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartComponent {
   readonly cartService = inject(CartService);
-
-  readonly imageBaseUrl = environment.product_image_url;
-
-  deliveryPrice: number = 5;
+  private readonly router = inject(Router);
 
   readonly isDeleteModalOpen = signal(false);
-  itemToDelete: ItemToDelete | null = null;
+  private itemToDelete: CartItem | null = null;
 
-  getImageSrc(imageId: string, productId: number): string {
-    return `${this.imageBaseUrl}/products/${productId}/${imageId}.jpg`;
-  }
-
-  calculateFinalPrice(price: number, discount: number): number {
-    if (discount === 0) {
-      return price;
-    }
-
-    const discountAmount = (price * discount) / 100;
-    const priceAfterDiscount = price - discountAmount;
-
-    return Math.round((Math.floor(priceAfterDiscount) + 0.99) * 100) / 100;
-  }
-
-  calculateTotalPrice(price: number, quantity: number): number {
-    return Math.round(price * quantity * 100) / 100;
-  }
-
-  openDeleteModal(productId: number, color: string, imageId: string, productName: string): void {
-    this.itemToDelete = { productId, color, imageId, productName };
+  openDeleteModal(item: CartItem): void {
+    this.itemToDelete = item;
     this.isDeleteModalOpen.set(true);
   }
 
@@ -60,11 +40,21 @@ export class CartComponent {
   confirmDelete(): void {
     if (this.itemToDelete) {
       this.cartService.removeItem(
-        this.itemToDelete.productId,
-        this.itemToDelete.color,
-        this.itemToDelete.imageId
+        this.itemToDelete.product.id,
+        this.itemToDelete.selectedColor,
+        this.itemToDelete.selectedImageId
       );
       this.closeDeleteModal();
     }
+  }
+
+  handleCheckout(): void {
+    this.router.navigate(['/checkout']);
+  }
+
+  get deleteModalMessage(): string {
+    return this.itemToDelete
+      ? `ნამდვილად გსურთ ${this.itemToDelete.product.name} წაშლა თქვენი კალათიდან?`
+      : 'ნამდვილად გსურთ ამ ნივთის წაშლა თქვენი კალათიდან?';
   }
 }

@@ -1,0 +1,131 @@
+<a
+  [routerLink]="clickable() ? '/product/' + item().product.id : null"
+  [class.pointer-events-none]="!clickable()"
+  class="relative flex flex-col items-start justify-between gap-6 rounded-xl bg-white p-6 shadow-low md:flex-row md:items-center md:gap-0"
+>
+  <div class="flex items-center gap-2">
+    <app-image
+      [src]="getImageSrc(item().selectedImageId, item().product.id)"
+      [width]="80"
+      [height]="80"
+      loading="lazy"
+      class="rounded-2xl border border-platinum-10"
+    />
+
+    <div class="space-y-0.5 sm:w-[342px]">
+      <h2 class="text-sm font-normal md:text-base">
+        {{ item().product.name }}
+      </h2>
+      <p class="text-sm text-platinum-50">ფერი: {{ item().selectedColor }}</p>
+    </div>
+  </div>
+
+  <div class="flex w-full items-center justify-end gap-10 md:justify-center">
+    @if (showQuantityControls()) {
+      <div
+        class="flex h-[36px] w-[114px] flex-shrink-0 items-center justify-between rounded-full border border-platinum-20 p-2 text-sm md:h-[44px] md:w-[126px] md:text-base"
+      >
+        <button
+          type="button"
+          (click)="onUpdateQuantity($event, -1)"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            class="h-5 w-5 md:h-6 md:w-6"
+          >
+            <path
+              d="M20 12L4 12"
+              stroke="#0BB705"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+
+        <h2>{{ item().quantity }}</h2>
+
+        <button
+          type="button"
+          (click)="onUpdateQuantity($event, 1)"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            class="h-5 w-5 md:h-6 md:w-6"
+          >
+            <path
+              d="M12 4L12 20M20 12L4 12"
+              stroke="#0BB705"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </div>
+    }
+
+    <div class="w-[90px]">
+      @if (item().product.discount == 0) {
+        <h2 class="md:text-xl">
+          {{
+            cartService.calculateTotalPrice(
+              item().product.price,
+              item().quantity
+            ) | number: "1.2-2"
+          }}₾
+        </h2>
+      } @else {
+        <div>
+          <h2 class="md:text-xl">
+            {{
+              cartService.calculateTotalPrice(
+                cartService.calculateFinalPrice(
+                  item().product.price,
+                  item().product.discount
+                ),
+                item().quantity
+              ) | number: "1.2-2"
+            }}₾
+          </h2>
+          <p class="text-sm text-platinum-50 line-through">
+            {{
+              cartService.calculateTotalPrice(
+                item().product.price,
+                item().quantity
+              ) | number: "1.2-2"
+            }}₾
+          </p>
+        </div>
+
+        <div
+          class="absolute right-0 top-0 flex h-[32px] items-center rounded-full rounded-br-none border border-valencia-30 bg-valencia-10 px-2 py-2.5 text-sm font-semibold text-valencia-60"
+        >
+          -{{ item().product.discount | number }}%
+        </div>
+      }
+    </div>
+
+    <button type="button" (click)="onDelete($event)">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M20 0V20H0V0H20Z" fill="white" fill-opacity="0.01" />
+        <path
+          d="M5.00065 5V15.5C5.00065 16.6046 5.89608 17.5 7.00065 17.5H13.0007C14.1052 17.5 15.0007 16.6046 15.0007 15.5V5M6.66732 5L7.27273 3.18377C7.40884 2.77543 7.79098 2.5 8.22141 2.5H11.7799C12.2103 2.5 12.5925 2.77543 12.7286 3.18377L13.334 5M3.33398 5H16.6673"
+          stroke="#6D6D6D"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+  </div>
+</a>
