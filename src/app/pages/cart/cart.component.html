@@ -46,7 +46,7 @@
         >
       </div>
     } @else {
-      <div class="w-full space-y-8 lg:max-w-[738px]">
+      <div class="flex w-full flex-col gap-6 lg:max-w-[738px]">
         @for (item of cartService.items(); track $index) {
           <app-cart-item [item]="item" />
         }

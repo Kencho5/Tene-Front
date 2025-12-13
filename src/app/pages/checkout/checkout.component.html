@@ -5,5 +5,32 @@
     <div class="my-6 h-px bg-platinum-20"></div>
 
     <app-breadcrumb [items]="breadcrumbs()" />
+
+    <div
+      class="container mt-10 flex flex-col justify-between gap-6 lg:flex-row"
+    >
+      <div class="space-y-6">
+        <div class="w-full rounded-2xl bg-white p-6 shadow-low">
+          <div class="mb-6">
+            <h1 class="text-xl">ჩემი ნივთები</h1>
+            <p class="text-sm text-platinum-50">
+              დამატებული ნივთები: {{ cartService.itemCount() }}
+            </p>
+          </div>
+
+          <div class="flex flex-col gap-6">
+            @for (item of cartService.items(); track $index) {
+              <app-cart-item [item]="item" />
+            }
+          </div>
+        </div>
+
+        <div class="w-full rounded-2xl bg-white p-6 shadow-low">
+          assdasdmnasjnkdasjndnsnkjd
+        </div>
+      </div>
+
+      <app-price-summary (checkout)="handleCheckout()" />
+    </div>
   </div>
 </div>

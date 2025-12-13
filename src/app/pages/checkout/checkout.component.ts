@@ -1,4 +1,12 @@
-import { Component, ChangeDetectionStrategy, computed } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  computed,
+  inject,
+} from '@angular/core';
+import { CartService } from '@core/services/products/cart.service';
+import { CartItemComponent } from '@shared/components/cart-item/cart-item.component';
+import { PriceSummaryComponent } from '@shared/components/price-summary/price-summary.component';
 import {
   BreadcrumbComponent,
   BreadcrumbItem,
@@ -7,14 +15,23 @@ import { SharedModule } from '@shared/shared.module';
 
 @Component({
   selector: 'app-checkout',
-  imports: [SharedModule, BreadcrumbComponent],
+  imports: [
+    SharedModule,
+    BreadcrumbComponent,
+    PriceSummaryComponent,
+    CartItemComponent,
+  ],
   templateUrl: './checkout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckoutComponent {
+  readonly cartService = inject(CartService);
+
   readonly breadcrumbs = computed<BreadcrumbItem[]>(() => [
     { label: 'მთავარი', route: '/' },
     { label: 'პროდუქცია', route: '/products' },
     { label: 'კაბელები', route: '/products' },
   ]);
+
+  handleCheckout(): void {}
 }
