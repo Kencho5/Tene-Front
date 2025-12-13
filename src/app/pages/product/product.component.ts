@@ -7,7 +7,6 @@ import {
   effect,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { Location } from '@angular/common';
 import { catchError, of, finalize } from 'rxjs';
 import { SharedModule } from '@shared/shared.module';
 import { ProductsService } from '@core/services/products/products.service';
@@ -16,6 +15,7 @@ import {
   ProductImage,
 } from '@core/interfaces/products.interface';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
+import { BreadcrumbComponent, BreadcrumbItem } from '@shared/components/ui/breadcrumb/breadcrumb.component';
 import { environment } from '@environments/environment';
 import { CartService } from '@core/services/products/cart.service';
 
@@ -23,12 +23,11 @@ type TabName = 'specifications' | 'description';
 
 @Component({
   selector: 'app-product',
-  imports: [SharedModule, ImageComponent],
+  imports: [SharedModule, ImageComponent, BreadcrumbComponent],
   templateUrl: './product.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductComponent {
-  private readonly location = inject(Location);
   private readonly productsService = inject(ProductsService);
   private readonly cartService = inject(CartService);
 
@@ -43,6 +42,12 @@ export class ProductComponent {
   readonly activeTab = signal<TabName>('specifications');
 
   readonly imageBaseUrl = environment.product_image_url;
+
+  readonly breadcrumbs = computed<BreadcrumbItem[]>(() => [
+    { label: 'მთავარი', route: '/' },
+    { label: 'პროდუქცია', route: '/products' },
+    { label: 'კაბელები', route: '/products' },
+  ]);
 
   readonly availableColors = computed(() => {
     const product = this.productData();
@@ -137,10 +142,6 @@ export class ProductComponent {
       this.selectedImageId.set(primaryImage.image_uuid);
       this.selectedColor.set(primaryImage.color);
     }
-  }
-
-  navigateBack(): void {
-    this.location.back();
   }
 
   selectColor(color: string): void {

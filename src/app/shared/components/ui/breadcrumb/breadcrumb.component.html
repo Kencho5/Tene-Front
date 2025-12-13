@@ -1,0 +1,47 @@
+<div class="flex flex-col gap-3 sm:flex-row sm:gap-6">
+  @if (showBackButton()) {
+    <button
+      type="button"
+      (click)="navigateBack()"
+      class="flex items-center gap-1 text-base font-semibold"
+    >
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="mt-1">
+        <path
+          d="M12.5 15L7.76218 10.5893C7.41261 10.2638 7.41261 9.73618 7.76218 9.41074L12.5 5"
+          stroke="#212121"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+
+      უკან დაბრუნება
+    </button>
+  }
+
+  <div class="flex items-center gap-1 text-sm text-platinum-50">
+    @for (item of items(); track $index; let isLast = $last) {
+      @if (item.route) {
+        <a [routerLink]="item.route">{{ item.label }}</a>
+      } @else {
+        <span>{{ item.label }}</span>
+      }
+
+      @if (!isLast) {
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6 12L9.79026 8.4714C10.0699 8.21106 10.0699 7.78894 9.79026 7.5286L6 4"
+            stroke="#6D6D6D"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      }
+    }
+  </div>
+</div>
