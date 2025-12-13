@@ -181,10 +181,11 @@
                 (click)="
                   $event.preventDefault();
                   $event.stopPropagation();
-                  cartService.removeItem(
+                  openDeleteModal(
                     item.product.id,
                     item.selectedColor,
-                    item.selectedImageId
+                    item.selectedImageId,
+                    item.product.name
                   )
                 "
               >
@@ -265,3 +266,15 @@
     }
   </div>
 </div>
+
+<app-confirmation-modal
+  [isOpen]="isDeleteModalOpen()"
+  [title]="'ნივთის წაშლა'"
+  [message]="'ნამდვილად გსურთ ამ ნივთის წაშლა თქვენი კალათიდან?'"
+  [confirmText]="'წაშლა'"
+  [cancelText]="'გაუქმება'"
+  [confirmButtonGradientStart]="'#EF1E07'"
+  [confirmButtonGradientEnd]="'#FF5226'"
+  (confirm)="confirmDelete()"
+  (cancel)="closeDeleteModal()"
+/>
