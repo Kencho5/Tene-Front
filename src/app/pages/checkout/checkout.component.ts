@@ -4,6 +4,7 @@ import {
   computed,
   inject,
 } from '@angular/core';
+import { Field } from '@angular/forms/signals';
 import { CartService } from '@core/services/products/cart.service';
 import { CartItemComponent } from '@shared/components/cart-item/cart-item.component';
 import { PriceSummaryComponent } from '@shared/components/price-summary/price-summary.component';
@@ -24,6 +25,7 @@ import { SharedModule } from '@shared/shared.module';
     CartItemComponent,
     ConfirmationModalComponent,
     InputComponent,
+    Field,
   ],
   templateUrl: './checkout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,17 +1,20 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, input, ChangeDetectionStrategy, computed } from '@angular/core';
+import { Field, FieldTree } from '@angular/forms/signals';
 import { SharedModule } from '@shared/shared.module';
 
 @Component({
   selector: 'app-input',
-  imports: [ReactiveFormsModule, SharedModule],
+  imports: [Field, SharedModule],
   templateUrl: './input.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputComponent {
-  readonly control = input.required<FormControl<string>>();
+  readonly field = input.required<FieldTree<string>>();
   readonly type = input<string>('text');
   readonly placeholder = input.required<string>();
-  readonly error = input<boolean>(false);
   readonly customClass = input<string>('');
+
+  readonly hasError = computed(() => {
+    return this.field()().touched() && this.field()().invalid();
+  });
 }

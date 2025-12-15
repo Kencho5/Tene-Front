@@ -7,12 +7,13 @@ import {
 import { AuthTitleService } from '@core/services/auth/auth-title.service';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import {
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+  form,
+  Field,
+  required,
+  email,
+  minLength,
+  submit,
+} from '@angular/forms/signals';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { GoogleAuthService } from '@core/services/auth/google-auth-service.service';
 import { finalize } from 'rxjs';
@@ -20,14 +21,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { LoginFields } from '@core/interfaces/auth.interface';
 import { SharedModule } from '@shared/shared.module';
 
-interface LoginForm {
-  email: FormControl<string>;
-  password: FormControl<string>;
-}
-
 @Component({
   selector: 'app-login',
-  imports: [SharedModule, InputComponent, ReactiveFormsModule],
+  imports: [SharedModule, InputComponent, Field],
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -35,52 +31,58 @@ export class LoginComponent {
   private readonly authService = inject(AuthService);
   private readonly googleAuthService = inject(GoogleAuthService);
   private readonly authTitleService = inject(AuthTitleService);
-  private readonly fb = inject(NonNullableFormBuilder);
 
   readonly submitted = signal(false);
   readonly isLoading = signal(false);
   readonly isGoogleLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);
 
-  readonly loginForm: FormGroup<LoginForm> = this.fb.group({
-    email: this.fb.control('', [Validators.required, Validators.email]),
-    password: this.fb.control('', [
-      Validators.required,
-      Validators.minLength(4),
-    ]),
+  readonly loginModel = signal<LoginFields>({
+    email: '',
+    password: '',
+  });
+
+  readonly loginForm = form(this.loginModel, (fieldPath) => {
+    required(fieldPath.email, { message: 'ელ. ფოსტა აუცილებელია' });
+    email(fieldPath.email, { message: 'შეიყვანეთ სწორი ელ. ფოსტა' });
+    required(fieldPath.password, { message: 'პაროლი აუცილებელია' });
+    minLength(fieldPath.password, 4, {
+      message: 'პაროლი უნდა შედგებოდეს მინიმუმ 4 სიმბოლოსგან',
+    });
   });
 
   constructor() {
     this.authTitleService.setTitle('ავტორიზაცია');
   }
 
-  onSubmit(): void {
-    this.submitted.set(true);
+  onSubmit(event?: Event): void {
+    event?.preventDefault();
     this.errorMessage.set(null);
 
-    if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
+    submit(this.loginForm, async () => {
+      this.submitted.set(true);
+      this.isLoading.set(true);
+      const userData: LoginFields = this.loginModel();
+
+      this.authService
+        .login(userData)
+        .pipe(finalize(() => this.isLoading.set(false)))
+        .subscribe({
+          next: (response) => {
+            this.authService.setAuth(response.token);
+          },
+          error: (errorResponse: HttpErrorResponse) => {
+            this.errorMessage.set(
+              errorResponse.error.error ||
+                'ავტორიზაცია ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან.',
+            );
+          },
+        });
+    });
+
+    if (this.loginForm().invalid()) {
       this.errorMessage.set('გთხოვთ შეავსოთ ყველა ველი');
-      return;
     }
-
-    this.isLoading.set(true);
-    const userData: LoginFields = this.loginForm.getRawValue();
-
-    this.authService
-      .login(userData)
-      .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe({
-        next: (response) => {
-          this.authService.setAuth(response.token);
-        },
-        error: (errorResponse: HttpErrorResponse) => {
-          this.errorMessage.set(
-            errorResponse.error.error ||
-              'ავტორიზაცია ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან.',
-          );
-        },
-      });
   }
 
   authorizeWithGoogle(): void {

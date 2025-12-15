@@ -1,20 +1,14 @@
-<form
-  [formGroup]="loginForm"
-  (ngSubmit)="onSubmit()"
-  class="flex flex-col gap-4"
->
+<form (submit)="onSubmit($event)" novalidate class="flex flex-col gap-4">
   <app-input
-    [control]="loginForm.controls.email"
+    [field]="loginForm.email"
     type="email"
     placeholder="ელ. ფოსტა"
-    [error]="submitted() && loginForm.controls.email.invalid"
   />
 
   <app-input
-    [control]="loginForm.controls.password"
+    [field]="loginForm.password"
     type="password"
     placeholder="პაროლი"
-    [error]="submitted() && loginForm.controls.password.invalid"
   />
 
   @if (errorMessage()) {

@@ -1,21 +1,11 @@
-<form
-  [formGroup]="registerForm"
-  (ngSubmit)="onSubmit()"
-  class="flex flex-col gap-4"
->
-  <app-input
-    [control]="registerForm.controls.name"
-    type="text"
-    placeholder="სახელი"
-    [error]="submitted() && registerForm.controls.name.invalid"
-  />
+<form (submit)="onSubmit($event)" novalidate class="flex flex-col gap-4">
+  <app-input [field]="registerForm.name" type="text" placeholder="სახელი" />
 
   <div class="relative">
     <app-input
-      [control]="registerForm.controls.email"
+      [field]="registerForm.email"
       type="email"
       placeholder="ელ. ფოსტა"
-      [error]="submitted() && registerForm.controls.email.invalid"
     />
 
     <!--<button-->
@@ -27,10 +17,9 @@
   </div>
 
   <app-input
-    [control]="registerForm.controls.password"
+    [field]="registerForm.password"
     type="password"
     placeholder="პაროლი"
-    [error]="submitted() && registerForm.controls.password.invalid"
   />
 
   @if (errorMessage()) {

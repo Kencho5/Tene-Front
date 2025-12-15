@@ -74,10 +74,9 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.05) inset !important;
-  box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.05) inset !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background-color: rgba(255, 255, 255, 0.05) !important;
-  color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #212121 !important;
+  background-color: #ffffff !important;
   transition: background-color 5000s ease-in-out 0s;
 }
