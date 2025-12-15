@@ -12,6 +12,7 @@ import {
   BreadcrumbItem,
 } from '@shared/components/ui/breadcrumb/breadcrumb.component';
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
+import { InputComponent } from '@shared/components/ui/input/input.component';
 import { SharedModule } from '@shared/shared.module';
 
 @Component({
@@ -22,6 +23,7 @@ import { SharedModule } from '@shared/shared.module';
     PriceSummaryComponent,
     CartItemComponent,
     ConfirmationModalComponent,
+    InputComponent,
   ],
   templateUrl: './checkout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
