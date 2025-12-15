@@ -15,7 +15,7 @@ import { finalize } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthTitleService } from '@core/services/auth/auth-title.service';
 import { AuthService } from '@core/services/auth/auth-service.service';
-import { AuthInputComponent } from '@shared/components/auth/auth-input/auth-input.component';
+import { InputComponent } from '@shared/components/ui/input/input.component';
 import { RegisterFields } from '@core/interfaces/auth.interface';
 import { SharedModule } from '@shared/shared.module';
 import { GoogleAuthService } from '@core/services/auth/google-auth-service.service';
@@ -28,7 +28,7 @@ interface RegisterForm {
 
 @Component({
   selector: 'app-register',
-  imports: [SharedModule, AuthInputComponent, ReactiveFormsModule],
+  imports: [SharedModule, InputComponent, ReactiveFormsModule],
   templateUrl: './register.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

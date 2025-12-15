@@ -3,14 +3,14 @@
   (ngSubmit)="onSubmit()"
   class="flex flex-col gap-4"
 >
-  <app-auth-input
+  <app-input
     [control]="loginForm.controls.email"
     type="email"
     placeholder="ელ. ფოსტა"
     [error]="submitted() && loginForm.controls.email.invalid"
   />
 
-  <app-auth-input
+  <app-input
     [control]="loginForm.controls.password"
     type="password"
     placeholder="პაროლი"

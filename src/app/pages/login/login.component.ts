@@ -5,7 +5,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { AuthTitleService } from '@core/services/auth/auth-title.service';
-import { AuthInputComponent } from '@shared/components/auth/auth-input/auth-input.component';
+import { InputComponent } from '@shared/components/ui/input/input.component';
 import {
   FormControl,
   FormGroup,
@@ -27,7 +27,7 @@ interface LoginForm {
 
 @Component({
   selector: 'app-login',
-  imports: [SharedModule, AuthInputComponent, ReactiveFormsModule],
+  imports: [SharedModule, InputComponent, ReactiveFormsModule],
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

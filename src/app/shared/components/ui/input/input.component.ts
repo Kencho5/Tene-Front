@@ -3,12 +3,12 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '@shared/shared.module';
 
 @Component({
-  selector: 'app-auth-input',
+  selector: 'app-input',
   imports: [ReactiveFormsModule, SharedModule],
-  templateUrl: './auth-input.component.html',
+  templateUrl: './input.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AuthInputComponent {
+export class InputComponent {
   readonly control = input.required<FormControl<string>>();
   readonly type = input<string>('text');
   readonly placeholder = input.required<string>();

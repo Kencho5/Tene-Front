@@ -26,7 +26,7 @@
         </div>
 
         <div class="w-full rounded-2xl bg-white p-6 shadow-low">
-          assdasdmnasjnkdasjndnsnkjd
+          <h1 class="text-xl">1. საკონტაქტო დეტალები</h1>
         </div>
       </div>
 
@@ -34,3 +34,15 @@
     </div>
   </div>
 </div>
+
+<app-confirmation-modal
+  [isOpen]="cartService.isDeleteModalOpen()"
+  [title]="'ნივთის წაშლა'"
+  [message]="cartService.deleteModalMessage()"
+  [confirmText]="'წაშლა'"
+  [cancelText]="'გაუქმება'"
+  [confirmButtonGradientStart]="'#EF1E07'"
+  [confirmButtonGradientEnd]="'#FF5226'"
+  (confirm)="cartService.confirmDelete()"
+  (cancel)="cartService.closeDeleteModal()"
+/>

@@ -3,7 +3,7 @@
   (ngSubmit)="onSubmit()"
   class="flex flex-col gap-4"
 >
-  <app-auth-input
+  <app-input
     [control]="registerForm.controls.name"
     type="text"
     placeholder="სახელი"
@@ -11,7 +11,7 @@
   />
 
   <div class="relative">
-    <app-auth-input
+    <app-input
       [control]="registerForm.controls.email"
       type="email"
       placeholder="ელ. ფოსტა"
@@ -26,7 +26,7 @@
     <!--</button>-->
   </div>
 
-  <app-auth-input
+  <app-input
     [control]="registerForm.controls.password"
     type="password"
     placeholder="პაროლი"

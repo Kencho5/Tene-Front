@@ -11,6 +11,7 @@ import {
   BreadcrumbComponent,
   BreadcrumbItem,
 } from '@shared/components/ui/breadcrumb/breadcrumb.component';
+import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { SharedModule } from '@shared/shared.module';
 
 @Component({
@@ -20,6 +21,7 @@ import { SharedModule } from '@shared/shared.module';
     BreadcrumbComponent,
     PriceSummaryComponent,
     CartItemComponent,
+    ConfirmationModalComponent,
   ],
   templateUrl: './checkout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,9 +30,8 @@ export class CheckoutComponent {
   readonly cartService = inject(CartService);
 
   readonly breadcrumbs = computed<BreadcrumbItem[]>(() => [
-    { label: 'მთავარი', route: '/' },
-    { label: 'პროდუქცია', route: '/products' },
-    { label: 'კაბელები', route: '/products' },
+    { label: 'ჩემი კალათა', route: '/cart' },
+    { label: 'შეკვეთის გაფორმება', route: '/checkout' },
   ]);
 
   handleCheckout(): void {}
