@@ -76,6 +76,9 @@ module.exports = {
           90: "#333333",
           100: "#212121",
         },
+        success: "#059669",
+        warning: "#D97706",
+        info: "#0284C7",
       },
       fontFamily: {
         heading: ["Mark-Geo"],

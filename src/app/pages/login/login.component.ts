@@ -2,6 +2,7 @@ import {
   Component,
   inject,
   signal,
+  computed,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { AuthTitleService } from '@core/services/auth/auth-title.service';
@@ -16,6 +17,7 @@ import {
 } from '@angular/forms/signals';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { GoogleAuthService } from '@core/services/auth/google-auth-service.service';
+import { ToastService } from '@core/services/toast.service';
 import { finalize } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoginFields } from '@core/interfaces/auth.interface';
@@ -31,11 +33,11 @@ export class LoginComponent {
   private readonly authService = inject(AuthService);
   private readonly googleAuthService = inject(GoogleAuthService);
   private readonly authTitleService = inject(AuthTitleService);
+  private readonly toastService = inject(ToastService);
 
   readonly submitted = signal(false);
   readonly isLoading = signal(false);
   readonly isGoogleLoading = signal(false);
-  readonly errorMessage = signal<string | null>(null);
 
   readonly loginModel = signal<LoginFields>({
     email: '',
@@ -51,16 +53,22 @@ export class LoginComponent {
     });
   });
 
+  readonly errorMessage = computed(() => {
+    const allErrors = this.loginForm().errorSummary();
+    return allErrors.length > 0
+      ? allErrors[0].message || 'გთხოვთ შეავსოთ ყველა ველი'
+      : '';
+  });
+
   constructor() {
     this.authTitleService.setTitle('ავტორიზაცია');
   }
 
   onSubmit(event?: Event): void {
     event?.preventDefault();
-    this.errorMessage.set(null);
+    this.submitted.set(true);
 
     submit(this.loginForm, async () => {
-      this.submitted.set(true);
       this.isLoading.set(true);
       const userData: LoginFields = this.loginModel();
 
@@ -72,27 +80,30 @@ export class LoginComponent {
             this.authService.setAuth(response.token);
           },
           error: (errorResponse: HttpErrorResponse) => {
-            this.errorMessage.set(
+            this.toastService.add(
+              'ავტორიზაცია ვერ მოხერხდა',
               errorResponse.error.error ||
-                'ავტორიზაცია ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან.',
+                'გთხოვთ შეამოწმოთ თქვენი მონაცემები და სცადოთ თავიდან.',
+              4000,
+              'error',
             );
           },
         });
     });
-
-    if (this.loginForm().invalid()) {
-      this.errorMessage.set('გთხოვთ შეავსოთ ყველა ველი');
-    }
   }
 
   authorizeWithGoogle(): void {
-    this.errorMessage.set(null);
     this.isGoogleLoading.set(true);
 
     this.googleAuthService
       .init()
       .catch((_) => {
-        this.errorMessage.set('Google-ით შესვლა ვერ მოხერხდა');
+        this.toastService.add(
+          'Google-ით შესვლა ვერ მოხერხდა',
+          'გთხოვთ სცადოთ თავიდან',
+          4000,
+          'error',
+        );
       })
       .finally(() => {
         this.isGoogleLoading.set(false);

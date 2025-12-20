@@ -1,17 +1,19 @@
 <form (submit)="onSubmit($event)" novalidate class="flex flex-col gap-4">
   <app-input
     [field]="loginForm.email"
+    [error]="submitted() && loginForm.email().invalid()"
     type="email"
     placeholder="ელ. ფოსტა"
   />
 
   <app-input
     [field]="loginForm.password"
+    [error]="submitted() && loginForm.password().invalid()"
     type="password"
     placeholder="პაროლი"
   />
 
-  @if (errorMessage()) {
+  @if (submitted() && loginForm().invalid()) {
     <div
       role="alert"
       aria-live="polite"

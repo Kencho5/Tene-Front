@@ -1,4 +1,4 @@
-import { Component, input, ChangeDetectionStrategy, computed } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { Field, FieldTree } from '@angular/forms/signals';
 import { SharedModule } from '@shared/shared.module';
 
@@ -13,8 +13,5 @@ export class InputComponent {
   readonly type = input<string>('text');
   readonly placeholder = input.required<string>();
   readonly customClass = input<string>('');
-
-  readonly hasError = computed(() => {
-    return this.field()().touched() && this.field()().invalid();
-  });
+  readonly error = input<boolean>(false);
 }
