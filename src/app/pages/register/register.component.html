@@ -1,28 +1,26 @@
 <form (submit)="onSubmit($event)" novalidate class="flex flex-col gap-4">
-  <app-input [field]="registerForm.name" type="text" placeholder="სახელი" />
+  <app-input
+    [field]="registerForm.name"
+    [error]="submitted() && registerForm.name().invalid()"
+    type="text"
+    placeholder="სახელი"
+  />
 
-  <div class="relative">
-    <app-input
-      [field]="registerForm.email"
-      type="email"
-      placeholder="ელ. ფოსტა"
-    />
-
-    <!--<button-->
-    <!--  type="button"-->
-    <!--  class="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-green-60"-->
-    <!-->-->
-    <!--  კოდის მიღება-->
-    <!--</button>-->
-  </div>
+  <app-input
+    [field]="registerForm.email"
+    [error]="submitted() && registerForm.email().invalid()"
+    type="email"
+    placeholder="ელ. ფოსტა"
+  />
 
   <app-input
     [field]="registerForm.password"
+    [error]="submitted() && registerForm.password().invalid()"
     type="password"
     placeholder="პაროლი"
   />
 
-  @if (errorMessage()) {
+  @if (submitted() && registerForm().invalid()) {
     <div
       role="alert"
       aria-live="polite"
