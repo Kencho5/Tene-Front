@@ -30,3 +30,15 @@ export interface CartItem {
   selectedColor: string;
   selectedImageId: string;
 }
+
+export interface CheckoutFields {
+  customer_type: string;
+  name: string;
+  surname: string;
+  email: string;
+  id_number: number | null;
+  phone_number: number | null;
+  address: string;
+  delivery_type: string;
+  delivery_time: string;
+}

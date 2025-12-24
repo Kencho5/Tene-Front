@@ -9,7 +9,7 @@ import { SharedModule } from '@shared/shared.module';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputComponent {
-  readonly field = input.required<FieldTree<string>>();
+  readonly field = input.required<FieldTree<string | number | null>>();
   readonly type = input<string>('text');
   readonly placeholder = input.required<string>();
   readonly customClass = input<string>('');
