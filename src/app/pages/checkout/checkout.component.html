@@ -83,38 +83,78 @@
                 </button>
               </div>
 
-              <div class="flex w-full gap-4">
-                <div class="flex-1">
-                  <app-input
-                    [field]="checkoutForm.name"
-                    [error]="submitted() && checkoutForm.name().invalid()"
-                    type="text"
-                    placeholder="სახელი"
-                  />
+              @if (checkoutForm.customer_type().value() === "individual") {
+                <div class="flex w-full gap-4">
+                  <div class="flex-1">
+                    <app-input
+                      [field]="checkoutForm.individual.name"
+                      [error]="
+                        submitted() && checkoutForm.individual.name().invalid()
+                      "
+                      type="text"
+                      placeholder="სახელი"
+                    />
+                  </div>
+
+                  <div class="flex-1">
+                    <app-input
+                      [field]="checkoutForm.individual.surname"
+                      [error]="
+                        submitted() &&
+                        checkoutForm.individual.surname().invalid()
+                      "
+                      type="text"
+                      placeholder="გვარი"
+                    />
+                  </div>
+                </div>
+              }
+
+              @if (checkoutForm.customer_type().value() === "company") {
+                <div class="flex w-full flex-col gap-4 md:flex-row">
+                  <div class="w-full md:w-32">
+                    <app-combobox
+                      [(selectedValue)]="checkoutForm.company.organization_type().value"
+                      [items]="organizationTypes"
+                      [error]="
+                        submitted() &&
+                        checkoutForm.company.organization_type().invalid()
+                      "
+                      placeholder="ტიპი"
+                      searchPlaceholder="ძებნა..."
+                      notFoundText="ვერ მოიძებნა"
+                    />
+                  </div>
+
+                  <div class="w-full md:flex-1">
+                    <app-input
+                      [field]="checkoutForm.company.organization_name"
+                      [error]="
+                        submitted() &&
+                        checkoutForm.company.organization_name().invalid()
+                      "
+                      type="text"
+                      placeholder="ორგანიზაციის დასახელება"
+                    />
+                  </div>
                 </div>
 
-                <div class="flex-1">
-                  <app-input
-                    [field]="checkoutForm.surname"
-                    [error]="submitted() && checkoutForm.surname().invalid()"
-                    type="text"
-                    placeholder="გვარი"
-                  />
-                </div>
-              </div>
+                <app-input
+                  [field]="checkoutForm.company.organization_code"
+                  [error]="
+                    submitted() &&
+                    checkoutForm.company.organization_code().invalid()
+                  "
+                  type="text"
+                  placeholder="საიდენტიფიკაციო კოდი"
+                />
+              }
 
               <app-input
                 [field]="checkoutForm.email"
                 [error]="submitted() && checkoutForm.email().invalid()"
                 type="email"
                 placeholder="ელ. ფოსტა"
-              />
-
-              <app-input
-                [field]="checkoutForm.id_number"
-                [error]="submitted() && checkoutForm.id_number().invalid()"
-                type="number"
-                placeholder="პირადი ნომერი"
               />
 
               <app-input

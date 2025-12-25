@@ -1,0 +1,159 @@
+<div class="relative w-full">
+  <button
+    [class]="customClass()"
+    type="button"
+    class="flex h-[44px] w-full items-center justify-between rounded-xl border border-platinum-20 bg-white px-3.5 py-2.5 text-platinum-100 transition-colors focus:outline-none"
+    [ngClass]="{
+      'border-valencia-50 hover:border-valencia-50 focus:border-valencia-50 focus:ring-1 focus:ring-valencia-50':
+        error(),
+      'focus:border-platinum-40 focus:ring-1 focus:ring-platinum-40': !error(),
+    }"
+    (click)="opened.set(!opened())"
+  >
+    <span
+      [ngClass]="{
+        'text-platinum-50': !selectedValue(),
+        'text-platinum-100': selectedValue(),
+      }"
+    >
+      {{ selectedValue() ? itemLabel() : placeholder() }}
+    </span>
+
+    <svg
+      class="h-4 w-4 text-platinum-50"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
+        clip-rule="evenodd"
+      />
+    </svg>
+  </button>
+
+  @if (opened()) {
+    <div
+      (outsideClick)="opened.set(false)"
+      class="absolute z-10 mt-1 w-full min-w-[100px] max-w-full rounded-xl border border-platinum-20 bg-white text-sm shadow-md"
+    >
+      <!-- Search input -->
+      <div class="flex items-center border-b border-platinum-20 px-3 py-2">
+        <svg
+          class="h-4 w-4 flex-shrink-0 text-platinum-50"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+
+        <input
+          autoFocus
+          type="text"
+          [placeholder]="searchPlaceholder()"
+          class="w-full bg-transparent py-1 pl-2 pr-0 text-xs text-platinum-100 outline-none placeholder:text-platinum-50"
+          [(ngModel)]="searchValue"
+        />
+
+        <button
+          type="button"
+          class="flex-shrink-0 rounded-md p-1 text-platinum-50 hover:bg-platinum-10 hover:text-platinum-100"
+          (click)="clearSearch()"
+          [ngClass]="searchValue() ? 'visible' : 'hidden'"
+        >
+          <svg
+            class="h-3 w-3"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Options list -->
+      <div class="max-h-60 overflow-y-auto p-1">
+        @for (item of filteredItems(); track item.value) {
+          <button
+            type="button"
+            class="mb-1.5 w-full rounded-md px-3 py-2 text-left text-xs text-platinum-100 transition-colors"
+            [ngClass]="
+              selectedValue() == item.value
+                ? 'bg-green-10 font-medium text-green-70'
+                : 'hover:bg-platinum-10'
+            "
+            (click)="selectItem(item.value)"
+          >
+            <div class="flex items-center">
+              <div
+                class="mr-2 flex h-3 w-3 flex-shrink-0 items-center justify-center"
+              >
+                @if (selectedValue() == item.value) {
+                  <svg
+                    class="h-3 w-3 text-green-60"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                }
+              </div>
+              <span>{{ item.label }}</span>
+            </div>
+          </button>
+        } @empty {
+          <div
+            class="flex flex-col items-center justify-center py-4 text-center"
+          >
+            <div
+              class="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-platinum-10"
+            >
+              <svg
+                class="h-4 w-4 text-platinum-50"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 15h8" />
+                <path d="M9 9h.01" />
+                <path d="M15 9h.01" />
+              </svg>
+            </div>
+            <p class="text-xs text-platinum-70">
+              @if (notFoundText()) {
+                {{ notFoundText() }}
+              } @else {
+                No matching options
+              }
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -33,10 +33,16 @@ export interface CartItem {
 
 export interface CheckoutFields {
   customer_type: string;
-  name: string;
-  surname: string;
+  individual: {
+    name: string;
+    surname: string;
+  };
+  company: {
+    organization_type: string;
+    organization_name: string;
+    organization_code: string;
+  };
   email: string;
-  id_number: number | null;
   phone_number: number | null;
   address: string;
   delivery_type: string;

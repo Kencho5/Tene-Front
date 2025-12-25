@@ -5,8 +5,9 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { email, Field, form, required } from '@angular/forms/signals';
+import { email, Field, form, hidden, required } from '@angular/forms/signals';
 import { CheckoutFields } from '@core/interfaces/products.interface';
+import { organizationTypes } from '@utils/organizationTypes';
 import { CartService } from '@core/services/products/cart.service';
 import { ToastService } from '@core/services/toast.service';
 import { CartItemComponent } from '@shared/components/cart-item/cart-item.component';
@@ -17,6 +18,7 @@ import {
 } from '@shared/components/ui/breadcrumb/breadcrumb.component';
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { InputComponent } from '@shared/components/ui/input/input.component';
+import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
 import { SharedModule } from '@shared/shared.module';
 
 @Component({
@@ -28,6 +30,7 @@ import { SharedModule } from '@shared/shared.module';
     CartItemComponent,
     ConfirmationModalComponent,
     InputComponent,
+    ComboboxComponent,
     Field,
   ],
   templateUrl: './checkout.component.html',
@@ -42,6 +45,8 @@ export class CheckoutComponent {
     { label: 'შეკვეთის გაფორმება', route: '/checkout' },
   ]);
 
+  readonly organizationTypes = organizationTypes;
+
   readonly submitted = signal(false);
 
   readonly sectionStates = signal({
@@ -52,10 +57,16 @@ export class CheckoutComponent {
 
   readonly checkoutModel = signal<CheckoutFields>({
     customer_type: 'individual',
-    name: '',
-    surname: '',
+    individual: {
+      name: '',
+      surname: '',
+    },
+    company: {
+      organization_type: 'llc',
+      organization_name: '',
+      organization_code: '',
+    },
     email: '',
-    id_number: null,
     phone_number: null,
     address: '',
     delivery_type: 'delivery',
@@ -64,11 +75,27 @@ export class CheckoutComponent {
 
   readonly checkoutForm = form(this.checkoutModel, (fieldPath) => {
     required(fieldPath.customer_type, { message: 'პირის არჩევა აუცილებელია' });
-    required(fieldPath.name, { message: 'სახელი აუცილებელია' });
-    required(fieldPath.surname, { message: 'გვარი აუცილებელია' });
+
+    hidden(
+      fieldPath.company,
+      ({ valueOf }) => valueOf(fieldPath.customer_type) === 'individual',
+    );
+    required(fieldPath.company.organization_name, {
+      message: 'ორგანიზაციის სახელი აუცილებელია',
+    });
+    required(fieldPath.company.organization_code, {
+      message: 'საიდენტიფიკაციო კოდი აუცილებელია',
+    });
+
+    hidden(
+      fieldPath.individual,
+      ({ valueOf }) => valueOf(fieldPath.customer_type) === 'company',
+    );
+    required(fieldPath.individual.name, { message: 'სახელი აუცილებელია' });
+    required(fieldPath.individual.surname, { message: 'გვარი აუცილებელია' });
+
     required(fieldPath.email, { message: 'ელ. ფოსტა აუცილებელია' });
     email(fieldPath.email, { message: 'შეიყვანეთ სწორი ელ. ფოსტა' });
-    required(fieldPath.id_number, { message: 'პირადი ნომერი აუცილებელია' });
     required(fieldPath.phone_number, {
       message: 'ტელეფონის ნომერი აუცილებელია',
     });
