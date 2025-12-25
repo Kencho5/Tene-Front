@@ -78,7 +78,6 @@ export class CheckoutComponent {
   handleCheckout(event?: Event): void {
     event?.preventDefault();
     this.submitted.set(true);
-    console.log(this.checkoutForm().value());
 
     if (this.checkoutForm().invalid()) {
       const errors = this.checkoutForm().errorSummary();
@@ -97,7 +96,9 @@ export class CheckoutComponent {
     }
   }
 
-  toggleSection(section: 'contactDetails' | 'deliveryDetails' | 'paymentMethod') {
+  toggleSection(
+    section: 'contactDetails' | 'deliveryDetails' | 'paymentMethod',
+  ) {
     this.sectionStates.update((state) => ({
       ...state,
       [section]: !state[section],

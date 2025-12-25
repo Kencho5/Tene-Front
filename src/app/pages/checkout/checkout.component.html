@@ -188,12 +188,12 @@
                   type="button"
                   (click)="checkoutForm.delivery_time().value.set('same_day')"
                   [ngClass]="{
-                    'border-[1.5px] border-green-60':
+                    'border-green-60':
                       checkoutForm.delivery_time().value() === 'same_day',
-                    'border border-platinum-20':
+                    'border-platinum-20':
                       checkoutForm.delivery_time().value() !== 'same_day',
                   }"
-                  class="flex h-16 w-full items-center justify-between rounded-xl px-4 transition-all md:flex-1"
+                  class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"
                 >
                   <div class="flex items-center gap-3">
                     <div
@@ -231,12 +231,12 @@
                   type="button"
                   (click)="checkoutForm.delivery_time().value.set('next_day')"
                   [ngClass]="{
-                    'border-[1.5px] border-green-60':
+                    'border-green-60':
                       checkoutForm.delivery_time().value() === 'next_day',
-                    'border border-platinum-20':
+                    'border-platinum-20':
                       checkoutForm.delivery_time().value() !== 'next_day',
                   }"
-                  class="flex h-16 w-full items-center justify-between rounded-xl px-4 transition-all md:flex-1"
+                  class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"
                 >
                   <div class="flex items-center gap-3">
                     <div
