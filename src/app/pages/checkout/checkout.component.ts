@@ -115,7 +115,7 @@ export class CheckoutComponent {
 
       this.toastService.add(
         'შეკვეთის გაფორმება ვერ მოხერხდა',
-        errorMessage || 'გთხოვთ შეამოწმოთ ფორმა',
+        errorMessage || 'გთხოვთ შეამოწმოთ დეტალები',
         5000,
         'error',
       );

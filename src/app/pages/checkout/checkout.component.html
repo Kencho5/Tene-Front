@@ -114,7 +114,9 @@
                 <div class="flex w-full flex-col gap-4 md:flex-row">
                   <div class="w-full md:w-32">
                     <app-combobox
-                      [(selectedValue)]="checkoutForm.company.organization_type().value"
+                      [(selectedValue)]="
+                        checkoutForm.company.organization_type().value
+                      "
                       [items]="organizationTypes"
                       [error]="
                         submitted() &&
@@ -220,6 +222,22 @@
                   ჩემით წავიღებ
                 </button>
               </div>
+
+              <button
+                class="flex items-center gap-2 text-sm font-semibold text-green-70"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M10.0007 7.33331V9.99998M10.0007 9.99998V12.6666M10.0007 9.99998L12.6673 9.99998M10.0007 9.99998L7.33398 9.99998M16.6673 9.99998C16.6673 13.6819 13.6825 16.6666 10.0007 16.6666C6.31875 16.6666 3.33398 13.6819 3.33398 9.99998C3.33398 6.31808 6.31875 3.33331 10.0007 3.33331C13.6825 3.33331 16.6673 6.31808 16.6673 9.99998Z"
+                    stroke="#068C0B"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+
+                ახალი მისამართის დამატება
+              </button>
 
               <div class="my-4 h-px bg-platinum-20"></div>
 
