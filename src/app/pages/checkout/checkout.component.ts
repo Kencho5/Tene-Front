@@ -60,6 +60,10 @@ export class CheckoutComponent {
   readonly isAddressModalOpen = signal(false);
   readonly selectedCity = signal<string>('');
 
+  readonly loading = signal({
+    addresses: true,
+  });
+
   readonly addressModel = signal<AddressData>({
     city: '',
     address: '',
@@ -143,6 +147,7 @@ export class CheckoutComponent {
       )
       .subscribe((addresses) => {
         this.addresses.set(addresses);
+        this.loading.update((state) => ({ ...state, addresses: false }));
       });
   }
 
