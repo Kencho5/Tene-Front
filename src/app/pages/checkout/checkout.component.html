@@ -240,6 +240,7 @@
 
                 <button
                   type="button"
+                  (click)="isAddressModalOpen.set(true)"
                   class="inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white"
                   style="
                     background: linear-gradient(
@@ -450,3 +451,13 @@
   (confirm)="cartService.confirmDelete()"
   (cancel)="cartService.closeDeleteModal()"
 />
+
+<app-modal
+  [isOpen]="isAddressModalOpen()"
+  [title]="'მისამართის დამატება'"
+  [cancelText]="'გაუქმება'"
+  [acceptText]="'დამატება'"
+  (close)="isAddressModalOpen.set(false)"
+  (accept)="isAddressModalOpen.set(false)"
+>
+</app-modal>

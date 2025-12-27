@@ -1,0 +1,68 @@
+@if (isOpen()) {
+  <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"></div>
+
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    (click)="onClose()"
+  >
+    <div
+      class="w-full max-w-[640px] rounded-xl bg-white px-6 py-2 shadow-xl"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between py-4">
+        <h2 class="text-xl font-semibold text-platinum-100">{{ title() }}</h2>
+        <button
+          type="button"
+          (click)="onClose()"
+          class="flex h-8 w-8 items-center justify-center rounded-lg text-platinum-50 transition-colors hover:bg-platinum-10 hover:text-platinum-100"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 6l8 8M6 14l8-8"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div class="py-6">
+        <ng-content />
+      </div>
+
+      <div class="flex w-full gap-4 py-4">
+        <button
+          type="button"
+          (click)="onClose()"
+          class="h-[44px] flex-1 rounded-full border border-platinum-20 px-6 py-2.5 font-medium text-platinum-100 transition-colors hover:bg-platinum-10"
+        >
+          {{ cancelText() }}
+        </button>
+        <button
+          type="button"
+          (click)="onAccept()"
+          class="h-[44px] flex-1 gap-2 rounded-full border-white/40 px-6 py-2.5 font-medium text-white"
+          style="
+            background: linear-gradient(
+              90deg,
+              #0ad810 0%,
+              #0bb705 35%,
+              #0bb705 65%,
+              #0ad810 100%
+            );
+            box-shadow: 0px 20px 16px -8px #0ad10426;
+          "
+        >
+          {{ acceptText() }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

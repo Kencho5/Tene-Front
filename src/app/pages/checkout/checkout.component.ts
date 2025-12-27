@@ -19,6 +19,7 @@ import {
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
+import { ModalComponent } from '@shared/components/ui/modal/modal.component';
 import { SharedModule } from '@shared/shared.module';
 
 @Component({
@@ -31,6 +32,7 @@ import { SharedModule } from '@shared/shared.module';
     ConfirmationModalComponent,
     InputComponent,
     ComboboxComponent,
+    ModalComponent,
     Field,
   ],
   templateUrl: './checkout.component.html',
@@ -48,6 +50,7 @@ export class CheckoutComponent {
   readonly organizationTypes = organizationTypes;
 
   readonly submitted = signal(false);
+  readonly isAddressModalOpen = signal(false);
 
   readonly sectionStates = signal({
     contactDetails: true,
