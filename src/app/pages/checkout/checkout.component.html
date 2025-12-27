@@ -266,7 +266,9 @@
                   @for (address of addresses(); track $index) {
                     <button
                       type="button"
-                      (click)="checkoutForm.address().value.set(address.address)"
+                      (click)="
+                        checkoutForm.address().value.set(address.address)
+                      "
                       [class.border-green-60]="
                         checkoutForm.address().value() === address.address
                       "
@@ -303,7 +305,9 @@
                             </svg>
                           </div>
                           <div class="flex flex-col items-start text-left">
-                            <span class="font-normal">{{ address.address }}</span>
+                            <span class="font-normal">{{
+                              address.address
+                            }}</span>
                             <span class="text-sm text-platinum-50">{{
                               address.city
                             }}</span>
@@ -335,6 +339,7 @@
 
               <button
                 class="flex items-center gap-2 text-sm font-semibold text-green-70"
+                (click)="isAddressModalOpen.set(true)"
               >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path
