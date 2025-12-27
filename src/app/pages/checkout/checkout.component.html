@@ -223,113 +223,146 @@
                 </button>
               </div>
 
-              <button
-                class="flex items-center gap-2 text-sm font-semibold text-green-70"
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M10.0007 7.33331V9.99998M10.0007 9.99998V12.6666M10.0007 9.99998L12.6673 9.99998M10.0007 9.99998L7.33398 9.99998M16.6673 9.99998C16.6673 13.6819 13.6825 16.6666 10.0007 16.6666C6.31875 16.6666 3.33398 13.6819 3.33398 9.99998C3.33398 6.31808 6.31875 3.33331 10.0007 3.33331C13.6825 3.33331 16.6673 6.31808 16.6673 9.99998Z"
-                    stroke="#068C0B"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+              <div class="mx-auto my-4 max-w-[320px] space-y-6 text-center">
+                <img
+                  src="/assets/images/checkout/map-waypoint.webp"
+                  width="120"
+                  height="120"
+                  class="mx-auto"
+                />
+                <div>
+                  <h2 class="text-lg">დაამატე მისამართი</h2>
+                  <p class="text-sm text-platinum-50">
+                    დაამატეთ სასურველი მისაამრთი სადაც გსურთ თქვენი შეკვეთის
+                    მოწოდება.
+                  </p>
+                </div>
 
-                ახალი მისამართის დამატება
-              </button>
-
-              <div class="my-4 h-px bg-platinum-20"></div>
-
-              <div class="flex w-full flex-col gap-4 md:flex-row">
                 <button
                   type="button"
-                  (click)="checkoutForm.delivery_time().value.set('same_day')"
-                  [ngClass]="{
-                    'border-green-60':
-                      checkoutForm.delivery_time().value() === 'same_day',
-                    'border-platinum-20':
-                      checkoutForm.delivery_time().value() !== 'same_day',
-                  }"
-                  class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"
+                  class="inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white"
+                  style="
+                    background: linear-gradient(
+                      90deg,
+                      #0ad810 0%,
+                      #0bb705 35%,
+                      #0bb705 65%,
+                      #0ad810 100%
+                    );
+                    box-shadow: 0px 20px 16px -8px #0ad10426;
+                  "
                 >
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="flex h-10 w-10 items-center justify-center rounded-full bg-platinum-10"
-                    >
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                      >
-                        <path
-                          d="M5.00065 5H8.75065C10.5867 5 12.3157 5.86447 13.4173 7.33333L14.0111 8.12508C14.1128 8.26069 14.2535 8.36205 14.4143 8.41565L15.5277 8.78679C16.2083 9.01365 16.6673 9.65055 16.6673 10.3679V11.6667C16.6673 12.5871 15.9211 13.3333 15.0007 13.3333M15.0007 13.3333C15.0007 14.2538 14.2545 15 13.334 15C12.4135 15 11.6673 14.2538 11.6673 13.3333M15.0007 13.3333C15.0007 12.4129 14.2545 11.6667 13.334 11.6667C12.4135 11.6667 11.6673 12.4129 11.6673 13.3333M8.33398 13.3333C8.33398 14.2538 7.58779 15 6.66732 15C5.74684 15 5.00065 14.2538 5.00065 13.3333M8.33398 13.3333C8.33398 12.4129 7.58779 11.6667 6.66732 11.6667C5.74684 11.6667 5.00065 12.4129 5.00065 13.3333M8.33398 13.3333H11.6673M5.00065 13.3333H3.33398M3.33398 10L5.83398 10M4.16732 7.5L7.50065 7.5M10.0007 8.33333L14.1673 8.33333"
-                          stroke="#212121"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                        />
-                      </svg>
-                    </div>
-                    <span class="font-normal">იმავე დღეს</span>
-                  </div>
-                  <div
-                    [ngClass]="{
-                      'bg-green-60':
-                        checkoutForm.delivery_time().value() === 'same_day',
-                      'bg-platinum-20':
-                        checkoutForm.delivery_time().value() !== 'same_day',
-                    }"
-                    class="flex h-6 w-6 items-center justify-center rounded-full"
-                  >
-                    <div class="h-2 w-2 rounded-full bg-white"></div>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  (click)="checkoutForm.delivery_time().value.set('next_day')"
-                  [ngClass]="{
-                    'border-green-60':
-                      checkoutForm.delivery_time().value() === 'next_day',
-                    'border-platinum-20':
-                      checkoutForm.delivery_time().value() !== 'next_day',
-                  }"
-                  class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"
-                >
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="flex h-10 w-10 items-center justify-center rounded-full bg-platinum-10"
-                    >
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                      >
-                        <path
-                          d="M10.0007 6.66665V9.99998L12.084 10.8333M16.6673 9.99998C16.6673 13.6819 13.6825 16.6666 10.0007 16.6666C6.31875 16.6666 3.33398 13.6819 3.33398 9.99998C3.33398 6.31808 6.31875 3.33331 10.0007 3.33331C13.6825 3.33331 16.6673 6.31808 16.6673 9.99998Z"
-                          stroke="#212121"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                    </div>
-                    <span class="font-normal">2 - 3 სამუშაო დღეში</span>
-                  </div>
-                  <div
-                    [ngClass]="{
-                      'bg-green-60':
-                        checkoutForm.delivery_time().value() === 'next_day',
-                      'bg-platinum-20':
-                        checkoutForm.delivery_time().value() !== 'next_day',
-                    }"
-                    class="flex h-6 w-6 items-center justify-center rounded-full"
-                  >
-                    <div class="h-2 w-2 rounded-full bg-white"></div>
-                  </div>
+                  მისამართის დამატება
                 </button>
               </div>
+
+              <!--<button-->
+              <!--  class="flex items-center gap-2 text-sm font-semibold text-green-70"-->
+              <!-->-->
+              <!--  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">-->
+              <!--    <path-->
+              <!--      d="M10.0007 7.33331V9.99998M10.0007 9.99998V12.6666M10.0007 9.99998L12.6673 9.99998M10.0007 9.99998L7.33398 9.99998M16.6673 9.99998C16.6673 13.6819 13.6825 16.6666 10.0007 16.6666C6.31875 16.6666 3.33398 13.6819 3.33398 9.99998C3.33398 6.31808 6.31875 3.33331 10.0007 3.33331C13.6825 3.33331 16.6673 6.31808 16.6673 9.99998Z"-->
+              <!--      stroke="#068C0B"-->
+              <!--      stroke-width="1.5"-->
+              <!--      stroke-linecap="round"-->
+              <!--      stroke-linejoin="round"-->
+              <!--    />-->
+              <!--  </svg>-->
+              <!---->
+              <!--  ახალი მისამართის დამატება-->
+              <!--</button>-->
+              <!---->
+              <!--<div class="my-4 h-px bg-platinum-20"></div>-->
+              <!---->
+              <!--<div class="flex w-full flex-col gap-4 md:flex-row">-->
+              <!--  <button-->
+              <!--    type="button"-->
+              <!--    (click)="checkoutForm.delivery_time().value.set('same_day')"-->
+              <!--    [ngClass]="{-->
+              <!--      'border-green-60':-->
+              <!--        checkoutForm.delivery_time().value() === 'same_day',-->
+              <!--      'border-platinum-20':-->
+              <!--        checkoutForm.delivery_time().value() !== 'same_day',-->
+              <!--    }"-->
+              <!--    class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"-->
+              <!--  >-->
+              <!--    <div class="flex items-center gap-3">-->
+              <!--      <div-->
+              <!--        class="flex h-10 w-10 items-center justify-center rounded-full bg-platinum-10"-->
+              <!--      >-->
+              <!--        <svg-->
+              <!--          width="20"-->
+              <!--          height="20"-->
+              <!--          viewBox="0 0 20 20"-->
+              <!--          fill="none"-->
+              <!--        >-->
+              <!--          <path-->
+              <!--            d="M5.00065 5H8.75065C10.5867 5 12.3157 5.86447 13.4173 7.33333L14.0111 8.12508C14.1128 8.26069 14.2535 8.36205 14.4143 8.41565L15.5277 8.78679C16.2083 9.01365 16.6673 9.65055 16.6673 10.3679V11.6667C16.6673 12.5871 15.9211 13.3333 15.0007 13.3333M15.0007 13.3333C15.0007 14.2538 14.2545 15 13.334 15C12.4135 15 11.6673 14.2538 11.6673 13.3333M15.0007 13.3333C15.0007 12.4129 14.2545 11.6667 13.334 11.6667C12.4135 11.6667 11.6673 12.4129 11.6673 13.3333M8.33398 13.3333C8.33398 14.2538 7.58779 15 6.66732 15C5.74684 15 5.00065 14.2538 5.00065 13.3333M8.33398 13.3333C8.33398 12.4129 7.58779 11.6667 6.66732 11.6667C5.74684 11.6667 5.00065 12.4129 5.00065 13.3333M8.33398 13.3333H11.6673M5.00065 13.3333H3.33398M3.33398 10L5.83398 10M4.16732 7.5L7.50065 7.5M10.0007 8.33333L14.1673 8.33333"-->
+              <!--            stroke="#212121"-->
+              <!--            stroke-width="1.5"-->
+              <!--            stroke-linecap="round"-->
+              <!--          />-->
+              <!--        </svg>-->
+              <!--      </div>-->
+              <!--      <span class="font-normal">იმავე დღეს</span>-->
+              <!--    </div>-->
+              <!--    <div-->
+              <!--      [ngClass]="{-->
+              <!--        'bg-green-60':-->
+              <!--          checkoutForm.delivery_time().value() === 'same_day',-->
+              <!--        'bg-platinum-20':-->
+              <!--          checkoutForm.delivery_time().value() !== 'same_day',-->
+              <!--      }"-->
+              <!--      class="flex h-6 w-6 items-center justify-center rounded-full"-->
+              <!--    >-->
+              <!--      <div class="h-2 w-2 rounded-full bg-white"></div>-->
+              <!--    </div>-->
+              <!--  </button>-->
+              <!--  <button-->
+              <!--    type="button"-->
+              <!--    (click)="checkoutForm.delivery_time().value.set('next_day')"-->
+              <!--    [ngClass]="{-->
+              <!--      'border-green-60':-->
+              <!--        checkoutForm.delivery_time().value() === 'next_day',-->
+              <!--      'border-platinum-20':-->
+              <!--        checkoutForm.delivery_time().value() !== 'next_day',-->
+              <!--    }"-->
+              <!--    class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"-->
+              <!--  >-->
+              <!--    <div class="flex items-center gap-3">-->
+              <!--      <div-->
+              <!--        class="flex h-10 w-10 items-center justify-center rounded-full bg-platinum-10"-->
+              <!--      >-->
+              <!--        <svg-->
+              <!--          width="20"-->
+              <!--          height="20"-->
+              <!--          viewBox="0 0 20 20"-->
+              <!--          fill="none"-->
+              <!--        >-->
+              <!--          <path-->
+              <!--            d="M10.0007 6.66665V9.99998L12.084 10.8333M16.6673 9.99998C16.6673 13.6819 13.6825 16.6666 10.0007 16.6666C6.31875 16.6666 3.33398 13.6819 3.33398 9.99998C3.33398 6.31808 6.31875 3.33331 10.0007 3.33331C13.6825 3.33331 16.6673 6.31808 16.6673 9.99998Z"-->
+              <!--            stroke="#212121"-->
+              <!--            stroke-width="1.5"-->
+              <!--            stroke-linecap="round"-->
+              <!--            stroke-linejoin="round"-->
+              <!--          />-->
+              <!--        </svg>-->
+              <!--      </div>-->
+              <!--      <span class="font-normal">2 - 3 სამუშაო დღეში</span>-->
+              <!--    </div>-->
+              <!--    <div-->
+              <!--      [ngClass]="{-->
+              <!--        'bg-green-60':-->
+              <!--          checkoutForm.delivery_time().value() === 'next_day',-->
+              <!--        'bg-platinum-20':-->
+              <!--          checkoutForm.delivery_time().value() !== 'next_day',-->
+              <!--      }"-->
+              <!--      class="flex h-6 w-6 items-center justify-center rounded-full"-->
+              <!--    >-->
+              <!--      <div class="h-2 w-2 rounded-full bg-white"></div>-->
+              <!--    </div>-->
+              <!--  </button>-->
+              <!--</div>-->
             </div>
           }
         </div>
