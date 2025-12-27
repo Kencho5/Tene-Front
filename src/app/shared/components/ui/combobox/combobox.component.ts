@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
 import { FormsModule } from '@angular/forms';
-import { ComboboxItems } from '@core/interfaces/combobox';
+import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { OutsideClickDirective } from '@core/directives/outside-click.directive';
 
 @Component({
@@ -40,7 +40,8 @@ export class ComboboxComponent {
 
   readonly itemLabel = computed(() => {
     return (
-      this.items().find((item) => item.value === this.selectedValue())?.label || ''
+      this.items().find((item) => item.value === this.selectedValue())?.label ||
+      ''
     );
   });
 

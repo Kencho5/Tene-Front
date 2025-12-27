@@ -1,4 +1,4 @@
-import { ComboboxItems } from '@core/interfaces/combobox';
+import { ComboboxItems } from '@core/interfaces/combobox.interface';
 
 export const organizationTypes: ComboboxItems[] = [
   { value: 'llc', label: 'შპს' },

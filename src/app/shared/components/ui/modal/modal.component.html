@@ -2,11 +2,11 @@
   <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"></div>
 
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    class="fixed inset-0 z-50 flex items-end justify-center md:items-center md:p-4"
     (click)="onClose()"
   >
     <div
-      class="w-full max-w-[640px] rounded-xl bg-white px-6 py-2 shadow-xl"
+      class="w-full rounded-t-xl bg-white px-6 py-2 shadow-xl md:max-w-[640px] md:rounded-xl"
       (click)="$event.stopPropagation()"
     >
       <div class="flex items-center justify-between py-4">

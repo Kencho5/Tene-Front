@@ -59,7 +59,7 @@
           autoFocus
           type="text"
           [placeholder]="searchPlaceholder()"
-          class="w-full bg-transparent py-1 pl-2 pr-0 text-xs text-platinum-100 outline-none placeholder:text-platinum-50"
+          class="w-full bg-transparent py-1 pl-2 pr-0 text-platinum-100 outline-none placeholder:text-platinum-50"
           [(ngModel)]="searchValue"
         />
 
@@ -91,7 +91,7 @@
         @for (item of filteredItems(); track item.value) {
           <button
             type="button"
-            class="mb-1.5 w-full rounded-md px-3 py-2 text-left text-xs text-platinum-100 transition-colors"
+            class="mb-1.5 w-full rounded-md px-3 py-2 text-left text-platinum-100 transition-colors"
             [ngClass]="
               selectedValue() == item.value
                 ? 'bg-green-10 font-medium text-green-70'
@@ -137,14 +137,16 @@
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
               >
                 <circle cx="12" cy="12" r="10" />
-                <path d="M8 15h8" />
-                <path d="M9 9h.01" />
-                <path d="M15 9h.01" />
+                <path d="M16 16s-1.5-2-4-2-4 2-4 2" />
+                <line x1="9" y1="9" x2="9.01" y2="9" />
+                <line x1="15" y1="9" x2="15.01" y2="9" />
               </svg>
             </div>
-            <p class="text-xs text-platinum-70">
+            <p class="text-platinum-70">
               @if (notFoundText()) {
                 {{ notFoundText() }}
               } @else {

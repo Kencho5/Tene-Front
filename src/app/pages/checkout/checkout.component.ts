@@ -8,8 +8,10 @@ import {
 import { email, Field, form, hidden, required } from '@angular/forms/signals';
 import { CheckoutFields } from '@core/interfaces/products.interface';
 import { organizationTypes } from '@utils/organizationTypes';
+import { storeCities } from '@utils/store-cities';
 import { CartService } from '@core/services/products/cart.service';
 import { ToastService } from '@core/services/toast.service';
+import { AddressService } from '@core/services/address.service';
 import { CartItemComponent } from '@shared/components/cart-item/cart-item.component';
 import { PriceSummaryComponent } from '@shared/components/price-summary/price-summary.component';
 import {
@@ -41,6 +43,7 @@ import { SharedModule } from '@shared/shared.module';
 export class CheckoutComponent {
   readonly cartService = inject(CartService);
   readonly toastService = inject(ToastService);
+  readonly addressService = inject(AddressService);
 
   readonly breadcrumbs = computed<BreadcrumbItem[]>(() => [
     { label: 'ჩემი კალათა', route: '/cart' },
@@ -48,9 +51,22 @@ export class CheckoutComponent {
   ]);
 
   readonly organizationTypes = organizationTypes;
+  readonly storeCities = storeCities;
 
   readonly submitted = signal(false);
   readonly isAddressModalOpen = signal(false);
+  readonly selectedCity = signal<string>('');
+
+  readonly addressModel = signal({
+    city: '',
+    address: '',
+    details: '',
+  });
+
+  readonly addressForm = form(this.addressModel, (fieldPath) => {
+    required(fieldPath.city, { message: 'ქალაქი აუცილებელია' });
+    required(fieldPath.address, { message: 'მისამართი აუცილებელია' });
+  });
 
   readonly sectionStates = signal({
     contactDetails: true,
@@ -133,5 +149,46 @@ export class CheckoutComponent {
       ...state,
       [section]: !state[section],
     }));
+  }
+
+  handleAddressSubmit() {
+    console.log('handleAddressSubmit called');
+    if (this.addressForm().invalid()) {
+      const errors = this.addressForm().errorSummary();
+      const errorMessage =
+        errors.length > 0 && errors[0].message
+          ? errors[0].message
+          : 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი';
+
+      this.toastService.add(
+        'მისამართის დამატება ვერ მოხერხდა',
+        errorMessage,
+        5000,
+        'error',
+      );
+      return;
+    }
+
+    const addressData = this.addressForm().value();
+    this.addressService.addAddress(addressData).subscribe({
+      next: () => {
+        this.toastService.add(
+          'წარმატებული',
+          'მისამართი წარმატებით დაემატა',
+          3000,
+          'success',
+        );
+        this.isAddressModalOpen.set(false);
+        this.addressForm().reset();
+      },
+      error: () => {
+        this.toastService.add(
+          'შეცდომა',
+          'მისამართის დამატება ვერ მოხერხდა',
+          5000,
+          'error',
+        );
+      },
+    });
   }
 }
