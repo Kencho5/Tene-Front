@@ -5,7 +5,9 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { email, Field, form, hidden, required } from '@angular/forms/signals';
+import { catchError, of } from 'rxjs';
 import { CheckoutFields } from '@core/interfaces/products.interface';
 import { organizationTypes } from '@utils/organizationTypes';
 import { storeCities } from '@utils/store-cities';
@@ -23,6 +25,7 @@ import { InputComponent } from '@shared/components/ui/input/input.component';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
 import { ModalComponent } from '@shared/components/ui/modal/modal.component';
 import { SharedModule } from '@shared/shared.module';
+import { AddressData } from '@core/interfaces/address.interface';
 
 @Component({
   selector: 'app-checkout',
@@ -57,11 +60,13 @@ export class CheckoutComponent {
   readonly isAddressModalOpen = signal(false);
   readonly selectedCity = signal<string>('');
 
-  readonly addressModel = signal({
+  readonly addressModel = signal<AddressData>({
     city: '',
     address: '',
     details: '',
   });
+
+  readonly addresses = signal<AddressData[]>([]);
 
   readonly addressForm = form(this.addressModel, (fieldPath) => {
     required(fieldPath.city, { message: 'ქალაქი აუცილებელია' });
@@ -121,6 +126,26 @@ export class CheckoutComponent {
     required(fieldPath.address, { message: 'მისამართი აუცილებელია' });
   });
 
+  constructor() {
+    this.addressService
+      .getAddresses()
+      .pipe(
+        takeUntilDestroyed(),
+        catchError(() => {
+          this.toastService.add(
+            'შეცდომა',
+            'მისამართების ჩატვირთვა ვერ მოხერხდა',
+            5000,
+            'error',
+          );
+          return of([]);
+        }),
+      )
+      .subscribe((addresses) => {
+        this.addresses.set(addresses);
+      });
+  }
+
   handleCheckout(event?: Event): void {
     event?.preventDefault();
     this.submitted.set(true);
@@ -170,7 +195,8 @@ export class CheckoutComponent {
 
     const addressData = this.addressForm().value();
     this.addressService.addAddress(addressData).subscribe({
-      next: () => {
+      next: (newAddress) => {
+        this.addresses.set([...this.addresses(), newAddress]);
         this.toastService.add(
           'წარმატებული',
           'მისამართი წარმატებით დაემატა',

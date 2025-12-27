@@ -9,7 +9,11 @@ import { AddressData } from '@core/interfaces/address.interface';
 export class AddressService {
   private readonly http = inject(HttpClient);
 
-  addAddress(data: AddressData): Observable<any> {
-    return this.http.post('/add-address', data);
+  addAddress(data: AddressData): Observable<AddressData> {
+    return this.http.post<AddressData>('/addresses', data);
+  }
+
+  getAddresses(): Observable<AddressData[]> {
+    return this.http.get<AddressData[]>('/addresses');
   }
 }
