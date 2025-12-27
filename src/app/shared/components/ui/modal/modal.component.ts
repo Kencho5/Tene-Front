@@ -1,4 +1,9 @@
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  input,
+  output,
+} from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
 
 @Component({

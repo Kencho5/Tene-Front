@@ -152,7 +152,6 @@ export class CheckoutComponent {
   }
 
   handleAddressSubmit() {
-    console.log('handleAddressSubmit called');
     if (this.addressForm().invalid()) {
       const errors = this.addressForm().errorSummary();
       const errorMessage =
