@@ -245,7 +245,7 @@
 
                   <button
                     type="button"
-                    (click)="isAddressModalOpen.set(true)"
+                    (click)="handleAddNewAddress()"
                     class="inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white"
                     style="
                       background: linear-gradient(
@@ -263,7 +263,7 @@
                 </div>
               } @else {
                 <div class="flex flex-col gap-4">
-                  @for (address of addresses(); track $index) {
+                  @for (address of addresses(); track address.id) {
                     <button
                       type="button"
                       (click)="
@@ -328,8 +328,35 @@
 
                       @if (address.details) {
                         <div class="h-px bg-platinum-20"></div>
-                        <div class="py-4 text-left text-sm text-platinum-50">
-                          {{ address.details }}
+                        <div class="flex items-center justify-between">
+                          <div class="py-4 text-left text-sm text-platinum-50">
+                            {{ address.details }}
+                          </div>
+
+                          <button
+                            type="button"
+                            (click)="handleEditAddress(address.id!)"
+                          >
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <path
+                                d="M24 0V24H0V0H24Z"
+                                fill="white"
+                                fill-opacity="0.01"
+                              />
+                              <path
+                                d="M11.9946 5.99512L18.0042 12.0047M5.64457 20.3532L6.33892 20.3534C7.97462 20.3539 8.79247 20.3542 9.5279 20.0497C10.2633 19.7452 10.8416 19.1669 11.9982 18.0103L18.4952 11.5133C19.3175 10.691 19.7287 10.2798 19.9477 9.83586C20.3605 8.99914 20.3605 8.01799 19.9477 7.18127C19.7287 6.7373 19.3175 6.32614 18.4952 5.5038C17.6729 4.68146 17.2617 4.27029 16.8177 4.05126C15.981 3.63847 14.9998 3.63847 14.1631 4.05126C13.7192 4.27029 13.308 4.68146 12.4856 5.50379L5.98822 12.0012C4.83184 13.1576 4.25365 13.7358 3.94916 14.4711C3.64467 15.2063 3.64481 16.024 3.64508 17.6594L3.64519 18.3536C3.64535 19.296 3.64542 19.7672 3.9382 20.06C4.23097 20.3528 4.70217 20.3529 5.64457 20.3532Z"
+                                stroke="#888888"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
                         </div>
                       }
                     </button>
@@ -338,8 +365,9 @@
               }
 
               <button
+                type="button"
                 class="flex items-center gap-2 text-sm font-semibold text-green-70"
-                (click)="isAddressModalOpen.set(true)"
+                (click)="handleAddNewAddress()"
               >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path
@@ -535,10 +563,10 @@
 
 <app-modal
   [isOpen]="isAddressModalOpen()"
-  [title]="'მისამართის დამატება'"
+  [title]="isEditMode() ? 'მისამართის რედაქტირება' : 'მისამართის დამატება'"
   [cancelText]="'გაუქმება'"
-  [acceptText]="'დამატება'"
-  (close)="isAddressModalOpen.set(false)"
+  [acceptText]="isEditMode() ? 'განახლება' : 'დამატება'"
+  (close)="closeAddressModal()"
   (accept)="handleAddressSubmit()"
 >
   <div class="flex flex-col gap-4">

@@ -59,6 +59,8 @@ export class CheckoutComponent {
   readonly submitted = signal(false);
   readonly isAddressModalOpen = signal(false);
   readonly selectedCity = signal<string>('');
+  readonly isEditMode = signal(false);
+  readonly editingAddressId = signal<number | null>(null);
 
   readonly loading = signal({
     addresses: true,
@@ -181,6 +183,23 @@ export class CheckoutComponent {
     }));
   }
 
+  handleAddNewAddress() {
+    this.isEditMode.set(false);
+    this.editingAddressId.set(null);
+    this.addressForm().reset();
+    this.isAddressModalOpen.set(true);
+  }
+
+  handleEditAddress(addressId: number) {
+    const address = this.addresses().find((a) => a.id === addressId);
+    if (!address) return;
+
+    this.addressModel.set(address);
+    this.isEditMode.set(true);
+    this.editingAddressId.set(addressId);
+    this.isAddressModalOpen.set(true);
+  }
+
   handleAddressSubmit() {
     if (this.addressForm().invalid()) {
       const errors = this.addressForm().errorSummary();
@@ -199,26 +218,61 @@ export class CheckoutComponent {
     }
 
     const addressData = this.addressForm().value();
-    this.addressService.addAddress(addressData).subscribe({
-      next: (newAddress) => {
-        this.addresses.set([...this.addresses(), newAddress]);
-        this.toastService.add(
-          'წარმატებული',
-          'მისამართი წარმატებით დაემატა',
-          3000,
-          'success',
-        );
-        this.isAddressModalOpen.set(false);
-        this.addressForm().reset();
-      },
-      error: () => {
-        this.toastService.add(
-          'შეცდომა',
-          'მისამართის დამატება ვერ მოხერხდა',
-          5000,
-          'error',
-        );
-      },
-    });
+
+    if (this.isEditMode()) {
+      const addressId = this.editingAddressId();
+      if (!addressId) return;
+
+      this.addressService.updateAddress(addressId, addressData).subscribe({
+        next: (updatedAddress) => {
+          this.addresses.update((addrs) =>
+            addrs.map((a) => (a.id === addressId ? updatedAddress : a)),
+          );
+          this.toastService.add(
+            'წარმატებული',
+            'მისამართი განახლდა',
+            3000,
+            'success',
+          );
+          this.closeAddressModal();
+        },
+        error: () => {
+          this.toastService.add(
+            'შეცდომა',
+            'მისამართის განახლება ვერ მოხერხდა',
+            5000,
+            'error',
+          );
+        },
+      });
+    } else {
+      this.addressService.addAddress(addressData).subscribe({
+        next: (newAddress) => {
+          this.addresses.set([...this.addresses(), newAddress]);
+          this.toastService.add(
+            'წარმატებული',
+            'მისამართი წარმატებით დაემატა',
+            3000,
+            'success',
+          );
+          this.closeAddressModal();
+        },
+        error: () => {
+          this.toastService.add(
+            'შეცდომა',
+            'მისამართის დამატება ვერ მოხერხდა',
+            5000,
+            'error',
+          );
+        },
+      });
+    }
+  }
+
+  closeAddressModal() {
+    this.isAddressModalOpen.set(false);
+    this.isEditMode.set(false);
+    this.editingAddressId.set(null);
+    this.addressForm().reset();
   }
 }

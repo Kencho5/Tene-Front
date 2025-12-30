@@ -13,6 +13,10 @@ export class AddressService {
     return this.http.post<AddressData>('/addresses', data);
   }
 
+  updateAddress(id: number, data: AddressData): Observable<AddressData> {
+    return this.http.put<AddressData>(`/addresses/${id}`, data);
+  }
+
   getAddresses(): Observable<AddressData[]> {
     return this.http.get<AddressData[]>('/addresses');
   }
