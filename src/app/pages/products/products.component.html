@@ -1,23 +1,35 @@
-<div class="container">
+<div class="container px-4">
   <div
-    class="flex items-center justify-between rounded-2xl bg-platinum-10 px-10 py-12"
+    class="relative flex flex-col overflow-hidden rounded-2xl bg-platinum-10 px-4 py-6 lg:flex-row lg:items-center lg:justify-between lg:px-10 lg:py-12"
   >
-    <div class="space-y-4">
+    <img
+      src="/assets/images/products/main-banner-mobile.webp"
+      class="relative z-10 h-[200px] w-full object-contain lg:hidden"
+    />
+
+    <img
+      src="/assets/images/products/main-banner.webp"
+      class="absolute right-0 top-0 z-10 hidden h-full w-auto object-cover lg:block"
+    />
+
+    <div
+      class="relative z-20 mt-6 flex flex-col items-center gap-4 text-center lg:mt-0 lg:items-start lg:text-left"
+    >
       <h1
-        class="inline-block rounded-2xl bg-valencia-40 p-2.5 text-[28px] text-white"
+        class="w-fit rounded-2xl bg-valencia-40 p-2.5 text-[20px] text-white lg:text-[28px]"
       >
         30% ფასდაკლება
       </h1>
 
-      <h2 class="text-[32px]">სეზონურ შეთავაზებებზე</h2>
+      <h2 class="text-[28px] lg:text-[32px]">სეზონურ შეთავაზებებზე</h2>
 
-      <p class="text-lg text-platinum-50">
+      <p class="max-w-[628px] text-base text-platinum-50 lg:text-lg">
         მიიღე ფასდაკლება ტექნიკაზე, აქსესუარებზე სხვა და ყოველდღიურ ნივთებზე.
       </p>
 
       <a
         routerLink="/products"
-        class="inline-flex h-[46px] items-center rounded-full border-white/40 px-6 py-2.5 font-medium text-white transition-all hover:brightness-95"
+        class="mt-4 inline-flex h-[46px] w-full items-center justify-center rounded-full border-white/40 px-6 py-2.5 text-base font-medium text-white transition-all hover:brightness-95 lg:w-fit"
         style="
           background: linear-gradient(
             90deg,
@@ -31,5 +43,55 @@
         >პროდუქტების ნახვა</a
       >
     </div>
+
+    <svg
+      width="851"
+      height="351"
+      viewBox="0 0 851 351"
+      fill="none"
+      class="pointer-events-none absolute -right-1/2 -top-32 hidden rounded-2xl blur-[135px] lg:block lg:-bottom-20 lg:right-0"
+    >
+      <g filter="url(#filter0_f_1818_8029)">
+        <path
+          d="M472.588 227.109C553.779 135.204 764.751 67.0616 860.088 44.4784L910.832 504H135.832V-38C214.255 88.6631 391.398 319.013 472.588 227.109Z"
+          fill="url(#paint0_linear_1818_8029)"
+        />
+      </g>
+      <defs>
+        <filter
+          id="filter0_f_1818_8029"
+          x="-0.001297"
+          y="-173.833"
+          width="1046.67"
+          height="813.667"
+          filterUnits="userSpaceOnUse"
+          color-interpolation-filters="sRGB"
+        >
+          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="BackgroundImageFix"
+            result="shape"
+          />
+          <feGaussianBlur
+            stdDeviation="67.9167"
+            result="effect1_foregroundBlur_1818_8029"
+          />
+        </filter>
+        <linearGradient
+          id="paint0_linear_1818_8029"
+          x1="172.736"
+          y1="91.6086"
+          x2="629.463"
+          y2="504.873"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#F4F6F7" stop-opacity="0" />
+          <stop offset="0.370192" stop-color="#F3F99D" />
+          <stop offset="1" stop-color="#39EF38" stop-opacity="0.8" />
+        </linearGradient>
+      </defs>
+    </svg>
   </div>
 </div>
