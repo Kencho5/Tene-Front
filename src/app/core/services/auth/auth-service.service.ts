@@ -52,7 +52,7 @@ export class AuthService {
   }
 
   authorizeGoogle(idToken: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>('/auth/google', {
+    return this.http.post<AuthResponse>('/auth/google-login', {
       id_token: idToken,
     });
   }

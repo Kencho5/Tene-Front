@@ -10,6 +10,6 @@ export class ProductsService {
   private readonly http = inject(HttpClient);
 
   getProduct(product_id: string): Observable<ProductResponse> {
-    return this.http.get<ProductResponse>(`/product/${product_id}`);
+    return this.http.get<ProductResponse>(`/products/${product_id}`);
   }
 }
