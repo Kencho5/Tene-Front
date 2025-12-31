@@ -3,4 +3,5 @@ export interface HomeCard {
   title: string;
   subtext: string;
   button: string;
+  route: string;
 }
