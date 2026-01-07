@@ -48,3 +48,9 @@ export interface CheckoutFields {
   delivery_type: string;
   delivery_time: string;
 }
+
+export interface ProductCategoryCard {
+  text: string;
+  image: string;
+  route: string;
+}

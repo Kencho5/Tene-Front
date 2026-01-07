@@ -1,4 +1,4 @@
-<div class="container px-4">
+<div class="container space-y-6 px-4 sm:space-y-10">
   <div
     class="relative flex flex-col overflow-hidden rounded-2xl bg-platinum-10 px-4 py-6 lg:flex-row lg:items-center lg:justify-between lg:px-10 lg:py-12"
   >
@@ -49,7 +49,7 @@
       height="351"
       viewBox="0 0 851 351"
       fill="none"
-      class="pointer-events-none absolute -right-1/2 -top-32 hidden rounded-2xl blur-[135px] lg:block lg:-bottom-20 lg:right-0"
+      class="pointer-events-none absolute -right-1/2 -top-32 hidden rounded-2xl blur-[135px] lg:-bottom-20 lg:right-0 lg:block"
     >
       <g filter="url(#filter0_f_1818_8029)">
         <path
@@ -93,5 +93,35 @@
         </linearGradient>
       </defs>
     </svg>
+  </div>
+
+  <div class="space-y-6">
+    <h1 class="text-xl sm:text-[28px]">კატეგორიები</h1>
+
+    <div class="relative">
+      <div
+        class="hide-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:px-0"
+        style="scrollbar-width: none; -ms-overflow-style: none"
+      >
+        @for (categoryCard of productCategoriesCards; track $index) {
+          <a
+            [routerLink]="categoryCard.route"
+            class="flex h-[116px] w-[270px] flex-shrink-0 items-center justify-center gap-4 rounded-2xl bg-platinum-10 p-2 transition-all hover:bg-platinum-20"
+          >
+            <p class="font-semibold">{{ categoryCard.text }}</p>
+
+            <img
+              src="/assets/images/products/{{ categoryCard.image }}.webp"
+              width="92"
+              height="92"
+            />
+          </a>
+        }
+      </div>
+
+      <div
+        class="pointer-events-none absolute bottom-0 right-0 top-0 hidden w-20 bg-gradient-to-l from-white to-transparent lg:block"
+      ></div>
+    </div>
   </div>
 </div>
