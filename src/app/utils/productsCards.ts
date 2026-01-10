@@ -1,4 +1,7 @@
-import { ProductCategoryCard } from '@core/interfaces/products.interface';
+import {
+  ProductBrandCard,
+  ProductCategoryCard,
+} from '@core/interfaces/products.interface';
 
 export const productCategoriesCards: ProductCategoryCard[] = [
   {
@@ -25,5 +28,28 @@ export const productCategoriesCards: ProductCategoryCard[] = [
     text: 'ჭკვიანი საათები',
     image: 'smart-watch-category',
     route: '',
+  },
+];
+
+export const productBrandCards: ProductBrandCard[] = [
+  {
+    brand: 'logitech',
+    title: 'ხარისხი და კომფორტი',
+    color: 'cream',
+  },
+  {
+    brand: 'apple',
+    title: 'ხარისხი და კომფორტი',
+    color: 'pear',
+  },
+  {
+    brand: 'anker',
+    title: 'ხარისხი და კომფორტი',
+    color: 'info',
+  },
+  {
+    brand: 'logitech',
+    title: 'ხარისხი და კომფორტი',
+    color: 'cream',
   },
 ];

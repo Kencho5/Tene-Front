@@ -112,10 +112,10 @@
           >
             <p class="font-semibold">{{ categoryCard.text }}</p>
 
-            <img
+            <app-image
               src="/assets/images/products/{{ categoryCard.image }}.webp"
-              width="92"
-              height="92"
+              [width]="92"
+              [height]="92"
             />
           </a>
         }
@@ -206,6 +206,100 @@
       <button
         type="button"
         (click)="scrollRight(productsScrollContainer)"
+        class="absolute right-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-green-10 p-3 shadow-low transition-all hover:bg-green-20 lg:flex"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4"
+            stroke="#068C0B"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+
+      <div
+        class="pointer-events-none absolute bottom-0 right-0 top-0 hidden w-20 bg-gradient-to-l from-white to-transparent lg:block"
+      ></div>
+    </div>
+  </div>
+
+  <div class="space-y-6">
+    <h1 class="text-xl sm:text-[28px]">რჩეული ბრენდები</h1>
+
+    <div class="relative">
+      <div
+        #brandsScrollContainer
+        (scroll)="onScroll(brandsScrollContainer, 'brands')"
+        class="hide-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:px-0"
+        style="scrollbar-width: none; -ms-overflow-style: none"
+      >
+        @for (brandCard of productBrandCards; track $index) {
+          <a
+            routerLink=""
+            [style.background]="getBrandGradient(brandCard.color)"
+            class="flex h-[184px] flex-shrink-0 items-center gap-4 rounded-2xl p-4 shadow-low sm:w-[410px]"
+          >
+            <div class="space-y-4 p-2">
+              <div class="inline-block rounded-full bg-platinum-10 px-3 py-2">
+                <img
+                  src="/assets/images/products/{{ brandCard.brand }}.svg"
+                  class="h-5"
+                />
+              </div>
+
+              <h2 class="max-w-[161px] sm:text-xl">ხარისხი და კომფორტი</h2>
+
+              <p
+                class="flex items-center gap-1.5 text-sm font-semibold text-green-70"
+              >
+                აღმოაჩინე
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M12.082 5.41669L16.5594 9.89305C16.63 9.96248 16.6654 10.0535 16.6654 10.1445M12.082 14.5834L16.5594 10.3959C16.63 10.3265 16.6654 10.2355 16.6654 10.1445M16.6654 10.1445H3.33203"
+                    stroke="#068C0B"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </p>
+            </div>
+
+            <app-image
+              src="/assets/images/products/{{ brandCard.brand }}-product.webp"
+              [width]="185"
+              class="w-[105px] sm:w-[185px]"
+            />
+          </a>
+        }
+      </div>
+
+      @if (canScrollLeft("brands")) {
+        <button
+          type="button"
+          (click)="scrollLeft(brandsScrollContainer)"
+          class="absolute left-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-green-10 p-3 shadow-low transition-all hover:bg-green-20 lg:flex"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            class="rotate-180"
+          >
+            <path
+              d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4"
+              stroke="#068C0B"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      }
+
+      <button
+        type="button"
+        (click)="scrollRight(brandsScrollContainer)"
         class="absolute right-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-green-10 p-3 shadow-low transition-all hover:bg-green-20 lg:flex"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">

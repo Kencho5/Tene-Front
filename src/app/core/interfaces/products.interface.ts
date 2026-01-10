@@ -54,3 +54,9 @@ export interface ProductCategoryCard {
   image: string;
   route: string;
 }
+
+export interface ProductBrandCard {
+  brand: string;
+  title: string;
+  color: string;
+}
