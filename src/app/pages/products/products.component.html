@@ -168,8 +168,59 @@
   <div class="space-y-6">
     <h1 class="text-xl sm:text-[28px]">ტოპ პროდუქტები</h1>
 
-    <div class="flex gap-4">
-      <app-product-card />
+    <div class="relative">
+      <div
+        #productsScrollContainer
+        (scroll)="onScroll(productsScrollContainer, 'products')"
+        class="hide-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:px-0"
+        style="scrollbar-width: none; -ms-overflow-style: none"
+      >
+        @for (_ of [].constructor(10); track $index) {
+          <app-product-card />
+        }
+      </div>
+
+      @if (canScrollLeft('products')) {
+        <button
+          type="button"
+          (click)="scrollLeft(productsScrollContainer)"
+          class="absolute left-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-green-10 p-3 shadow-low transition-all hover:bg-green-20 lg:flex"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            class="rotate-180"
+          >
+            <path
+              d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4"
+              stroke="#068C0B"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      }
+
+      <button
+        type="button"
+        (click)="scrollRight(productsScrollContainer)"
+        class="absolute right-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-green-10 p-3 shadow-low transition-all hover:bg-green-20 lg:flex"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4"
+            stroke="#068C0B"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+
+      <div
+        class="pointer-events-none absolute bottom-0 right-0 top-0 hidden w-20 bg-gradient-to-l from-white to-transparent lg:block"
+      ></div>
     </div>
   </div>
 </div>
