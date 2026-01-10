@@ -3,7 +3,7 @@ import {
   ProductCategoryCard,
 } from '@core/interfaces/products.interface';
 
-export const productCategoriesCards: ProductCategoryCard[] = [
+export const productCategoryCards: ProductCategoryCard[] = [
   {
     text: 'მობილურები',
     image: 'mobile-category',
@@ -51,5 +51,32 @@ export const productBrandCards: ProductBrandCard[] = [
     brand: 'logitech',
     title: 'ხარისხი და კომფორტი',
     color: 'cream',
+  },
+];
+
+export const productTopCategoryCards: ProductCategoryCard[] = [
+  {
+    text: 'მობილურები',
+    image: 'mobile-category',
+    route: '',
+    color: 'green',
+  },
+  {
+    text: 'ყურსასმენები',
+    image: 'headphones-category',
+    route: '',
+    color: 'cream',
+  },
+  {
+    text: 'პლანშეტები',
+    image: 'tablet-category',
+    route: '',
+    color: 'blue',
+  },
+  {
+    text: 'საათები',
+    image: 'smart-watch-category',
+    route: '',
+    color: 'purple',
   },
 ];

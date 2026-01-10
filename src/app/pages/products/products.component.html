@@ -105,7 +105,7 @@
         class="hide-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:px-0"
         style="scrollbar-width: none; -ms-overflow-style: none"
       >
-        @for (categoryCard of productCategoriesCards; track $index) {
+        @for (categoryCard of productCategoryCards; track $index) {
           <a
             [routerLink]="categoryCard.route"
             class="flex h-[116px] w-[270px] flex-shrink-0 items-center justify-center gap-4 rounded-2xl bg-platinum-10 p-2 transition-all hover:bg-platinum-20"
@@ -315,6 +315,54 @@
       <div
         class="pointer-events-none absolute bottom-0 right-0 top-0 hidden w-20 bg-gradient-to-l from-white to-transparent lg:block"
       ></div>
+    </div>
+  </div>
+
+  <div
+    class="relative h-[500px] space-y-6"
+    style="
+      margin-left: calc(-50vw + 50%);
+      margin-right: calc(-50vw + 50%);
+      padding-left: calc(50vw - 50%);
+      padding-right: calc(50vw - 50%);
+      background: linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #fef6e8 30%,
+        #fef6e8 70%,
+        #ffffff 100%
+      );
+    "
+  >
+    <div class="container space-y-6 px-4">
+      <h1 class="text-xl sm:text-[28px]">ტოპ კატეგორიები</h1>
+
+      <div class="grid grid-cols-2 gap-6 lg:grid-cols-4">
+        @for (topCategoryCard of productTopCategoryCards; track $index) {
+          <a
+            routerLink=""
+            class="relative flex h-[187px] flex-col items-center justify-between rounded-2xl bg-white p-2 shadow-low sm:h-[320px] sm:p-3"
+          >
+            <img
+              src="/assets/images/products/category-{{
+                topCategoryCard.color
+              }}.svg"
+              class="h-[100px] sm:h-auto"
+            />
+
+            <img
+              src="/assets/images/products/{{ topCategoryCard.image }}.webp"
+              width="210"
+              height="210"
+              class="absolute top-1/2 w-[90px] -translate-y-1/2 sm:w-[210px]"
+            />
+
+            <h2 class="sm:b-2 text-sm sm:text-xl">
+              {{ topCategoryCard.text }}
+            </h2>
+          </a>
+        }
+      </div>
     </div>
   </div>
 </div>

@@ -53,6 +53,7 @@ export interface ProductCategoryCard {
   text: string;
   image: string;
   route: string;
+  color?: string;
 }
 
 export interface ProductBrandCard {

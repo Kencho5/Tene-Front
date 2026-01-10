@@ -3,7 +3,8 @@ import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { SharedModule } from '@shared/shared.module';
 import {
-  productCategoriesCards,
+  productCategoryCards,
+  productTopCategoryCards,
   productBrandCards,
 } from '@utils/productsCards';
 
@@ -18,7 +19,8 @@ import {
   `,
 })
 export class ProductsComponent {
-  readonly productCategoriesCards = productCategoriesCards;
+  readonly productCategoryCards = productCategoryCards;
+  readonly productTopCategoryCards = productTopCategoryCards;
   readonly productBrandCards = productBrandCards;
   readonly scrollStates = signal<Record<string, boolean>>({});
 
@@ -43,7 +45,8 @@ export class ProductsComponent {
 
   getBrandGradient(color: string): string {
     const gradients: Record<string, string> = {
-      cream: 'linear-gradient(270deg, rgba(247, 193, 82, 0.45) 0%, transparent 50%)',
+      cream:
+        'linear-gradient(270deg, rgba(247, 193, 82, 0.45) 0%, transparent 50%)',
       pear: 'linear-gradient(270deg, rgba(243, 249, 144, 0.5) 0%, transparent 50%)',
       info: 'linear-gradient(270deg, rgba(2, 132, 199, 0.45) 0%, transparent 50%)',
     };
