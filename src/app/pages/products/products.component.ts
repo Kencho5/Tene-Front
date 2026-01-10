@@ -1,10 +1,11 @@
 import { Component, signal } from '@angular/core';
+import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { SharedModule } from '@shared/shared.module';
 import { productCategoriesCards } from '@utils/productsCards';
 
 @Component({
   selector: 'app-products',
-  imports: [SharedModule],
+  imports: [SharedModule, ProductCardComponent],
   templateUrl: './products.component.html',
   styles: `
     .hide-scrollbar::-webkit-scrollbar {
