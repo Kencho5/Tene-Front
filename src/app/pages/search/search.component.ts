@@ -12,10 +12,22 @@ import { SharedModule } from '@shared/shared.module';
 export class SearchComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private debounceTimer?: number;
 
   readonly params = toSignal(this.route.queryParams, { initialValue: {} as Params });
 
-  setParam(key: string, value: string | undefined): void {
+  setParam(key: string, value: string | undefined, debounce = 0): void {
+    if (debounce > 0) {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = window.setTimeout(() => {
+        this.updateParam(key, value);
+      }, debounce);
+    } else {
+      this.updateParam(key, value);
+    }
+  }
+
+  private updateParam(key: string, value: string | undefined): void {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { [key]: value },

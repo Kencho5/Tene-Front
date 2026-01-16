@@ -16,7 +16,7 @@
           <input
             type="number"
             [value]="params()['priceFrom'] ?? ''"
-            (input)="setParam('priceFrom', $any($event.target).value || undefined)"
+            (input)="setParam('priceFrom', $any($event.target).value || undefined, 400)"
             placeholder="დან"
             class="w-full rounded-xl border border-platinum-20 p-3.5 outline-none"
           />
@@ -44,7 +44,7 @@
           <input
             type="number"
             [value]="params()['priceTo'] ?? ''"
-            (input)="setParam('priceTo', $any($event.target).value || undefined)"
+            (input)="setParam('priceTo', $any($event.target).value || undefined, 400)"
             placeholder="მდე"
             class="w-full rounded-xl border border-platinum-20 p-3.5 outline-none"
           />
