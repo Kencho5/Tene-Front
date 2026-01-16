@@ -1,0 +1,202 @@
+<div class="container py-10">
+  <!--FILTERS BOX-->
+  <div class="max-w-[350px] space-y-6 rounded-2xl bg-white p-6 shadow-low">
+    <div class="flex justify-between">
+      <h2 class="text-xl">ფილტრი</h2>
+      <button type="button" (click)="clearAll()" class="text-sm text-platinum-50">
+        გასუფთავება
+      </button>
+    </div>
+
+    <div class="space-y-3">
+      <p class="font-semibold">ფასი</p>
+
+      <div class="flex gap-3">
+        <div class="relative flex-1">
+          <input
+            type="number"
+            [value]="params()['priceFrom'] ?? ''"
+            (input)="setParam('priceFrom', $any($event.target).value || undefined)"
+            placeholder="დან"
+            class="w-full rounded-xl border border-platinum-20 p-3.5 outline-none"
+          />
+
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            class="absolute right-4 top-1/2 -translate-y-1/2"
+          >
+            <path
+              d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8Z"
+              stroke="#888888"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+            <path
+              d="M5.66786 10.6667V9.96545L6.44348 9.88753V9.85636C5.67586 9.40441 5.33203 8.6174 5.33203 7.72129C5.33203 6.49012 5.97171 5.54727 7.17911 5.25896V4.66675H7.74682V5.17324C7.82678 5.16545 7.91474 5.16545 8.01069 5.16545C8.09865 5.16545 8.17861 5.16545 8.26656 5.17324V4.66675H8.83428V5.25896C10.0497 5.55506 10.6654 6.54467 10.6654 7.94727H9.61789C9.61789 7.0122 9.386 6.37324 8.83428 6.08493V7.93948H8.26656V5.92909C8.1866 5.9135 8.09865 5.9135 8.01069 5.9135C7.91474 5.9135 7.82678 5.9135 7.74682 5.92909V7.93948H7.17911V6.08493C6.62738 6.35766 6.37951 6.96545 6.37951 7.80701C6.37951 9.03818 7.09115 9.84077 8.1946 9.84077H10.3215V10.6667H5.66786Z"
+              fill="#888888"
+            />
+          </svg>
+        </div>
+        <div class="relative flex-1">
+          <input
+            type="number"
+            [value]="params()['priceTo'] ?? ''"
+            (input)="setParam('priceTo', $any($event.target).value || undefined)"
+            placeholder="მდე"
+            class="w-full rounded-xl border border-platinum-20 p-3.5 outline-none"
+          />
+
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            class="absolute right-4 top-1/2 -translate-y-1/2"
+          >
+            <path
+              d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8Z"
+              stroke="#888888"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+            <path
+              d="M5.66786 10.6667V9.96545L6.44348 9.88753V9.85636C5.67586 9.40441 5.33203 8.6174 5.33203 7.72129C5.33203 6.49012 5.97171 5.54727 7.17911 5.25896V4.66675H7.74682V5.17324C7.82678 5.16545 7.91474 5.16545 8.01069 5.16545C8.09865 5.16545 8.17861 5.16545 8.26656 5.17324V4.66675H8.83428V5.25896C10.0497 5.55506 10.6654 6.54467 10.6654 7.94727H9.61789C9.61789 7.0122 9.386 6.37324 8.83428 6.08493V7.93948H8.26656V5.92909C8.1866 5.9135 8.09865 5.9135 8.01069 5.9135C7.91474 5.9135 7.82678 5.9135 7.74682 5.92909V7.93948H7.17911V6.08493C6.62738 6.35766 6.37951 6.96545 6.37951 7.80701C6.37951 9.03818 7.09115 9.84077 8.1946 9.84077H10.3215V10.6667H5.66786Z"
+              fill="#888888"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="h-px bg-platinum-20"></div>
+
+    <div class="space-y-6">
+      <p class="font-semibold">აქციის ტიპი</p>
+
+      <div class="flex items-center justify-between">
+        <p>ფასდაკლება</p>
+
+        <label class="relative inline-block h-5 w-5 cursor-pointer">
+          <input
+            type="checkbox"
+            [checked]="hasValue('saleType', 'discount')"
+            (change)="toggleParam('saleType', 'discount', $any($event.target).checked)"
+            class="peer sr-only"
+          />
+          <span
+            class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60"
+          ></span>
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+          >
+            <path
+              d="M16.6667 5L7.50004 14.1667L3.33337 10"
+              stroke="white"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </label>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <p>ტენე ქულები</p>
+
+        <label class="relative inline-block h-5 w-5 cursor-pointer">
+          <input
+            type="checkbox"
+            [checked]="hasValue('saleType', 'coins')"
+            (change)="toggleParam('saleType', 'coins', $any($event.target).checked)"
+            class="peer sr-only"
+          />
+          <span
+            class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60"
+          ></span>
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+          >
+            <path
+              d="M16.6667 5L7.50004 14.1667L3.33337 10"
+              stroke="white"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </label>
+      </div>
+    </div>
+
+    <div class="h-px bg-platinum-20"></div>
+
+    <div class="space-y-6">
+      <p class="font-semibold">ბრენდი</p>
+
+      <div class="flex items-center justify-between">
+        <p>Belkin</p>
+
+        <label class="relative inline-block h-5 w-5 cursor-pointer">
+          <input
+            type="checkbox"
+            [checked]="hasValue('brand', 'belkin')"
+            (change)="toggleParam('brand', 'belkin', $any($event.target).checked)"
+            class="peer sr-only"
+          />
+          <span
+            class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60"
+          ></span>
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+          >
+            <path
+              d="M16.6667 5L7.50004 14.1667L3.33337 10"
+              stroke="white"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </label>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <p>UGREEN</p>
+
+        <label class="relative inline-block h-5 w-5 cursor-pointer">
+          <input
+            type="checkbox"
+            [checked]="hasValue('brand', 'ugreen')"
+            (change)="toggleParam('brand', 'ugreen', $any($event.target).checked)"
+            class="peer sr-only"
+          />
+          <span
+            class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60"
+          ></span>
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+          >
+            <path
+              d="M16.6667 5L7.50004 14.1667L3.33337 10"
+              stroke="white"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>

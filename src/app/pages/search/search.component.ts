@@ -1,13 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { SharedModule } from '@shared/shared.module';
-import { SearchFilters } from '@core/interfaces/search.interface';
 
 @Component({
   selector: 'app-search',
@@ -18,54 +12,31 @@ import { SearchFilters } from '@core/interfaces/search.interface';
 export class SearchComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly queryParams = toSignal(this.route.queryParams, {
-    initialValue: {} as Params,
-  });
 
-  readonly filters = computed<SearchFilters>(() => {
-    const params = this.queryParams();
-    return {
-      priceFrom: params['priceFrom'],
-      priceTo: params['priceTo'],
-      saleType: params['saleType'],
-      brand: params['brand'],
-      color: params['color'],
-    };
-  });
+  readonly params = toSignal(this.route.queryParams, { initialValue: {} as Params });
 
-  readonly activeFilters = computed(
-    () =>
-      Object.fromEntries(
-        Object.entries(this.filters()).filter(
-          ([_, value]) => value !== undefined,
-        ),
-      ) as Partial<SearchFilters>,
-  );
-
-  readonly activeFilterCount = computed(
-    () => Object.keys(this.activeFilters()).length,
-  );
-
-  updateQueryParams(params: Partial<SearchFilters>): void {
+  setParam(key: string, value: string | undefined): void {
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: params,
+      queryParams: { [key]: value },
       queryParamsHandling: 'merge',
     });
   }
 
-  clearQueryParams(keys?: (keyof SearchFilters)[]): void {
-    if (!keys) {
-      this.router.navigate([], { relativeTo: this.route });
-      return;
-    }
+  toggleParam(key: string, value: string, checked: boolean): void {
+    const current = this.params()[key] as string | undefined;
+    const values = current ? current.split(',') : [];
+    const updated = checked ? [...values, value] : values.filter((v: string) => v !== value);
 
-    const currentParams = { ...this.queryParams() };
-    keys.forEach((key) => delete currentParams[key]);
+    this.setParam(key, updated.length ? updated.join(',') : undefined);
+  }
 
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: currentParams,
-    });
+  hasValue(key: string, value: string): boolean {
+    const current = this.params()[key] as string | undefined;
+    return current ? current.split(',').includes(value) : false;
+  }
+
+  clearAll(): void {
+    this.router.navigate([], { relativeTo: this.route });
   }
 }
