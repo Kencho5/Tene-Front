@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { Product } from '@core/interfaces/products.interface';
+import { ProductResponse } from '@core/interfaces/products.interface';
 import { SharedModule } from '@shared/shared.module';
 import { ImageComponent } from '../image/image.component';
 
@@ -9,5 +9,5 @@ import { ImageComponent } from '../image/image.component';
   templateUrl: './product-card.component.html',
 })
 export class ProductCardComponent {
-  //readonly product = input.required<Product>();
+  readonly product = input.required<ProductResponse>();
 }
