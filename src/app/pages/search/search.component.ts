@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ProductsService } from '@core/services/products/products.service';
 import { SharedModule } from '@shared/shared.module';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-search',
@@ -12,9 +14,22 @@ import { SharedModule } from '@shared/shared.module';
 export class SearchComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly productsService = inject(ProductsService);
   private debounceTimer?: number;
 
   readonly params = toSignal(this.route.queryParams, { initialValue: {} as Params });
+
+  private readonly queryString = computed(() => {
+    const params = this.params();
+    return new URLSearchParams(params).toString();
+  });
+
+  readonly products = toSignal(
+    toObservable(this.queryString).pipe(
+      switchMap(query => this.productsService.searchProduct(query))
+    ),
+    { initialValue: [] }
+  );
 
   setParam(key: string, value: string | undefined, debounce = 0): void {
     if (debounce > 0) {
@@ -38,7 +53,9 @@ export class SearchComponent {
   toggleParam(key: string, value: string, checked: boolean): void {
     const current = this.params()[key] as string | undefined;
     const values = current ? current.split(',') : [];
-    const updated = checked ? [...values, value] : values.filter((v: string) => v !== value);
+    const updated = checked
+      ? [...values, value]
+      : values.filter((v: string) => v !== value);
 
     this.setParam(key, updated.length ? updated.join(',') : undefined);
   }

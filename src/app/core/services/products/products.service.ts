@@ -9,6 +9,10 @@ import { Observable } from 'rxjs';
 export class ProductsService {
   private readonly http = inject(HttpClient);
 
+  searchProduct(params: string): Observable<ProductResponse[]> {
+    return this.http.get<ProductResponse[]>(`/products?${params}`);
+  }
+
   getProduct(product_id: string): Observable<ProductResponse> {
     return this.http.get<ProductResponse>(`/products/${product_id}`);
   }

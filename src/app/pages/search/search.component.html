@@ -3,7 +3,11 @@
   <div class="max-w-[350px] space-y-6 rounded-2xl bg-white p-6 shadow-low">
     <div class="flex justify-between">
       <h2 class="text-xl">ფილტრი</h2>
-      <button type="button" (click)="clearAll()" class="text-sm text-platinum-50">
+      <button
+        type="button"
+        (click)="clearAll()"
+        class="text-sm text-platinum-50"
+      >
         გასუფთავება
       </button>
     </div>
@@ -15,8 +19,14 @@
         <div class="relative flex-1">
           <input
             type="number"
-            [value]="params()['priceFrom'] ?? ''"
-            (input)="setParam('priceFrom', $any($event.target).value || undefined, 400)"
+            [value]="params()['price_from'] ?? ''"
+            (input)="
+              setParam(
+                'price_from',
+                $any($event.target).value || undefined,
+                400
+              )
+            "
             placeholder="დან"
             class="w-full rounded-xl border border-platinum-20 p-3.5 outline-none"
           />
@@ -43,8 +53,10 @@
         <div class="relative flex-1">
           <input
             type="number"
-            [value]="params()['priceTo'] ?? ''"
-            (input)="setParam('priceTo', $any($event.target).value || undefined, 400)"
+            [value]="params()['price_to'] ?? ''"
+            (input)="
+              setParam('price_to', $any($event.target).value || undefined, 400)
+            "
             placeholder="მდე"
             class="w-full rounded-xl border border-platinum-20 p-3.5 outline-none"
           />
@@ -82,8 +94,10 @@
         <label class="relative inline-block h-5 w-5 cursor-pointer">
           <input
             type="checkbox"
-            [checked]="hasValue('saleType', 'discount')"
-            (change)="toggleParam('saleType', 'discount', $any($event.target).checked)"
+            [checked]="hasValue('sale_type', 'discount')"
+            (change)="
+              toggleParam('sale_type', 'discount', $any($event.target).checked)
+            "
             class="peer sr-only"
           />
           <span
@@ -111,8 +125,10 @@
         <label class="relative inline-block h-5 w-5 cursor-pointer">
           <input
             type="checkbox"
-            [checked]="hasValue('saleType', 'coins')"
-            (change)="toggleParam('saleType', 'coins', $any($event.target).checked)"
+            [checked]="hasValue('sale_type', 'coins')"
+            (change)="
+              toggleParam('sale_type', 'coins', $any($event.target).checked)
+            "
             class="peer sr-only"
           />
           <span
@@ -147,7 +163,9 @@
           <input
             type="checkbox"
             [checked]="hasValue('brand', 'belkin')"
-            (change)="toggleParam('brand', 'belkin', $any($event.target).checked)"
+            (change)="
+              toggleParam('brand', 'belkin', $any($event.target).checked)
+            "
             class="peer sr-only"
           />
           <span
@@ -176,7 +194,9 @@
           <input
             type="checkbox"
             [checked]="hasValue('brand', 'ugreen')"
-            (change)="toggleParam('brand', 'ugreen', $any($event.target).checked)"
+            (change)="
+              toggleParam('brand', 'ugreen', $any($event.target).checked)
+            "
             class="peer sr-only"
           />
           <span
