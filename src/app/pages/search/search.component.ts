@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ProductsService } from '@core/services/products/products.service';
 import { SharedModule } from '@shared/shared.module';
-import { switchMap } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-search',
@@ -19,13 +19,9 @@ export class SearchComponent {
 
   readonly params = toSignal(this.route.queryParams, { initialValue: {} as Params });
 
-  private readonly queryString = computed(() => {
-    const params = this.params();
-    return new URLSearchParams(params).toString();
-  });
-
   readonly products = toSignal(
-    toObservable(this.queryString).pipe(
+    this.route.queryParams.pipe(
+      map(params => new URLSearchParams(params).toString()),
       switchMap(query => this.productsService.searchProduct(query))
     ),
     { initialValue: [] }
