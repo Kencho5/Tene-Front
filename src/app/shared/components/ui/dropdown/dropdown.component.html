@@ -11,6 +11,7 @@
     (click)="opened.set(!opened())"
   >
     <span
+      class="truncate"
       [ngClass]="{
         'text-platinum-50': !selectedValue(),
         'text-platinum-100': selectedValue(),

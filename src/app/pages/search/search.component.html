@@ -231,19 +231,15 @@
           <app-breadcrumb [items]="breadcrumbItems" />
         </div>
 
-        <app-dropdown
-          [selectedValue]="params()['sort_by']"
-          (selectedValueChange)="setParam('sort_by', $event)"
-          placeholder="სორტირება"
-          [items]="sortOptions"
-        />
+        <div class="w-[224px]">
+          <app-dropdown
+            [selectedValue]="params()['sort_by']"
+            (selectedValueChange)="setParam('sort_by', $event)"
+            placeholder="სორტირება"
+            [items]="sortOptions"
+          />
+        </div>
       </div>
-    </div>
-
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      @for (product of products(); track product.product.id) {
-        <app-product-card [product]="product" />
-      }
     </div>
   </div>
 </div>

@@ -5,13 +5,12 @@ import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ProductsService } from '@core/services/products/products.service';
 import { BreadcrumbComponent, BreadcrumbItem } from '@shared/components/ui/breadcrumb/breadcrumb.component';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
-import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { SharedModule } from '@shared/shared.module';
 import { map, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-search',
-  imports: [SharedModule, DropdownComponent, BreadcrumbComponent, ProductCardComponent],
+  imports: [SharedModule, DropdownComponent, BreadcrumbComponent],
   templateUrl: './search.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -1,4 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ProductsService } from '@core/services/products/products.service';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { SharedModule } from '@shared/shared.module';
@@ -19,10 +21,16 @@ import {
   `,
 })
 export class ProductsComponent {
+  private readonly productsService = inject(ProductsService);
+
   readonly productCategoryCards = productCategoryCards;
   readonly productTopCategoryCards = productTopCategoryCards;
   readonly productBrandCards = productBrandCards;
   readonly scrollStates = signal<Record<string, boolean>>({});
+
+  readonly products = toSignal(this.productsService.searchProduct(''), {
+    initialValue: [],
+  });
 
   scrollLeft(element: HTMLElement) {
     element.scrollBy({ left: -300, behavior: 'smooth' });

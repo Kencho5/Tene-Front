@@ -175,8 +175,8 @@
         class="hide-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4 py-2 lg:mx-0 lg:px-1 lg:py-2"
         style="scrollbar-width: none; -ms-overflow-style: none"
       >
-        @for (_ of [].constructor(10); track $index) {
-          <app-product-card />
+        @for (product of products(); track product.product.id) {
+          <app-product-card [product]="product" />
         }
       </div>
 

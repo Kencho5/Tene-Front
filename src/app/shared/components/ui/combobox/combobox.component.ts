@@ -46,8 +46,9 @@ export class ComboboxComponent {
   });
 
   selectItem(value: string) {
-    this.selectedValueChange.emit(value);
-    this.selectedValue.set(value);
+    const newValue = this.selectedValue() === value ? undefined : value;
+    this.selectedValueChange.emit(newValue!);
+    this.selectedValue.set(newValue);
     this.opened.set(false);
   }
 
