@@ -6,11 +6,11 @@
   ></div>
 }
 
-<div class="container flex gap-10 px-4 py-10">
+<div class="container flex items-start gap-10 px-4 py-10 xl:px-0">
   <!--FILTERS BOX-->
   <div
     [class.hidden]="!isFilterOpen()"
-    class="fixed inset-x-0 bottom-0 z-50 max-h-[80vh] space-y-6 overflow-y-auto rounded-t-2xl bg-white p-6 shadow-low md:static md:block md:max-h-none md:max-w-[350px] md:rounded-2xl"
+    class="fixed inset-x-0 bottom-0 z-50 max-h-[80vh] space-y-6 overflow-y-auto rounded-t-2xl bg-white p-6 shadow-low md:static md:block md:max-h-none md:w-[350px] md:flex-shrink-0 md:rounded-2xl"
   >
     <div class="flex items-center justify-between">
       <h2 class="text-xl">ფილტრი</h2>
@@ -288,9 +288,15 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-6 sm:flex-row sm:flex-wrap">
-      @for (product of products(); track $index) {
-        <app-product-card [product]="product" />
+    <div class="flex flex-col gap-6 sm:flex-row sm:flex-wrap sm:gap-6">
+      @if (isLoading()) {
+        @for (skeleton of [].constructor(6); track skeleton) {
+          <app-product-card-skeleton />
+        }
+      } @else {
+        @for (product of products(); track $index) {
+          <app-product-card [product]="product" />
+        }
       }
     </div>
   </div>

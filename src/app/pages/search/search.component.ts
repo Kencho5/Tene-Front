@@ -14,6 +14,7 @@ import {
 } from '@shared/components/ui/breadcrumb/breadcrumb.component';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
+import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 import { SharedModule } from '@shared/shared.module';
 import { map, switchMap, tap } from 'rxjs';
 
@@ -24,6 +25,7 @@ import { map, switchMap, tap } from 'rxjs';
     DropdownComponent,
     BreadcrumbComponent,
     ProductCardComponent,
+    ProductCardSkeletonComponent,
   ],
   templateUrl: './search.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,8 +40,8 @@ export class SearchComponent {
   readonly params = toSignal(this.route.queryParams, {
     initialValue: {} as Params,
   });
-  readonly searchTime = signal<number>(0);
   readonly isFilterOpen = signal<boolean>(false);
+  readonly isLoading = signal<boolean>(false);
 
   readonly breadcrumbItems: BreadcrumbItem[] = [
     { label: 'მთავარი', route: '/' },
@@ -53,12 +55,15 @@ export class SearchComponent {
 
   readonly products = toSignal(
     this.route.queryParams.pipe(
-      tap(() => (this.startTime = performance.now())),
+      tap(() => {
+        this.startTime = performance.now();
+        this.isLoading.set(true);
+      }),
       map((params) => new URLSearchParams(params).toString()),
       switchMap((query) => this.productsService.searchProduct(query)),
-      tap(() =>
-        this.searchTime.set((performance.now() - this.startTime) / 1000),
-      ),
+      tap(() => {
+        this.isLoading.set(false);
+      }),
     ),
     { initialValue: [] },
   );
