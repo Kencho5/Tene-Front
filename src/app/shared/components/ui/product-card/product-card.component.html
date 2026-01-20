@@ -1,6 +1,6 @@
 <a
   [routerLink]="['/products', product().product.id]"
-  class="flex w-full max-w-[304px] flex-col gap-4 rounded-2xl bg-white p-4 shadow-low"
+  class="flex h-[366px] w-full max-w-[304px] flex-col gap-4 rounded-2xl bg-white p-4 shadow-low"
 >
   <div
     class="h-[180px] w-full overflow-hidden rounded-xl border-[0.5px] border-platinum-20"
@@ -14,16 +14,18 @@
     />
   </div>
 
-  <div class="space-y-5">
+  <div class="flex flex-1 flex-col justify-between space-y-5">
     <div class="space-y-1">
-      <p class="text-sm font-semibold text-green-70">კაბელები</p>
+      <p class="text-sm font-semibold text-green-70">
+        {{ product().product.product_type }}
+      </p>
       <p class="text-base font-normal">
-        ტენე - Type c to Type c 2 მ (ახალი ანდროიდის კაბელი)
+        {{ product().product.name }}
       </p>
     </div>
 
     <div class="flex items-center justify-between">
-      <h2 class="text-xl">75.00₾</h2>
+      <h2 class="text-xl">{{ product().product.price }}₾</h2>
 
       <button
         type="button"

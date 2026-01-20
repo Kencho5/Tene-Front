@@ -39,6 +39,7 @@ export class SearchComponent {
     initialValue: {} as Params,
   });
   readonly searchTime = signal<number>(0);
+  readonly isFilterOpen = signal<boolean>(false);
 
   readonly breadcrumbItems: BreadcrumbItem[] = [
     { label: 'მთავარი', route: '/' },

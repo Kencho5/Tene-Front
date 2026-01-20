@@ -1,17 +1,43 @@
+<!-- Mobile backdrop -->
+@if (isFilterOpen()) {
+  <div
+    (click)="isFilterOpen.set(false)"
+    class="fixed inset-0 z-50 bg-black/50 md:hidden"
+  ></div>
+}
+
 <div class="container flex gap-10 px-4 py-10">
   <!--FILTERS BOX-->
   <div
-    class="hidden max-w-[350px] space-y-6 rounded-2xl bg-white p-6 shadow-low sm:block"
+    [class.hidden]="!isFilterOpen()"
+    class="fixed inset-x-0 bottom-0 z-50 max-h-[80vh] space-y-6 overflow-y-auto rounded-t-2xl bg-white p-6 shadow-low md:static md:block md:max-h-none md:max-w-[350px] md:rounded-2xl"
   >
-    <div class="flex justify-between">
+    <div class="flex items-center justify-between">
       <h2 class="text-xl">ფილტრი</h2>
-      <button
-        type="button"
-        (click)="clearAll()"
-        class="text-sm text-platinum-50"
-      >
-        გასუფთავება
-      </button>
+      <div class="flex items-center gap-4">
+        <button
+          type="button"
+          (click)="clearAll()"
+          class="text-sm text-platinum-50"
+        >
+          გასუფთავება
+        </button>
+        <button
+          type="button"
+          (click)="isFilterOpen.set(false)"
+          class="md:hidden"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M18 6L6 18M6 6L18 18"
+              stroke="#6D6D6D"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
     </div>
 
     <div class="space-y-3">
@@ -227,13 +253,13 @@
 
     <div class="h-px bg-platinum-20"></div>
 
-    <div class="flex items-center justify-between">
-      <div>
-        <div class="mb-5">
-          <app-breadcrumb [items]="breadcrumbItems" />
-        </div>
+    <div>
+      <div class="mb-5">
+        <app-breadcrumb [items]="breadcrumbItems" />
+      </div>
 
-        <div class="w-[224px]">
+      <div class="flex w-full items-center justify-between">
+        <div class="w-[196px] sm:w-[224px]">
           <app-dropdown
             [selectedValue]="params()['sort_by']"
             (selectedValueChange)="setParam('sort_by', $event)"
@@ -241,6 +267,24 @@
             [items]="sortOptions"
           />
         </div>
+
+        <button
+          type="button"
+          (click)="isFilterOpen.set(true)"
+          class="flex items-center gap-2 rounded-xl border border-platinum-20 px-3 py-2.5 md:hidden"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M4 14H8M6 20V14M6 4V11M10 10H14M12 4V10M12 20V13M16 14H20M18 20V14M18 4V11"
+              stroke="#6D6D6D"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          ფილტრი
+        </button>
       </div>
     </div>
 
