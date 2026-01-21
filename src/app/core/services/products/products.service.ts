@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ProductResponse } from '@core/interfaces/products.interface';
+import {
+  ProductFacets,
+  ProductResponse,
+} from '@core/interfaces/products.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -15,5 +18,9 @@ export class ProductsService {
 
   getProduct(product_id: string): Observable<ProductResponse> {
     return this.http.get<ProductResponse>(`/products/${product_id}`);
+  }
+
+  getFacets(params: string): Observable<ProductFacets> {
+    return this.http.get<ProductFacets>(`/products/facets?${params}`);
   }
 }

@@ -181,70 +181,179 @@
 
     <div class="h-px bg-platinum-20"></div>
 
+    <!-- Brands Section -->
     <div class="space-y-6">
       <p class="font-semibold">ბრენდი</p>
 
-      <div class="flex items-center justify-between">
-        <p>Belkin</p>
-
-        <label class="relative inline-block h-5 w-5 cursor-pointer">
+      @if (isFacetsLoading()) {
+        <!-- Loading skeleton -->
+        <div class="space-y-4">
+          @for (skeleton of [1, 2, 3]; track skeleton) {
+            <div class="flex items-center justify-between">
+              <div class="h-4 w-24 animate-pulse rounded bg-platinum-20"></div>
+              <div class="h-5 w-5 animate-pulse rounded bg-platinum-20"></div>
+            </div>
+          }
+        </div>
+      } @else {
+        <!-- Brand search input -->
+        <div class="relative">
           <input
-            type="checkbox"
-            [checked]="hasValue('brand', 'belkin')"
-            (change)="
-              toggleParam('brand', 'belkin', $any($event.target).checked)
-            "
-            class="peer sr-only"
+            type="text"
+            [value]="brandSearch()"
+            (input)="brandSearch.set($any($event.target).value)"
+            placeholder="ძიება..."
+            class="w-full rounded-xl border border-platinum-20 p-3 pr-10 text-sm outline-none"
           />
-          <span
-            class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60"
-          ></span>
           <svg
+            width="20"
+            height="20"
             viewBox="0 0 20 20"
             fill="none"
-            class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+            class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2"
           >
             <path
-              d="M16.6667 5L7.50004 14.1667L3.33337 10"
-              stroke="white"
-              stroke-width="2.5"
+              d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z"
+              stroke="#888888"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M19 19L14.65 14.65"
+              stroke="#888888"
+              stroke-width="1.5"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
           </svg>
-        </label>
-      </div>
+        </div>
 
-      <div class="flex items-center justify-between">
-        <p>UGREEN</p>
+        <!-- Brand list with scroll -->
+        <div class="max-h-[200px] space-y-4 overflow-y-auto">
+          @for (brand of filteredBrands(); track brand.value) {
+            <div
+              class="flex items-center justify-between"
+              [class.opacity-50]="brand.count === 0"
+            >
+              <div class="flex items-center gap-2">
+                <p>{{ brand.value | titlecase }}</p>
+                <span class="text-xs text-platinum-50"
+                  >({{ brand.count }})</span
+                >
+              </div>
 
-        <label class="relative inline-block h-5 w-5 cursor-pointer">
-          <input
-            type="checkbox"
-            [checked]="hasValue('brand', 'ugreen')"
-            (change)="
-              toggleParam('brand', 'ugreen', $any($event.target).checked)
-            "
-            class="peer sr-only"
-          />
-          <span
-            class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60"
-          ></span>
-          <svg
-            viewBox="0 0 20 20"
-            fill="none"
-            class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
-          >
-            <path
-              d="M16.6667 5L7.50004 14.1667L3.33337 10"
-              stroke="white"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </label>
-      </div>
+              <label class="relative inline-block h-5 w-5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  [checked]="hasValue('brand', brand.value.toLowerCase())"
+                  [disabled]="brand.count === 0"
+                  (change)="
+                    toggleParam(
+                      'brand',
+                      brand.value.toLowerCase(),
+                      $any($event.target).checked
+                    )
+                  "
+                  class="peer sr-only"
+                />
+                <span
+                  class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
+                ></span>
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+                >
+                  <path
+                    d="M16.6667 5L7.50004 14.1667L3.33337 10"
+                    stroke="white"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </label>
+            </div>
+          }
+
+          @if (filteredBrands().length === 0) {
+            <p class="text-sm text-platinum-50">მონაცემები არ მოიძებნა</p>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="h-px bg-platinum-20"></div>
+
+    <!-- Colors Section -->
+    <div class="space-y-6">
+      <p class="font-semibold">ფერი</p>
+
+      @if (isFacetsLoading()) {
+        <!-- Loading skeleton -->
+        <div class="space-y-4">
+          @for (skeleton of [1, 2, 3]; track skeleton) {
+            <div class="flex items-center justify-between">
+              <div class="h-4 w-20 animate-pulse rounded bg-platinum-20"></div>
+              <div class="h-5 w-5 animate-pulse rounded bg-platinum-20"></div>
+            </div>
+          }
+        </div>
+      } @else {
+        <!-- Colors list -->
+        <div class="space-y-4">
+          @for (color of facets().colors; track color.value) {
+            <div
+              class="flex items-center justify-between"
+              [class.opacity-50]="color.count === 0"
+            >
+              <div class="flex items-center gap-2">
+                <p>{{ color.value }}</p>
+                <span class="text-xs text-platinum-50"
+                  >({{ color.count }})</span
+                >
+              </div>
+
+              <label class="relative inline-block h-5 w-5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  [checked]="hasValue('color', color.value.toLowerCase())"
+                  [disabled]="color.count === 0"
+                  (change)="
+                    toggleParam(
+                      'color',
+                      color.value.toLowerCase(),
+                      $any($event.target).checked
+                    )
+                  "
+                  class="peer sr-only"
+                />
+                <span
+                  class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
+                ></span>
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+                >
+                  <path
+                    d="M16.6667 5L7.50004 14.1667L3.33337 10"
+                    stroke="white"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </label>
+            </div>
+          }
+
+          @if (facets().colors.length === 0) {
+            <p class="text-sm text-platinum-50">მონაცემები არ მოიძებნა</p>
+          }
+        </div>
+      }
     </div>
   </div>
 

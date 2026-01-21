@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -16,7 +17,8 @@ import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.compo
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 import { SharedModule } from '@shared/shared.module';
-import { map, switchMap, tap } from 'rxjs';
+import { distinctUntilChanged, map, switchMap, tap } from 'rxjs';
+import { ProductFacets } from '@core/interfaces/products.interface';
 
 @Component({
   selector: 'app-search',
@@ -42,6 +44,8 @@ export class SearchComponent {
   });
   readonly isFilterOpen = signal<boolean>(false);
   readonly isLoading = signal<boolean>(false);
+  readonly isFacetsLoading = signal<boolean>(false);
+  readonly brandSearch = signal<string>('');
 
   readonly breadcrumbItems: BreadcrumbItem[] = [
     { label: 'მთავარი', route: '/' },
@@ -67,6 +71,44 @@ export class SearchComponent {
     ),
     { initialValue: [] },
   );
+
+  readonly facets = toSignal(
+    this.route.queryParams.pipe(
+      map((params) => {
+        const urlParams = new URLSearchParams(params);
+        const searchParams = new URLSearchParams();
+
+        if (urlParams.has('query'))
+          searchParams.set('query', urlParams.get('query')!);
+        if (urlParams.has('product_type'))
+          searchParams.set('product_type', urlParams.get('product_type')!);
+        if (urlParams.has('price_from'))
+          searchParams.set('price_from', urlParams.get('price_from')!);
+        if (urlParams.has('price_to'))
+          searchParams.set('price_to', urlParams.get('price_to')!);
+
+        return searchParams.toString();
+      }),
+      distinctUntilChanged(),
+      tap(() => this.isFacetsLoading.set(true)),
+      switchMap((query) => this.productsService.getFacets(query)),
+      tap(() => this.isFacetsLoading.set(false)),
+    ),
+    { initialValue: { brands: [], colors: [] } as ProductFacets },
+  );
+
+  readonly filteredBrands = computed(() => {
+    const search = this.brandSearch().toLowerCase();
+    const brands = this.facets().brands;
+
+    if (!search) {
+      return brands.slice(0, 5);
+    }
+
+    return brands
+      .filter((brand) => brand.value.toLowerCase().includes(search))
+      .slice(0, 5);
+  });
 
   setParam(key: string, value: string | undefined, debounce = 0): void {
     if (debounce > 0) {
@@ -105,4 +147,6 @@ export class SearchComponent {
   clearAll(): void {
     this.router.navigate([], { relativeTo: this.route });
   }
+
+  // TODO: pagination
 }

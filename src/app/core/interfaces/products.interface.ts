@@ -61,3 +61,13 @@ export interface ProductBrandCard {
   title: string;
   color: string;
 }
+
+export interface FacetValue {
+  value: string;
+  count: number;
+}
+
+export interface ProductFacets {
+  brands: FacetValue[];
+  colors: FacetValue[];
+}
