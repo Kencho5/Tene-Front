@@ -1,7 +1,14 @@
 <a
   [routerLink]="['/products', product().data.id]"
-  class="flex h-[366px] w-full max-w-full flex-col gap-4 rounded-2xl bg-white p-4 shadow-low sm:w-[280px] sm:max-w-[280px]"
+  class="relative flex h-[366px] w-full max-w-full flex-col gap-4 rounded-2xl bg-white p-4 shadow-low sm:w-[280px] sm:max-w-[280px]"
 >
+  @if (product().data.discount > 0) {
+    <div
+      class="absolute right-6 top-6 z-10 flex h-[32px] items-center justify-center rounded-2xl border border-valencia-30 bg-valencia-10 px-2.5 py-2 text-sm font-semibold text-valencia-60"
+    >
+      -{{ product().data.discount | number }}%
+    </div>
+  }
   <div
     class="h-[180px] w-full overflow-hidden rounded-xl border-[0.5px] border-platinum-20"
   >
@@ -25,11 +32,20 @@
     </div>
 
     <div class="flex items-center justify-between">
-      <h2 class="text-xl">{{ product().data.price }}₾</h2>
-
+      @if (product().data.discount > 0) {
+        <div>
+          <p class="text-sm text-platinum-50 line-through">
+            {{ product().data.price }}₾
+          </p>
+          <h2 class="text-xl">{{ discountedPrice() | number: '1.2-2' }}₾</h2>
+        </div>
+      } @else {
+        <h2 class="text-xl">{{ product().data.price }}₾</h2>
+      }
       <button
         type="button"
         class="flex h-[44px] items-center justify-center gap-2 rounded-full border border-green-60 px-5 py-3 font-semibold text-green-70"
+        (click)="addToCart()"
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
           <path
