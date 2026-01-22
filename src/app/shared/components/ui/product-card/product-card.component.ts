@@ -29,5 +29,19 @@ export class ProductCardComponent {
     return `${this.imageBaseUrl}/products/${this.product().data.id}/${primaryImage.image_uuid}.jpg`;
   });
 
-  addToCart(): void {}
+  addToCart(): void {
+    const productData = this.product().data;
+    const primaryImage = this.product().images.find(
+      (image) => image.is_primary,
+    );
+
+    if (!productData || !primaryImage) return;
+
+    this.cartService.addItem({
+      product: productData,
+      quantity: 1,
+      selectedColor: primaryImage.color,
+      selectedImageId: primaryImage.image_uuid,
+    });
+  }
 }

@@ -37,7 +37,7 @@
           <p class="text-sm text-platinum-50 line-through">
             {{ product().data.price }}₾
           </p>
-          <h2 class="text-xl">{{ discountedPrice() | number: '1.2-2' }}₾</h2>
+          <h2 class="text-xl">{{ discountedPrice() | number: "1.2-2" }}₾</h2>
         </div>
       } @else {
         <h2 class="text-xl">{{ product().data.price }}₾</h2>
@@ -45,7 +45,7 @@
       <button
         type="button"
         class="flex h-[44px] items-center justify-center gap-2 rounded-full border border-green-60 px-5 py-3 font-semibold text-green-70"
-        (click)="addToCart()"
+        (click)="addToCart(); $event.preventDefault(); $event.stopPropagation()"
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
           <path
