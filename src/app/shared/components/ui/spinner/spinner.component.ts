@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-spinner',
@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
   templateUrl: './spinner.component.html',
 })
 export class SpinnerComponent {
-  @Input() size!: number;
-  @Input() fillColor!: string;
-  @Input() textColor!: string;
+  readonly size = input.required<number>();
+  readonly fillColor = input.required<string>();
+  readonly textColor = input.required<string>();
 }
