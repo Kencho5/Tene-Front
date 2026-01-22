@@ -17,7 +17,7 @@ import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.compo
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 import { SharedModule } from '@shared/shared.module';
-import { distinctUntilChanged, map, switchMap, tap } from 'rxjs';
+import { catchError, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 import { ProductFacets } from '@core/interfaces/products.interface';
 
 @Component({
@@ -57,20 +57,27 @@ export class SearchComponent {
     { label: 'ფასი: ზრდადობით', value: 'price_asc' },
   ];
 
-  readonly products = toSignal(
+  readonly searchResponse = toSignal(
     this.route.queryParams.pipe(
       tap(() => {
         this.startTime = performance.now();
         this.isLoading.set(true);
       }),
       map((params) => new URLSearchParams(params).toString()),
-      switchMap((query) => this.productsService.searchProduct(query)),
+      switchMap((query) =>
+        this.productsService.searchProduct(query).pipe(
+          catchError(() => of({ products: [], total: 0, limit: 0, offset: 0 })),
+        ),
+      ),
       tap(() => {
         this.isLoading.set(false);
       }),
     ),
-    { initialValue: [] },
+    { initialValue: { products: [], total: 0, limit: 0, offset: 0 } },
   );
+
+  readonly products = computed(() => this.searchResponse().products);
+  readonly totalProducts = computed(() => this.searchResponse().total);
 
   readonly facets = toSignal(
     this.route.queryParams.pipe(
@@ -91,7 +98,11 @@ export class SearchComponent {
       }),
       distinctUntilChanged(),
       tap(() => this.isFacetsLoading.set(true)),
-      switchMap((query) => this.productsService.getFacets(query)),
+      switchMap((query) =>
+        this.productsService.getFacets(query).pipe(
+          catchError(() => of({ brands: [], colors: [] } as ProductFacets)),
+        ),
+      ),
       tap(() => this.isFacetsLoading.set(false)),
     ),
     { initialValue: { brands: [], colors: [] } as ProductFacets },

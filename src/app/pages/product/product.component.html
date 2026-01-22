@@ -1,7 +1,7 @@
 <div class="container px-4">
   <app-breadcrumb [items]="breadcrumbs()" />
 
-  @if (productData(); as productData) {
+  @if (product(); as product) {
     <div
       class="mt-5 flex flex-col gap-6 sm:mt-8 sm:grid sm:grid-cols-[auto_1fr] sm:items-start sm:gap-8"
     >
@@ -36,7 +36,9 @@
               class="absolute inset-0 flex items-center justify-center rounded-2xl bg-platinum-10"
               style="width: 642px; height: 642px"
             >
-              <div class="h-8 w-8 animate-spin rounded-full border-4 border-platinum-20 border-t-green-60"></div>
+              <div
+                class="h-8 w-8 animate-spin rounded-full border-4 border-platinum-20 border-t-green-60"
+              ></div>
             </div>
           }
           @if (displayImage(); as mainImage) {
@@ -57,25 +59,23 @@
       >
         <div>
           <h1 class="text-2xl sm:text-[28px]">
-            {{ productData.product.name }}
+            {{ product.data.name }}
           </h1>
-          <p class="mt-2 text-platinum-50">
-            სულ: {{ productData.product.quantity }}
-          </p>
+          <p class="mt-2 text-platinum-50">სულ: {{ product.data.quantity }}</p>
         </div>
-        @if (productData.product.discount == 0) {
-          <h2 class="text-xl">{{ productData.product.price }}₾</h2>
+        @if (product.data.discount == 0) {
+          <h2 class="text-xl">{{ product.data.price }}₾</h2>
         } @else {
           <div class="flex items-center gap-3">
             <h2 class="text-xl">{{ finalPrice() }}₾</h2>
             <p class="text-sm text-platinum-50 line-through">
-              ₾{{ productData.product.price }}
+              ₾{{ product.data.price }}
             </p>
 
             <h2
               class="rounded-full bg-valencia-20 px-2 py-1.5 font-bold text-valencia-60"
             >
-              -{{ productData.product.discount | number }}%
+              -{{ product.data.discount | number }}%
             </h2>
           </div>
         }
@@ -205,7 +205,7 @@
       @if (activeTab() === "specifications") {
         <div class="mt-4 space-y-3">
           @for (
-            spec of productData.product.specifications | keyvalue;
+            spec of product.data.specifications | keyvalue;
             track spec.key
           ) {
             <div class="grid grid-cols-1 gap-1 text-sm sm:grid-cols-2">
@@ -218,7 +218,7 @@
         <div
           class="mt-4 whitespace-pre-line text-sm leading-relaxed text-platinum-90"
         >
-          {{ productData.product.description }}
+          {{ product.data.description }}
         </div>
       }
     </div>

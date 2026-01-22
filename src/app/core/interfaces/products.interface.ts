@@ -20,8 +20,15 @@ export interface ProductImage {
 }
 
 export interface ProductResponse {
-  product: Product;
+  data: Product;
   images: ProductImage[];
+}
+
+export interface ProductSearchResponse {
+  products: ProductResponse[];
+  total: number;
+  limit: number;
+  offset: number;
 }
 
 export interface CartItem {

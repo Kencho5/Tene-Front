@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import {
   ProductFacets,
   ProductResponse,
+  ProductSearchResponse,
 } from '@core/interfaces/products.interface';
 import { Observable } from 'rxjs';
 
@@ -12,8 +13,8 @@ import { Observable } from 'rxjs';
 export class ProductsService {
   private readonly http = inject(HttpClient);
 
-  searchProduct(params: string): Observable<ProductResponse[]> {
-    return this.http.get<ProductResponse[]>(`/products?${params}`);
+  searchProduct(params: string): Observable<ProductSearchResponse> {
+    return this.http.get<ProductSearchResponse>(`/products?${params}`);
   }
 
   getProduct(product_id: string): Observable<ProductResponse> {

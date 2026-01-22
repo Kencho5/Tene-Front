@@ -16,6 +16,6 @@ export class ProductCardComponent {
     const primaryImage = this.product().images.find((image) => image.is_primary);
     if (!primaryImage) return '';
 
-    return `${this.imageBaseUrl}/products/${this.product().product.id}/${primaryImage.image_uuid}.jpg`;
+    return `${this.imageBaseUrl}/products/${this.product().data.id}/${primaryImage.image_uuid}.jpg`;
   });
 }

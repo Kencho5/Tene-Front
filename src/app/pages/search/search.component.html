@@ -396,8 +396,23 @@
           <app-product-card-skeleton />
         }
       } @else {
-        @for (product of products(); track $index) {
-          <app-product-card [product]="product" />
+        @if (products().length == 0) {
+          <div
+            class="mx-auto my-10 flex max-w-[320px] flex-col items-center gap-6 text-center sm:my-32"
+          >
+            <img
+              src="/assets/images/products/empty-search.webp"
+              width="120"
+              height="120"
+            />
+            <p class="text-sm text-platinum-50">
+              შედეგები ვერ მოიძებნა, სცადეთ სხვა ძებნის მეთოდი.
+            </p>
+          </div>
+        } @else {
+          @for (product of products(); track $index) {
+            <app-product-card [product]="product" />
+          }
         }
       }
     </div>

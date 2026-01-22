@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ProductsService } from '@core/services/products/products.service';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
@@ -28,9 +28,11 @@ export class ProductsComponent {
   readonly productBrandCards = productBrandCards;
   readonly scrollStates = signal<Record<string, boolean>>({});
 
-  readonly products = toSignal(this.productsService.searchProduct(''), {
-    initialValue: [],
+  readonly searchResponse = toSignal(this.productsService.searchProduct(''), {
+    initialValue: { products: [], total: 0, limit: 0, offset: 0 },
   });
+
+  readonly products = computed(() => this.searchResponse().products);
 
   scrollLeft(element: HTMLElement) {
     element.scrollBy({ left: -300, behavior: 'smooth' });

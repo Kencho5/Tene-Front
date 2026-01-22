@@ -15,7 +15,10 @@ import {
   ProductImage,
 } from '@core/interfaces/products.interface';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
-import { BreadcrumbComponent, BreadcrumbItem } from '@shared/components/ui/breadcrumb/breadcrumb.component';
+import {
+  BreadcrumbComponent,
+  BreadcrumbItem,
+} from '@shared/components/ui/breadcrumb/breadcrumb.component';
 import { environment } from '@environments/environment';
 import { CartService } from '@core/services/products/cart.service';
 
@@ -32,7 +35,7 @@ export class ProductComponent {
   private readonly cartService = inject(CartService);
 
   readonly product_id = input.required<string>();
-  readonly productData = signal<ProductResponse | null>(null);
+  readonly product = signal<ProductResponse | null>(null);
 
   readonly isLoading = signal(true);
   readonly imageLoading = signal(true);
@@ -50,7 +53,7 @@ export class ProductComponent {
   ]);
 
   readonly availableColors = computed(() => {
-    const product = this.productData();
+    const product = this.product();
     if (!product) return [];
 
     const allImages = product.images;
@@ -59,11 +62,11 @@ export class ProductComponent {
   });
 
   readonly finalPrice = computed(() => {
-    const product = this.productData();
+    const product = this.product();
     if (!product) return 0;
 
-    const originalPrice = product.product.price;
-    const discountPercent = product.product.discount;
+    const originalPrice = product.data.price;
+    const discountPercent = product.data.discount;
 
     if (discountPercent === 0) {
       return originalPrice;
@@ -76,7 +79,7 @@ export class ProductComponent {
   });
 
   readonly colorImages = computed(() => {
-    const product = this.productData();
+    const product = this.product();
     if (!product) return [];
 
     const allImages = product.images;
@@ -127,7 +130,7 @@ export class ProductComponent {
         finalize(() => this.isLoading.set(false)),
       )
       .subscribe((productResponse) => {
-        this.productData.set(productResponse);
+        this.product.set(productResponse);
 
         if (productResponse?.images.length) {
           this.initializeImageSelection(productResponse.images);
@@ -148,7 +151,7 @@ export class ProductComponent {
     this.imageLoading.set(true);
     this.selectedColor.set(color);
 
-    const colorImages = this.productData()?.images.filter(
+    const colorImages = this.product()?.images.filter(
       (img) => img.color === color,
     );
     if (colorImages && colorImages.length > 0) {
@@ -168,18 +171,18 @@ export class ProductComponent {
   }
 
   getImageSrc(imageId: string): string {
-    const product = this.productData();
+    const product = this.product();
     if (!product) return '';
 
-    const productId = product.product.id;
+    const productId = product.data.id;
     return `${this.imageBaseUrl}/products/${productId}/${imageId}.jpg`;
   }
 
   updateProductCount(changeAmount: number): void {
-    const product = this.productData();
+    const product = this.product();
     if (!product) return;
 
-    const maxAvailable = product.product.quantity;
+    const maxAvailable = product.data.quantity;
     const currentQuantity = this.quantity();
     const newQuantity = currentQuantity + changeAmount;
 
@@ -193,14 +196,14 @@ export class ProductComponent {
   }
 
   addToCart(): void {
-    const productData = this.productData();
+    const productData = this.product();
     const color = this.selectedColor();
     const imageId = this.selectedImageId();
 
     if (!productData || !color || !imageId) return;
 
     this.cartService.addItem({
-      product: productData.product,
+      product: productData.data,
       quantity: this.quantity(),
       selectedColor: color,
       selectedImageId: imageId,
