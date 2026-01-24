@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ProductsService } from '@core/services/products/products.service';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
@@ -9,6 +9,7 @@ import {
   productTopCategoryCards,
   productBrandCards,
 } from '@utils/productsCards';
+import { SeoService } from '@core/services/seo/seo.service';
 
 @Component({
   selector: 'app-products',
@@ -20,8 +21,9 @@ import {
     }
   `,
 })
-export class ProductsComponent {
+export class ProductsComponent implements OnInit {
   private readonly productsService = inject(ProductsService);
+  private readonly seoService = inject(SeoService);
 
   readonly productCategoryCards = productCategoryCards;
   readonly productTopCategoryCards = productTopCategoryCards;
@@ -33,6 +35,18 @@ export class ProductsComponent {
   });
 
   readonly products = computed(() => this.searchResponse().products);
+
+  ngOnInit(): void {
+    this.seoService.setMetaTags({
+      title: 'პროდუქცია - USB კაბელები და ტექნიკა | Tene',
+      description:
+        'იხილეთ ჩვენი პროდუქციის სრული კატალოგი - USB კაბელები, ტექნიკა და აქსესუარები. 30% ფასდაკლება სეზონურ შეთავაზებებზე.',
+      url: 'https://tene.ge/products',
+      type: 'website',
+      keywords:
+        'პროდუქცია, USB კაბელები, ტექნიკა, აქსესუარები, კატალოგი, ონლაინ შოპინგი',
+    });
+  }
 
   scrollLeft(element: HTMLElement) {
     element.scrollBy({ left: -300, behavior: 'smooth' });

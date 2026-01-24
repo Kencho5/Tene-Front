@@ -12,17 +12,33 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
-/**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/{*splat}', (req, res) => {
- *   // Handle API request
- * });
- * ```
- */
+app.get('/sitemap.xml', async (req, res) => {
+  const baseUrl = 'https://tene.ge';
+  const currentDate = new Date().toISOString().split('T')[0];
+
+  const staticPages = [
+    { url: '', priority: '1.0', changefreq: 'daily' },
+    { url: '/products', priority: '0.9', changefreq: 'daily' },
+    { url: '/bins', priority: '0.7', changefreq: 'weekly' },
+  ];
+
+  let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+
+  staticPages.forEach((page) => {
+    sitemap += '  <url>\n';
+    sitemap += `    <loc>${baseUrl}${page.url}</loc>\n`;
+    sitemap += `    <lastmod>${currentDate}</lastmod>\n`;
+    sitemap += `    <changefreq>${page.changefreq}</changefreq>\n`;
+    sitemap += `    <priority>${page.priority}</priority>\n`;
+    sitemap += '  </url>\n';
+  });
+
+  sitemap += '</urlset>';
+
+  res.header('Content-Type', 'application/xml');
+  res.send(sitemap);
+});
 
 /**
  * Serve static files from /browser

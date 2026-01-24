@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from '@core/guards/admin.guard';
 import { MainLayoutComponent } from '@shared/layouts/main-layout/main-layout.component';
+import { productResolver } from '@core/resolvers/product.resolver';
 
 export const routes: Routes = [
   {
@@ -42,6 +43,7 @@ export const routes: Routes = [
           import('./pages/product/product.component').then(
             (m) => m.ProductComponent,
           ),
+        resolve: { product: productResolver },
       },
       {
         path: 'search',

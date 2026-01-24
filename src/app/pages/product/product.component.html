@@ -92,6 +92,7 @@
             >
               <app-image
                 [src]="getImageSrc(image.image_uuid)"
+                [alt]="product.data.name + ' - ' + image.color"
                 [width]="92"
                 [height]="92"
                 loading="lazy"
@@ -115,6 +116,7 @@
           @if (displayImage(); as mainImage) {
             <app-image
               [src]="getImageSrc(mainImage.image_uuid)"
+              [alt]="product.data.name + ' - ' + mainImage.color + ' - ' + product.data.product_type"
               [width]="642"
               [height]="642"
               loading="lazy"

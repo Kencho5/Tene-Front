@@ -14,6 +14,7 @@
   >
     <app-image
       [src]="productImage()"
+      [alt]="product().data.name + ' - ' + product().data.product_type"
       [width]="272"
       [height]="180"
       loading="lazy"

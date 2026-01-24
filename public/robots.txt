@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /admin
+
+Disallow: /auth/
+Disallow: /auth
+
+Disallow: /cart
+Disallow: /checkout
+
+Sitemap: https://tene.ge/sitemap.xml
