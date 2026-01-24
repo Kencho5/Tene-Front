@@ -35,6 +35,13 @@ export class AdminProductsComponent {
     { label: 'ფასი: ზრდადობით', value: 'price_asc' },
   ];
 
+  readonly limitOptions: ComboboxItems[] = [
+    { label: '10', value: '10' },
+    { label: '20', value: '20' },
+    { label: '50', value: '50' },
+    { label: '100', value: '100' },
+  ];
+
   readonly params = toSignal(this.route.queryParams, {
     initialValue: {} as Params,
   });
@@ -44,9 +51,13 @@ export class AdminProductsComponent {
       tap(() => this.isLoading.set(true)),
       map((params) => new URLSearchParams(params).toString()),
       switchMap((query) =>
-        this.productsService.searchProduct(query).pipe(
-          catchError(() => of({ products: [], total: 0, limit: 0, offset: 0 })),
-        ),
+        this.productsService
+          .searchProduct(query)
+          .pipe(
+            catchError(() =>
+              of({ products: [], total: 0, limit: 0, offset: 0 }),
+            ),
+          ),
       ),
       tap(() => this.isLoading.set(false)),
     ),
@@ -57,14 +68,45 @@ export class AdminProductsComponent {
   readonly totalProducts = computed(() => this.searchResponse().total);
   readonly currentPage = computed(() => {
     const offset = Number(this.params()['offset']) || 0;
-    const limit = Number(this.params()['limit']) || 20;
+    const limit = Number(this.params()['limit']) || 10;
     return Math.floor(offset / limit) + 1;
   });
   readonly totalPages = computed(() => {
-    const limit = Number(this.params()['limit']) || 20;
+    const limit = Number(this.params()['limit']) || 10;
     return Math.ceil(this.totalProducts() / limit);
   });
-  readonly limit = computed(() => Number(this.params()['limit']) || 20);
+  readonly limit = computed(() => Number(this.params()['limit']) || 10);
+  readonly offset = computed(() => Number(this.params()['offset']) || 0);
+
+  readonly pageNumbers = computed(() => {
+    const total = this.totalPages();
+    const current = this.currentPage();
+
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    if (current <= 4) {
+      return [1, 2, 3, 4, 5, -1, total];
+    }
+
+    if (current >= total - 3) {
+      return [1, -1, total - 4, total - 3, total - 2, total - 1, total];
+    }
+
+    return [1, -1, current - 1, current, current + 1, -1, total];
+  });
+
+  readonly showingFrom = computed(() => {
+    const offset = this.offset();
+    return Math.min(offset + 1, this.totalProducts());
+  });
+
+  readonly showingTo = computed(() => {
+    const offset = this.offset();
+    const limit = this.limit();
+    return Math.min(offset + limit, this.totalProducts());
+  });
 
   getProductImage(product: ProductResponse): string {
     const primaryImage = product.images.find((image) => image.is_primary);
@@ -80,6 +122,15 @@ export class AdminProductsComponent {
 
   onSortChange(value: string | undefined): void {
     this.setParam('sort_by', value);
+  }
+
+  onLimitChange(value: string | undefined): void {
+    const newLimit = value || '10';
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { limit: newLimit, offset: 0 },
+      queryParamsHandling: 'merge',
+    });
   }
 
   setParam(key: string, value: string | undefined, debounce = 0): void {

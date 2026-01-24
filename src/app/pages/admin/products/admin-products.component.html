@@ -85,7 +85,7 @@
   </div>
 
   <!-- Table -->
-  <div class="overflow-hidden rounded-lg border border-platinum-20 bg-white">
+  <div class="rounded-lg border border-platinum-20 bg-white">
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead class="border-b border-platinum-20 bg-platinum-10">
@@ -361,26 +361,32 @@
 
     <!-- Pagination -->
     <div
-      class="flex items-center justify-between border-t border-platinum-20 px-4 py-3"
+      class="flex flex-col gap-4 overflow-visible border-t border-platinum-20 px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
     >
-      <div class="flex items-center gap-2">
+      <!-- Left: Results info & per page selector -->
+      <div class="flex flex-wrap items-center gap-3 overflow-visible">
         <p class="text-sm text-platinum-60">
-          გვერდი {{ currentPage() }} / {{ totalPages() }}
+          {{ showingFrom() }}-{{ showingTo() }} / {{ totalProducts() }}
         </p>
-        <span class="text-sm text-platinum-50">·</span>
-        <p class="text-sm text-platinum-60">
-          სულ {{ totalProducts() }} პროდუქტი
-        </p>
+
+        <app-dropdown
+          [selectedValue]="params()['limit'] || '10'"
+          (selectedValueChange)="onLimitChange($event)"
+          [items]="limitOptions"
+        />
       </div>
 
+      <!-- Right: Page navigation -->
       <div class="flex items-center gap-2">
+        <!-- Previous button -->
         <button
           type="button"
           (click)="previousPage()"
           [disabled]="currentPage() === 1"
           [class.opacity-50]="currentPage() === 1"
           [class.cursor-not-allowed]="currentPage() === 1"
-          class="flex h-8 w-8 items-center justify-center rounded-lg border border-platinum-20 text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent"
+          class="flex h-9 w-9 items-center justify-center rounded-lg border border-platinum-20 text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent"
+          aria-label="წინა გვერდი"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path
@@ -393,13 +399,49 @@
           </svg>
         </button>
 
+        <!-- Page numbers -->
+        <div class="hidden items-center gap-1 sm:flex">
+          @for (pageNum of pageNumbers(); track $index) {
+            @if (pageNum === -1) {
+              <span
+                class="flex h-9 w-9 items-center justify-center text-sm text-platinum-40"
+              >
+                ...
+              </span>
+            } @else {
+              <button
+                type="button"
+                (click)="goToPage(pageNum)"
+                [class.bg-green-60]="currentPage() === pageNum"
+                [class.text-white]="currentPage() === pageNum"
+                [class.border-green-60]="currentPage() === pageNum"
+                [class.text-platinum-60]="currentPage() !== pageNum"
+                [class.border-platinum-20]="currentPage() !== pageNum"
+                [class.hover:bg-platinum-10]="currentPage() !== pageNum"
+                class="flex h-9 w-9 items-center justify-center rounded-lg border text-sm font-medium transition-colors"
+              >
+                {{ pageNum }}
+              </button>
+            }
+          }
+        </div>
+
+        <!-- Mobile page indicator -->
+        <div class="flex items-center sm:hidden">
+          <span class="text-sm text-platinum-60">
+            {{ currentPage() }} / {{ totalPages() }}
+          </span>
+        </div>
+
+        <!-- Next button -->
         <button
           type="button"
           (click)="nextPage()"
           [disabled]="currentPage() === totalPages()"
           [class.opacity-50]="currentPage() === totalPages()"
           [class.cursor-not-allowed]="currentPage() === totalPages()"
-          class="flex h-8 w-8 items-center justify-center rounded-lg border border-platinum-20 text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent"
+          class="flex h-9 w-9 items-center justify-center rounded-lg border border-platinum-20 text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent"
+          aria-label="შემდეგი გვერდი"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path
