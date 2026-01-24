@@ -37,9 +37,18 @@ export class AuthService {
     const user = this.userSignal();
     return user !== null && !this.isExpired(user);
   });
+  readonly isAdmin = computed(() => {
+    const user = this.userSignal();
+    return user?.role === 'admin' && this.isAuthenticated();
+  });
 
   constructor() {
     this.initializeAuth();
+  }
+
+  hasRole(role: 'user' | 'admin'): boolean {
+    const user = this.userSignal();
+    return this.isAuthenticated() && user?.role === role;
   }
 
   // API Methods
@@ -71,7 +80,12 @@ export class AuthService {
     this.userSignal.set(user);
     this.tokenSignal.set(token);
     if (this.isBrowser) localStorage.setItem(TOKEN_KEY, token);
-    this.router.navigate(['/profile']);
+
+    if (user.role === 'admin') {
+      this.router.navigate(['/admin/dashboard']);
+    } else {
+      this.router.navigate(['/profile']);
+    }
   }
 
   logout(): void {
