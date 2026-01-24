@@ -1,4 +1,9 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { SharedModule } from '@shared/shared.module';
 

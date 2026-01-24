@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from '@core/guards/admin.guard';
 import { MainLayoutComponent } from '@shared/layouts/main-layout/main-layout.component';
 
 export const routes: Routes = [
@@ -87,7 +88,21 @@ export const routes: Routes = [
       import('./shared/layouts/admin-layout/admin-layout.component').then(
         (m) => m.AdminLayoutComponent,
       ),
-    //children: [{}],
+    canActivateChild: [adminGuard],
+    children: [
+      {
+        path: '',
+        redirectTo: 'products',
+        pathMatch: 'full',
+      },
+      {
+        path: 'products',
+        loadComponent: () =>
+          import('./pages/admin/products/admin-products.component').then(
+            (m) => m.AdminProductsComponent,
+          ),
+      },
+    ],
   },
 
   { path: '**', redirectTo: '/404' },
