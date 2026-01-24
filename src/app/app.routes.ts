@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { AuthLayoutComponent } from '@shared/layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from '@shared/layouts/main-layout/main-layout.component';
 
 export const routes: Routes = [
@@ -59,9 +58,13 @@ export const routes: Routes = [
       },
     ],
   },
+
   {
     path: 'auth',
-    component: AuthLayoutComponent,
+    loadComponent: () =>
+      import('./shared/layouts/auth-layout/auth-layout.component').then(
+        (m) => m.AuthLayoutComponent,
+      ),
     children: [
       {
         path: 'login',
@@ -76,6 +79,15 @@ export const routes: Routes = [
           ),
       },
     ],
+  },
+
+  {
+    path: 'admin',
+    loadComponent: () =>
+      import('./shared/layouts/admin-layout/admin-layout.component').then(
+        (m) => m.AdminLayoutComponent,
+      ),
+    //children: [{}],
   },
 
   { path: '**', redirectTo: '/404' },
