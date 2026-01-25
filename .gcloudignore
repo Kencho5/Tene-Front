@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.angular/
+
+# IDE
+.vscode/
+.DS_Store
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+
+# Testing
+coverage/
+e2e/
+
+# Git
+.git/
+.gitignore
+
+# Misc
+tasks.html
+README.md
