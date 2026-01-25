@@ -11,6 +11,8 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { SharedModule } from '@shared/shared.module';
 import { ActivatedRoute } from '@angular/router';
+import { ProductsService } from '@core/services/products/products.service';
+import { catchError, of, finalize } from 'rxjs';
 import {
   ProductResponse,
   ProductImage,
@@ -35,6 +37,7 @@ type TabName = 'specifications' | 'description';
 })
 export class ProductComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly productsService = inject(ProductsService);
   private readonly cartService = inject(CartService);
   private readonly seoService = inject(SeoService);
   private readonly schemaService = inject(SchemaService);
@@ -124,6 +127,11 @@ export class ProductComponent {
         this.initializeImageSelection(resolvedProduct.images);
       }
       this.isLoading.set(false);
+    } else {
+      const productId = this.route.snapshot.paramMap.get('product_id');
+      if (productId) {
+        this.fetchProduct(productId);
+      }
     }
 
     effect(() => {
@@ -132,6 +140,27 @@ export class ProductComponent {
         this.updateSEO(product);
       }
     });
+  }
+
+  private fetchProduct(productId: string): void {
+    this.isLoading.set(true);
+
+    this.productsService
+      .getProduct(productId)
+      .pipe(
+        catchError((error) => {
+          console.error('Failed to load product:', error);
+          return of(null);
+        }),
+        finalize(() => this.isLoading.set(false)),
+      )
+      .subscribe((productResponse) => {
+        this.product.set(productResponse);
+
+        if (productResponse?.images.length) {
+          this.initializeImageSelection(productResponse.images);
+        }
+      });
   }
 
   private initializeImageSelection(images: ProductImage[]): void {

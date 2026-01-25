@@ -10,7 +10,11 @@ import {
   provideClientHydration,
   withEventReplay,
 } from '@angular/platform-browser';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptors,
+  withFetch,
+} from '@angular/common/http';
 import { apiInterceptor } from '@core/interceptors/api.interceptor';
 import { tokenInterceptor } from '@core/interceptors/token.interceptor';
 
@@ -20,6 +24,9 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes, withComponentInputBinding()),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withInterceptors([apiInterceptor, tokenInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([apiInterceptor, tokenInterceptor]),
+    ),
   ],
 };
