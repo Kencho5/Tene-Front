@@ -1,5 +1,5 @@
 <a
-  [routerLink]="['/products', product().data.id]"
+  [routerLink]="['/products', productSlug(), product().data.id]"
   class="relative flex h-[366px] w-full max-w-full flex-col gap-4 rounded-2xl bg-white p-4 shadow-low sm:w-[280px] sm:max-w-[280px]"
 >
   @if (product().data.discount > 0) {

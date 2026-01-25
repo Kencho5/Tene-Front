@@ -5,6 +5,7 @@ import { ImageComponent } from '../image/image.component';
 import { environment } from '@environments/environment';
 import { calculateDiscount } from '@utils/discountedPrice';
 import { CartService } from '@core/services/products/cart.service';
+import { generateProductSlug } from '@utils/slug';
 
 @Component({
   selector: 'app-product-card',
@@ -16,6 +17,11 @@ export class ProductCardComponent {
 
   readonly imageBaseUrl = environment.product_image_url;
   readonly product = input.required<ProductResponse>();
+
+  readonly productSlug = computed(() => {
+    return generateProductSlug(this.product().data.name);
+  });
+
   readonly discountedPrice = computed(() => {
     return calculateDiscount(this.product().data);
   });

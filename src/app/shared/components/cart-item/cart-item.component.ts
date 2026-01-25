@@ -3,12 +3,14 @@ import {
   ChangeDetectionStrategy,
   input,
   inject,
+  computed,
 } from '@angular/core';
 import { CartItem } from '@core/interfaces/products.interface';
 import { CartService } from '@core/services/products/cart.service';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { SharedModule } from '@shared/shared.module';
 import { environment } from '@environments/environment';
+import { generateProductSlug } from '@utils/slug';
 
 @Component({
   selector: 'app-cart-item',
@@ -23,6 +25,10 @@ export class CartItemComponent {
 
   readonly cartService = inject(CartService);
   readonly imageBaseUrl = environment.product_image_url;
+
+  readonly productSlug = computed(() => {
+    return generateProductSlug(this.item().product.name);
+  });
 
   getImageSrc(imageId: string, productId: number): string {
     return `${this.imageBaseUrl}/products/${productId}/${imageId}.jpg`;

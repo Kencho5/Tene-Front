@@ -10,8 +10,9 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { SharedModule } from '@shared/shared.module';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsService } from '@core/services/products/products.service';
+import { ProductResolverData } from '@core/resolvers/product.resolver';
 import { catchError, of, finalize } from 'rxjs';
 import {
   ProductResponse,
@@ -37,6 +38,7 @@ type TabName = 'specifications' | 'description';
 })
 export class ProductComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly productsService = inject(ProductsService);
   private readonly cartService = inject(CartService);
   private readonly seoService = inject(SeoService);
@@ -44,7 +46,9 @@ export class ProductComponent {
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly product_id = input.required<string>();
+  readonly slug = input.required<string>();
   readonly product = signal<ProductResponse | null>(null);
+  readonly expectedSlug = signal<string>('');
 
   readonly isLoading = signal(true);
   readonly imageLoading = signal(true);
@@ -120,11 +124,24 @@ export class ProductComponent {
   });
 
   constructor() {
-    const resolvedProduct = this.route.snapshot.data['product'];
-    if (resolvedProduct) {
-      this.product.set(resolvedProduct);
-      if (resolvedProduct.images.length) {
-        this.initializeImageSelection(resolvedProduct.images);
+    const resolvedData = this.route.snapshot.data[
+      'product'
+    ] as ProductResolverData;
+
+    if (resolvedData) {
+      const { product, expectedSlug, slugMismatch } = resolvedData;
+
+      this.product.set(product);
+      this.expectedSlug.set(expectedSlug);
+
+      if (slugMismatch && isPlatformBrowser(this.platformId)) {
+        this.router.navigate(['/products', expectedSlug, product.data.id], {
+          replaceUrl: true,
+        });
+      }
+
+      if (product.images.length) {
+        this.initializeImageSelection(product.images);
       }
       this.isLoading.set(false);
     }
@@ -140,8 +157,9 @@ export class ProductComponent {
 
     effect(() => {
       const product = this.product();
-      if (product) {
-        this.updateSEO(product);
+      const slug = this.expectedSlug();
+      if (product && slug) {
+        this.updateSEO(product, slug);
       }
     });
   }
@@ -241,7 +259,7 @@ export class ProductComponent {
     this.quantity.set(1);
   }
 
-  private updateSEO(product: ProductResponse): void {
+  private updateSEO(product: ProductResponse, slug: string): void {
     const price = this.finalPrice();
     const imageUrl = this.getImageSrc(
       this.displayImage()?.image_uuid || product.images[0]?.image_uuid || '',
@@ -255,15 +273,14 @@ export class ProductComponent {
 
     const fullDescription = `${description} ფასი: ${price}₾. სულ: ${product.data.quantity} ცალი. ${product.data.product_type}.`;
 
-    const url = isPlatformBrowser(this.platformId)
-      ? window.location.href
-      : `https://tene.ge/products/${product.data.id}`;
+    // Always use the canonical URL with slug for SEO
+    const canonicalUrl = `https://tene.ge/products/${slug}/${product.data.id}`;
 
     this.seoService.setMetaTags({
       title: `${product.data.name} - ${price}₾ | Tene`,
       description: fullDescription,
       image: imageUrl,
-      url: url,
+      url: canonicalUrl,
       type: 'product',
       keywords: `${product.data.name}, ${product.data.product_type}, USB კაბელი, ტექნიკა`,
     });
@@ -276,7 +293,7 @@ export class ProductComponent {
       price: price,
       currency: 'GEL',
       availability: product.data.quantity > 0 ? 'InStock' : 'OutOfStock',
-      url: url,
+      url: canonicalUrl,
     });
 
     const breadcrumbItems = this.breadcrumbs().map((item) => ({

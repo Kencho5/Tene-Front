@@ -38,7 +38,7 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'products/:product_id',
+        path: 'products/:slug/:product_id',
         loadComponent: () =>
           import('./pages/product/product.component').then(
             (m) => m.ProductComponent,
