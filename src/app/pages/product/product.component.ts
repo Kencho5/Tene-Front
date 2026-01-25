@@ -127,12 +127,16 @@ export class ProductComponent {
         this.initializeImageSelection(resolvedProduct.images);
       }
       this.isLoading.set(false);
-    } else {
-      const productId = this.route.snapshot.paramMap.get('product_id');
-      if (productId) {
+    }
+
+    effect(() => {
+      const productId = this.product_id();
+      const currentProduct = this.product();
+
+      if (!currentProduct && productId) {
         this.fetchProduct(productId);
       }
-    }
+    });
 
     effect(() => {
       const product = this.product();
