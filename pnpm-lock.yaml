@@ -41,13 +41,16 @@ importers:
       rxjs:
         specifier: ~7.8.0
         version: 7.8.2
+      slugify:
+        specifier: ^1.6.6
+        version: 1.6.6
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
     devDependencies:
       '@angular/build':
         specifier: ^21.0.3
-        version: 21.0.3(4tpv23x4tkmuv7cwfeucwuq3vq)
+        version: 21.0.3(fc35de54c0098f57040a9fdb21e30487)
       '@angular/cli':
         specifier: ^21.0.3
         version: 21.0.3(@types/node@20.19.13)(chokidar@4.0.3)
@@ -3043,6 +3046,10 @@ packages:
     resolution: {integrity: sha512-iOBWFgUX7caIZiuutICxVgX1SdxwAVFFKwt1EvMYYec/NWO5meOJ6K5uQxhrYBdQJne4KxiqZc+KptFOWFSI9w==}
     engines: {node: '>=18'}
 
+  slugify@1.6.6:
+    resolution: {integrity: sha512-h+z7HKHYXj6wJU+AnS/+IH8Uh9fdcX1Lrhg1/VMdf9PwoBQXFcXiAdsy2tSK0P6gKwJLXp02r90ahUCqHk9rrw==}
+    engines: {node: '>=8.0.0'}
+
   smart-buffer@4.2.0:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
@@ -3551,7 +3558,7 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
-  '@angular/build@21.0.3(4tpv23x4tkmuv7cwfeucwuq3vq)':
+  '@angular/build@21.0.3(fc35de54c0098f57040a9fdb21e30487)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2100.3(chokidar@4.0.3)
@@ -6336,6 +6343,8 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.3
       is-fullwidth-code-point: 5.1.0
+
+  slugify@1.6.6: {}
 
   smart-buffer@4.2.0: {}
 

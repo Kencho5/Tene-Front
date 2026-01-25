@@ -1,11 +1,12 @@
+import slugify from 'slugify';
+
 export function generateSlug(text: string): string {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\u10A0-\u10FF-]/g, '')
-    .replace(/-+/g, '-')
-    .replace(/^-+|-+$/g, '');
+  return slugify(text, {
+    lower: true,
+    strict: true,
+    locale: 'en',
+    remove: /[*+~.()'"!:@]/g
+  });
 }
 
 export function generateProductSlug(productName: string): string {
@@ -13,7 +14,7 @@ export function generateProductSlug(productName: string): string {
 }
 
 export function isValidSlug(slug: string): boolean {
-  const slugPattern = /^[a-z0-9\u10A0-\u10FF]+(-[a-z0-9\u10A0-\u10FF]+)*$/;
+  const slugPattern = /^[a-z0-9]+(-[a-z0-9]+)*$/;
   return slugPattern.test(slug);
 }
 
