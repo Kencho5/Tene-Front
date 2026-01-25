@@ -47,10 +47,6 @@ export class SeoService {
     if (config.image) {
       this.meta.updateTag({ property: 'og:image', content: config.image });
       this.meta.updateTag({ name: 'twitter:image', content: config.image });
-      this.meta.updateTag({
-        name: 'twitter:card',
-        content: 'summary_large_image',
-      });
     }
 
     if (config.url) {
@@ -60,7 +56,6 @@ export class SeoService {
 
     const ogType = config.type || 'website';
     this.meta.updateTag({ property: 'og:type', content: ogType });
-
     this.meta.updateTag({ property: 'og:site_name', content: 'Tene' });
     this.meta.updateTag({ property: 'og:locale', content: 'ka_GE' });
     this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });

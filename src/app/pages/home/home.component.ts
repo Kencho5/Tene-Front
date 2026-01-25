@@ -19,11 +19,11 @@ export class HomeComponent implements OnInit {
     this.seoService.setMetaTags({
       title: 'Tene - პირველი ქართული USB კაბელი | ხარისხიანი ტექნიკა და აქსესუარები',
       description:
-        'იყიდე ხარისხიანი USB კაბელები, ტექნიკა და აქსესუარები Tene-დან. 30% ფასდაკლება სეზონურ შეთავაზებებზე. სწრაფი მიწოდება საქართველოში.',
+        'შეიძინე USB კაბელები, დამტენები და ტექნიკა Tene-დან ★ Apple, Anker, Logitech ★ სწრაფი მიწოდება თბილისში ★ ოფიციალური გარანტია ★ 30% ფასდაკლება',
       url: 'https://tene.ge',
       type: 'website',
       keywords:
-        'USB კაბელი, ტექნიკა, აქსესუარები, ონლაინ მაღაზია, თბილისი, საქართველო',
+        'USB კაბელი, Type-C კაბელი, Lightning კაბელი, დამტენი, Apple აქსესუარები, ტექნიკა, თბილისი, საქართველო',
     });
 
     this.schemaService.addOrganizationSchema({
