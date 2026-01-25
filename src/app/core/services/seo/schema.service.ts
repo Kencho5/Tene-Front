@@ -1,10 +1,9 @@
-import { Injectable, inject, PLATFORM_ID, Renderer2, RendererFactory2 } from '@angular/core';
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Injectable, inject, Renderer2, RendererFactory2 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class SchemaService {
   private readonly document = inject(DOCUMENT);
-  private readonly platformId = inject(PLATFORM_ID);
   private readonly rendererFactory = inject(RendererFactory2);
   private renderer: Renderer2;
   private schemaElements: HTMLScriptElement[] = [];
@@ -91,25 +90,18 @@ export class SchemaService {
   }
 
   private injectSchema(schema: object): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
     const script = this.renderer.createElement('script');
     script.type = 'application/ld+json';
     script.text = JSON.stringify(schema);
 
     const head = this.document.head;
-    this.renderer.appendChild(head, script);
-
-    this.schemaElements.push(script);
+    if (head) {
+      this.renderer.appendChild(head, script);
+      this.schemaElements.push(script);
+    }
   }
 
   clearSchemas(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
     this.schemaElements.forEach((element) => {
       if (element.parentNode) {
         this.renderer.removeChild(element.parentNode, element);
