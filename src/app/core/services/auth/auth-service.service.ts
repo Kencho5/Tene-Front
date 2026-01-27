@@ -46,11 +46,6 @@ export class AuthService {
     this.initializeAuth();
   }
 
-  hasRole(role: 'user' | 'admin'): boolean {
-    const user = this.userSignal();
-    return this.isAuthenticated() && user?.role === role;
-  }
-
   // API Methods
   register(userData: RegisterFields): Observable<AuthResponse> {
     return this.http.post<AuthResponse>('/auth/register', userData);
