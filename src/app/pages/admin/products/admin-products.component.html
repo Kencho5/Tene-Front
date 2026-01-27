@@ -238,9 +238,12 @@
                       </div>
                     }
                     <div>
-                      <p class="font-medium text-platinum-100">
+                      <a
+                        [routerLink]="getProductLink(product)"
+                        class="font-medium text-platinum-100 hover:text-green-60 transition-colors"
+                      >
                         {{ product.data.name }}
-                      </p>
+                      </a>
                       <p class="text-sm text-platinum-50">
                         ID: {{ product.data.id }}
                       </p>

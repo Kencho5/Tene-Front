@@ -14,6 +14,7 @@ import { SharedModule } from '@shared/shared.module';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { environment } from '@environments/environment';
 import { ProductResponse } from '@core/interfaces/products.interface';
+import { generateProductSlug } from '@utils/slug';
 
 @Component({
   selector: 'app-admin-products',
@@ -114,47 +115,44 @@ export class AdminProductsComponent {
     return `${environment.product_image_url}/products/${product.data.id}/${primaryImage.image_uuid}.jpg`;
   }
 
+  getProductLink(product: ProductResponse): string[] {
+    const slug = generateProductSlug(product.data.name);
+    return ['/products', slug, product.data.id.toString()];
+  }
+
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);
-    this.setParam('query', value || undefined, 400);
+
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = window.setTimeout(() => {
+      const isNumeric = /^\d+$/.test(value);
+      this.updateQueryParams({
+        query: isNumeric ? undefined : (value || undefined),
+        id: isNumeric ? value : undefined,
+      });
+    }, 400);
   }
 
   onSortChange(value: string | undefined): void {
-    this.setParam('sort_by', value);
+    this.updateQueryParams({ sort_by: value });
   }
 
   onLimitChange(value: string | undefined): void {
-    const newLimit = value || '10';
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { limit: newLimit, offset: 0 },
-      queryParamsHandling: 'merge',
-    });
-  }
-
-  setParam(key: string, value: string | undefined, debounce = 0): void {
-    if (debounce > 0) {
-      clearTimeout(this.debounceTimer);
-      this.debounceTimer = window.setTimeout(() => {
-        this.updateParam(key, value);
-      }, debounce);
-    } else {
-      this.updateParam(key, value);
-    }
-  }
-
-  private updateParam(key: string, value: string | undefined): void {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { [key]: value },
-      queryParamsHandling: 'merge',
-    });
+    this.updateQueryParams({ limit: value || '10', offset: 0 });
   }
 
   clearSearch(): void {
     this.searchQuery.set('');
-    this.setParam('query', undefined);
+    this.updateQueryParams({ query: undefined, id: undefined });
+  }
+
+  private updateQueryParams(params: Record<string, string | number | undefined>): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      queryParamsHandling: 'merge',
+    });
   }
 
   addProduct(): void {
@@ -173,13 +171,8 @@ export class AdminProductsComponent {
   }
 
   goToPage(page: number): void {
-    const limit = this.limit();
-    const offset = (page - 1) * limit;
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { offset, limit },
-      queryParamsHandling: 'merge',
-    });
+    const offset = (page - 1) * this.limit();
+    this.updateQueryParams({ offset, limit: this.limit() });
   }
 
   nextPage(): void {
