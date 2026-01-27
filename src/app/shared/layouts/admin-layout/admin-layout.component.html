@@ -421,8 +421,20 @@
     </header>
 
     <!-- Page Content -->
-    <main class="flex-1 overflow-y-auto bg-platinum-10 p-4 lg:p-6">
-      <router-outlet />
+    <main class="relative flex-1 overflow-y-auto bg-platinum-10 p-4 lg:p-6">
+      @if (!loadingService.loading()) {
+        <router-outlet />
+      } @else {
+        <div
+          class="absolute inset-0 z-0 flex items-center justify-center bg-platinum-10"
+        >
+          <app-spinner
+            [size]="46"
+            [textColor]="'text-platinum-100'"
+            [fillColor]="'fill-green-60'"
+          />
+        </div>
+      }
     </main>
   </div>
 </div>

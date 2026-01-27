@@ -31,7 +31,7 @@ export class ProductsService {
   }
 
   createProduct(payload: CreateProductPayload): Observable<ProductResponse> {
-    return this.http.post<ProductResponse>('/admin/products', payload);
+    return this.http.put<ProductResponse>('/admin/products', payload);
   }
 
   getPresignedUrls(
