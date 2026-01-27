@@ -58,6 +58,7 @@ export class AdminProductFormComponent {
   );
 
   readonly productModel = signal<ProductFormData>({
+    id: null as any,
     name: '',
     description: '',
     price: null as any,
@@ -69,6 +70,7 @@ export class AdminProductFormComponent {
   });
 
   readonly productForm = form(this.productModel, (fieldPath) => {
+    required(fieldPath.id, { message: 'ID აუცილებელია' });
     required(fieldPath.name, { message: 'სახელი აუცილებელია' });
     required(fieldPath.price, { message: 'ფასი აუცილებელია' });
     min(fieldPath.price, 0, { message: 'ფასი უნდა იყოს დადებითი' });
@@ -216,11 +218,12 @@ export class AdminProductFormComponent {
 
     const productData = this.productForm().value();
     const payload: CreateProductPayload = {
+      id: Number(productData.id) || 0,
       name: productData.name,
       description: productData.description,
-      price: productData.price ?? 0,
-      discount: productData.discount ?? 0,
-      quantity: productData.quantity ?? 0,
+      price: Number(productData.price) || 0,
+      discount: Number(productData.discount) || 0,
+      quantity: Number(productData.quantity) || 0,
       specifications: specsObject,
       product_type: productData.product_type,
       brand: productData.brand,

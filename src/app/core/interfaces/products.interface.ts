@@ -80,6 +80,7 @@ export interface ProductFacets {
 }
 
 export interface ProductFormData {
+  id: number;
   name: string;
   description: string;
   price: number;
@@ -91,6 +92,7 @@ export interface ProductFormData {
 }
 
 export interface CreateProductPayload {
+  id: number;
   name: string;
   description: string;
   price: number;

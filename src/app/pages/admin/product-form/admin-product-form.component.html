@@ -24,6 +24,14 @@
       </h2>
 
       <div class="flex flex-col gap-4">
+        <!-- Product ID -->
+        <app-input
+          [field]="productForm.id"
+          [error]="submitted() && productForm.id().invalid()"
+          type="number"
+          placeholder="პროდუქტის ID *"
+        />
+
         <!-- Product Name -->
         <app-input
           [field]="productForm.name"
