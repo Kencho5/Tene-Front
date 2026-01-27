@@ -23,10 +23,10 @@ import {
   BreadcrumbComponent,
   BreadcrumbItem,
 } from '@shared/components/ui/breadcrumb/breadcrumb.component';
-import { environment } from '@environments/environment';
 import { CartService } from '@core/services/products/cart.service';
 import { SeoService } from '@core/services/seo/seo.service';
 import { SchemaService } from '@core/services/seo/schema.service';
+import { getProductImageBaseUrl } from '@utils/product-image-url';
 
 type TabName = 'specifications' | 'description';
 
@@ -57,7 +57,7 @@ export class ProductComponent {
   readonly quantity = signal(1);
   readonly activeTab = signal<TabName>('specifications');
 
-  readonly imageBaseUrl = environment.product_image_url;
+  readonly imageBaseUrl = getProductImageBaseUrl();
 
   readonly breadcrumbs = computed<BreadcrumbItem[]>(() => [
     { label: 'მთავარი', route: '/' },

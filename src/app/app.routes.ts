@@ -104,6 +104,20 @@ export const routes: Routes = [
             (m) => m.AdminProductsComponent,
           ),
       },
+      {
+        path: 'products/new',
+        loadComponent: () =>
+          import('./pages/admin/product-form/admin-product-form.component').then(
+            (m) => m.AdminProductFormComponent,
+          ),
+      },
+      {
+        path: 'products/:id/edit',
+        loadComponent: () =>
+          import('./pages/admin/product-form/admin-product-form.component').then(
+            (m) => m.AdminProductFormComponent,
+          ),
+      },
     ],
   },
 

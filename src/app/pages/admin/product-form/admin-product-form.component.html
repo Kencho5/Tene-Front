@@ -1,0 +1,311 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold text-platinum-100">
+        {{ pageTitle() }}
+      </h1>
+      <p class="mt-1 text-sm text-platinum-50">
+        @if (isEditMode()) {
+          პროდუქტის ID: {{ productId() }}
+        } @else {
+          შეავსეთ ყველა სავალდებულო ველი
+        }
+      </p>
+    </div>
+
+    <button
+      type="button"
+      (click)="cancel()"
+      class="flex items-center gap-2 rounded-xl border border-platinum-20 px-4 py-2 text-sm font-medium text-platinum-60 transition-colors hover:bg-platinum-10"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path
+          d="M12 4L4 12M4 4L12 12"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+      გაუქმება
+    </button>
+  </div>
+
+  <!-- Form -->
+  <form (submit)="onSubmit($event)" novalidate class="space-y-6">
+    <!-- Basic Information Card -->
+    <div class="rounded-xl border border-platinum-20 bg-white p-6">
+      <h2 class="mb-4 text-lg font-semibold text-platinum-100">
+        ძირითადი ინფორმაცია
+      </h2>
+
+      <div class="flex flex-col gap-4">
+        <!-- Product Name -->
+        <app-input
+          [field]="productForm.name"
+          [error]="submitted() && productForm.name().invalid()"
+          type="text"
+          placeholder="პროდუქტის სახელი *"
+        />
+
+        <!-- Description -->
+        <textarea
+          [field]="productForm.description"
+          rows="4"
+          placeholder="პროდუქტის დეტალური აღწერა"
+          [ngClass]="{
+            'border-valencia-50 hover:border-valencia-50 focus:border-valencia-50 focus:ring-1 focus:ring-valencia-50':
+              submitted() && productForm.description().invalid(),
+            'focus:border-platinum-40 focus:ring-1 focus:ring-platinum-40': !(
+              submitted() && productForm.description().invalid()
+            ),
+          }"
+          class="w-full resize-none rounded-xl border border-platinum-20 bg-white px-3.5 py-2.5 text-platinum-100 placeholder:text-platinum-50 focus:outline-none"
+        ></textarea>
+
+        <!-- Product Type -->
+        <app-input
+          [field]="productForm.product_type"
+          [error]="submitted() && productForm.product_type().invalid()"
+          type="text"
+          placeholder="კატეგორია *"
+        />
+
+        <!-- Brand -->
+        <app-input
+          [field]="productForm.brand"
+          [error]="submitted() && productForm.brand().invalid()"
+          type="text"
+          placeholder="ბრენდი"
+        />
+
+        <!-- Warranty -->
+        <app-input
+          [field]="productForm.warranty"
+          [error]="submitted() && productForm.warranty().invalid()"
+          type="text"
+          placeholder="გარანტია (მაგ: 12 თვე)"
+        />
+      </div>
+    </div>
+
+    <!-- Pricing & Inventory Card -->
+    <div class="rounded-xl border border-platinum-20 bg-white p-6">
+      <h2 class="mb-4 text-lg font-semibold text-platinum-100">
+        ფასი და მარაგი
+      </h2>
+
+      <div class="grid gap-4 sm:grid-cols-3">
+        <!-- Price -->
+        <app-input
+          [field]="productForm.price"
+          [error]="submitted() && productForm.price().invalid()"
+          type="number"
+          placeholder="ფასი (₾) *"
+        />
+
+        <!-- Discount -->
+        <app-input
+          [field]="productForm.discount"
+          [error]="submitted() && productForm.discount().invalid()"
+          type="number"
+          placeholder="ფასდაკლება (%)"
+        />
+
+        <!-- Quantity -->
+        <app-input
+          [field]="productForm.quantity"
+          [error]="submitted() && productForm.quantity().invalid()"
+          type="number"
+          placeholder="რაოდენობა *"
+        />
+      </div>
+    </div>
+
+    <!-- Specifications Card -->
+    <div class="rounded-xl border border-platinum-20 bg-white p-6">
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-platinum-100">სპეციფიკაცია</h2>
+        <button
+          type="button"
+          (click)="addSpecification()"
+          class="flex items-center gap-2 rounded-xl bg-green-60 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M8 3.33337V12.6667M3.33334 8.00004H12.6667"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          დამატება
+        </button>
+      </div>
+
+      @if (specifications().length === 0) {
+        <p class="py-4 text-center text-sm text-platinum-50">
+          სპეციფიკაციები არ არის დამატებული
+        </p>
+      } @else {
+        <div class="space-y-3">
+          @for (spec of specifications(); track $index) {
+            <div class="flex items-center gap-3">
+              <input
+                type="text"
+                [value]="spec.key"
+                (input)="
+                  updateSpecificationKey($index, $any($event.target).value)
+                "
+                placeholder="პარამეტრი (მაგ: ზომა)"
+                class="flex-1 rounded-xl border border-platinum-20 px-4 py-2.5 text-sm outline-none transition-colors focus:border-green-60 focus:ring-1 focus:ring-green-60"
+              />
+              <input
+                type="text"
+                [value]="spec.value"
+                (input)="
+                  updateSpecificationValue($index, $any($event.target).value)
+                "
+                placeholder="მნიშვნელობა (მაგ: 10x10x10 სმ)"
+                class="flex-1 rounded-xl border border-platinum-20 px-4 py-2.5 text-sm outline-none transition-colors focus:border-green-60 focus:ring-1 focus:ring-green-60"
+              />
+              <button
+                type="button"
+                (click)="removeSpecification($index)"
+                class="flex h-10 w-10 items-center justify-center rounded-xl text-platinum-60 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
+                [attr.aria-label]="'წაშლა'"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M12 4L4 12M4 4L12 12"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Images Upload Card -->
+    <div class="rounded-xl border border-platinum-20 bg-white p-6">
+      <h2 class="mb-4 text-lg font-semibold text-platinum-100">
+        სურათები
+        @if (!isEditMode()) {
+          <span class="text-valencia-60">*</span>
+        }
+      </h2>
+
+      <!-- Upload Area -->
+      <div class="mb-4">
+        <label
+          for="images"
+          class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-platinum-30 bg-platinum-10 px-6 py-8 transition-colors hover:border-green-60 hover:bg-green-10"
+        >
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 48 48"
+            fill="none"
+            class="mb-3 text-platinum-50"
+          >
+            <path
+              d="M24 32V16M16 24H32M42 24C42 33.9411 33.9411 42 24 42C14.0589 42 6 33.9411 6 24C6 14.0589 14.0589 6 24 6C33.9411 6 42 14.0589 42 24Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <p class="mb-1 text-sm font-medium text-platinum-100">
+            დააჭირეთ ან ჩააგდეთ სურათები
+          </p>
+          <p class="text-xs text-platinum-50">PNG, JPG, WEBP (მაქს. 5MB)</p>
+        </label>
+        <input
+          id="images"
+          type="file"
+          accept="image/*"
+          multiple
+          (change)="onImageSelect($event)"
+          class="hidden"
+        />
+      </div>
+
+      <!-- Image Preview Grid -->
+      @if (imagePreviewUrls().length > 0) {
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+          @for (url of imagePreviewUrls(); track $index) {
+            <div
+              class="group relative overflow-hidden rounded-xl border border-platinum-20"
+            >
+              <img
+                [src]="url"
+                [alt]="'Preview ' + ($index + 1)"
+                class="aspect-square w-full object-cover"
+              />
+              <button
+                type="button"
+                (click)="removeImage($index)"
+                class="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-valencia-60 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                [attr.aria-label]="'Remove image ' + ($index + 1)"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M12 4L4 12M4 4L12 12"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex items-center justify-end gap-3">
+      <button
+        type="button"
+        (click)="cancel()"
+        class="rounded-xl border border-platinum-20 px-6 py-2.5 text-sm font-medium text-platinum-60 transition-colors hover:bg-platinum-10"
+      >
+        გაუქმება
+      </button>
+      <button
+        type="submit"
+        [disabled]="isLoading()"
+        [class]="
+          'flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-medium text-white transition-colors ' +
+          (isLoading()
+            ? 'cursor-not-allowed bg-platinum-40'
+            : 'bg-green-60 hover:bg-green-70')
+        "
+      >
+        @if (isLoading()) {
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            class="animate-spin"
+          >
+            <path
+              d="M8 2V4M8 12V14M14 8H12M4 8H2M12.2426 3.75736L10.8284 5.17157M5.17157 10.8284L3.75736 12.2426M12.2426 12.2426L10.8284 10.8284M5.17157 5.17157L3.75736 3.75736"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span>მუშავდება...</span>
+        } @else {
+          <span>{{ isEditMode() ? "განახლება" : "დამატება" }}</span>
+        }
+      </button>
+    </div>
+  </form>
+</div>

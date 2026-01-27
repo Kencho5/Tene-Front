@@ -12,9 +12,9 @@ import { ProductsService } from '@core/services/products/products.service';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { SharedModule } from '@shared/shared.module';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
-import { environment } from '@environments/environment';
 import { ProductResponse } from '@core/interfaces/products.interface';
 import { generateProductSlug } from '@utils/slug';
+import { getProductImageUrl } from '@utils/product-image-url';
 
 @Component({
   selector: 'app-admin-products',
@@ -112,7 +112,7 @@ export class AdminProductsComponent {
   getProductImage(product: ProductResponse): string {
     const primaryImage = product.images.find((image) => image.is_primary);
     if (!primaryImage) return '';
-    return `${environment.product_image_url}/products/${product.data.id}/${primaryImage.image_uuid}.jpg`;
+    return getProductImageUrl(product.data.id, primaryImage.image_uuid);
   }
 
   getProductLink(product: ProductResponse): string[] {
@@ -153,16 +153,6 @@ export class AdminProductsComponent {
       queryParams: params,
       queryParamsHandling: 'merge',
     });
-  }
-
-  addProduct(): void {
-    // TODO: Navigate to add product page
-    console.log('Add product');
-  }
-
-  editProduct(productId: number): void {
-    // TODO: Navigate to edit product page
-    console.log('Edit product', productId);
   }
 
   deleteProduct(productId: number): void {

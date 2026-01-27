@@ -10,9 +10,8 @@
       </p>
     </div>
 
-    <button
-      type="button"
-      (click)="addProduct()"
+    <a
+      [routerLink]="['/admin/products/new']"
       class="flex items-center justify-center gap-2 rounded-xl bg-green-60 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70"
     >
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -24,7 +23,7 @@
         />
       </svg>
       ახალი პროდუქტი
-    </button>
+    </a>
   </div>
 
   <!-- Filters Bar -->
@@ -304,10 +303,9 @@
                 <!-- Actions -->
                 <td class="px-4 py-4">
                   <div class="flex items-center justify-end gap-2">
-                    <button
-                      type="button"
-                      (click)="editProduct(product.data.id)"
-                      class="rounded-xl p-2 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100"
+                    <a
+                      [routerLink]="['/admin/products', product.data.id, 'edit']"
+                      class="flex items-center justify-center rounded-xl p-2 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100"
                       aria-label="რედაქტირება"
                     >
                       <svg
@@ -324,7 +322,7 @@
                           stroke-linejoin="round"
                         />
                       </svg>
-                    </button>
+                    </a>
                     <button
                       type="button"
                       (click)="deleteProduct(product.data.id)"
