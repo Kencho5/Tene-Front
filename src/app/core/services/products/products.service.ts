@@ -55,6 +55,8 @@ export class ProductsService {
   }
 
   uploadToS3(url: string, file: File): Observable<any> {
-    return this.http.put(url, file);
+    const headers = new HttpHeaders({ 'Content-Type': file.type });
+
+    return this.http.put(url, file, { headers });
   }
 }
