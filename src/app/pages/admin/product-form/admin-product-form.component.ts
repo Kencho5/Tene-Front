@@ -99,10 +99,9 @@ export class AdminProductFormComponent {
     const currentImages = this.selectedImages();
     const isFirstBatch = currentImages.length === 0;
 
-    // Initialize metadata for new images
     const newMetadata: ImageMetadata[] = validImages.map((_, index) => ({
       color: '',
-      is_primary: isFirstBatch && index === 0, // First image of first batch is primary
+      is_primary: isFirstBatch && index === 0,
     }));
 
     this.selectedImages.set([...currentImages, ...validImages]);
@@ -130,7 +129,6 @@ export class AdminProductFormComponent {
     this.imagePreviewUrls.set(previews.filter((_, i) => i !== index));
     this.imageMetadata.set(metadata.filter((_, i) => i !== index));
 
-    // If we removed the primary image, make the first remaining image primary
     const remainingMetadata = metadata.filter((_, i) => i !== index);
     if (
       remainingMetadata.length > 0 &&
@@ -206,7 +204,6 @@ export class AdminProductFormComponent {
 
     this.isLoading.set(true);
 
-    // Convert specifications array to JSONB object
     const specsObject = this.specifications()
       .filter((spec) => spec.key && spec.value)
       .reduce(

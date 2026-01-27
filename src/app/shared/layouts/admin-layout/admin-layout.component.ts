@@ -4,6 +4,7 @@ import {
   signal,
   ChangeDetectionStrategy,
 } from '@angular/core';
+import { Location } from '@angular/common';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { SharedModule } from '@shared/shared.module';
 
@@ -21,6 +22,7 @@ interface NavItem {
 })
 export class AdminLayoutComponent {
   private readonly authService = inject(AuthService);
+  private readonly location = inject(Location);
 
   readonly user = this.authService.user;
   readonly isSidebarOpen = signal(true);
@@ -42,6 +44,10 @@ export class AdminLayoutComponent {
 
   closeMobileSidebar(): void {
     this.isMobileSidebarOpen.set(false);
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 
   logout(): void {

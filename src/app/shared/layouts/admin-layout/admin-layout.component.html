@@ -24,39 +24,43 @@
           <img src="/logo.svg" class="h-8" alt="Logo" />
         </a>
 
-        <button
-          type="button"
-          (click)="toggleSidebar()"
-          class="hidden rounded-lg p-1.5 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:block"
-          aria-label="Collapse sidebar"
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M12.5 15L7.5 10L12.5 5"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </button>
+        <div class="flex items-center gap-2">
+          <!-- Desktop Sidebar Toggle -->
+          <button
+            type="button"
+            (click)="toggleSidebar()"
+            class="hidden rounded-lg p-1.5 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:block"
+            aria-label="Toggle sidebar"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path
+                d="M3 5H17M3 10H17M3 15H17"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
 
-        <button
-          type="button"
-          (click)="closeMobileSidebar()"
-          class="rounded-lg p-1.5 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:hidden"
-          aria-label="Close sidebar"
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M15 5L5 15M5 5L15 15"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
+          <!-- Mobile Close Button -->
+          <button
+            type="button"
+            (click)="closeMobileSidebar()"
+            class="rounded-lg p-1.5 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:hidden"
+            aria-label="Close sidebar"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path
+                d="M15 5L5 15M5 5L15 15"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </div>
       } @else {
+        <!-- Collapsed Sidebar Toggle -->
         <button
           type="button"
           (click)="toggleSidebar()"
@@ -65,11 +69,10 @@
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path
-              d="M7.5 15L12.5 10L7.5 5"
+              d="M3 5H17M3 10H17M3 15H17"
               stroke="currentColor"
               stroke-width="1.5"
               stroke-linecap="round"
-              stroke-linejoin="round"
             />
           </svg>
         </button>
@@ -354,28 +357,54 @@
   <div class="flex flex-1 flex-col overflow-hidden">
     <!-- Top Bar -->
     <header
-      class="flex h-16 items-center justify-between border-b border-platinum-20 bg-white px-4 lg:px-6"
+      class="flex h-16 items-center border-b border-platinum-20 bg-white px-4 lg:px-6"
     >
-      <button
-        type="button"
-        (click)="toggleMobileSidebar()"
-        class="rounded-lg p-2 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:hidden"
-        aria-label="Open sidebar"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M4 6H20M4 12H20M4 18H20"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
-        </svg>
-      </button>
+      <!-- Left Section: Navigation Controls -->
+      <div class="flex flex-1 items-center gap-3">
+        <!-- Mobile Sidebar Toggle -->
+        <button
+          type="button"
+          (click)="toggleMobileSidebar()"
+          class="rounded-lg p-2 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:hidden"
+          aria-label="Toggle sidebar"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path
+              d="M3 5H17M3 10H17M3 15H17"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
 
-      <div class="flex items-center gap-2">
+        <!-- Back Button -->
+        <button
+          type="button"
+          (click)="goBack()"
+          class="flex items-center gap-2 text-platinum-60"
+          aria-label="Go back"
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path
+              d="M11.25 13.5L6.75 9L11.25 4.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span class="hidden text-sm font-medium sm:inline">უკან</span>
+        </button>
+
+        <!-- Divider -->
+        <div class="h-6 w-px bg-platinum-20"></div>
+
+        <!-- Home Link -->
         <a
           routerLink="/"
-          class="flex items-center gap-2 rounded-lg border border-platinum-20 px-3 py-1.5 text-sm text-platinum-60 transition-colors hover:border-platinum-30 hover:text-platinum-100"
+          class="flex items-center gap-2 rounded-lg px-3 py-2 text-platinum-80 transition-colors hover:bg-platinum-10 hover:text-platinum-100"
+          aria-label="Go to main website"
         >
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
             <path
@@ -386,7 +415,7 @@
               stroke-linejoin="round"
             />
           </svg>
-          <span class="hidden sm:inline">მთავარი გვერდი</span>
+          <span class="hidden text-sm font-medium sm:inline">მთავარი</span>
         </a>
       </div>
     </header>
