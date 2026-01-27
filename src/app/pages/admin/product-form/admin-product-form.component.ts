@@ -11,21 +11,21 @@ import { ProductsService } from '@core/services/products/products.service';
 import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
-
-interface ProductFormData {
-  name: string;
-  description: string;
-  price: number;
-  discount: number;
-  quantity: number;
-  product_type: string;
-  brand: string;
-  warranty: string;
-}
+import { forkJoin } from 'rxjs';
+import {
+  ProductFormData,
+  CreateProductPayload,
+  ImageUploadRequest,
+} from '@core/interfaces/products.interface';
 
 interface SpecificationEntry {
   key: string;
   value: string;
+}
+
+interface ImageMetadata {
+  color: string;
+  is_primary: boolean;
 }
 
 @Component({
@@ -44,6 +44,7 @@ export class AdminProductFormComponent {
   readonly isLoading = signal(false);
   readonly selectedImages = signal<File[]>([]);
   readonly imagePreviewUrls = signal<string[]>([]);
+  readonly imageMetadata = signal<ImageMetadata[]>([]);
   readonly specifications = signal<SpecificationEntry[]>([]);
 
   readonly productId = computed(() => {
@@ -53,7 +54,7 @@ export class AdminProductFormComponent {
 
   readonly isEditMode = computed(() => this.productId() !== null);
   readonly pageTitle = computed(() =>
-    this.isEditMode() ? 'პროდუქტის რედაქტირება' : 'ახალი პროდუქტი'
+    this.isEditMode() ? 'პროდუქტის რედაქტირება' : 'ახალი პროდუქტი',
   );
 
   readonly productModel = signal<ProductFormData>({
@@ -71,7 +72,9 @@ export class AdminProductFormComponent {
     required(fieldPath.name, { message: 'სახელი აუცილებელია' });
     required(fieldPath.price, { message: 'ფასი აუცილებელია' });
     min(fieldPath.price, 0, { message: 'ფასი უნდა იყოს დადებითი' });
-    min(fieldPath.discount, 0, { message: 'ფასდაკლება უნდა იყოს 0-დან 100-მდე' });
+    min(fieldPath.discount, 0, {
+      message: 'ფასდაკლება უნდა იყოს 0-დან 100-მდე',
+    });
     min(fieldPath.quantity, 0, { message: 'რაოდენობა უნდა იყოს დადებითი' });
     required(fieldPath.product_type, { message: 'კატეგორია აუცილებელია' });
   });
@@ -93,7 +96,17 @@ export class AdminProductFormComponent {
       return;
     }
 
-    this.selectedImages.set([...this.selectedImages(), ...validImages]);
+    const currentImages = this.selectedImages();
+    const isFirstBatch = currentImages.length === 0;
+
+    // Initialize metadata for new images
+    const newMetadata: ImageMetadata[] = validImages.map((_, index) => ({
+      color: '',
+      is_primary: isFirstBatch && index === 0, // First image of first batch is primary
+    }));
+
+    this.selectedImages.set([...currentImages, ...validImages]);
+    this.imageMetadata.set([...this.imageMetadata(), ...newMetadata]);
     this.generateImagePreviews(validImages);
   }
 
@@ -111,9 +124,32 @@ export class AdminProductFormComponent {
   removeImage(index: number): void {
     const images = this.selectedImages();
     const previews = this.imagePreviewUrls();
+    const metadata = this.imageMetadata();
 
     this.selectedImages.set(images.filter((_, i) => i !== index));
     this.imagePreviewUrls.set(previews.filter((_, i) => i !== index));
+    this.imageMetadata.set(metadata.filter((_, i) => i !== index));
+
+    // If we removed the primary image, make the first remaining image primary
+    const remainingMetadata = metadata.filter((_, i) => i !== index);
+    if (
+      remainingMetadata.length > 0 &&
+      !remainingMetadata.some((m) => m.is_primary)
+    ) {
+      this.setPrimaryImage(0);
+    }
+  }
+
+  updateImageColor(index: number, color: string): void {
+    this.imageMetadata.update((metadata) =>
+      metadata.map((m, i) => (i === index ? { ...m, color } : m)),
+    );
+  }
+
+  setPrimaryImage(index: number): void {
+    this.imageMetadata.update((metadata) =>
+      metadata.map((m, i) => ({ ...m, is_primary: i === index })),
+    );
   }
 
   addSpecification(): void {
@@ -121,18 +157,20 @@ export class AdminProductFormComponent {
   }
 
   removeSpecification(index: number): void {
-    this.specifications.set(this.specifications().filter((_, i) => i !== index));
+    this.specifications.set(
+      this.specifications().filter((_, i) => i !== index),
+    );
   }
 
   updateSpecificationKey(index: number, key: string): void {
     this.specifications.update((specs) =>
-      specs.map((spec, i) => (i === index ? { ...spec, key } : spec))
+      specs.map((spec, i) => (i === index ? { ...spec, key } : spec)),
     );
   }
 
   updateSpecificationValue(index: number, value: string): void {
     this.specifications.update((specs) =>
-      specs.map((spec, i) => (i === index ? { ...spec, value } : spec))
+      specs.map((spec, i) => (i === index ? { ...spec, value } : spec)),
     );
   }
 
@@ -168,39 +206,105 @@ export class AdminProductFormComponent {
 
     this.isLoading.set(true);
 
-    const formData = new FormData();
-    const productData = this.productForm().value();
-
-    Object.entries(productData).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        formData.append(key, value.toString());
-      }
-    });
-
     // Convert specifications array to JSONB object
     const specsObject = this.specifications()
       .filter((spec) => spec.key && spec.value)
-      .reduce((acc, spec) => {
-        acc[spec.key] = spec.value;
-        return acc;
-      }, {} as Record<string, string>);
+      .reduce(
+        (acc, spec) => {
+          acc[spec.key] = spec.value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
 
-    formData.append('specifications', JSON.stringify(specsObject));
+    const productData = this.productForm().value();
+    const payload: CreateProductPayload = {
+      name: productData.name,
+      description: productData.description,
+      price: productData.price ?? 0,
+      discount: productData.discount ?? 0,
+      quantity: productData.quantity ?? 0,
+      specifications: specsObject,
+      product_type: productData.product_type,
+      brand: productData.brand,
+      warranty: productData.warranty,
+    };
 
-    this.selectedImages().forEach((file) => {
-      formData.append('images', file);
+    this.productsService.createProduct(payload).subscribe({
+      next: (response) => {
+        const productId = response.data.id;
+
+        const imageRequests: ImageUploadRequest[] = this.selectedImages().map(
+          (file, index) => {
+            const metadata = this.imageMetadata()[index];
+            return {
+              color: metadata.color,
+              is_primary: metadata.is_primary,
+              content_type: file.type,
+            };
+          },
+        );
+
+        this.productsService
+          .getPresignedUrls(productId, imageRequests)
+          .subscribe({
+            next: (presignedResponse) => {
+              const uploads = presignedResponse.images.map(
+                (presignedUrl, index) => {
+                  const file = this.selectedImages()[index];
+                  return this.productsService.uploadToS3(
+                    presignedUrl.upload_url,
+                    file,
+                  );
+                },
+              );
+
+              forkJoin(uploads).subscribe({
+                next: () => {
+                  this.isLoading.set(false);
+                  this.toastService.add(
+                    'წარმატებული',
+                    'პროდუქტი წარმატებით დაემატა',
+                    3000,
+                    'success',
+                  );
+                  this.router.navigate(['/admin/products']);
+                },
+                error: (error) => {
+                  this.isLoading.set(false);
+                  this.toastService.add(
+                    'შეცდომა',
+                    'სურათების ატვირთვა ვერ მოხერხდა',
+                    5000,
+                    'error',
+                  );
+                  console.error('Image upload error:', error);
+                },
+              });
+            },
+            error: (error) => {
+              this.isLoading.set(false);
+              this.toastService.add(
+                'შეცდომა',
+                'სურათების მომზადება ვერ მოხერხდა',
+                5000,
+                'error',
+              );
+              console.error('Presigned URL error:', error);
+            },
+          });
+      },
+      error: (error) => {
+        this.isLoading.set(false);
+        this.toastService.add(
+          'შეცდომა',
+          'პროდუქტის შექმნა ვერ მოხერხდა',
+          5000,
+          'error',
+        );
+        console.error('Product creation error:', error);
+      },
     });
-
-    // TODO: Implement actual API call
-    console.log('Form submitted:', productData);
-    console.log('Specifications:', specsObject);
-    console.log('Images:', this.selectedImages());
-
-    // Simulate API call
-    setTimeout(() => {
-      this.isLoading.set(false);
-      this.router.navigate(['/admin/products']);
-    }, 1000);
   }
 
   cancel(): void {

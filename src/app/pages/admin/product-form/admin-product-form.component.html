@@ -236,31 +236,100 @@
 
       <!-- Image Preview Grid -->
       @if (imagePreviewUrls().length > 0) {
-        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           @for (url of imagePreviewUrls(); track $index) {
             <div
-              class="group relative overflow-hidden rounded-xl border border-platinum-20"
+              class="group relative overflow-hidden rounded-xl border border-platinum-20 bg-white"
             >
-              <img
-                [src]="url"
-                [alt]="'Preview ' + ($index + 1)"
-                class="aspect-square w-full object-cover"
-              />
-              <button
-                type="button"
-                (click)="removeImage($index)"
-                class="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-valencia-60 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                [attr.aria-label]="'Remove image ' + ($index + 1)"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M12 4L4 12M4 4L12 12"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </button>
+              <!-- Image -->
+              <div class="relative aspect-square overflow-hidden">
+                <img
+                  [src]="url"
+                  [alt]="'Preview ' + ($index + 1)"
+                  class="h-full w-full object-cover"
+                />
+                <!-- Remove Button -->
+                <button
+                  type="button"
+                  (click)="removeImage($index)"
+                  class="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-valencia-60 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  [attr.aria-label]="'Remove image ' + ($index + 1)"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M12 4L4 12M4 4L12 12"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </button>
+                <!-- Primary Badge -->
+                @if (imageMetadata()[$index]?.is_primary) {
+                  <div
+                    class="absolute left-2 top-2 rounded-full bg-green-60 px-2 py-1 text-xs font-medium text-white"
+                  >
+                    მთავარი
+                  </div>
+                }
+              </div>
+
+              <!-- Controls -->
+              <div class="space-y-3 p-3">
+                <!-- Primary Radio -->
+                <label
+                  class="bg-platinum-5 hover:bg-green-5 flex cursor-pointer items-center gap-2 rounded-lg border border-platinum-20 px-3 py-2.5 transition-all hover:border-green-60"
+                  [class.border-green-60]="imageMetadata()[$index]?.is_primary"
+                  [class.bg-green-10]="imageMetadata()[$index]?.is_primary"
+                >
+                  <div class="flex items-center">
+                    <input
+                      type="radio"
+                      [checked]="imageMetadata()[$index]?.is_primary"
+                      (change)="setPrimaryImage($index)"
+                      name="primary_image"
+                      class="peer sr-only"
+                    />
+                    <div
+                      class="flex h-5 w-5 items-center justify-center rounded-full border-2 border-platinum-40 transition-all peer-checked:border-green-60 peer-checked:bg-green-60"
+                    >
+                      @if (imageMetadata()[$index]?.is_primary) {
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                        >
+                          <path
+                            d="M10 3L4.5 8.5L2 6"
+                            stroke="white"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      }
+                    </div>
+                  </div>
+                  <span
+                    class="text-sm font-medium transition-colors"
+                    [class.text-green-60]="imageMetadata()[$index]?.is_primary"
+                    [class.text-platinum-100]="
+                      !imageMetadata()[$index]?.is_primary
+                    "
+                    >დააყენე მთავარად</span
+                  >
+                </label>
+
+                <!-- Color Input -->
+                <input
+                  type="text"
+                  [value]="imageMetadata()[$index]?.color || ''"
+                  (input)="updateImageColor($index, $any($event.target).value)"
+                  placeholder="ფერი (მაგ: შავი, წითელი)"
+                  class="w-full rounded-xl border border-platinum-20 bg-white px-3.5 py-2.5 text-sm text-platinum-100 outline-none transition-colors placeholder:text-platinum-50 focus:border-platinum-40 focus:ring-1 focus:ring-platinum-40"
+                />
+              </div>
             </div>
           }
         </div>
