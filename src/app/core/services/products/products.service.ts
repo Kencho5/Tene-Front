@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
   ProductFacets,
@@ -55,10 +55,6 @@ export class ProductsService {
   }
 
   uploadToS3(url: string, file: File): Observable<any> {
-    return this.http.put(url, file, {
-      headers: {
-        'Content-Type': file.type,
-      },
-    });
+    return this.http.put(url, file);
   }
 }

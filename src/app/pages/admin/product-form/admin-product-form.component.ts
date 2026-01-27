@@ -57,16 +57,27 @@ export class AdminProductFormComponent {
     this.isEditMode() ? 'პროდუქტის რედაქტირება' : 'ახალი პროდუქტი',
   );
 
+  //readonly productModel = signal<ProductFormData>({
+  //  id: null as any,
+  //  name: '',
+  //  description: '',
+  //  price: null as any,
+  //  discount: null as any,
+  //  quantity: null as any,
+  //  product_type: '',
+  //  brand: '',
+  //  warranty: '',
+  //});
   readonly productModel = signal<ProductFormData>({
-    id: null as any,
-    name: '',
-    description: '',
-    price: null as any,
-    discount: null as any,
-    quantity: null as any,
-    product_type: '',
-    brand: '',
-    warranty: '',
+    id: 1040,
+    name: 'asd',
+    description: 'asd',
+    price: 100,
+    discount: 10,
+    quantity: 20,
+    product_type: 'asd',
+    brand: 'tene',
+    warranty: '12 tve',
   });
 
   readonly productForm = form(this.productModel, (fieldPath) => {
