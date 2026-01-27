@@ -31,14 +31,24 @@ export class ProductsService {
   }
 
   createProduct(payload: CreateProductPayload): Observable<ProductResponse> {
-    return this.http.put<ProductResponse>('/admin/products', payload);
+    return this.http.post<ProductResponse>('/admin/products', payload);
+  }
+
+  updateProduct(
+    productId: number,
+    payload: CreateProductPayload,
+  ): Observable<ProductResponse> {
+    return this.http.put<ProductResponse>(
+      `/admin/products/${productId}`,
+      payload,
+    );
   }
 
   getPresignedUrls(
     productId: number,
     images: ImageUploadRequest[],
   ): Observable<PresignedUrlResponse> {
-    return this.http.post<PresignedUrlResponse>(
+    return this.http.put<PresignedUrlResponse>(
       `/admin/products/${productId}/images`,
       { images },
     );
