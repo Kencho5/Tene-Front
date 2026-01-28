@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -10,13 +11,16 @@ import { form, Field, required, min } from '@angular/forms/signals';
 import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable, of, switchMap } from 'rxjs';
 import {
   ProductFormData,
   CreateProductPayload,
   ImageUploadRequest,
 } from '@core/interfaces/products.interface';
 import { AdminService } from '@core/services/admin/admin.service';
+import { ProductsService } from '@core/services/products/products.service';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { getProductImageUrl } from '@utils/product-image-url';
 
 interface SpecificationEntry {
   key: string;
@@ -26,6 +30,8 @@ interface SpecificationEntry {
 interface ImageMetadata {
   color: string;
   is_primary: boolean;
+  image_uuid?: string; // Exists for images already on the server
+  isExisting?: boolean; // True if this is an existing image, false if newly selected
 }
 
 @Component({
@@ -38,6 +44,7 @@ export class AdminProductFormComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly adminService = inject(AdminService);
+  private readonly productsService = inject(ProductsService);
   private readonly toastService = inject(ToastService);
 
   readonly submitted = signal(false);
@@ -45,12 +52,66 @@ export class AdminProductFormComponent {
   readonly selectedImages = signal<File[]>([]);
   readonly imagePreviewUrls = signal<string[]>([]);
   readonly imageMetadata = signal<ImageMetadata[]>([]);
+  readonly imagesToDelete = signal<string[]>([]); // UUIDs of images to delete on submit
   readonly specifications = signal<SpecificationEntry[]>([]);
 
   readonly productId = computed(() => {
     const id = this.route.snapshot.paramMap.get('id');
     return id ? Number(id) : null;
   });
+
+  readonly product = toSignal(
+    toObservable(this.productId).pipe(
+      switchMap((id) => (id ? this.productsService.getProduct(id) : of(null))),
+    ),
+  );
+
+  constructor() {
+    effect(() => {
+      const response = this.product();
+      if (this.isEditMode() && response) {
+        const product = response.data;
+
+        this.productModel.set({
+          id: product.id,
+          name: product.name,
+          description: product.description || '',
+          price: Number(product.price),
+          discount: product.discount ? Number(product.discount) : 0,
+          quantity: product.quantity,
+          product_type: product.product_type,
+          brand: product.brand || '',
+          warranty: product.warranty || '',
+        });
+
+        if (product.specifications) {
+          const specs = Object.entries(product.specifications).map(
+            ([key, value]) => ({
+              key,
+              value: String(value),
+            }),
+          );
+          this.specifications.set(specs);
+        }
+
+        if (response.images && response.images.length > 0) {
+          const imageUrls = response.images.map((img) =>
+            getProductImageUrl(product.id, img.image_uuid),
+          );
+
+          const metadata: ImageMetadata[] = response.images.map((img) => ({
+            color: img.color || '',
+            is_primary: img.is_primary,
+            image_uuid: img.image_uuid,
+            isExisting: true,
+          }));
+
+          this.imagePreviewUrls.set(imageUrls);
+          this.imageMetadata.set(metadata);
+        }
+      }
+    });
+  }
 
   readonly isEditMode = computed(() => this.productId() !== null);
   readonly pageTitle = computed(() =>
@@ -105,6 +166,7 @@ export class AdminProductFormComponent {
     const newMetadata: ImageMetadata[] = validImages.map((_, index) => ({
       color: '',
       is_primary: isFirstBatch && index === 0,
+      isExisting: false,
     }));
 
     this.selectedImages.set([...currentImages, ...validImages]);
@@ -124,15 +186,23 @@ export class AdminProductFormComponent {
   }
 
   removeImage(index: number): void {
+    const metadata = this.imageMetadata()[index];
+
+    // If it's an existing image, mark it for deletion
+    if (metadata.isExisting && metadata.image_uuid) {
+      this.imagesToDelete.update((uuids) => [...uuids, metadata.image_uuid!]);
+    }
+
+    // Remove locally
     const images = this.selectedImages();
     const previews = this.imagePreviewUrls();
-    const metadata = this.imageMetadata();
+    const allMetadata = this.imageMetadata();
 
     this.selectedImages.set(images.filter((_, i) => i !== index));
     this.imagePreviewUrls.set(previews.filter((_, i) => i !== index));
-    this.imageMetadata.set(metadata.filter((_, i) => i !== index));
+    this.imageMetadata.set(allMetadata.filter((_, i) => i !== index));
 
-    const remainingMetadata = metadata.filter((_, i) => i !== index);
+    const remainingMetadata = allMetadata.filter((_, i) => i !== index);
     if (
       remainingMetadata.length > 0 &&
       !remainingMetadata.some((m) => m.is_primary)
@@ -195,7 +265,10 @@ export class AdminProductFormComponent {
       return;
     }
 
-    if (this.selectedImages().length === 0 && !this.isEditMode()) {
+    // Check if we have at least one image (existing or new)
+    const hasImages =
+      this.imageMetadata().length > 0 || this.selectedImages().length > 0;
+    if (!hasImages && !this.isEditMode()) {
       this.toastService.add(
         'პროდუქტის დამატება ვერ მოხერხდა',
         'გთხოვთ ატვირთოთ მინიმუმ ერთი სურათი',
@@ -231,69 +304,149 @@ export class AdminProductFormComponent {
       warranty: productData.warranty,
     };
 
-    this.adminService.createProduct(payload).subscribe({
+    const productRequest = this.isEditMode()
+      ? this.adminService.updateProduct(this.productId()!, payload)
+      : this.adminService.createProduct(payload);
+
+    productRequest.subscribe({
       next: (response) => {
         const productId = response.data.id;
 
-        const imageRequests: ImageUploadRequest[] = this.selectedImages().map(
-          (file, index) => {
-            const metadata = this.imageMetadata()[index];
-            return {
-              color: metadata.color,
-              is_primary: metadata.is_primary,
-              content_type: file.type,
-            };
-          },
-        );
+        // Step 1: Delete images marked for deletion (only in edit mode)
+        const deleteOperations = this.isEditMode()
+          ? this.imagesToDelete().map((uuid) =>
+              this.adminService.deleteProductImage(productId, uuid),
+            )
+          : [];
 
-        this.adminService.getPresignedUrls(productId, imageRequests).subscribe({
-          next: (presignedResponse) => {
-            const uploads = presignedResponse.images.map(
-              (presignedUrl, index) => {
-                const file = this.selectedImages()[index];
-                return this.adminService.uploadToS3(
-                  presignedUrl.upload_url,
-                  file,
-                );
-              },
-            );
+        // Step 2: Update metadata for existing images (only in edit mode)
+        const updateOperations = this.isEditMode()
+          ? this.imageMetadata()
+              .filter((meta) => meta.isExisting && meta.image_uuid)
+              .map((meta) =>
+                this.adminService.updateProductImage(
+                  productId,
+                  meta.image_uuid!,
+                  {
+                    color: meta.color || undefined,
+                    is_primary: meta.is_primary,
+                  },
+                ),
+              )
+          : [];
 
-            forkJoin(uploads).subscribe({
-              next: () => {
-                this.isLoading.set(false);
-                this.toastService.add(
-                  'წარმატებული',
-                  'პროდუქტი წარმატებით დაემატა',
-                  3000,
-                  'success',
-                );
-                this.router.navigate(['/admin/products']);
-              },
-              error: (error) => {
-                this.isLoading.set(false);
-                this.toastService.add(
-                  'შეცდომა',
-                  'სურათების ატვირთვა ვერ მოხერხდა',
-                  5000,
-                  'error',
-                );
-                console.error('Image upload error:', error);
-              },
-            });
+        // Step 3: Prepare new images for upload
+        const allMetadata = this.imageMetadata();
+        const newFiles = this.selectedImages();
+        const newImageIndices = allMetadata
+          .map((meta, index) => ({ meta, index }))
+          .filter(({ meta }) => !meta.isExisting)
+          .map(({ index }) => index);
+
+        const newImagesWithMetadata = newFiles.map((file, i) => ({
+          file,
+          metadata: allMetadata[newImageIndices[i]],
+        }));
+
+        // Combine delete and update operations
+        const allOperations: Observable<unknown>[] = [
+          ...deleteOperations,
+          ...updateOperations,
+        ];
+
+        // Execute delete/update operations first, then upload new images
+        const batchOperations$ =
+          allOperations.length > 0 ? forkJoin(allOperations) : of([]);
+
+        batchOperations$.subscribe({
+          next: () => {
+            // If no new images to upload, finish
+            if (newImagesWithMetadata.length === 0) {
+              this.isLoading.set(false);
+              this.toastService.add(
+                'წარმატებული',
+                this.isEditMode()
+                  ? 'პროდუქტი წარმატებით განახლდა'
+                  : 'პროდუქტი წარმატებით დაემატა',
+                3000,
+                'success',
+              );
+              this.router.navigate(['/admin/products']);
+              return;
+            }
+
+            // Upload new images
+            const imageRequests: ImageUploadRequest[] =
+              newImagesWithMetadata.map(({ file, metadata }) => ({
+                color: metadata.color,
+                is_primary: metadata.is_primary,
+                content_type: file.type,
+              }));
+
+            this.adminService
+              .getPresignedUrls(productId, imageRequests)
+              .subscribe({
+                next: (presignedResponse) => {
+                  const uploads = presignedResponse.images.map(
+                    (presignedUrl, index) => {
+                      const file = newImagesWithMetadata[index].file;
+                      return this.adminService.uploadToS3(
+                        presignedUrl.upload_url,
+                        file,
+                      );
+                    },
+                  );
+
+                  forkJoin(uploads).subscribe({
+                    next: () => {
+                      this.isLoading.set(false);
+                      this.toastService.add(
+                        'წარმატებული',
+                        this.isEditMode()
+                          ? 'პროდუქტი წარმატებით განახლდა'
+                          : 'პროდუქტი წარმატებით დაემატა',
+                        3000,
+                        'success',
+                      );
+                      this.router.navigate(['/admin/products']);
+                    },
+                    error: (error: unknown) => {
+                      this.isLoading.set(false);
+                      this.toastService.add(
+                        'შეცდომა',
+                        'სურათების ატვირთვა ვერ მოხერხდა',
+                        5000,
+                        'error',
+                      );
+                      console.error('Image upload error:', error);
+                    },
+                  });
+                },
+                error: (error: unknown) => {
+                  this.isLoading.set(false);
+                  this.toastService.add(
+                    'შეცდომა',
+                    'სურათების მომზადება ვერ მოხერხდა',
+                    5000,
+                    'error',
+                  );
+                  console.error('Presigned URL error:', error);
+                },
+              });
           },
-          error: (error) => {
+          error: (error: unknown) => {
             this.isLoading.set(false);
             this.toastService.add(
               'შეცდომა',
-              'სურათების მომზადება ვერ მოხერხდა',
+              'სურათების წაშლა/განახლება ვერ მოხერხდა',
               5000,
               'error',
             );
-            console.error('Presigned URL error:', error);
+            console.error('Image delete/update error:', error);
           },
         });
       },
-      error: (error) => {
+      error: (error: unknown) => {
         this.isLoading.set(false);
         this.toastService.add(
           'შეცდომა',

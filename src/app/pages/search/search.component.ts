@@ -17,7 +17,14 @@ import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.compo
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 import { SharedModule } from '@shared/shared.module';
-import { catchError, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
+import {
+  catchError,
+  distinctUntilChanged,
+  map,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { ProductFacets } from '@core/interfaces/products.interface';
 
 @Component({
@@ -37,7 +44,6 @@ export class SearchComponent {
   private readonly router = inject(Router);
   private readonly productsService = inject(ProductsService);
   private debounceTimer?: number;
-  private startTime = 0;
 
   readonly params = toSignal(this.route.queryParams, {
     initialValue: {} as Params,
@@ -60,14 +66,17 @@ export class SearchComponent {
   readonly searchResponse = toSignal(
     this.route.queryParams.pipe(
       tap(() => {
-        this.startTime = performance.now();
         this.isLoading.set(true);
       }),
       map((params) => new URLSearchParams(params).toString()),
       switchMap((query) =>
-        this.productsService.searchProduct(query).pipe(
-          catchError(() => of({ products: [], total: 0, limit: 0, offset: 0 })),
-        ),
+        this.productsService
+          .searchProduct(query)
+          .pipe(
+            catchError(() =>
+              of({ products: [], total: 0, limit: 0, offset: 0 }),
+            ),
+          ),
       ),
       tap(() => {
         this.isLoading.set(false);
@@ -99,9 +108,11 @@ export class SearchComponent {
       distinctUntilChanged(),
       tap(() => this.isFacetsLoading.set(true)),
       switchMap((query) =>
-        this.productsService.getFacets(query).pipe(
-          catchError(() => of({ brands: [], colors: [] } as ProductFacets)),
-        ),
+        this.productsService
+          .getFacets(query)
+          .pipe(
+            catchError(() => of({ brands: [], colors: [] } as ProductFacets)),
+          ),
       ),
       tap(() => this.isFacetsLoading.set(false)),
     ),

@@ -8,6 +8,8 @@ export interface Product {
   specifications: string;
   image_ids: string[];
   product_type: string;
+  warranty: string;
+  brand: string;
   created_at: string;
   updated_at: string;
 }

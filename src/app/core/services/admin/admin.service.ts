@@ -51,4 +51,24 @@ export class AdminService {
   deleteProduct(id: number): Observable<HttpStatusCode> {
     return this.http.delete<HttpStatusCode>(`/admin/products/${id}`);
   }
+
+  deleteProductImage(
+    productId: number,
+    imageUuid: string,
+  ): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(
+      `/admin/products/${productId}/images/${imageUuid}`,
+    );
+  }
+
+  updateProductImage(
+    productId: number,
+    imageUuid: string,
+    payload: { color?: string; is_primary?: boolean },
+  ): Observable<any> {
+    return this.http.patch(
+      `/admin/products/${productId}/images/${imageUuid}`,
+      payload,
+    );
+  }
 }

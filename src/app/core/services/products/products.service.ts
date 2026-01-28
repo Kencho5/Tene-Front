@@ -17,7 +17,7 @@ export class ProductsService {
     return this.http.get<ProductSearchResponse>(`/products?${params}`);
   }
 
-  getProduct(product_id: string): Observable<ProductResponse> {
+  getProduct(product_id: string | number): Observable<ProductResponse> {
     return this.http.get<ProductResponse>(`/products/${product_id}`);
   }
 
