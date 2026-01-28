@@ -82,7 +82,7 @@ export class LoginComponent {
           error: (errorResponse: HttpErrorResponse) => {
             this.toastService.add(
               'ავტორიზაცია ვერ მოხერხდა',
-              errorResponse.error.error ||
+              errorResponse.error.message ||
                 'გთხოვთ შეამოწმოთ თქვენი მონაცემები და სცადოთ თავიდან.',
               4000,
               'error',

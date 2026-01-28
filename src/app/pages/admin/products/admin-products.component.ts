@@ -10,15 +10,19 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ProductsService } from '@core/services/products/products.service';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
+import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { SharedModule } from '@shared/shared.module';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { ProductResponse } from '@core/interfaces/products.interface';
 import { generateProductSlug } from '@utils/slug';
 import { getProductImageUrl } from '@utils/product-image-url';
+import { AdminService } from '@core/services/admin/admin.service';
+import { ToastService } from '@core/services/toast.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-admin-products',
-  imports: [SharedModule, DropdownComponent],
+  imports: [SharedModule, DropdownComponent, ConfirmationModalComponent],
   templateUrl: './admin-products.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -26,10 +30,14 @@ export class AdminProductsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly productsService = inject(ProductsService);
+  private readonly adminService = inject(AdminService);
+  private readonly toastService = inject(ToastService);
   private debounceTimer?: number;
 
   readonly isLoading = signal<boolean>(false);
   readonly searchQuery = signal<string>('');
+  readonly isDeleteModalOpen = signal<boolean>(false);
+  readonly productToDelete = signal<number | null>(null);
 
   readonly sortOptions: ComboboxItems[] = [
     { label: 'ფასი: კლებადობით', value: 'price_desc' },
@@ -128,7 +136,7 @@ export class AdminProductsComponent {
     this.debounceTimer = window.setTimeout(() => {
       const isNumeric = /^\d+$/.test(value);
       this.updateQueryParams({
-        query: isNumeric ? undefined : (value || undefined),
+        query: isNumeric ? undefined : value || undefined,
         id: isNumeric ? value : undefined,
       });
     }, 400);
@@ -147,7 +155,9 @@ export class AdminProductsComponent {
     this.updateQueryParams({ query: undefined, id: undefined });
   }
 
-  private updateQueryParams(params: Record<string, string | number | undefined>): void {
+  private updateQueryParams(
+    params: Record<string, string | number | undefined>,
+  ): void {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: params,
@@ -155,9 +165,46 @@ export class AdminProductsComponent {
     });
   }
 
-  deleteProduct(productId: number): void {
-    // TODO: Implement delete functionality
-    console.log('Delete product', productId);
+  openDeleteModal(productId: number): void {
+    this.productToDelete.set(productId);
+    this.isDeleteModalOpen.set(true);
+  }
+
+  closeDeleteModal(): void {
+    this.isDeleteModalOpen.set(false);
+    this.productToDelete.set(null);
+  }
+
+  confirmDelete(): void {
+    const productId = this.productToDelete();
+    if (productId === null) return;
+
+    let toastParams: [string, string, number, 'success' | 'error'] | null =
+      null;
+
+    this.adminService
+      .deleteProduct(productId)
+      .pipe(
+        tap(() => {
+          toastParams = [
+            'წარმატება',
+            'პროდუქტი წარმატებით წაიშალა',
+            3000,
+            'success',
+          ];
+        }),
+        catchError((error) => {
+          toastParams = ['შეცდომა', error.error.message, 3000, 'error'];
+          return of(null);
+        }),
+        finalize(() => {
+          if (toastParams) {
+            this.toastService.add(...toastParams);
+          }
+          this.closeDeleteModal();
+        }),
+      )
+      .subscribe();
   }
 
   goToPage(page: number): void {

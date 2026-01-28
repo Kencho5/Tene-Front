@@ -325,7 +325,7 @@
                     </a>
                     <button
                       type="button"
-                      (click)="deleteProduct(product.data.id)"
+                      (click)="openDeleteModal(product.data.id)"
                       class="rounded-xl p-2 text-platinum-60 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
                       aria-label="წაშლა"
                     >
@@ -458,3 +458,15 @@
     </div>
   </div>
 </div>
+
+<app-confirmation-modal
+  [isOpen]="isDeleteModalOpen()"
+  title="პროდუქტის წაშლა"
+  message="დარწმუნებული ხართ, რომ გსურთ ამ პროდუქტის წაშლა? ეს მოქმედება შეუქცევადია."
+  confirmText="წაშლა"
+  cancelText="გაუქმება"
+  confirmButtonGradientStart="#ef4444"
+  confirmButtonGradientEnd="#dc2626"
+  (confirm)="confirmDelete()"
+  (cancel)="closeDeleteModal()"
+/>

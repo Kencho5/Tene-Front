@@ -84,7 +84,7 @@ export class RegisterComponent {
           error: (errorResponse: HttpErrorResponse) => {
             this.toastService.add(
               'რეგისტრაცია ვერ მოხერხდა',
-              errorResponse.error.error ||
+              errorResponse.error.message ||
                 'გთხოვთ შეამოწმოთ თქვენი მონაცემები და სცადოთ თავიდან.',
               4000,
               'error',

@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { form, Field, required, min } from '@angular/forms/signals';
-import { ProductsService } from '@core/services/products/products.service';
 import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
@@ -17,6 +16,7 @@ import {
   CreateProductPayload,
   ImageUploadRequest,
 } from '@core/interfaces/products.interface';
+import { AdminService } from '@core/services/admin/admin.service';
 
 interface SpecificationEntry {
   key: string;
@@ -37,7 +37,7 @@ interface ImageMetadata {
 export class AdminProductFormComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly productsService = inject(ProductsService);
+  private readonly adminService = inject(AdminService);
   private readonly toastService = inject(ToastService);
 
   readonly submitted = signal(false);
@@ -77,7 +77,8 @@ export class AdminProductFormComponent {
     min(fieldPath.discount, 0, {
       message: 'ფასდაკლება უნდა იყოს 0-დან 100-მდე',
     });
-    min(fieldPath.quantity, 0, { message: 'რაოდენობა უნდა იყოს დადებითი' });
+    required(fieldPath.quantity, { message: 'რაოდენობა აუცილებელია' });
+    min(fieldPath.quantity, 0, { message: 'რაოდენობა უნდა იყოს 0 ზე მეტი' });
     required(fieldPath.product_type, { message: 'კატეგორია აუცილებელია' });
   });
 
@@ -230,7 +231,7 @@ export class AdminProductFormComponent {
       warranty: productData.warranty,
     };
 
-    this.productsService.createProduct(payload).subscribe({
+    this.adminService.createProduct(payload).subscribe({
       next: (response) => {
         const productId = response.data.id;
 
@@ -245,54 +246,52 @@ export class AdminProductFormComponent {
           },
         );
 
-        this.productsService
-          .getPresignedUrls(productId, imageRequests)
-          .subscribe({
-            next: (presignedResponse) => {
-              const uploads = presignedResponse.images.map(
-                (presignedUrl, index) => {
-                  const file = this.selectedImages()[index];
-                  return this.productsService.uploadToS3(
-                    presignedUrl.upload_url,
-                    file,
-                  );
-                },
-              );
+        this.adminService.getPresignedUrls(productId, imageRequests).subscribe({
+          next: (presignedResponse) => {
+            const uploads = presignedResponse.images.map(
+              (presignedUrl, index) => {
+                const file = this.selectedImages()[index];
+                return this.adminService.uploadToS3(
+                  presignedUrl.upload_url,
+                  file,
+                );
+              },
+            );
 
-              forkJoin(uploads).subscribe({
-                next: () => {
-                  this.isLoading.set(false);
-                  this.toastService.add(
-                    'წარმატებული',
-                    'პროდუქტი წარმატებით დაემატა',
-                    3000,
-                    'success',
-                  );
-                  this.router.navigate(['/admin/products']);
-                },
-                error: (error) => {
-                  this.isLoading.set(false);
-                  this.toastService.add(
-                    'შეცდომა',
-                    'სურათების ატვირთვა ვერ მოხერხდა',
-                    5000,
-                    'error',
-                  );
-                  console.error('Image upload error:', error);
-                },
-              });
-            },
-            error: (error) => {
-              this.isLoading.set(false);
-              this.toastService.add(
-                'შეცდომა',
-                'სურათების მომზადება ვერ მოხერხდა',
-                5000,
-                'error',
-              );
-              console.error('Presigned URL error:', error);
-            },
-          });
+            forkJoin(uploads).subscribe({
+              next: () => {
+                this.isLoading.set(false);
+                this.toastService.add(
+                  'წარმატებული',
+                  'პროდუქტი წარმატებით დაემატა',
+                  3000,
+                  'success',
+                );
+                this.router.navigate(['/admin/products']);
+              },
+              error: (error) => {
+                this.isLoading.set(false);
+                this.toastService.add(
+                  'შეცდომა',
+                  'სურათების ატვირთვა ვერ მოხერხდა',
+                  5000,
+                  'error',
+                );
+                console.error('Image upload error:', error);
+              },
+            });
+          },
+          error: (error) => {
+            this.isLoading.set(false);
+            this.toastService.add(
+              'შეცდომა',
+              'სურათების მომზადება ვერ მოხერხდა',
+              5000,
+              'error',
+            );
+            console.error('Presigned URL error:', error);
+          },
+        });
       },
       error: (error) => {
         this.isLoading.set(false);
