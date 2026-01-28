@@ -6,7 +6,6 @@ export interface Product {
   discount: number;
   quantity: number;
   specifications: string;
-  image_ids: string[];
   product_type: string;
   warranty: string;
   brand: string;
@@ -19,6 +18,7 @@ export interface ProductImage {
   image_uuid: string;
   color: string;
   is_primary: boolean;
+  extension: string;
 }
 
 export interface ProductResponse {
@@ -38,6 +38,7 @@ export interface CartItem {
   quantity: number;
   selectedColor: string;
   selectedImageId: string;
+  selectedImageExtension: string;
 }
 
 export interface CheckoutFields {

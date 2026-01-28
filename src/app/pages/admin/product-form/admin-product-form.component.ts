@@ -147,7 +147,7 @@ export class AdminProductFormComponent {
 
     if (productImages.length > 0) {
       const loadedImages: ImageWithMetadata[] = productImages.map((img) => ({
-        previewUrl: getProductImageUrl(product.id, img.image_uuid),
+        previewUrl: getProductImageUrl(product.id, img.image_uuid, img.extension),
         color: img.color || '',
         isPrimary: img.is_primary,
         uuid: img.image_uuid,

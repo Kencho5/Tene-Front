@@ -31,7 +31,11 @@ export class ProductCardComponent {
     );
     if (!primaryImage) return '';
 
-    return getProductImageUrl(this.product().data.id, primaryImage.image_uuid);
+    return getProductImageUrl(
+      this.product().data.id,
+      primaryImage.image_uuid,
+      primaryImage.extension,
+    );
   });
 
   addToCart(): void {
@@ -47,6 +51,7 @@ export class ProductCardComponent {
       quantity: 1,
       selectedColor: primaryImage.color,
       selectedImageId: primaryImage.image_uuid,
+      selectedImageExtension: primaryImage.extension,
     });
   }
 }

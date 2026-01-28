@@ -1,11 +1,19 @@
 <a
-  [routerLink]="clickable() ? ['/products', productSlug(), item().product.id] : null"
+  [routerLink]="
+    clickable() ? ['/products', productSlug(), item().product.id] : null
+  "
   [class.pointer-events-none]="!clickable()"
   class="relative flex flex-col items-start justify-between gap-6 rounded-xl bg-white p-6 shadow-low md:flex-row md:items-center md:gap-0"
 >
   <div class="flex items-center gap-2">
     <app-image
-      [src]="getImageSrc(item().selectedImageId, item().product.id)"
+      [src]="
+        getImageSrc(
+          item().selectedImageId,
+          item().product.id,
+          item().selectedImageExtension
+        )
+      "
       [width]="80"
       [height]="80"
       loading="lazy"

@@ -26,7 +26,10 @@ import {
 import { CartService } from '@core/services/products/cart.service';
 import { SeoService } from '@core/services/seo/seo.service';
 import { SchemaService } from '@core/services/seo/schema.service';
-import { getProductImageBaseUrl } from '@utils/product-image-url';
+import {
+  getProductImageBaseUrl,
+  getProductImageUrl,
+} from '@utils/product-image-url';
 
 type TabName = 'specifications' | 'description';
 
@@ -221,8 +224,10 @@ export class ProductComponent {
     const product = this.product();
     if (!product) return '';
 
-    const productId = product.data.id;
-    return `${this.imageBaseUrl}/${productId}/${imageId}.jpg`;
+    const image = product.images.find((img) => img.image_uuid === imageId);
+    if (!image) return '';
+
+    return getProductImageUrl(product.data.id, imageId, image.extension);
   }
 
   updateProductCount(changeAmount: number): void {
@@ -249,11 +254,17 @@ export class ProductComponent {
 
     if (!productData || !color || !imageId) return;
 
+    const selectedImage = productData.images.find(
+      (img) => img.image_uuid === imageId,
+    );
+    if (!selectedImage) return;
+
     this.cartService.addItem({
       product: productData.data,
       quantity: this.quantity(),
       selectedColor: color,
       selectedImageId: imageId,
+      selectedImageExtension: selectedImage.extension,
     });
 
     this.quantity.set(1);
@@ -261,8 +272,11 @@ export class ProductComponent {
 
   private updateSEO(product: ProductResponse, slug: string): void {
     const price = this.finalPrice();
-    const imageUrl = this.getImageSrc(
-      this.displayImage()?.image_uuid || product.images[0]?.image_uuid || '',
+    const image = product.images[0];
+    const imageUrl = getProductImageUrl(
+      product.data.id,
+      image.image_uuid,
+      image.extension,
     );
 
     const productDescription = product.data.description || product.data.name;

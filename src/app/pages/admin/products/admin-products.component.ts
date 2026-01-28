@@ -120,7 +120,11 @@ export class AdminProductsComponent {
   getProductImage(product: ProductResponse): string {
     const primaryImage = product.images.find((image) => image.is_primary);
     if (!primaryImage) return '';
-    return getProductImageUrl(product.data.id, primaryImage.image_uuid);
+    return getProductImageUrl(
+      product.data.id,
+      primaryImage.image_uuid,
+      primaryImage.extension,
+    );
   }
 
   getProductLink(product: ProductResponse): string[] {

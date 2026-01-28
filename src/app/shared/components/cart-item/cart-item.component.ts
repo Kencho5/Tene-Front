@@ -29,8 +29,12 @@ export class CartItemComponent {
     return generateProductSlug(this.item().product.name);
   });
 
-  getImageSrc(imageId: string, productId: number): string {
-    return getProductImageUrl(productId, imageId);
+  getImageSrc(
+    imageId: string,
+    productId: number,
+    extension: string,
+  ): string {
+    return getProductImageUrl(productId, imageId, extension);
   }
 
   onDelete(event: MouseEvent): void {
@@ -47,7 +51,7 @@ export class CartItemComponent {
       item.product.id,
       item.selectedColor,
       item.selectedImageId,
-      item.quantity + delta
+      item.quantity + delta,
     );
   }
 }
