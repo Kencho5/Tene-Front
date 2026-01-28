@@ -192,6 +192,7 @@ export class AdminProductsComponent {
             3000,
             'success',
           ];
+          this.updateQueryParams({ _t: Date.now() });
         }),
         catchError((error) => {
           toastParams = ['შეცდომა', error.error.message, 3000, 'error'];

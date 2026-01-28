@@ -52,8 +52,12 @@
         <div class="h-px bg-platinum-20"></div>
 
         <div class="flex gap-3">
-          <div class="h-[46px] w-[126px] animate-pulse rounded-full bg-platinum-20"></div>
-          <div class="h-[46px] w-full animate-pulse rounded-full bg-platinum-20"></div>
+          <div
+            class="h-[46px] w-[126px] animate-pulse rounded-full bg-platinum-20"
+          ></div>
+          <div
+            class="h-[46px] w-full animate-pulse rounded-full bg-platinum-20"
+          ></div>
         </div>
       </div>
     </div>
@@ -116,7 +120,13 @@
           @if (displayImage(); as mainImage) {
             <app-image
               [src]="getImageSrc(mainImage.image_uuid)"
-              [alt]="product.data.name + ' - ' + mainImage.color + ' - ' + product.data.product_type"
+              [alt]="
+                product.data.name +
+                ' - ' +
+                mainImage.color +
+                ' - ' +
+                product.data.product_type
+              "
               [width]="642"
               [height]="642"
               loading="lazy"

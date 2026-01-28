@@ -222,7 +222,7 @@ export class ProductComponent {
     if (!product) return '';
 
     const productId = product.data.id;
-    return `${this.imageBaseUrl}/products/${productId}/${imageId}.jpg`;
+    return `${this.imageBaseUrl}/${productId}/${imageId}.jpg`;
   }
 
   updateProductCount(changeAmount: number): void {
