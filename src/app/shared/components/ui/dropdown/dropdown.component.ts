@@ -23,6 +23,7 @@ export class DropdownComponent {
   readonly error = input<boolean>(false);
   readonly customClass = input<string>('');
   readonly items = input.required<ComboboxItems[]>();
+  readonly disabled = input<boolean>(false);
 
   readonly selectedValueChange = output<string>();
 

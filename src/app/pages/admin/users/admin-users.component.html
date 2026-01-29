@@ -4,31 +4,16 @@
     class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
   >
     <div>
-      <h1 class="text-2xl font-semibold text-platinum-100">პროდუქტები</h1>
+      <h1 class="text-2xl font-semibold text-platinum-100">მომხმარებლები</h1>
       <p class="mt-1 text-sm text-platinum-50">
-        სულ {{ totalProducts() }} პროდუქტი
+        სულ {{ totalUsers() }} მომხმარებელი
       </p>
     </div>
-
-    <a
-      [routerLink]="['/admin/products/new']"
-      class="flex items-center justify-center gap-2 rounded-xl bg-green-60 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70"
-    >
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path
-          d="M8 3.33337V12.6667M3.33334 8.00004H12.6667"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-        />
-      </svg>
-      ახალი პროდუქტი
-    </a>
   </div>
 
   <!-- Filters Bar -->
   <div
-    class="flex flex-col gap-3 rounded-xl border border-platinum-20 bg-white p-4 sm:flex-row sm:items-center"
+    class="flex flex-col gap-3 rounded-xl border border-platinum-20 bg-white p-4"
   >
     <!-- Search Input -->
     <div class="relative flex-1">
@@ -51,7 +36,7 @@
         type="text"
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
-        placeholder="ძიება პროდუქტის სახელით ან ID-ით..."
+        placeholder="ძიება ელ-ფოსტით ან ID-ით..."
         class="h-[44px] w-full rounded-xl border border-platinum-20 py-2.5 pl-10 pr-10 text-sm outline-none transition-colors focus:border-green-60 focus:ring-1 focus:ring-green-60"
       />
       @if (searchQuery()) {
@@ -71,43 +56,38 @@
         </button>
       }
     </div>
-
-    <!-- Sort Dropdown -->
-    <div class="w-full sm:w-[220px]">
-      <app-dropdown
-        [selectedValue]="params()['sort_by']"
-        (selectedValueChange)="onSortChange($event)"
-        placeholder="სორტირება"
-        [items]="sortOptions"
-      />
-    </div>
   </div>
 
   <!-- Table -->
-  <div class="rounded-xl border border-platinum-20 bg-white">
-    <div class="overflow-x-auto">
+  <div class="rounded-xl border border-platinum-20 bg-white" style="overflow: visible;">
+    <div style="overflow-x: auto; overflow-y: visible;">
       <table class="w-full">
         <thead class="border-b border-platinum-20 bg-platinum-10">
           <tr>
             <th
               class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60"
             >
-              პროდუქტი
-            </th>
-            <th
-              class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60 md:table-cell"
-            >
-              კატეგორია
+              ID
             </th>
             <th
               class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60"
             >
-              ფასი
+              მომხმარებელი
+            </th>
+            <th
+              class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60 md:table-cell"
+            >
+              ელ-ფოსტა
             </th>
             <th
               class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60 lg:table-cell"
             >
-              მარაგი
+              რეგისტრაცია
+            </th>
+            <th
+              class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60"
+            >
+              როლი
             </th>
             <th
               class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-platinum-60"
@@ -116,38 +96,33 @@
             </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-platinum-20">
+        <tbody class="divide-y divide-platinum-20 overflow-visible">
           @if (isLoading()) {
             @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
               <tr class="hover:bg-platinum-10">
                 <td class="px-4 py-4">
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="h-12 w-12 animate-pulse rounded-xl bg-platinum-20"
-                    ></div>
-                    <div class="space-y-2">
-                      <div
-                        class="h-4 w-32 animate-pulse rounded bg-platinum-20"
-                      ></div>
-                      <div
-                        class="h-3 w-20 animate-pulse rounded bg-platinum-20"
-                      ></div>
-                    </div>
-                  </div>
+                  <div
+                    class="h-4 w-12 animate-pulse rounded bg-platinum-20"
+                  ></div>
+                </td>
+                <td class="px-4 py-4">
+                  <div
+                    class="h-4 w-32 animate-pulse rounded bg-platinum-20"
+                  ></div>
                 </td>
                 <td class="hidden px-4 py-4 md:table-cell">
+                  <div
+                    class="h-4 w-40 animate-pulse rounded bg-platinum-20"
+                  ></div>
+                </td>
+                <td class="hidden px-4 py-4 lg:table-cell">
                   <div
                     class="h-4 w-28 animate-pulse rounded bg-platinum-20"
                   ></div>
                 </td>
                 <td class="px-4 py-4">
                   <div
-                    class="h-4 w-16 animate-pulse rounded bg-platinum-20"
-                  ></div>
-                </td>
-                <td class="hidden px-4 py-4 lg:table-cell">
-                  <div
-                    class="h-4 w-12 animate-pulse rounded bg-platinum-20"
+                    class="h-8 w-32 animate-pulse rounded-xl bg-platinum-20"
                   ></div>
                 </td>
                 <td class="px-4 py-4">
@@ -155,14 +130,11 @@
                     <div
                       class="h-8 w-8 animate-pulse rounded-xl bg-platinum-20"
                     ></div>
-                    <div
-                      class="h-8 w-8 animate-pulse rounded-xl bg-platinum-20"
-                    ></div>
                   </div>
                 </td>
               </tr>
             }
-          } @else if (products().length === 0) {
+          } @else if (users().length === 0) {
             <tr>
               <td colspan="6" class="px-4 py-16 text-center">
                 <div class="flex flex-col items-center gap-3">
@@ -173,24 +145,23 @@
                     fill="none"
                     class="text-platinum-30"
                   >
-                    <path
-                      d="M42 30V18L24 9L6 18V30L24 39L42 30Z"
+                    <circle
+                      cx="24"
+                      cy="16"
+                      r="6"
                       stroke="currentColor"
                       stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
                     />
                     <path
-                      d="M6 18L24 27L42 18M24 39V27"
+                      d="M36 38C36 32 30.6274 27 24 27C17.3726 27 12 32 12 38"
                       stroke="currentColor"
                       stroke-width="2"
                       stroke-linecap="round"
-                      stroke-linejoin="round"
                     />
                   </svg>
                   <div>
                     <p class="text-sm font-medium text-platinum-100">
-                      პროდუქტები არ მოიძებნა
+                      მომხმარებლები არ მოიძებნა
                     </p>
                     <p class="mt-1 text-sm text-platinum-50">
                       სცადეთ სხვა ძებნის პარამეტრები
@@ -200,103 +171,50 @@
               </td>
             </tr>
           } @else {
-            @for (product of products(); track product.data.id) {
-              <tr class="transition-colors hover:bg-platinum-10">
-                <!-- Product -->
+            @for (user of users(); track user.id) {
+              <tr
+                class="overflow-visible transition-colors hover:bg-platinum-10"
+              >
+                <!-- ID -->
                 <td class="px-4 py-4">
-                  <div class="flex items-center gap-3">
-                    @if (getProductImage(product)) {
-                      <div
-                        class="h-12 w-12 overflow-hidden rounded-xl border border-platinum-20"
-                      >
-                        <img
-                          [src]="getProductImage(product)"
-                          [alt]="product.data.name"
-                          class="h-full w-full object-cover"
-                        />
-                      </div>
-                    } @else {
-                      <div
-                        class="flex h-12 w-12 items-center justify-center rounded-xl border border-platinum-20 bg-platinum-10"
-                      >
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          class="text-platinum-40"
-                        >
-                          <path
-                            d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    }
-                    <div>
-                      <a
-                        [routerLink]="getProductLink(product)"
-                        class="font-medium text-platinum-100 hover:text-green-60 transition-colors"
-                      >
-                        {{ product.data.name }}
-                      </a>
-                      <p class="text-sm text-platinum-50">
-                        ID: {{ product.data.id }}
-                      </p>
-                    </div>
-                  </div>
-                </td>
-
-                <!-- Category -->
-                <td class="hidden px-4 py-4 md:table-cell">
-                  <span
-                    class="inline-flex rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-100"
-                  >
-                    {{ product.data.product_type || "-" }}
+                  <span class="text-sm font-medium text-platinum-100">
+                    {{ user.id }}
                   </span>
                 </td>
 
-                <!-- Price -->
+                <!-- Name -->
                 <td class="px-4 py-4">
-                  <div class="space-y-1">
-                    @if (product.data.discount > 0) {
-                      <p class="font-semibold text-platinum-100">
-                        {{
-                          product.data.price * (1 - product.data.discount / 100)
-                            | number: "1.2-2"
-                        }}
-                        ₾
-                      </p>
-                      <p class="text-xs text-platinum-50 line-through">
-                        {{ product.data.price }} ₾
-                      </p>
-                    } @else {
-                      <p class="font-semibold text-platinum-100">
-                        {{ product.data.price }} ₾
-                      </p>
-                    }
+                  <div>
+                    <p class="font-medium text-platinum-100">{{ user.name }}</p>
+                    <p class="text-sm text-platinum-50 md:hidden">
+                      {{ user.email }}
+                    </p>
                   </div>
                 </td>
 
-                <!-- Stock -->
+                <!-- Email -->
+                <td class="hidden px-4 py-4 md:table-cell">
+                  <span class="text-sm text-platinum-100">{{
+                    user.email
+                  }}</span>
+                </td>
+
+                <!-- Registration Date -->
                 <td class="hidden px-4 py-4 lg:table-cell">
-                  <div class="flex items-center gap-2">
-                    @if (product.data.quantity > 0) {
-                      <span
-                        class="inline-flex h-6 min-w-[32px] items-center justify-center rounded-full bg-green-10 px-2 text-xs font-medium text-green-70"
-                      >
-                        {{ product.data.quantity }}
-                      </span>
-                    } @else {
-                      <span
-                        class="inline-flex h-6 min-w-[32px] items-center justify-center rounded-full bg-valencia-10 px-2 text-xs font-medium text-valencia-60"
-                      >
-                        0
-                      </span>
-                    }
+                  <span class="text-sm text-platinum-60">
+                    {{ formatDate(user.created_at) }}
+                  </span>
+                </td>
+
+                <!-- Role Dropdown -->
+                <td class="overflow-visible px-4 py-4">
+                  <div class="w-full sm:w-[180px]">
+                    <app-dropdown
+                      [selectedValue]="user.role"
+                      (selectedValueChange)="onRoleChange(user.id, $event)"
+                      [items]="roleOptions"
+                      [disabled]="updatingRole() === user.id"
+                    />
                   </div>
                 </td>
 
@@ -304,7 +222,7 @@
                 <td class="px-4 py-4">
                   <div class="flex items-center justify-end gap-2">
                     <a
-                      [routerLink]="['/admin/products', product.data.id, 'edit']"
+                      [routerLink]="['/admin/users', user.id, 'edit']"
                       class="flex items-center justify-center rounded-xl p-2 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100"
                       aria-label="რედაქტირება"
                     >
@@ -325,7 +243,7 @@
                     </a>
                     <button
                       type="button"
-                      (click)="openDeleteModal(product.data.id)"
+                      (click)="openDeleteModal(user.id)"
                       class="rounded-xl p-2 text-platinum-60 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
                       aria-label="წაშლა"
                     >
@@ -364,20 +282,20 @@
     <app-pagination
       [currentPage]="currentPage()"
       [totalPages]="totalPages()"
-      [totalItems]="totalProducts()"
+      [totalItems]="totalUsers()"
       [showingFrom]="showingFrom()"
       [showingTo]="showingTo()"
       [limit]="limit()"
       (pageChange)="onPageChange($event)"
-      (limitChange)="onLimitChangeValue($event)"
+      (limitChange)="onLimitChange($event)"
     />
   </div>
 </div>
 
 <app-confirmation-modal
   [isOpen]="isDeleteModalOpen()"
-  title="პროდუქტის წაშლა"
-  message="დარწმუნებული ხართ, რომ გსურთ ამ პროდუქტის წაშლა? ეს მოქმედება შეუქცევადია."
+  title="მომხმარებლის წაშლა"
+  message="დარწმუნებული ხართ, რომ გსურთ ამ მომხმარებლის წაშლა? ეს მოქმედება შეუქცევადია."
   confirmText="წაშლა"
   cancelText="გაუქმება"
   confirmButtonGradientStart="#ef4444"

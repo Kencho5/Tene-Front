@@ -11,6 +11,11 @@ import {
   ImageUploadRequest,
   PresignedUrlResponse,
 } from '@core/interfaces/products.interface';
+import {
+  UserResponse,
+  UserSearchResponse,
+  UserRequest,
+} from '@core/interfaces/admin/users.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -70,5 +75,18 @@ export class AdminService {
       `/admin/products/${productId}/images/${imageUuid}`,
       payload,
     );
+  }
+
+  // User Management
+  searchUsers(query: string): Observable<UserSearchResponse> {
+    return this.http.get<UserSearchResponse>(`/admin/users?${query}`);
+  }
+
+  updateUser(userId: number, payload: UserRequest): Observable<UserResponse> {
+    return this.http.put<UserResponse>(`/admin/users/${userId}`, payload);
+  }
+
+  deleteUser(userId: number): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/users/${userId}`);
   }
 }

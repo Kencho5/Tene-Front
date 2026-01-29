@@ -7,30 +7,30 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ComboboxItems } from '@core/interfaces/combobox.interface';
-import { ProductsService } from '@core/services/products/products.service';
-import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
+import { AdminService } from '@core/services/admin/admin.service';
+import { ToastService } from '@core/services/toast.service';
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
-import { ProductResponse } from '@core/interfaces/products.interface';
-import { generateProductSlug } from '@utils/slug';
-import { getProductImageUrl } from '@utils/product-image-url';
-import { AdminService } from '@core/services/admin/admin.service';
-import { ToastService } from '@core/services/toast.service';
-import { finalize } from 'rxjs';
+import { catchError, finalize, map, of, switchMap, tap } from 'rxjs';
+import { UserRole } from '@core/interfaces/admin/users.interface';
+import { ComboboxItems } from '@core/interfaces/combobox.interface';
+import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 
 @Component({
-  selector: 'app-admin-products',
-  imports: [SharedModule, DropdownComponent, ConfirmationModalComponent, PaginationComponent],
-  templateUrl: './admin-products.component.html',
+  selector: 'app-admin-users',
+  imports: [
+    SharedModule,
+    ConfirmationModalComponent,
+    PaginationComponent,
+    DropdownComponent,
+  ],
+  templateUrl: './admin-users.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminProductsComponent {
+export class AdminUsersComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly productsService = inject(ProductsService);
   private readonly adminService = inject(AdminService);
   private readonly toastService = inject(ToastService);
   private debounceTimer?: number;
@@ -38,11 +38,12 @@ export class AdminProductsComponent {
   readonly isLoading = signal<boolean>(false);
   readonly searchQuery = signal<string>('');
   readonly isDeleteModalOpen = signal<boolean>(false);
-  readonly productToDelete = signal<number | null>(null);
+  readonly userToDelete = signal<number | null>(null);
+  readonly updatingRole = signal<number | null>(null);
 
-  readonly sortOptions: ComboboxItems[] = [
-    { label: 'ფასი: კლებადობით', value: 'price_desc' },
-    { label: 'ფასი: ზრდადობით', value: 'price_asc' },
+  readonly roleOptions: ComboboxItems[] = [
+    { label: 'მომხმარებელი', value: 'user' },
+    { label: 'ადმინი', value: 'admin' },
   ];
 
   readonly params = toSignal(this.route.queryParams, {
@@ -54,21 +55,19 @@ export class AdminProductsComponent {
       tap(() => this.isLoading.set(true)),
       map((params) => new URLSearchParams(params).toString()),
       switchMap((query) =>
-        this.productsService
-          .searchProduct(query)
+        this.adminService
+          .searchUsers(query)
           .pipe(
-            catchError(() =>
-              of({ products: [], total: 0, limit: 0, offset: 0 }),
-            ),
+            catchError(() => of({ users: [], total: 0, limit: 0, offset: 0 })),
           ),
       ),
       tap(() => this.isLoading.set(false)),
     ),
-    { initialValue: { products: [], total: 0, limit: 0, offset: 0 } },
+    { initialValue: { users: [], total: 0, limit: 0, offset: 0 } },
   );
 
-  readonly products = computed(() => this.searchResponse().products);
-  readonly totalProducts = computed(() => this.searchResponse().total);
+  readonly users = computed(() => this.searchResponse().users);
+  readonly totalUsers = computed(() => this.searchResponse().total);
   readonly currentPage = computed(() => {
     const offset = Number(this.params()['offset']) || 0;
     const limit = Number(this.params()['limit']) || 10;
@@ -76,36 +75,21 @@ export class AdminProductsComponent {
   });
   readonly totalPages = computed(() => {
     const limit = Number(this.params()['limit']) || 10;
-    return Math.ceil(this.totalProducts() / limit);
+    return Math.ceil(this.totalUsers() / limit);
   });
   readonly limit = computed(() => Number(this.params()['limit']) || 10);
   readonly offset = computed(() => Number(this.params()['offset']) || 0);
 
   readonly showingFrom = computed(() => {
     const offset = this.offset();
-    return Math.min(offset + 1, this.totalProducts());
+    return Math.min(offset + 1, this.totalUsers());
   });
 
   readonly showingTo = computed(() => {
     const offset = this.offset();
     const limit = this.limit();
-    return Math.min(offset + limit, this.totalProducts());
+    return Math.min(offset + limit, this.totalUsers());
   });
-
-  getProductImage(product: ProductResponse): string {
-    const primaryImage = product.images.find((image) => image.is_primary);
-    if (!primaryImage) return '';
-    return getProductImageUrl(
-      product.data.id,
-      primaryImage.image_uuid,
-      primaryImage.extension,
-    );
-  }
-
-  getProductLink(product: ProductResponse): string[] {
-    const slug = generateProductSlug(product.data.name);
-    return ['/products', slug, product.data.id.toString()];
-  }
 
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
@@ -115,19 +99,15 @@ export class AdminProductsComponent {
     this.debounceTimer = window.setTimeout(() => {
       const isNumeric = /^\d+$/.test(value);
       this.updateQueryParams({
-        query: isNumeric ? undefined : value || undefined,
+        email: isNumeric ? undefined : value || undefined,
         id: isNumeric ? value : undefined,
       });
     }, 400);
   }
 
-  onSortChange(value: string | undefined): void {
-    this.updateQueryParams({ sort_by: value });
-  }
-
   clearSearch(): void {
     this.searchQuery.set('');
-    this.updateQueryParams({ query: undefined, id: undefined });
+    this.updateQueryParams({ email: undefined, id: undefined });
   }
 
   private updateQueryParams(
@@ -140,30 +120,30 @@ export class AdminProductsComponent {
     });
   }
 
-  openDeleteModal(productId: number): void {
-    this.productToDelete.set(productId);
+  openDeleteModal(userId: number): void {
+    this.userToDelete.set(userId);
     this.isDeleteModalOpen.set(true);
   }
 
   closeDeleteModal(): void {
     this.isDeleteModalOpen.set(false);
-    this.productToDelete.set(null);
+    this.userToDelete.set(null);
   }
 
   confirmDelete(): void {
-    const productId = this.productToDelete();
-    if (productId === null) return;
+    const userId = this.userToDelete();
+    if (userId === null) return;
 
     let toastParams: [string, string, number, 'success' | 'error'] | null =
       null;
 
     this.adminService
-      .deleteProduct(productId)
+      .deleteUser(userId)
       .pipe(
         tap(() => {
           toastParams = [
             'წარმატება',
-            'პროდუქტი წარმატებით წაიშალა',
+            'მომხმარებელი წარმატებით წაიშალა',
             3000,
             'success',
           ];
@@ -183,12 +163,58 @@ export class AdminProductsComponent {
       .subscribe();
   }
 
+  onRoleChange(userId: number, newRole: string | undefined): void {
+    if (!newRole) return;
+
+    this.updatingRole.set(userId);
+
+    let toastParams: [string, string, number, 'success' | 'error'] | null =
+      null;
+
+    this.adminService
+      .updateUser(userId, { role: newRole as UserRole })
+      .pipe(
+        tap(() => {
+          toastParams = [
+            'წარმატება',
+            'როლი წარმატებით განახლდა',
+            3000,
+            'success',
+          ];
+          this.updateQueryParams({ _t: Date.now() });
+        }),
+        catchError((error) => {
+          toastParams = ['შეცდომა', error.error.message, 3000, 'error'];
+          return of(null);
+        }),
+        finalize(() => {
+          if (toastParams) {
+            this.toastService.add(...toastParams);
+          }
+          this.updatingRole.set(null);
+        }),
+      )
+      .subscribe();
+  }
+
   onPageChange(page: number): void {
     const offset = (page - 1) * this.limit();
     this.updateQueryParams({ offset, limit: this.limit() });
   }
 
-  onLimitChangeValue(value: string): void {
+  onLimitChange(value: string): void {
     this.updateQueryParams({ limit: value || '10', offset: 0 });
+  }
+
+  getRoleLabel(role: UserRole): string {
+    return role === 'admin' ? 'ადმინისტრატორი' : 'მომხმარებელი';
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
   }
 }

@@ -2,12 +2,13 @@
   <button
     [class]="customClass()"
     type="button"
-    class="flex h-[44px] w-full items-center justify-between gap-4 rounded-xl border border-platinum-20 bg-white px-3.5 py-2.5 text-sm text-platinum-100 transition-colors focus:outline-none"
+    class="flex h-[44px] w-full items-center justify-between gap-4 rounded-xl border border-platinum-20 bg-white px-3.5 py-2.5 text-sm text-platinum-100 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
     [ngClass]="{
       'border-valencia-50 hover:border-valencia-50 focus:border-valencia-50 focus:ring-1 focus:ring-valencia-50':
         error(),
       'focus:border-platinum-30': !error(),
     }"
+    [disabled]="disabled()"
     (click)="opened.set(!opened())"
   >
     <span
@@ -39,7 +40,7 @@
   @if (opened()) {
     <div
       (outsideClick)="opened.set(false)"
-      class="absolute z-10 mt-1 w-full min-w-[100px] max-w-full rounded-xl border border-platinum-20 bg-white text-sm shadow-md"
+      class="absolute z-50 mt-1 w-full min-w-[100px] max-w-full rounded-xl border border-platinum-20 bg-white text-sm shadow-md"
     >
       <div class="max-h-60 space-y-1 overflow-y-auto p-2">
         @for (item of items(); track item.value) {

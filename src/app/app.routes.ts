@@ -118,6 +118,13 @@ export const routes: Routes = [
             (m) => m.AdminProductFormComponent,
           ),
       },
+      {
+        path: 'users',
+        loadComponent: () =>
+          import('./pages/admin/users/admin-users.component').then(
+            (m) => m.AdminUsersComponent,
+          ),
+      },
     ],
   },
 
