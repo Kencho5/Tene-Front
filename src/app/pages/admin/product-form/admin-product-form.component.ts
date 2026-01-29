@@ -12,13 +12,12 @@ import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { catchError, forkJoin, Observable, of, switchMap } from 'rxjs';
+import { Product, ProductImage } from '@core/interfaces/products.interface';
 import {
-  Product,
   ProductFormData,
   CreateProductPayload,
   ImageUploadRequest,
-  ProductImage,
-} from '@core/interfaces/products.interface';
+} from '@core/interfaces/admin/products.interface';
 import { AdminService } from '@core/services/admin/admin.service';
 import { ProductsService } from '@core/services/products/products.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';

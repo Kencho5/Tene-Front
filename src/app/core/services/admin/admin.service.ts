@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders, HttpStatusCode } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
-  ProductFacets,
   ProductResponse,
   ProductSearchResponse,
 } from '@core/interfaces/products.interface';
@@ -10,7 +9,7 @@ import {
   CreateProductPayload,
   ImageUploadRequest,
   PresignedUrlResponse,
-} from '@core/interfaces/products.interface';
+} from '@core/interfaces/admin/products.interface';
 import {
   UserResponse,
   UserSearchResponse,
