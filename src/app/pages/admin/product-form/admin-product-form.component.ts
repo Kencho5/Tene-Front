@@ -22,6 +22,8 @@ import { AdminService } from '@core/services/admin/admin.service';
 import { ProductsService } from '@core/services/products/products.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { getProductImageUrl } from '@utils/product-image-url';
+import { ComboboxItems } from '@core/interfaces/combobox.interface';
+import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
 
 interface SpecificationEntry {
   key: string;
@@ -39,7 +41,7 @@ interface ImageWithMetadata {
 
 @Component({
   selector: 'app-admin-product-form',
-  imports: [SharedModule, InputComponent, Field],
+  imports: [SharedModule, InputComponent, Field, ComboboxComponent],
   templateUrl: './admin-product-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -54,6 +56,22 @@ export class AdminProductFormComponent {
   readonly isLoading = signal(false);
   readonly images = signal<ImageWithMetadata[]>([]);
   readonly specifications = signal<SpecificationEntry[]>([]);
+
+  readonly colorOptions: ComboboxItems[] = [
+    { label: 'შავი', value: 'black' },
+    { label: 'თეთრი', value: 'white' },
+    { label: 'ნაცრისფერი', value: 'gray' },
+    { label: 'წითელი', value: 'red' },
+    { label: 'ლურჯი', value: 'blue' },
+    { label: 'მწვანე', value: 'green' },
+    { label: 'ყვითელი', value: 'yellow' },
+    { label: 'ნარინჯისფერი', value: 'orange' },
+    { label: 'იისფერი', value: 'purple' },
+    { label: 'ვარდისფერი', value: 'pink' },
+    { label: 'ყავისფერი', value: 'brown' },
+    { label: 'ოქროსფერი', value: 'gold' },
+    { label: 'ვერცხლისფერი', value: 'silver' },
+  ];
 
   readonly productId = computed(() => {
     const id = this.route.snapshot.paramMap.get('id');

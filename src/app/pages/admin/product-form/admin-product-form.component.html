@@ -231,7 +231,8 @@
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           @for (url of imagePreviewUrls(); track $index) {
             <div
-              class="group relative overflow-hidden rounded-xl border border-platinum-20 bg-white"
+              class="group relative rounded-xl border border-platinum-20 bg-white"
+              style="overflow: visible;"
             >
               <!-- Image -->
               <div class="relative aspect-square overflow-hidden">
@@ -267,7 +268,7 @@
               </div>
 
               <!-- Controls -->
-              <div class="space-y-3 p-3">
+              <div class="flex flex-col gap-3 p-3">
                 <!-- Primary Radio -->
                 <label
                   class="bg-platinum-5 hover:bg-green-5 flex cursor-pointer items-center gap-2 rounded-lg border border-platinum-20 px-3 py-2.5 transition-all hover:border-green-60"
@@ -313,13 +314,14 @@
                   >
                 </label>
 
-                <!-- Color Input -->
-                <input
-                  type="text"
-                  [value]="imageMetadata()[$index]?.color || ''"
-                  (input)="updateImageColor($index, $any($event.target).value)"
-                  placeholder="ფერი (მაგ: black, red)"
-                  class="w-full rounded-xl border border-platinum-20 bg-white px-3.5 py-2.5 text-sm text-platinum-100 outline-none transition-colors placeholder:text-platinum-50 focus:border-platinum-40 focus:ring-1 focus:ring-platinum-40"
+                <!-- Color Combobox -->
+                <app-combobox
+                  [selectedValue]="imageMetadata()[$index]?.color"
+                  (selectedValueChange)="updateImageColor($index, $event || '')"
+                  [items]="colorOptions"
+                  placeholder="აირჩიეთ ფერი"
+                  searchPlaceholder="ძიება..."
+                  notFoundText="ფერი ვერ მოიძებნა"
                 />
               </div>
             </div>
