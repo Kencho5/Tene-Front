@@ -138,12 +138,20 @@
       </div>
 
       <div
-        class="flex flex-col gap-3 rounded-2xl bg-white px-4 py-5 shadow-low sm:p-6"
+        class="flex flex-col gap-4 rounded-2xl bg-white px-4 py-5 shadow-low sm:p-6"
       >
         <h1 class="text-2xl sm:text-[28px]">
           {{ product.data.name }}
         </h1>
-        <p class="mt-2 text-platinum-50">ID: {{ product.data.id }}</p>
+
+        <div class="flex items-center gap-2.5 text-platinum-50">
+          <p>ID: {{ product.data.id }}</p>
+
+          <div class="h-[6px] w-[6px] rounded-full bg-platinum-40/30"></div>
+
+          <p>მარაგშია: {{ product.data.quantity }}</p>
+        </div>
+
         @if (product.data.discount == 0) {
           <h2 class="text-xl">{{ product.data.price }}₾</h2>
         } @else {
@@ -184,7 +192,7 @@
           </div>
         </div>
 
-        <div class="h-px bg-platinum-20"></div>
+        <div class="my-2 h-px bg-platinum-20"></div>
 
         <div class="flex gap-3">
           <div
@@ -251,6 +259,37 @@
 
             დამატება
           </button>
+        </div>
+
+        <div class="my-2 h-px bg-platinum-20"></div>
+
+        <div class="flex items-center gap-2 rounded-full bg-green-20 px-3 py-2">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10.8244 19.6499C11.5552 20.1167 12.4687 20.1167 13.1994 19.6499C15.1024 18.4341 18.6234 15.6957 18.6234 12.0771V7.56471C18.6234 6.79916 18.1485 6.11391 17.4317 5.84511L12.9792 4.1754C12.3555 3.94153 11.6683 3.94153 11.0446 4.1754L6.59207 5.84511C5.87527 6.11391 5.40039 6.79916 5.40039 7.56471V12.0771C5.40039 15.6957 8.92146 18.4341 10.8244 19.6499Z"
+              stroke="#068C0B"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M9.09961 11.8L10.3925 13.0929C10.783 13.4835 11.4162 13.4835 11.8067 13.0929L15.0996 9.80005"
+              stroke="#068C0B"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          <p class="mb-0.5 text-sm text-green-70">
+            გარანტია {{ product.data.warranty }}
+          </p>
         </div>
       </div>
     </div>
