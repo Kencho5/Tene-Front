@@ -138,14 +138,12 @@
       </div>
 
       <div
-        class="flex flex-col gap-[28px] rounded-2xl bg-white px-4 py-5 shadow-low sm:p-6"
+        class="flex flex-col gap-3 rounded-2xl bg-white px-4 py-5 shadow-low sm:p-6"
       >
-        <div>
-          <h1 class="text-2xl sm:text-[28px]">
-            {{ product.data.name }}
-          </h1>
-          <p class="mt-2 text-platinum-50">სულ: {{ product.data.quantity }}</p>
-        </div>
+        <h1 class="text-2xl sm:text-[28px]">
+          {{ product.data.name }}
+        </h1>
+        <p class="mt-2 text-platinum-50">ID: {{ product.data.id }}</p>
         @if (product.data.discount == 0) {
           <h2 class="text-xl">{{ product.data.price }}₾</h2>
         } @else {

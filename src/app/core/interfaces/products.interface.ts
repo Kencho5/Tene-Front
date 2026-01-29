@@ -9,6 +9,7 @@ export interface Product {
   product_type: string;
   warranty: string;
   brand: string;
+  enabled: boolean;
   created_at: string;
   updated_at: string;
 }

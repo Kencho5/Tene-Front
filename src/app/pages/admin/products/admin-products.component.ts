@@ -45,6 +45,12 @@ export class AdminProductsComponent {
     { label: 'ფასი: ზრდადობით', value: 'price_asc' },
   ];
 
+  readonly statusOptions: ComboboxItems[] = [
+    { label: 'ყველა', value: 'all' },
+    { label: 'აქტიური', value: 'enabled' },
+    { label: 'გამორთული', value: 'disabled' },
+  ];
+
   readonly params = toSignal(this.route.queryParams, {
     initialValue: {} as Params,
   });
@@ -125,6 +131,14 @@ export class AdminProductsComponent {
     this.updateQueryParams({ sort_by: value });
   }
 
+  onStatusChange(value: string | undefined): void {
+    if (value === 'all' || !value) {
+      this.updateQueryParams({ enabled: undefined });
+    } else {
+      this.updateQueryParams({ enabled: value === 'enabled' ? 'true' : 'false' });
+    }
+  }
+
   clearSearch(): void {
     this.searchQuery.set('');
     this.updateQueryParams({ query: undefined, id: undefined });
@@ -190,5 +204,33 @@ export class AdminProductsComponent {
 
   onLimitChangeValue(value: string): void {
     this.updateQueryParams({ limit: value || '10', offset: 0 });
+  }
+
+  toggleProductStatus(productId: number, currentStatus: boolean): void {
+    let toastParams: [string, string, number, 'success' | 'error'] | null = null;
+
+    this.adminService
+      .updateProduct(productId, { enabled: !currentStatus } as any)
+      .pipe(
+        tap(() => {
+          toastParams = [
+            'წარმატება',
+            currentStatus ? 'პროდუქტი გამორთულია' : 'პროდუქტი ჩართულია',
+            3000,
+            'success',
+          ];
+          this.updateQueryParams({ _t: Date.now() });
+        }),
+        catchError((error) => {
+          toastParams = ['შეცდომა', error.error.message, 3000, 'error'];
+          return of(null);
+        }),
+        finalize(() => {
+          if (toastParams) {
+            this.toastService.add(...toastParams);
+          }
+        }),
+      )
+      .subscribe();
   }
 }
