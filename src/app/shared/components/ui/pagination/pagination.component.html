@@ -1,0 +1,95 @@
+<div
+  class="flex flex-col gap-4 overflow-visible border-t border-platinum-20 px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+>
+  <!-- Left: Results info & per page selector -->
+  <div class="flex flex-wrap items-center gap-3 overflow-visible">
+    <p class="text-sm text-platinum-60">
+      {{ showingFrom() }}-{{ showingTo() }} / {{ totalItems() }}
+    </p>
+
+    <app-dropdown
+      [selectedValue]="limit().toString()"
+      (selectedValueChange)="onLimitChange($event)"
+      [items]="limitOptions"
+    />
+  </div>
+
+  <!-- Right: Page navigation -->
+  <div class="flex items-center gap-2">
+    <!-- Previous button -->
+    <button
+      type="button"
+      (click)="previousPage()"
+      [disabled]="currentPage() === 1"
+      [class.opacity-50]="currentPage() === 1"
+      [class.cursor-not-allowed]="currentPage() === 1"
+      class="flex h-9 w-9 items-center justify-center rounded-xl border border-platinum-20 text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent"
+      aria-label="წინა გვერდი"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path
+          d="M10 12L6 8L10 4"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+
+    <!-- Page numbers -->
+    <div class="hidden items-center gap-1 sm:flex">
+      @for (pageNum of pageNumbers(); track $index) {
+        @if (pageNum === -1) {
+          <span
+            class="flex h-9 w-9 items-center justify-center text-sm text-platinum-40"
+          >
+            ...
+          </span>
+        } @else {
+          <button
+            type="button"
+            (click)="goToPage(pageNum)"
+            [class.bg-green-60]="currentPage() === pageNum"
+            [class.text-white]="currentPage() === pageNum"
+            [class.border-green-60]="currentPage() === pageNum"
+            [class.text-platinum-60]="currentPage() !== pageNum"
+            [class.border-platinum-20]="currentPage() !== pageNum"
+            [class.hover:bg-platinum-10]="currentPage() !== pageNum"
+            class="flex h-9 w-9 items-center justify-center rounded-xl border text-sm font-medium transition-colors"
+          >
+            {{ pageNum }}
+          </button>
+        }
+      }
+    </div>
+
+    <!-- Mobile page indicator -->
+    <div class="flex items-center sm:hidden">
+      <span class="text-sm text-platinum-60">
+        {{ currentPage() }} / {{ totalPages() }}
+      </span>
+    </div>
+
+    <!-- Next button -->
+    <button
+      type="button"
+      (click)="nextPage()"
+      [disabled]="currentPage() === totalPages()"
+      [class.opacity-50]="currentPage() === totalPages()"
+      [class.cursor-not-allowed]="currentPage() === totalPages()"
+      class="flex h-9 w-9 items-center justify-center rounded-xl border border-platinum-20 text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent"
+      aria-label="შემდეგი გვერდი"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path
+          d="M6 12L10 8L6 4"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
