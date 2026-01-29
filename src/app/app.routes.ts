@@ -125,6 +125,13 @@ export const routes: Routes = [
             (m) => m.AdminUsersComponent,
           ),
       },
+      {
+        path: 'users/:id/edit',
+        loadComponent: () =>
+          import('./pages/admin/user-form/admin-user-form.component').then(
+            (m) => m.AdminUserFormComponent,
+          ),
+      },
     ],
   },
 

@@ -1,0 +1,69 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold text-platinum-100">
+        მომხმარებლის რედაქტირება
+      </h1>
+      <p class="mt-1 text-sm text-platinum-50">
+        მომხმარებლის ID: {{ userId() }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form (submit)="onSubmit(); $event.preventDefault()" novalidate class="space-y-6">
+    <div class="rounded-xl border border-platinum-20 bg-white p-6">
+      <div class="flex flex-col gap-4">
+        <!-- Name -->
+        <app-input
+          [field]="userForm.name"
+          type="text"
+          placeholder="სახელი *"
+        />
+
+        <!-- Email -->
+        <app-input
+          [field]="userForm.email"
+          type="email"
+          placeholder="ელ-ფოსტა *"
+        />
+
+        <!-- Role -->
+        <div>
+          <label for="role" class="mb-2 block text-sm font-medium text-platinum-100">
+            როლი *
+          </label>
+          <app-dropdown
+            [selectedValue]="userModel().role"
+            (selectedValueChange)="onRoleChange($event)"
+            [items]="roleOptions"
+            placeholder="აირჩიეთ როლი"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end gap-3">
+      <button
+        type="button"
+        (click)="cancel()"
+        class="rounded-xl border border-platinum-20 px-6 py-2.5 text-sm font-medium text-platinum-100 transition-colors hover:bg-platinum-10"
+      >
+        გაუქმება
+      </button>
+      <button
+        type="submit"
+        [disabled]="isSubmitting()"
+        class="rounded-xl bg-green-60 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-green-70 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        @if (isSubmitting()) {
+          <span>შენახვა...</span>
+        } @else {
+          <span>შენახვა</span>
+        }
+      </button>
+    </div>
+  </form>
+</div>
