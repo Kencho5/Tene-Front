@@ -22,6 +22,10 @@ import {
 export class AdminService {
   private readonly http = inject(HttpClient);
 
+  searchProduct(params: string): Observable<ProductSearchResponse> {
+    return this.http.get<ProductSearchResponse>(`/admin/products?${params}`);
+  }
+
   createProduct(payload: CreateProductPayload): Observable<ProductResponse> {
     return this.http.post<ProductResponse>('/admin/products', payload);
   }

@@ -8,7 +8,6 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
-import { ProductsService } from '@core/services/products/products.service';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
@@ -23,14 +22,18 @@ import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-admin-products',
-  imports: [SharedModule, DropdownComponent, ConfirmationModalComponent, PaginationComponent],
+  imports: [
+    SharedModule,
+    DropdownComponent,
+    ConfirmationModalComponent,
+    PaginationComponent,
+  ],
   templateUrl: './admin-products.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminProductsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly productsService = inject(ProductsService);
   private readonly adminService = inject(AdminService);
   private readonly toastService = inject(ToastService);
   private debounceTimer?: number;
@@ -60,7 +63,7 @@ export class AdminProductsComponent {
       tap(() => this.isLoading.set(true)),
       map((params) => new URLSearchParams(params).toString()),
       switchMap((query) =>
-        this.productsService
+        this.adminService
           .searchProduct(query)
           .pipe(
             catchError(() =>
@@ -135,7 +138,9 @@ export class AdminProductsComponent {
     if (value === 'all' || !value) {
       this.updateQueryParams({ enabled: undefined });
     } else {
-      this.updateQueryParams({ enabled: value === 'enabled' ? 'true' : 'false' });
+      this.updateQueryParams({
+        enabled: value === 'enabled' ? 'true' : 'false',
+      });
     }
   }
 
@@ -207,7 +212,8 @@ export class AdminProductsComponent {
   }
 
   toggleProductStatus(productId: number, currentStatus: boolean): void {
-    let toastParams: [string, string, number, 'success' | 'error'] | null = null;
+    let toastParams: [string, string, number, 'success' | 'error'] | null =
+      null;
 
     this.adminService
       .updateProduct(productId, { enabled: !currentStatus } as any)
