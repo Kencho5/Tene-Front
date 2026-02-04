@@ -1,0 +1,332 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div
+    class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <div>
+      <h1 class="text-2xl font-semibold text-platinum-100">კატეგორიები</h1>
+      <p class="mt-1 text-sm text-platinum-50">
+        სულ {{ totalCategories() }} კატეგორია
+      </p>
+    </div>
+
+    <a
+      [routerLink]="['/admin/categories/new']"
+      class="flex items-center justify-center gap-2 rounded-xl bg-green-60 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path
+          d="M8 3.33337V12.6667M3.33334 8.00004H12.6667"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+      ახალი კატეგორია
+    </a>
+  </div>
+
+  <!-- Filters Bar -->
+  <div
+    class="flex flex-col gap-3 rounded-xl border border-platinum-20 bg-white p-4 sm:flex-row sm:items-center"
+  >
+    <!-- Search Input -->
+    <div class="relative flex-1">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-platinum-50"
+      >
+        <path
+          d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <input
+        type="text"
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+        placeholder="ძიება კატეგორიის სახელით ან ID-ით..."
+        class="h-[44px] w-full rounded-xl border border-platinum-20 py-2.5 pl-10 pr-10 text-sm outline-none transition-colors focus:border-green-60 focus:ring-1 focus:ring-green-60"
+      />
+      @if (searchQuery()) {
+        <button
+          type="button"
+          (click)="clearSearch()"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-platinum-50 transition-colors hover:text-platinum-100"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M12 4L4 12M4 4L12 12"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      }
+    </div>
+
+    <!-- Status Filter -->
+    <div class="w-full sm:w-[220px]">
+      <app-dropdown
+        [selectedValue]="params()['enabled'] === 'true' ? 'enabled' : params()['enabled'] === 'false' ? 'disabled' : 'all'"
+        (selectedValueChange)="onStatusChange($event)"
+        placeholder="სტატუსი"
+        [items]="statusOptions"
+      />
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="overflow-hidden rounded-xl border border-platinum-20 bg-white">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="border-b border-platinum-20 bg-platinum-10">
+          <tr>
+            <th
+              class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60"
+            >
+              სახელი
+            </th>
+            <th
+              class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60 md:table-cell"
+            >
+              სლაგი
+            </th>
+            <th
+              class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60 lg:table-cell"
+            >
+              მშობელი კატეგორია
+            </th>
+            <th
+              class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60 xl:table-cell"
+            >
+              სტატუსი
+            </th>
+            <th
+              class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-platinum-60"
+            >
+              მოქმედებები
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-platinum-20">
+          @if (isLoading()) {
+            @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
+              <tr class="hover:bg-platinum-10">
+                <td class="px-4 py-4">
+                  <div class="space-y-2">
+                    <div
+                      class="h-4 w-32 animate-pulse rounded bg-platinum-20"
+                    ></div>
+                    <div
+                      class="h-3 w-20 animate-pulse rounded bg-platinum-20"
+                    ></div>
+                  </div>
+                </td>
+                <td class="hidden px-4 py-4 md:table-cell">
+                  <div
+                    class="h-4 w-28 animate-pulse rounded bg-platinum-20"
+                  ></div>
+                </td>
+                <td class="hidden px-4 py-4 lg:table-cell">
+                  <div
+                    class="h-4 w-24 animate-pulse rounded bg-platinum-20"
+                  ></div>
+                </td>
+                <td class="hidden px-4 py-4 xl:table-cell">
+                  <div
+                    class="h-6 w-11 animate-pulse rounded-full bg-platinum-20"
+                  ></div>
+                </td>
+                <td class="px-4 py-4">
+                  <div class="flex justify-end gap-2">
+                    <div
+                      class="h-8 w-8 animate-pulse rounded-xl bg-platinum-20"
+                    ></div>
+                    <div
+                      class="h-8 w-8 animate-pulse rounded-xl bg-platinum-20"
+                    ></div>
+                  </div>
+                </td>
+              </tr>
+            }
+          } @else if (categories().length === 0) {
+            <tr>
+              <td colspan="5" class="px-4 py-16 text-center">
+                <div class="flex flex-col items-center gap-3">
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 48 48"
+                    fill="none"
+                    class="text-platinum-30"
+                  >
+                    <path
+                      d="M6 12C6 9.79086 7.79086 8 10 8H18L22 12H38C40.2091 12 42 13.7909 42 16V36C42 38.2091 40.2091 40 38 40H10C7.79086 40 6 38.2091 6 36V12Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <div>
+                    <p class="text-sm font-medium text-platinum-100">
+                      კატეგორიები არ მოიძებნა
+                    </p>
+                    <p class="mt-1 text-sm text-platinum-50">
+                      სცადეთ სხვა ძებნის პარამეტრები
+                    </p>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          } @else {
+            @for (category of categories(); track category.id) {
+              <tr
+                class="transition-colors hover:bg-platinum-10"
+                [class.opacity-50]="!category.enabled"
+              >
+                <!-- Category Name -->
+                <td class="px-4 py-4">
+                  <div>
+                    <p class="font-medium text-platinum-100">
+                      {{ category.name }}
+                    </p>
+                    <p class="text-sm text-platinum-50">
+                      ID: {{ category.id }}
+                    </p>
+                  </div>
+                </td>
+
+                <!-- Slug -->
+                <td class="hidden px-4 py-4 md:table-cell">
+                  <code
+                    class="rounded bg-platinum-10 px-2 py-1 text-xs text-platinum-100"
+                  >
+                    {{ category.slug }}
+                  </code>
+                </td>
+
+                <!-- Parent Category -->
+                <td class="hidden px-4 py-4 lg:table-cell">
+                  @if (category.parent_id) {
+                    <span
+                      class="inline-flex rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-100"
+                    >
+                      ID: {{ category.parent_id }}
+                    </span>
+                  } @else {
+                    <span class="text-sm text-platinum-50">-</span>
+                  }
+                </td>
+
+                <!-- Status Toggle -->
+                <td class="hidden px-4 py-4 xl:table-cell">
+                  <button
+                    type="button"
+                    (click)="toggleCategoryStatus(category.id, category.enabled)"
+                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-60 focus:ring-offset-2"
+                    [class.bg-green-60]="category.enabled"
+                    [class.bg-platinum-30]="!category.enabled"
+                    [attr.aria-label]="category.enabled ? 'გამორთვა' : 'ჩართვა'"
+                  >
+                    <span
+                      class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+                      [class.translate-x-6]="category.enabled"
+                      [class.translate-x-1]="!category.enabled"
+                    ></span>
+                  </button>
+                </td>
+
+                <!-- Actions -->
+                <td class="px-4 py-4">
+                  <div class="flex items-center justify-end gap-2">
+                    <a
+                      [routerLink]="['/admin/categories', category.id, 'edit']"
+                      class="flex items-center justify-center rounded-xl p-2 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100"
+                      aria-label="რედაქტირება"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M11.3333 2.00004C11.5084 1.82494 11.7163 1.68605 11.9451 1.59129C12.1739 1.49653 12.419 1.44775 12.6666 1.44775C12.9143 1.44775 13.1594 1.49653 13.3882 1.59129C13.617 1.68605 13.8249 1.82494 14 2.00004C14.1751 2.17513 14.314 2.383 14.4087 2.61178C14.5035 2.84055 14.5523 3.08569 14.5523 3.33337C14.5523 3.58106 14.5035 3.8262 14.4087 4.05497C14.314 4.28375 14.1751 4.49162 14 4.66671L5.00001 13.6667L1.33334 14.6667L2.33334 11L11.3333 2.00004Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </a>
+                    <button
+                      type="button"
+                      (click)="openDeleteModal(category.id)"
+                      class="rounded-xl p-2 text-platinum-60 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
+                      aria-label="წაშლა"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M2 4H3.33333H14"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M5.33334 4.00004V2.66671C5.33334 2.31309 5.47381 1.97395 5.72386 1.7239C5.97391 1.47385 6.31305 1.33337 6.66668 1.33337H9.33334C9.68697 1.33337 10.0261 1.47385 10.2762 1.7239C10.5262 1.97395 10.6667 2.31309 10.6667 2.66671V4.00004M12.6667 4.00004V13.3334C12.6667 13.687 12.5262 14.0261 12.2762 14.2762C12.0261 14.5262 11.687 14.6667 11.3333 14.6667H4.66668C4.31305 14.6667 3.97391 14.5262 3.72386 14.2762C3.47381 14.0261 3.33334 13.687 3.33334 13.3334V4.00004H12.6667Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [totalItems]="totalCategories()"
+      [showingFrom]="showingFrom()"
+      [showingTo]="showingTo()"
+      [limit]="limit()"
+      (pageChange)="onPageChange($event)"
+      (limitChange)="onLimitChangeValue($event)"
+    />
+  </div>
+</div>
+
+<app-confirmation-modal
+  [isOpen]="isDeleteModalOpen()"
+  title="კატეგორიის წაშლა"
+  message="დარწმუნებული ხართ, რომ გსურთ ამ კატეგორიის წაშლა? ყველა ქვეკატეგორიაც წაიშლება. ეს მოქმედება შეუქცევადია."
+  confirmText="წაშლა"
+  cancelText="გაუქმება"
+  confirmButtonGradientStart="#ef4444"
+  confirmButtonGradientEnd="#dc2626"
+  (confirm)="confirmDelete()"
+  (cancel)="closeDeleteModal()"
+/>

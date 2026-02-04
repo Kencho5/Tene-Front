@@ -15,6 +15,11 @@ import {
   UserSearchResponse,
   UserRequest,
 } from '@core/interfaces/admin/users.interface';
+import {
+  CategoryRequest,
+  CategoryResponse,
+  CategoryTreeResponse,
+} from '@core/interfaces/categories.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -91,5 +96,38 @@ export class AdminService {
 
   deleteUser(userId: number): Observable<HttpStatusCode> {
     return this.http.delete<HttpStatusCode>(`/admin/users/${userId}`);
+  }
+
+  // Category Management
+  getAdminCategoryTree(): Observable<CategoryTreeResponse> {
+    return this.http.get<CategoryTreeResponse>('/admin/categories/tree');
+  }
+
+  createCategory(payload: CategoryRequest): Observable<CategoryResponse> {
+    return this.http.post<CategoryResponse>('/admin/categories', payload);
+  }
+
+  updateCategory(
+    categoryId: number,
+    payload: CategoryRequest,
+  ): Observable<CategoryResponse> {
+    return this.http.put<CategoryResponse>(
+      `/admin/categories/${categoryId}`,
+      payload,
+    );
+  }
+
+  deleteCategory(categoryId: number): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/categories/${categoryId}`);
+  }
+
+  // Product Category Assignment
+  assignProductCategories(
+    productId: number,
+    categoryIds: number[],
+  ): Observable<any> {
+    return this.http.put(`/admin/products/${productId}/categories`, {
+      category_ids: categoryIds,
+    });
   }
 }

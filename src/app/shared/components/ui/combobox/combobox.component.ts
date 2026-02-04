@@ -32,17 +32,27 @@ export class ComboboxComponent {
   readonly opened = signal<boolean>(false);
   readonly searchValue = signal<string>('');
 
+  getIndentLevel(label: string): number {
+    const match = label.match(/^(—\s*)+/);
+    if (!match) return 0;
+    return (match[0].match(/—/g) || []).length;
+  }
+
+  getCleanLabel(label: string): string {
+    return label.replace(/^(—\s*)+/, '');
+  }
+
   readonly filteredItems = computed(() =>
-    this.items().filter((item) =>
-      item.label.toLowerCase().includes(this.searchValue().toLowerCase()),
-    ),
+    this.items().filter((item) => {
+      const cleanLabel = this.getCleanLabel(item.label);
+      return cleanLabel.toLowerCase().includes(this.searchValue().toLowerCase());
+    }),
   );
 
   readonly itemLabel = computed(() => {
-    return (
-      this.items().find((item) => item.value === this.selectedValue())?.label ||
-      ''
-    );
+    const item = this.items().find((item) => item.value === this.selectedValue());
+    if (!item) return '';
+    return this.getCleanLabel(item.label);
   });
 
   selectItem(value: string) {

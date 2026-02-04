@@ -132,6 +132,27 @@ export const routes: Routes = [
             (m) => m.AdminUserFormComponent,
           ),
       },
+      {
+        path: 'categories',
+        loadComponent: () =>
+          import('./pages/admin/categories/admin-categories.component').then(
+            (m) => m.AdminCategoriesComponent,
+          ),
+      },
+      {
+        path: 'categories/new',
+        loadComponent: () =>
+          import('./pages/admin/category-form/admin-category-form.component').then(
+            (m) => m.AdminCategoryFormComponent,
+          ),
+      },
+      {
+        path: 'categories/:id/edit',
+        loadComponent: () =>
+          import('./pages/admin/category-form/admin-category-form.component').then(
+            (m) => m.AdminCategoryFormComponent,
+          ),
+      },
     ],
   },
 
