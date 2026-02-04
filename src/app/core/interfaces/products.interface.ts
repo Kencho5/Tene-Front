@@ -1,3 +1,9 @@
+export interface ProductCategory {
+  id: number;
+  name: string;
+  slug: string;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -6,10 +12,10 @@ export interface Product {
   discount: number;
   quantity: number;
   specifications: string;
-  product_type: string;
   warranty: string;
   brand: string;
   enabled: boolean;
+  categories: ProductCategory[];
   created_at: string;
   updated_at: string;
 }

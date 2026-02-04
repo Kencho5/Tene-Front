@@ -19,7 +19,8 @@ import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.compo
 import {
   Category,
   CategoryRequest,
-} from '@core/interfaces/categories.interface';
+} from '@core/interfaces/admin/categories.interface';
+import { CategoryTreeNode } from '@core/interfaces/categories.interface';
 import { generateSlug } from '@utils/slug';
 import { flattenCategoryTree, addNoneOption } from '@utils/category';
 

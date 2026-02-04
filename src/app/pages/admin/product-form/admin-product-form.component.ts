@@ -112,7 +112,6 @@ export class AdminProductFormComponent {
     price: null as any,
     discount: null as any,
     quantity: null as any,
-    product_type: '',
     brand: '',
     warranty: '',
   });
@@ -127,7 +126,6 @@ export class AdminProductFormComponent {
     });
     required(fieldPath.quantity, { message: 'რაოდენობა აუცილებელია' });
     min(fieldPath.quantity, 0, { message: 'რაოდენობა უნდა იყოს 0 ზე მეტი' });
-    required(fieldPath.product_type, { message: 'კატეგორია აუცილებელია' });
   });
 
   constructor() {
@@ -162,7 +160,6 @@ export class AdminProductFormComponent {
       price: product.price,
       discount: product.discount,
       quantity: product.quantity,
-      product_type: product.product_type,
       brand: product.brand,
       warranty: product.warranty,
     });
@@ -355,7 +352,6 @@ export class AdminProductFormComponent {
       discount: Number(productData.discount) || 0,
       quantity: Number(productData.quantity) || 0,
       specifications,
-      product_type: productData.product_type,
       brand: productData.brand,
       warranty: productData.warranty,
     };
@@ -490,6 +486,27 @@ export class AdminProductFormComponent {
 
   isCategorySelected(categoryId: string): boolean {
     return this.selectedCategoryIds().includes(Number(categoryId));
+  }
+
+  getSelectedCategoryValue(): string | undefined {
+    const selectedIds = this.selectedCategoryIds();
+    if (selectedIds.length === 0) return undefined;
+
+    // Find the category value (depth:id format) from the selected ID
+    const categoryId = selectedIds[0];
+    const option = this.categoryOptions().find((opt) =>
+      opt.value.endsWith(`:${categoryId}`)
+    );
+    return option?.value;
+  }
+
+  onCategoryChange(categoryId: string | undefined): void {
+    if (categoryId) {
+      // categoryId comes as the actual ID from combobox
+      this.selectedCategoryIds.set([Number(categoryId)]);
+    } else {
+      this.selectedCategoryIds.set([]);
+    }
   }
 
   cancel(): void {

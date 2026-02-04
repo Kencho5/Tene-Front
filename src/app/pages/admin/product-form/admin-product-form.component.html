@@ -55,13 +55,20 @@
           class="w-full resize-none rounded-xl border border-platinum-20 bg-white px-3.5 py-2.5 text-platinum-100 placeholder:text-platinum-50 focus:outline-none"
         ></textarea>
 
-        <!-- Product Type -->
-        <app-input
-          [field]="productForm.product_type"
-          [error]="submitted() && productForm.product_type().invalid()"
-          type="text"
-          placeholder="კატეგორია *"
-        />
+        <!-- Category -->
+        <div>
+          <label class="mb-2 block text-sm font-medium text-platinum-100">
+            კატეგორია
+          </label>
+          <app-combobox
+            [selectedValue]="getSelectedCategoryValue()"
+            (selectedValueChange)="onCategoryChange($event)"
+            [items]="categoryOptions()"
+            placeholder="აირჩიეთ კატეგორია"
+            searchPlaceholder="ძიება..."
+            notFoundText="კატეგორია ვერ მოიძებნა"
+          />
+        </div>
 
         <!-- Brand -->
         <app-input

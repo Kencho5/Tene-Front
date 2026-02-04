@@ -285,10 +285,14 @@ export class ProductComponent {
         ? productDescription.substring(0, 147) + '...'
         : productDescription;
 
-    const fullDescription = `${description} ფასი: ${price}₾. სულ: ${product.data.quantity} ცალი. ${product.data.product_type}.`;
+    const fullDescription = `${description} ფასი: ${price}₾. სულ: ${product.data.quantity} ცალი.`;
 
     // Always use the canonical URL with slug for SEO
     const canonicalUrl = `https://tene.ge/products/${slug}/${product.data.id}`;
+
+    const categoryKeyword = product.data.categories && product.data.categories.length > 0
+      ? product.data.categories[0].name
+      : 'პროდუქტი';
 
     this.seoService.setMetaTags({
       title: `${product.data.name} - ${price}₾ | Tene`,
@@ -296,7 +300,7 @@ export class ProductComponent {
       image: imageUrl,
       url: canonicalUrl,
       type: 'product',
-      keywords: `${product.data.name}, ${product.data.product_type}, USB კაბელი, ტექნიკა`,
+      keywords: `${product.data.name}, ${categoryKeyword}, ტექნიკა`,
     });
 
     this.schemaService.addProductSchema({

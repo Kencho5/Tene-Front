@@ -275,11 +275,19 @@
 
                 <!-- Category -->
                 <td class="hidden px-4 py-4 md:table-cell">
-                  <span
-                    class="inline-flex rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-100"
-                  >
-                    {{ product.data.product_type || "-" }}
-                  </span>
+                  @if (product.data.categories && product.data.categories.length > 0) {
+                    <div class="flex flex-wrap gap-2">
+                      @for (category of product.data.categories.slice(0, 2); track category.id) {
+                        <span
+                          class="inline-flex rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-100"
+                        >
+                          {{ category.name }}
+                        </span>
+                      }
+                    </div>
+                  } @else {
+                    <span class="text-xs text-platinum-50">-</span>
+                  }
                 </td>
 
                 <!-- Price -->

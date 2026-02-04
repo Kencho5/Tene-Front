@@ -16,7 +16,8 @@ import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { AdminService } from '@core/services/admin/admin.service';
 import { ToastService } from '@core/services/toast.service';
 import { finalize } from 'rxjs';
-import { Category, CategoryTreeNode } from '@core/interfaces/categories.interface';
+import { Category } from '@core/interfaces/admin/categories.interface';
+import { CategoryTreeNode } from '@core/interfaces/categories.interface';
 
 interface CategoryWithDepth extends Category {
   depth: number;

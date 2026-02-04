@@ -5,7 +5,6 @@ export interface ProductFormData {
   price: number;
   discount: number;
   quantity: number;
-  product_type: string;
   brand: string;
   warranty: string;
 }
@@ -18,7 +17,6 @@ export interface CreateProductPayload {
   discount: number;
   quantity: number;
   specifications: Record<string, string>;
-  product_type: string;
   brand: string;
   warranty: string;
 }

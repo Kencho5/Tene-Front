@@ -18,10 +18,10 @@ import {
 import {
   CategoryRequest,
   CategoryResponse,
-  CategoryTreeResponse,
   CategoryImageUploadRequest,
   CategoryImagePresignedResponse,
-} from '@core/interfaces/categories.interface';
+} from '@core/interfaces/admin/categories.interface';
+import { CategoryTreeResponse } from '@core/interfaces/categories.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -143,7 +143,6 @@ export class AdminService {
     );
   }
 
-  // Product Category Assignment
   assignProductCategories(
     productId: number,
     categoryIds: number[],

@@ -14,7 +14,7 @@
   >
     <app-image
       [src]="productImage()"
-      [alt]="product().data.name + ' - ' + product().data.product_type"
+      [alt]="product().data.name"
       [width]="272"
       [height]="180"
       loading="lazy"
@@ -24,9 +24,11 @@
 
   <div class="flex flex-1 flex-col justify-between space-y-5">
     <div class="space-y-1">
-      <p class="text-sm font-semibold text-green-70">
-        {{ product().data.product_type }}
-      </p>
+      @if (product().data.categories && product().data.categories.length > 0) {
+        <p class="text-sm font-semibold text-green-70">
+          {{ product().data.categories[0].name }}
+        </p>
+      }
       <p class="text-base font-normal">
         {{ product().data.name }}
       </p>
