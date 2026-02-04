@@ -64,11 +64,12 @@ export class AdminCategoriesComponent {
         name: node.name,
         slug: node.slug,
         parent_id: parentId,
-        description: null,
-        display_order: 0,
-        enabled: true,
-        created_at: '',
-        updated_at: '',
+        description: (node as any).description || null,
+        display_order: (node as any).display_order || 0,
+        enabled: (node as any).enabled !== undefined ? (node as any).enabled : true,
+        image_url: (node as any).image_url || null,
+        created_at: (node as any).created_at || '',
+        updated_at: (node as any).updated_at || '',
         depth: depth,
       };
       result.push(category);

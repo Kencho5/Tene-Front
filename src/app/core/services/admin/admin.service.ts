@@ -19,6 +19,8 @@ import {
   CategoryRequest,
   CategoryResponse,
   CategoryTreeResponse,
+  CategoryImageUploadRequest,
+  CategoryImagePresignedResponse,
 } from '@core/interfaces/categories.interface';
 
 @Injectable({
@@ -119,6 +121,26 @@ export class AdminService {
 
   deleteCategory(categoryId: number): Observable<HttpStatusCode> {
     return this.http.delete<HttpStatusCode>(`/admin/categories/${categoryId}`);
+  }
+
+  // Category Image Management
+  getCategoryImagePresignedUrl(
+    categoryId: number,
+    payload: CategoryImageUploadRequest,
+  ): Observable<CategoryImagePresignedResponse> {
+    return this.http.put<CategoryImagePresignedResponse>(
+      `/admin/categories/${categoryId}/image`,
+      payload,
+    );
+  }
+
+  deleteCategoryImage(
+    categoryId: number,
+    imageUuid: string,
+  ): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(
+      `/admin/categories/${categoryId}/image/${imageUuid}`,
+    );
   }
 
   // Product Category Assignment

@@ -11,7 +11,7 @@ import { form, Field, required } from '@angular/forms/signals';
 import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
-import { catchError, of, switchMap } from 'rxjs';
+import { catchError, Observable, of, switchMap } from 'rxjs';
 import { AdminService } from '@core/services/admin/admin.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
@@ -47,6 +47,9 @@ export class AdminCategoryFormComponent {
   readonly submitted = signal(false);
   readonly isLoading = signal(false);
   readonly categoryOptions = signal<ComboboxItems[]>([]);
+  readonly imagePreview = signal<string | null>(null);
+  readonly imageFile = signal<File | null>(null);
+  readonly existingImageUuid = signal<string | null>(null);
 
   readonly categoryId = computed(() => {
     const id = this.route.snapshot.paramMap.get('id');
@@ -84,6 +87,7 @@ export class AdminCategoryFormComponent {
           description: node.description || null,
           display_order: node.display_order || 0,
           enabled: node.enabled !== undefined ? node.enabled : true,
+          image_url: node.image_url || null,
           created_at: node.created_at || '',
           updated_at: node.updated_at || '',
         };
@@ -168,6 +172,16 @@ export class AdminCategoryFormComponent {
       display_order: category.display_order,
       enabled: category.enabled,
     });
+
+    // Load existing image if present
+    if (category.image_url) {
+      this.imagePreview.set(category.image_url);
+      // Extract UUID from URL if needed for deletion
+      const urlParts = category.image_url.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      const uuid = fileName.split('.')[0];
+      this.existingImageUuid.set(uuid);
+    }
   }
 
   onNameInput(event: Event): void {
@@ -197,6 +211,12 @@ export class AdminCategoryFormComponent {
 
     categoryRequest
       .pipe(
+        switchMap((response) => {
+          if (!response) return of(null);
+          return this.handleImageOperations(response.id).pipe(
+            switchMap(() => of(response))
+          );
+        }),
         catchError((error) => {
           this.handleError('კატეგორიის შენახვა ვერ მოხერხდა', error);
           return of(null);
@@ -292,5 +312,70 @@ export class AdminCategoryFormComponent {
       ...model,
       enabled: !model.enabled,
     }));
+  }
+
+  onImageSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+    if (!file.type.startsWith('image/')) {
+      this.toastService.add(
+        'შეცდომა',
+        'გთხოვთ აირჩიოთ მხოლოდ სურათი',
+        3000,
+        'error',
+      );
+      return;
+    }
+
+    this.imageFile.set(file);
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.imagePreview.set(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeImage(): void {
+    this.imageFile.set(null);
+    this.imagePreview.set(null);
+    this.existingImageUuid.set(null);
+  }
+
+  private handleImageOperations(categoryId: number): Observable<unknown> {
+    const imageFile = this.imageFile();
+    const existingUuid = this.existingImageUuid();
+
+    // If image was removed and there was an existing one, delete it
+    if (!this.imagePreview() && existingUuid) {
+      return this.adminService.deleteCategoryImage(categoryId, existingUuid).pipe(
+        catchError((error) => {
+          console.error('Image delete error:', error);
+          return of(null);
+        }),
+      );
+    }
+
+    // If no new image to upload, skip
+    if (!imageFile) {
+      return of(null);
+    }
+
+    // Upload new image
+    return this.adminService
+      .getCategoryImagePresignedUrl(categoryId, {
+        content_type: imageFile.type,
+      })
+      .pipe(
+        switchMap((presignedResponse) =>
+          this.adminService.uploadToS3(presignedResponse.upload_url, imageFile),
+        ),
+        catchError((error) => {
+          this.handleError('სურათის ატვირთვა ვერ მოხერხდა', error);
+          return of(null);
+        }),
+      );
   }
 }
