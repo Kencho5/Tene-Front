@@ -63,13 +63,12 @@ export class AdminProductsComponent {
       tap(() => this.isLoading.set(true)),
       map((params) => new URLSearchParams(params).toString()),
       switchMap((query) =>
-        this.adminService
-          .searchProduct(query)
-          .pipe(
-            catchError(() =>
-              of({ products: [], total: 0, limit: 0, offset: 0 }),
-            ),
-          ),
+        this.adminService.searchProduct(query).pipe(
+          map((response) => {
+            return response;
+          }),
+          catchError(() => of({ products: [], total: 0, limit: 0, offset: 0 })),
+        ),
       ),
       tap(() => this.isLoading.set(false)),
     ),

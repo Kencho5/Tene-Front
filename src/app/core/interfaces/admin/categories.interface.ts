@@ -1,5 +1,3 @@
-// Admin-only category interfaces
-
 export interface Category {
   id: number;
   name: string;

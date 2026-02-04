@@ -31,6 +31,7 @@ export interface ProductImage {
 export interface ProductResponse {
   data: Product;
   images: ProductImage[];
+  categories: ProductCategory[];
 }
 
 export interface ProductSearchResponse {

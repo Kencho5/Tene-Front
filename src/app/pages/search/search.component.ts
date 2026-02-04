@@ -70,13 +70,12 @@ export class SearchComponent {
       }),
       map((params) => new URLSearchParams(params).toString()),
       switchMap((query) =>
-        this.productsService
-          .searchProduct(query)
-          .pipe(
-            catchError(() =>
-              of({ products: [], total: 0, limit: 0, offset: 0 }),
-            ),
-          ),
+        this.productsService.searchProduct(query).pipe(
+          map((response) => {
+            return response;
+          }),
+          catchError(() => of({ products: [], total: 0, limit: 0, offset: 0 })),
+        ),
       ),
       tap(() => {
         this.isLoading.set(false);

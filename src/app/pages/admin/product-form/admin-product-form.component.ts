@@ -12,7 +12,11 @@ import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { catchError, forkJoin, Observable, of, switchMap } from 'rxjs';
-import { Product, ProductImage } from '@core/interfaces/products.interface';
+import {
+  Product,
+  ProductCategory,
+  ProductImage,
+} from '@core/interfaces/products.interface';
 import {
   ProductFormData,
   CreateProductPayload,
@@ -88,7 +92,15 @@ export class AdminProductFormComponent {
 
   readonly product = toSignal(
     toObservable(this.productId).pipe(
-      switchMap((id) => (id ? this.productsService.getProduct(id) : of(null))),
+      switchMap((id) =>
+        id
+          ? this.productsService.getProduct(id).pipe(
+              switchMap((response) => {
+                return of(response);
+              }),
+            )
+          : of(null),
+      ),
     ),
   );
 
@@ -134,7 +146,11 @@ export class AdminProductFormComponent {
     effect(() => {
       const response = this.product();
       if (this.isEditMode() && response) {
-        this.loadProductData(response.data, response.images);
+        this.loadProductData(
+          response.data,
+          response.images,
+          response.categories,
+        );
       }
     });
   }
@@ -152,6 +168,7 @@ export class AdminProductFormComponent {
   private loadProductData(
     product: Product,
     productImages: ProductImage[],
+    categories: ProductCategory[],
   ): void {
     this.productModel.set({
       id: product.id,
@@ -163,6 +180,7 @@ export class AdminProductFormComponent {
       brand: product.brand,
       warranty: product.warranty,
     });
+    this.selectedCategoryIds.set([categories[0].id]);
 
     if (product.specifications) {
       const specs = Object.entries(product.specifications).map(
@@ -176,7 +194,11 @@ export class AdminProductFormComponent {
 
     if (productImages.length > 0) {
       const loadedImages: ImageWithMetadata[] = productImages.map((img) => ({
-        previewUrl: getProductImageUrl(product.id, img.image_uuid, img.extension),
+        previewUrl: getProductImageUrl(
+          product.id,
+          img.image_uuid,
+          img.extension,
+        ),
         color: img.color || '',
         isPrimary: img.is_primary,
         uuid: img.image_uuid,
@@ -285,8 +307,8 @@ export class AdminProductFormComponent {
           this.handleImageOperations(response.data.id).pipe(
             switchMap(() =>
               this.assignCategories(response.data.id).pipe(
-                switchMap(() => of(response))
-              )
+                switchMap(() => of(response)),
+              ),
             ),
           ),
         ),
@@ -495,7 +517,7 @@ export class AdminProductFormComponent {
     // Find the category value (depth:id format) from the selected ID
     const categoryId = selectedIds[0];
     const option = this.categoryOptions().find((opt) =>
-      opt.value.endsWith(`:${categoryId}`)
+      opt.value.endsWith(`:${categoryId}`),
     );
     return option?.value;
   }

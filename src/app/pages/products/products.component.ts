@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ProductsService } from '@core/services/products/products.service';
+import { map } from 'rxjs';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { SharedModule } from '@shared/shared.module';
@@ -30,9 +31,14 @@ export class ProductsComponent implements OnInit {
   readonly productBrandCards = productBrandCards;
   readonly scrollStates = signal<Record<string, boolean>>({});
 
-  readonly searchResponse = toSignal(this.productsService.searchProduct(''), {
-    initialValue: { products: [], total: 0, limit: 0, offset: 0 },
-  });
+  readonly searchResponse = toSignal(
+    this.productsService.searchProduct('').pipe(
+      map((response) => {
+        return response;
+      }),
+    ),
+    { initialValue: { products: [], total: 0, limit: 0, offset: 0 } },
+  );
 
   readonly products = computed(() => this.searchResponse().products);
 

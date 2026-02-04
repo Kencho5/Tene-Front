@@ -85,7 +85,13 @@
     <!-- Status Filter -->
     <div class="w-full sm:w-[220px]">
       <app-dropdown
-        [selectedValue]="params()['enabled'] === 'true' ? 'enabled' : params()['enabled'] === 'false' ? 'disabled' : 'all'"
+        [selectedValue]="
+          params()['enabled'] === 'true'
+            ? 'enabled'
+            : params()['enabled'] === 'false'
+              ? 'disabled'
+              : 'all'
+        "
         (selectedValueChange)="onStatusChange($event)"
         placeholder="სტატუსი"
         [items]="statusOptions"
@@ -262,7 +268,7 @@
                     <div>
                       <a
                         [routerLink]="getProductLink(product)"
-                        class="font-medium text-platinum-100 hover:text-green-60 transition-colors"
+                        class="font-medium text-platinum-100 transition-colors hover:text-green-60"
                       >
                         {{ product.data.name }}
                       </a>
@@ -275,9 +281,12 @@
 
                 <!-- Category -->
                 <td class="hidden px-4 py-4 md:table-cell">
-                  @if (product.data.categories && product.data.categories.length > 0) {
+                  @if (product.categories && product.categories.length > 0) {
                     <div class="flex flex-wrap gap-2">
-                      @for (category of product.data.categories.slice(0, 2); track category.id) {
+                      @for (
+                        category of product.categories.slice(0, 2);
+                        track category.id
+                      ) {
                         <span
                           class="inline-flex rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-100"
                         >
@@ -335,11 +344,15 @@
                 <td class="hidden px-4 py-4 xl:table-cell">
                   <button
                     type="button"
-                    (click)="toggleProductStatus(product.data.id, product.data.enabled)"
+                    (click)="
+                      toggleProductStatus(product.data.id, product.data.enabled)
+                    "
                     class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-60 focus:ring-offset-2"
                     [class.bg-green-60]="product.data.enabled"
                     [class.bg-platinum-30]="!product.data.enabled"
-                    [attr.aria-label]="product.data.enabled ? 'გამორთვა' : 'ჩართვა'"
+                    [attr.aria-label]="
+                      product.data.enabled ? 'გამორთვა' : 'ჩართვა'
+                    "
                   >
                     <span
                       class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
@@ -353,7 +366,11 @@
                 <td class="px-4 py-4">
                   <div class="flex items-center justify-end gap-2">
                     <a
-                      [routerLink]="['/admin/products', product.data.id, 'edit']"
+                      [routerLink]="[
+                        '/admin/products',
+                        product.data.id,
+                        'edit',
+                      ]"
                       class="flex items-center justify-center rounded-xl p-2 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100"
                       aria-label="რედაქტირება"
                     >
