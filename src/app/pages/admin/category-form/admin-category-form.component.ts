@@ -21,6 +21,7 @@ import {
   CategoryRequest,
 } from '@core/interfaces/categories.interface';
 import { generateSlug } from '@utils/slug';
+import { flattenCategoryTree, addNoneOption } from '@utils/category';
 
 interface CategoryFormData {
   name: string;
@@ -126,36 +127,36 @@ export class AdminCategoryFormComponent {
       .getAdminCategoryTree()
       .pipe(catchError(() => of({ categories: [] })))
       .subscribe((response) => {
-        const options: ComboboxItems[] = [
-          { label: 'არცერთი (მთავარი კატეგორია)', value: 'null' },
-        ];
+        // Flatten the tree and filter out the current category (when editing)
+        const currentId = this.categoryId();
+        const filteredCategories = currentId
+          ? this.filterOutCategory(response.categories, currentId)
+          : response.categories;
 
-        const flattenTree = (
-          nodes: any[],
-          prefix: string = '',
-        ): ComboboxItems[] => {
-          let result: ComboboxItems[] = [];
-          nodes.forEach((node) => {
-            const currentId = this.categoryId();
-            if (currentId && node.id === currentId) {
-              return;
-            }
+        const flattenedCategories = flattenCategoryTree(filteredCategories);
+        const options = addNoneOption(flattenedCategories);
 
-            result.push({
-              label: prefix + node.name,
-              value: String(node.id),
-            });
-
-            if (node.children && node.children.length > 0) {
-              result = result.concat(flattenTree(node.children, prefix + '— '));
-            }
-          });
-          return result;
-        };
-
-        options.push(...flattenTree(response.categories));
         this.categoryOptions.set(options);
       });
+  }
+
+  private filterOutCategory(nodes: any[], excludeId: number): any[] {
+    return nodes
+      .filter((node) => node.id !== excludeId)
+      .map((node) => ({
+        ...node,
+        children: node.children
+          ? this.filterOutCategory(node.children, excludeId)
+          : [],
+      }));
+  }
+
+  generateSlugFromName(): void {
+    const name = this.categoryForm.name().value();
+    if (name) {
+      const slug = generateSlug(name);
+      this.categoryModel.update((model) => ({ ...model, slug }));
+    }
   }
 
   private loadCategoryData(category: Category): void {
@@ -275,7 +276,15 @@ export class AdminCategoryFormComponent {
 
   getSelectedParentValue(): string {
     const parentId = this.categoryModel().parent_id;
-    return parentId === null ? 'null' : String(parentId);
+    if (parentId === null) return 'null';
+
+    // Find the item with this ID and return its full value (depth:id)
+    const item = this.categoryOptions().find(opt => {
+      const actualId = opt.value.split(':')[1] || opt.value;
+      return actualId === String(parentId);
+    });
+
+    return item ? item.value : String(parentId);
   }
 
   toggleEnabled(): void {

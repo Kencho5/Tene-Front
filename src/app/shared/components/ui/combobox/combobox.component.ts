@@ -32,32 +32,41 @@ export class ComboboxComponent {
   readonly opened = signal<boolean>(false);
   readonly searchValue = signal<string>('');
 
-  getIndentLevel(label: string): number {
-    const match = label.match(/^(—\s*)+/);
-    if (!match) return 0;
-    return (match[0].match(/—/g) || []).length;
+  getIndentLevel(value: string): number {
+    // Extract depth from value format "depth:id"
+    const parts = value.split(':');
+    if (parts.length === 2 && !isNaN(Number(parts[0]))) {
+      return Number(parts[0]);
+    }
+    return 0;
   }
 
-  getCleanLabel(label: string): string {
-    return label.replace(/^(—\s*)+/, '');
+  getActualValue(value: string): string {
+    // Extract actual ID from value format "depth:id"
+    const parts = value.split(':');
+    if (parts.length === 2) {
+      return parts[1];
+    }
+    return value;
   }
 
   readonly filteredItems = computed(() =>
-    this.items().filter((item) => {
-      const cleanLabel = this.getCleanLabel(item.label);
-      return cleanLabel.toLowerCase().includes(this.searchValue().toLowerCase());
-    }),
+    this.items().filter((item) =>
+      item.label.toLowerCase().includes(this.searchValue().toLowerCase()),
+    ),
   );
 
   readonly itemLabel = computed(() => {
     const item = this.items().find((item) => item.value === this.selectedValue());
     if (!item) return '';
-    return this.getCleanLabel(item.label);
+    return item.label;
   });
 
   selectItem(value: string) {
     const newValue = this.selectedValue() === value ? undefined : value;
-    this.selectedValueChange.emit(newValue!);
+    // Emit the actual value (without depth prefix)
+    const actualValue = newValue ? this.getActualValue(newValue) : undefined;
+    this.selectedValueChange.emit(actualValue!);
     this.selectedValue.set(newValue);
     this.opened.set(false);
   }

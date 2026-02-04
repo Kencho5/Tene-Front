@@ -91,43 +91,28 @@
         @for (item of filteredItems(); track item.value) {
           <button
             type="button"
-            class="mb-1.5 w-full rounded-md py-2 text-left text-platinum-100 transition-colors"
+            class="mb-1 w-full rounded-lg py-2.5 text-left transition-colors"
             [ngClass]="
               selectedValue() == item.value
-                ? 'bg-green-10 font-medium text-green-70'
-                : 'hover:bg-platinum-10'
+                ? 'bg-green-10 text-green-70'
+                : 'text-platinum-100 hover:bg-platinum-10'
             "
-            [style.padding-left]="getIndentLevel(item.label) > 0 ? (12 + getIndentLevel(item.label) * 20) + 'px' : '12px'"
+            [style.padding-left]="(12 + getIndentLevel(item.value) * 24) + 'px'"
+            [style.padding-right]="'12px'"
             (click)="selectItem(item.value)"
           >
-            <div class="flex items-center">
-              @if (getIndentLevel(item.label) > 0) {
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  class="mr-2 flex-shrink-0 text-platinum-40"
-                >
-                  <path
-                    d="M3 7H11M7 3V7"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              }
+            <div class="flex items-center gap-2">
               <div
-                class="mr-2 flex h-3 w-3 flex-shrink-0 items-center justify-center"
+                class="flex h-4 w-4 flex-shrink-0 items-center justify-center"
               >
                 @if (selectedValue() == item.value) {
                   <svg
-                    class="h-3 w-3 text-green-60"
+                    class="h-4 w-4 text-green-60"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    stroke-width="2.5"
                   >
                     <path
                       stroke-linecap="round"
@@ -138,12 +123,14 @@
                 }
               </div>
               <span
+                class="text-sm"
                 [ngClass]="{
-                  'text-platinum-70': getIndentLevel(item.label) > 0,
-                  'font-medium': getIndentLevel(item.label) === 0 && selectedValue() != item.value
+                  'font-semibold': getIndentLevel(item.value) === 0,
+                  'font-medium': selectedValue() == item.value,
+                  'text-platinum-70': getIndentLevel(item.value) > 0 && selectedValue() != item.value
                 }"
               >
-                {{ getCleanLabel(item.label) }}
+                {{ item.label }}
               </span>
             </div>
           </button>

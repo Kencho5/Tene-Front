@@ -24,6 +24,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { getProductImageUrl } from '@utils/product-image-url';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
+import { flattenCategoryTree } from '@utils/category';
 
 interface SpecificationEntry {
   key: string;
@@ -56,6 +57,8 @@ export class AdminProductFormComponent {
   readonly isLoading = signal(false);
   readonly images = signal<ImageWithMetadata[]>([]);
   readonly specifications = signal<SpecificationEntry[]>([]);
+  readonly selectedCategoryIds = signal<number[]>([]);
+  readonly categoryOptions = signal<ComboboxItems[]>([]);
 
   readonly colorOptions: ComboboxItems[] = [
     { label: 'შავი', value: 'black' },
@@ -128,12 +131,24 @@ export class AdminProductFormComponent {
   });
 
   constructor() {
+    this.loadCategoryOptions();
+
     effect(() => {
       const response = this.product();
       if (this.isEditMode() && response) {
         this.loadProductData(response.data, response.images);
       }
     });
+  }
+
+  private loadCategoryOptions(): void {
+    this.adminService
+      .getAdminCategoryTree()
+      .pipe(catchError(() => of({ categories: [] })))
+      .subscribe((response) => {
+        const flattenedCategories = flattenCategoryTree(response.categories);
+        this.categoryOptions.set(flattenedCategories);
+      });
   }
 
   private loadProductData(
@@ -271,7 +286,11 @@ export class AdminProductFormComponent {
       .pipe(
         switchMap((response) =>
           this.handleImageOperations(response.data.id).pipe(
-            switchMap(() => of(response)),
+            switchMap(() =>
+              this.assignCategories(response.data.id).pipe(
+                switchMap(() => of(response))
+              )
+            ),
           ),
         ),
         catchError((error) => {
@@ -440,6 +459,37 @@ export class AdminProductFormComponent {
     this.isLoading.set(false);
     this.toastService.add('შეცდომა', message, 5000, 'error');
     console.error(message, error);
+  }
+
+  private assignCategories(productId: number): Observable<unknown> {
+    const categoryIds = this.selectedCategoryIds();
+    if (categoryIds.length === 0) {
+      return of(null);
+    }
+
+    return this.adminService
+      .assignProductCategories(productId, categoryIds)
+      .pipe(
+        catchError((error) => {
+          console.error('Category assignment error:', error);
+          return of(null);
+        }),
+      );
+  }
+
+  toggleCategory(categoryId: string): void {
+    const id = Number(categoryId);
+    this.selectedCategoryIds.update((ids) => {
+      if (ids.includes(id)) {
+        return ids.filter((i) => i !== id);
+      } else {
+        return [...ids, id];
+      }
+    });
+  }
+
+  isCategorySelected(categoryId: string): boolean {
+    return this.selectedCategoryIds().includes(Number(categoryId));
   }
 
   cancel(): void {

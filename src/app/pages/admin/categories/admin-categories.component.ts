@@ -18,6 +18,10 @@ import { ToastService } from '@core/services/toast.service';
 import { finalize } from 'rxjs';
 import { Category, CategoryTreeNode } from '@core/interfaces/categories.interface';
 
+interface CategoryWithDepth extends Category {
+  depth: number;
+}
+
 @Component({
   selector: 'app-admin-categories',
   imports: [
@@ -51,11 +55,11 @@ export class AdminCategoriesComponent {
     initialValue: {} as Params,
   });
 
-  private flattenTree(nodes: CategoryTreeNode[], parentId: number | null = null): Category[] {
-    let result: Category[] = [];
+  private flattenTree(nodes: CategoryTreeNode[], parentId: number | null = null, depth: number = 0): CategoryWithDepth[] {
+    let result: CategoryWithDepth[] = [];
     nodes.forEach((node) => {
-      // Create a flat category object from tree node
-      const category: Category = {
+      // Create a flat category object from tree node with depth
+      const category: CategoryWithDepth = {
         id: node.id,
         name: node.name,
         slug: node.slug,
@@ -65,11 +69,12 @@ export class AdminCategoriesComponent {
         enabled: true,
         created_at: '',
         updated_at: '',
+        depth: depth,
       };
       result.push(category);
 
       if (node.children && node.children.length > 0) {
-        result = result.concat(this.flattenTree(node.children, node.id));
+        result = result.concat(this.flattenTree(node.children, node.id, depth + 1));
       }
     });
     return result;
@@ -126,7 +131,7 @@ export class AdminCategoriesComponent {
     };
   });
 
-  readonly categories = computed(() => this.searchResponse().categories);
+  readonly categories = computed(() => this.searchResponse().categories as CategoryWithDepth[]);
   readonly totalCategories = computed(() => this.searchResponse().total);
   readonly currentPage = computed(() => {
     const offset = Number(this.params()['offset']) || 0;

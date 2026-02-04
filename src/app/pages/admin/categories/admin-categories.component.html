@@ -195,8 +195,12 @@
               >
                 <!-- Category Name -->
                 <td class="px-4 py-4">
-                  <div>
-                    <p class="font-medium text-platinum-100">
+                  <div [style.padding-left.px]="category.depth * 24">
+                    <p
+                      class="text-platinum-100"
+                      [class.font-semibold]="category.depth === 0"
+                      [class.font-medium]="category.depth > 0"
+                    >
                       {{ category.name }}
                     </p>
                     <p class="text-sm text-platinum-50">
