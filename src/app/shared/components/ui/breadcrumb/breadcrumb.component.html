@@ -21,7 +21,7 @@
   <div class="flex items-center gap-1 text-sm text-platinum-50">
     @for (item of items(); track $index; let isLast = $last) {
       @if (item.route) {
-        <a [routerLink]="item.route">{{ item.label }}</a>
+        <a [routerLink]="item.route" [queryParams]="item.queryParams">{{ item.label }}</a>
       } @else {
         <span>{{ item.label }}</span>
       }

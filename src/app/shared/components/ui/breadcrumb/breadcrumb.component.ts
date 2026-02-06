@@ -5,6 +5,7 @@ import { SharedModule } from '@shared/shared.module';
 export interface BreadcrumbItem {
   label: string;
   route?: string;
+  queryParams?: Record<string, any>;
 }
 
 @Component({

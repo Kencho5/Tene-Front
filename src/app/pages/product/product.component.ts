@@ -75,7 +75,7 @@ export class ProductComponent {
     return [
       { label: 'მთავარი', route: '/' },
       { label: 'პროდუქცია', route: '/products' },
-      { label: category.name, route: `/search?category_id=${category.id}` },
+      { label: category.name, route: '/search', queryParams: { category_id: category.id } },
     ];
   });
 
