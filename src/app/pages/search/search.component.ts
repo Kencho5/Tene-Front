@@ -9,11 +9,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ProductsService } from '@core/services/products/products.service';
+import { CategoriesService } from '@core/services/categories/categories.service';
 import {
   BreadcrumbComponent,
   BreadcrumbItem,
 } from '@shared/components/ui/breadcrumb/breadcrumb.component';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
+import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 import { SharedModule } from '@shared/shared.module';
@@ -26,12 +28,14 @@ import {
   tap,
 } from 'rxjs';
 import { ProductFacets } from '@core/interfaces/products.interface';
+import { flattenCategoryTree } from '@utils/category';
 
 @Component({
   selector: 'app-search',
   imports: [
     SharedModule,
     DropdownComponent,
+    ComboboxComponent,
     BreadcrumbComponent,
     ProductCardComponent,
     ProductCardSkeletonComponent,
@@ -43,6 +47,7 @@ export class SearchComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly productsService = inject(ProductsService);
+  private readonly categoriesService = inject(CategoriesService);
   private debounceTimer?: number;
 
   readonly params = toSignal(this.route.queryParams, {
@@ -52,6 +57,15 @@ export class SearchComponent {
   readonly isLoading = signal<boolean>(false);
   readonly isFacetsLoading = signal<boolean>(false);
   readonly brandSearch = signal<string>('');
+  readonly selectedCategoryValue = signal<string | undefined>(undefined);
+
+  readonly categoryOptions = toSignal(
+    this.categoriesService.getCategoryTree().pipe(
+      map((response) => flattenCategoryTree(response.categories)),
+      catchError(() => of([])),
+    ),
+    { initialValue: [] },
+  );
 
   readonly breadcrumbItems: BreadcrumbItem[] = [
     { label: 'მთავარი', route: '/' },
@@ -163,6 +177,21 @@ export class SearchComponent {
   hasValue(key: string, value: string): boolean {
     const current = this.params()[key] as string | undefined;
     return current ? current.split(',').includes(value) : false;
+  }
+
+  onCategorySelectionChange(categoryId: string | undefined): void {
+    this.setParam('category_id', categoryId);
+  }
+
+  getSelectedCategoryValue(): string | undefined {
+    const params = this.params();
+    const categoryId = params['category_id'];
+
+    if (!categoryId) return undefined;
+
+    const options = this.categoryOptions();
+    const option = options.find((opt) => opt.value.split(':')[1] === categoryId);
+    return option?.value;
   }
 
   clearAll(): void {

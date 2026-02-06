@@ -1,12 +1,13 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ProductsService } from '@core/services/products/products.service';
-import { map } from 'rxjs';
+import { CategoriesService } from '@core/services/categories/categories.service';
+import { map, catchError } from 'rxjs';
+import { of } from 'rxjs';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { SharedModule } from '@shared/shared.module';
 import {
-  productCategoryCards,
   productTopCategoryCards,
   productBrandCards,
 } from '@utils/productsCards';
@@ -24,12 +25,24 @@ import { SeoService } from '@core/services/seo/seo.service';
 })
 export class ProductsComponent implements OnInit {
   private readonly productsService = inject(ProductsService);
+  private readonly categoriesService = inject(CategoriesService);
   private readonly seoService = inject(SeoService);
 
-  readonly productCategoryCards = productCategoryCards;
   readonly productTopCategoryCards = productTopCategoryCards;
   readonly productBrandCards = productBrandCards;
   readonly scrollStates = signal<Record<string, boolean>>({});
+
+  readonly categoriesTree = toSignal(
+    this.categoriesService
+      .getCategoryTree()
+      .pipe(catchError(() => of({ categories: [] }))),
+    { initialValue: { categories: [] } },
+  );
+
+  readonly topLevelCategories = computed(() => {
+    const tree = this.categoriesTree();
+    return tree.categories.slice(0, 8);
+  });
 
   readonly searchResponse = toSignal(
     this.productsService.searchProduct('').pipe(

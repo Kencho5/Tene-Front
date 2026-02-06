@@ -105,18 +105,39 @@
         class="hide-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:px-0"
         style="scrollbar-width: none; -ms-overflow-style: none"
       >
-        @for (categoryCard of productCategoryCards; track $index) {
+        @for (category of topLevelCategories(); track category.id) {
           <a
-            [routerLink]="categoryCard.route"
-            class="flex h-[116px] w-[270px] flex-shrink-0 items-center justify-center gap-4 rounded-2xl bg-platinum-10 p-2 transition-all hover:bg-platinum-20"
+            [routerLink]="['/search']"
+            [queryParams]="{ category_id: category.id }"
+            class="flex h-[116px] w-[270px] flex-shrink-0 items-center justify-between gap-4 rounded-2xl bg-platinum-10 p-4 transition-all hover:bg-platinum-20"
           >
-            <p class="font-semibold">{{ categoryCard.text }}</p>
+            <p class="font-semibold">{{ category.name }}</p>
 
-            <app-image
-              src="/assets/images/products/{{ categoryCard.image }}.webp"
-              [width]="92"
-              [height]="92"
-            />
+            @if (category.image_url) {
+              <img
+                [src]="category.image_url"
+                [alt]="category.name"
+                width="92"
+                height="92"
+                class="h-[92px] w-[92px] rounded-2xl object-cover"
+              />
+            } @else {
+              <div class="flex h-[92px] w-[92px] items-center justify-center rounded-2xl bg-platinum-20">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M3 7C3 5.11438 3 4.17157 3.58579 3.58579C4.17157 3 5.11438 3 7 3H17C18.8856 3 19.8284 3 20.4142 3.58579C21 4.17157 21 5.11438 21 7V17C21 18.8856 21 19.8284 20.4142 20.4142C19.8284 21 18.8856 21 17 21H7C5.11438 21 4.17157 21 3.58579 20.4142C3 19.8284 3 18.8856 3 17V7Z"
+                    stroke="#888888"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M10 9H14M10 12H14M10 15H14"
+                    stroke="#888888"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+            }
           </a>
         }
       </div>
