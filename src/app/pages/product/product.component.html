@@ -192,6 +192,26 @@
 
         <div class="my-2 h-px bg-platinum-20"></div>
 
+        <!-- Categories Display -->
+        @if (product.data.categories && product.data.categories.length > 0) {
+          <div>
+            <h2 class="mb-3">კატეგორიები</h2>
+            <div class="flex flex-wrap gap-2">
+              @for (category of product.data.categories; track category.id) {
+                <a
+                  [routerLink]="['/search']"
+                  [queryParams]="{ category_id: category.id }"
+                  class="rounded-full border border-platinum-20 px-3 py-1.5 text-sm transition-colors hover:border-green-60 hover:bg-green-10"
+                >
+                  {{ category.name }}
+                </a>
+              }
+            </div>
+          </div>
+
+          <div class="my-2 h-px bg-platinum-20"></div>
+        }
+
         <div class="flex gap-3">
           <div
             class="flex h-[46px] w-[126px] flex-shrink-0 items-center justify-between rounded-full border border-platinum-20 p-2"

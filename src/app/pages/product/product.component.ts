@@ -62,11 +62,22 @@ export class ProductComponent {
 
   readonly imageBaseUrl = getProductImageBaseUrl();
 
-  readonly breadcrumbs = computed<BreadcrumbItem[]>(() => [
-    { label: 'მთავარი', route: '/' },
-    { label: 'პროდუქცია', route: '/products' },
-    { label: 'კაბელები', route: '/products' },
-  ]);
+  readonly breadcrumbs = computed<BreadcrumbItem[]>(() => {
+    const product = this.product();
+    if (!product || !product.categories.length) {
+      return [
+        { label: 'მთავარი', route: '/' },
+        { label: 'პროდუქცია', route: '/products' },
+      ];
+    }
+
+    const category = product.categories[0];
+    return [
+      { label: 'მთავარი', route: '/' },
+      { label: 'პროდუქცია', route: '/products' },
+      { label: category.name, route: `/search?category_id=${category.id}` },
+    ];
+  });
 
   readonly availableColors = computed(() => {
     const product = this.product();
@@ -290,9 +301,10 @@ export class ProductComponent {
     // Always use the canonical URL with slug for SEO
     const canonicalUrl = `https://tene.ge/products/${slug}/${product.data.id}`;
 
-    const categoryKeyword = product.data.categories && product.data.categories.length > 0
-      ? product.data.categories[0].name
-      : 'პროდუქტი';
+    const categoryKeyword =
+      product.data.categories && product.data.categories.length > 0
+        ? product.data.categories[0].name
+        : 'პროდუქტი';
 
     this.seoService.setMetaTags({
       title: `${product.data.name} - ${price}₾ | Tene`,
