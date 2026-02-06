@@ -76,7 +76,15 @@ export class AdminCategoryFormComponent {
     required(fieldPath.slug, { message: 'სლაგი აუცილებელია' });
   });
 
-  private findCategoryInTree(nodes: any[], id: number): Category | null {
+  // Load category tree once and reuse it
+  readonly categoryTree = toSignal(
+    this.adminService.getAdminCategoryTree().pipe(
+      catchError(() => of({ categories: [] })),
+    ),
+    { initialValue: { categories: [] } },
+  );
+
+  private findCategoryInTree(nodes: any[], id: number, parentId: number | null = null): Category | null {
     for (const node of nodes) {
       if (node.id === id) {
         // Convert tree node to category
@@ -84,7 +92,7 @@ export class AdminCategoryFormComponent {
           id: node.id,
           name: node.name,
           slug: node.slug,
-          parent_id: null, // Will be set properly from tree structure
+          parent_id: node.parent_id,
           description: node.description || null,
           display_order: node.display_order || 0,
           enabled: node.enabled !== undefined ? node.enabled : true,
@@ -94,27 +102,20 @@ export class AdminCategoryFormComponent {
         };
       }
       if (node.children && node.children.length > 0) {
-        const found = this.findCategoryInTree(node.children, id);
+        const found = this.findCategoryInTree(node.children, id, node.id);
         if (found) return found;
       }
     }
     return null;
   }
 
-  readonly category = toSignal(
-    toObservable(this.categoryId).pipe(
-      switchMap((id) => {
-        if (!id) return of(null);
-        return this.adminService.getAdminCategoryTree().pipe(
-          switchMap((response) => {
-            const category = this.findCategoryInTree(response.categories, id);
-            return of(category);
-          }),
-          catchError(() => of(null)),
-        );
-      }),
-    ),
-  );
+  readonly category = computed(() => {
+    const id = this.categoryId();
+    if (!id) return null;
+
+    const tree = this.categoryTree();
+    return this.findCategoryInTree(tree.categories, id);
+  });
 
   constructor() {
     this.loadCategoryOptions();
@@ -128,21 +129,21 @@ export class AdminCategoryFormComponent {
   }
 
   private loadCategoryOptions(): void {
-    this.adminService
-      .getAdminCategoryTree()
-      .pipe(catchError(() => of({ categories: [] })))
-      .subscribe((response) => {
-        // Flatten the tree and filter out the current category (when editing)
-        const currentId = this.categoryId();
-        const filteredCategories = currentId
-          ? this.filterOutCategory(response.categories, currentId)
-          : response.categories;
+    // Use effect to load options from the cached tree
+    effect(() => {
+      const tree = this.categoryTree();
+      const currentId = this.categoryId();
 
-        const flattenedCategories = flattenCategoryTree(filteredCategories);
-        const options = addNoneOption(flattenedCategories);
+      // Flatten the tree and filter out the current category (when editing)
+      const filteredCategories = currentId
+        ? this.filterOutCategory(tree.categories, currentId)
+        : tree.categories;
 
-        this.categoryOptions.set(options);
-      });
+      const flattenedCategories = flattenCategoryTree(filteredCategories);
+      const options = addNoneOption(flattenedCategories);
+
+      this.categoryOptions.set(options);
+    });
   }
 
   private filterOutCategory(nodes: any[], excludeId: number): any[] {
@@ -295,18 +296,18 @@ export class AdminCategoryFormComponent {
     this.categoryModel.update((model) => ({ ...model, parent_id: parentId }));
   }
 
-  getSelectedParentValue(): string {
+  readonly selectedParentValue = computed(() => {
     const parentId = this.categoryModel().parent_id;
     if (parentId === null) return 'null';
 
     // Find the item with this ID and return its full value (depth:id)
-    const item = this.categoryOptions().find(opt => {
+    const item = this.categoryOptions().find((opt) => {
       const actualId = opt.value.split(':')[1] || opt.value;
       return actualId === String(parentId);
     });
 
     return item ? item.value : String(parentId);
-  }
+  });
 
   toggleEnabled(): void {
     this.categoryModel.update((model) => ({

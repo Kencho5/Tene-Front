@@ -162,6 +162,16 @@ export class AdminProductFormComponent {
       .subscribe((response) => {
         const flattenedCategories = flattenCategoryTree(response.categories);
         this.categoryOptions.set(flattenedCategories);
+
+        const response_data = this.product();
+        if (
+          this.isEditMode() &&
+          response_data &&
+          response_data.categories &&
+          response_data.categories.length > 0
+        ) {
+          this.selectedCategoryIds.set([response_data.categories[0].id]);
+        }
       });
   }
 
@@ -180,7 +190,9 @@ export class AdminProductFormComponent {
       brand: product.brand,
       warranty: product.warranty,
     });
-    this.selectedCategoryIds.set([categories[0].id]);
+    if (this.categoryOptions().length > 0 && categories.length > 0) {
+      this.selectedCategoryIds.set([categories[0].id]);
+    }
 
     if (product.specifications) {
       const specs = Object.entries(product.specifications).map(
@@ -514,17 +526,18 @@ export class AdminProductFormComponent {
     const selectedIds = this.selectedCategoryIds();
     if (selectedIds.length === 0) return undefined;
 
-    // Find the category value (depth:id format) from the selected ID
     const categoryId = selectedIds[0];
-    const option = this.categoryOptions().find((opt) =>
-      opt.value.endsWith(`:${categoryId}`),
+    const options = this.categoryOptions();
+
+    const option = options.find(
+      (opt) => opt.value.split(':')[1] === String(categoryId),
     );
+
     return option?.value;
   }
 
   onCategoryChange(categoryId: string | undefined): void {
     if (categoryId) {
-      // categoryId comes as the actual ID from combobox
       this.selectedCategoryIds.set([Number(categoryId)]);
     } else {
       this.selectedCategoryIds.set([]);

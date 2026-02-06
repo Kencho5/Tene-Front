@@ -47,7 +47,7 @@
             მშობელი კატეგორია
           </label>
           <app-combobox
-            [selectedValue]="getSelectedParentValue()"
+            [selectedValue]="selectedParentValue()"
             (selectedValueChange)="onParentCategoryChange($event)"
             [items]="categoryOptions()"
             placeholder="აირჩიეთ მშობელი კატეგორია"
