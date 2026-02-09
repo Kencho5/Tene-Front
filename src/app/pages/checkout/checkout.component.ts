@@ -10,7 +10,6 @@ import { email, Field, form, hidden, required } from '@angular/forms/signals';
 import { catchError, of } from 'rxjs';
 import { CheckoutFields } from '@core/interfaces/products.interface';
 import { organizationTypes } from '@utils/organizationTypes';
-import { storeCities } from '@utils/store-cities';
 import { CartService } from '@core/services/products/cart.service';
 import { ToastService } from '@core/services/toast.service';
 import { AddressService } from '@core/services/address.service';
@@ -23,9 +22,9 @@ import {
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
-import { ModalComponent } from '@shared/components/ui/modal/modal.component';
 import { SharedModule } from '@shared/shared.module';
 import { AddressData } from '@core/interfaces/address.interface';
+import { AddressFormModalComponent } from '@shared/components/address-form-modal/address-form-modal.component';
 
 @Component({
   selector: 'app-checkout',
@@ -37,7 +36,7 @@ import { AddressData } from '@core/interfaces/address.interface';
     ConfirmationModalComponent,
     InputComponent,
     ComboboxComponent,
-    ModalComponent,
+    AddressFormModalComponent,
     Field,
   ],
   templateUrl: './checkout.component.html',
@@ -54,30 +53,15 @@ export class CheckoutComponent {
   ]);
 
   readonly organizationTypes = organizationTypes;
-  readonly storeCities = storeCities;
 
   readonly submitted = signal(false);
-  readonly isAddressModalOpen = signal(false);
   readonly selectedCity = signal<string>('');
-  readonly isEditMode = signal(false);
-  readonly editingAddressId = signal<number | null>(null);
 
   readonly loading = signal({
     addresses: true,
   });
 
-  readonly addressModel = signal<AddressData>({
-    city: '',
-    address: '',
-    details: '',
-  });
-
   readonly addresses = signal<AddressData[]>([]);
-
-  readonly addressForm = form(this.addressModel, (fieldPath) => {
-    required(fieldPath.city, { message: 'ქალაქი აუცილებელია' });
-    required(fieldPath.address, { message: 'მისამართი აუცილებელია' });
-  });
 
   readonly sectionStates = signal({
     contactDetails: true,
@@ -183,96 +167,14 @@ export class CheckoutComponent {
     }));
   }
 
-  handleAddNewAddress() {
-    this.isEditMode.set(false);
-    this.editingAddressId.set(null);
-    this.addressForm().reset();
-    this.isAddressModalOpen.set(true);
-  }
-
-  handleEditAddress(addressId: number) {
-    const address = this.addresses().find((a) => a.id === addressId);
-    if (!address) return;
-
-    this.addressModel.set(address);
-    this.isEditMode.set(true);
-    this.editingAddressId.set(addressId);
-    this.isAddressModalOpen.set(true);
-  }
-
-  handleAddressSubmit() {
-    if (this.addressForm().invalid()) {
-      const errors = this.addressForm().errorSummary();
-      const errorMessage =
-        errors.length > 0 && errors[0].message
-          ? errors[0].message
-          : 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი';
-
-      this.toastService.add(
-        'მისამართის დამატება ვერ მოხერხდა',
-        errorMessage,
-        5000,
-        'error',
+  onAddressSaved(address: AddressData) {
+    const existing = this.addresses().find((a) => a.id === address.id);
+    if (existing) {
+      this.addresses.update((addrs) =>
+        addrs.map((a) => (a.id === address.id ? address : a)),
       );
-      return;
-    }
-
-    const addressData = this.addressForm().value();
-
-    if (this.isEditMode()) {
-      const addressId = this.editingAddressId();
-      if (!addressId) return;
-
-      this.addressService.updateAddress(addressId, addressData).subscribe({
-        next: (updatedAddress) => {
-          this.addresses.update((addrs) =>
-            addrs.map((a) => (a.id === addressId ? updatedAddress : a)),
-          );
-          this.toastService.add(
-            'წარმატებული',
-            'მისამართი განახლდა',
-            3000,
-            'success',
-          );
-          this.closeAddressModal();
-        },
-        error: () => {
-          this.toastService.add(
-            'შეცდომა',
-            'მისამართის განახლება ვერ მოხერხდა',
-            5000,
-            'error',
-          );
-        },
-      });
     } else {
-      this.addressService.addAddress(addressData).subscribe({
-        next: (newAddress) => {
-          this.addresses.set([...this.addresses(), newAddress]);
-          this.toastService.add(
-            'წარმატებული',
-            'მისამართი წარმატებით დაემატა',
-            3000,
-            'success',
-          );
-          this.closeAddressModal();
-        },
-        error: () => {
-          this.toastService.add(
-            'შეცდომა',
-            'მისამართის დამატება ვერ მოხერხდა',
-            5000,
-            'error',
-          );
-        },
-      });
+      this.addresses.set([...this.addresses(), address]);
     }
-  }
-
-  closeAddressModal() {
-    this.isAddressModalOpen.set(false);
-    this.isEditMode.set(false);
-    this.editingAddressId.set(null);
-    this.addressForm().reset();
   }
 }

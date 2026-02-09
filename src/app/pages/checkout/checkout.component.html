@@ -245,7 +245,7 @@
 
                   <button
                     type="button"
-                    (click)="handleAddNewAddress()"
+                    (click)="addressModal.openForCreate()"
                     class="inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all hover:brightness-95"
                     style="
                       background: linear-gradient(
@@ -335,7 +335,7 @@
 
                           <button
                             type="button"
-                            (click)="handleEditAddress(address.id!)"
+                            (click)="addressModal.openForEdit(address)"
                           >
                             <svg
                               width="24"
@@ -367,7 +367,7 @@
               <button
                 type="button"
                 class="flex items-center gap-2 text-sm font-semibold text-green-70"
-                (click)="handleAddNewAddress()"
+                (click)="addressModal.openForCreate()"
               >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path
@@ -561,33 +561,7 @@
   (cancel)="cartService.closeDeleteModal()"
 />
 
-<app-modal
-  [isOpen]="isAddressModalOpen()"
-  [title]="isEditMode() ? 'მისამართის რედაქტირება' : 'მისამართის დამატება'"
-  [cancelText]="'გაუქმება'"
-  [acceptText]="isEditMode() ? 'განახლება' : 'დამატება'"
-  (close)="closeAddressModal()"
-  (accept)="handleAddressSubmit()"
->
-  <div class="flex flex-col gap-4">
-    <app-combobox
-      [(selectedValue)]="addressForm.city().value"
-      [items]="storeCities"
-      placeholder="აირჩიეთ ქალაქი"
-      searchPlaceholder="ძებნა..."
-      notFoundText="ქალაქი ვერ მოიძებნა"
-    />
-
-    <app-input
-      [field]="addressForm.address"
-      type="text"
-      placeholder="მისამართი"
-    />
-
-    <app-input
-      [field]="addressForm.details"
-      type="text"
-      placeholder="კორპუსი, ბინა, სადარბაზო, სართული და ა.შ."
-    />
-  </div>
-</app-modal>
+<app-address-form-modal
+  #addressModal
+  (addressSaved)="onAddressSaved($event)"
+/>

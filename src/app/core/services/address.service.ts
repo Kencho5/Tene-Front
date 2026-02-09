@@ -17,6 +17,10 @@ export class AddressService {
     return this.http.put<AddressData>(`/addresses/${id}`, data);
   }
 
+  deleteAddress(id: number): Observable<void> {
+    return this.http.delete<void>(`/addresses/${id}`);
+  }
+
   getAddresses(): Observable<AddressData[]> {
     return this.http.get<AddressData[]>('/addresses');
   }

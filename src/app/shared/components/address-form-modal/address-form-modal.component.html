@@ -1,0 +1,30 @@
+<app-modal
+  [isOpen]="isOpen()"
+  [title]="isEditMode() ? 'მისამართის რედაქტირება' : 'მისამართის დამატება'"
+  [cancelText]="'გაუქმება'"
+  [acceptText]="isEditMode() ? 'განახლება' : 'დამატება'"
+  (close)="close()"
+  (accept)="handleSubmit()"
+>
+  <div class="flex flex-col gap-4">
+    <app-combobox
+      [(selectedValue)]="addressForm.city().value"
+      [items]="storeCities"
+      placeholder="აირჩიეთ ქალაქი"
+      searchPlaceholder="ძებნა..."
+      notFoundText="ქალაქი ვერ მოიძებნა"
+    />
+
+    <app-input
+      [field]="addressForm.address"
+      type="text"
+      placeholder="მისამართი"
+    />
+
+    <app-input
+      [field]="addressForm.details"
+      type="text"
+      placeholder="კორპუსი, ბინა, სადარბაზო, სართული და ა.შ."
+    />
+  </div>
+</app-modal>
