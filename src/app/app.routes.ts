@@ -105,6 +105,13 @@ export const routes: Routes = [
             (m) => m.OrdersComponent,
           ),
       },
+      {
+        path: 'addresses',
+        loadComponent: () =>
+          import('./pages/profile/addresses/addresses.component').then(
+            (m) => m.AddressesComponent,
+          ),
+      },
     ],
   },
 

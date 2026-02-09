@@ -1,0 +1,56 @@
+@if (addresses.isLoading()) {
+  <div class="flex flex-1 items-center justify-center py-10">
+    <app-spinner
+      [size]="46"
+      [textColor]="'text-white'"
+      [fillColor]="'fill-green-60'"
+    />
+  </div>
+} @else if (addresses.value().length === 0) {
+  <div
+    class="flex flex-1 flex-col items-center justify-center gap-6 text-center"
+  >
+    <img
+      src="/assets/images/profile/map-waypoint.webp"
+      width="120"
+      height="120"
+    />
+    <div class="max-w-[320px] space-y-2">
+      <h1 class="text-xl">დაამატე მისამართი</h1>
+      <p class="text-sm text-platinum-50">
+        დაამატეთ სასურველი მისამრთი სადაც გსურთ თქვენი შეკვეთის მოწოდება.
+      </p>
+    </div>
+
+    <a
+      routerLink="/profile/addresses/create"
+      class="inline-flex items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all hover:brightness-95"
+      style="
+        background: linear-gradient(
+          90deg,
+          #0ad810 0%,
+          #0bb705 35%,
+          #0bb705 65%,
+          #0ad810 100%
+        );
+        box-shadow: 0px 20px 16px -8px #0ad10426;
+      "
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M9.9987 3.33337L9.9987 16.6667M16.6654 10L3.33203 10"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+      ახალი მისამართი
+    </a>
+  </div>
+} @else {}
