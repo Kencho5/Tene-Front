@@ -1,0 +1,149 @@
+<!-- Mobile toggle button -->
+<button
+  type="button"
+  class="flex w-full items-center justify-between rounded-2xl bg-white px-6 py-4 font-bold shadow-low lg:hidden"
+  (click)="toggle()"
+>
+  <div class="flex items-center gap-3">
+    <div
+      class="flex h-10 w-10 items-center justify-center rounded-full bg-platinum-10"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="6" r="4" />
+          <path
+            d="M20 17.5c0 2.485 0 4.5-8 4.5s-8-2.015-8-4.5S7.582 13 12 13s8 2.015 8 4.5Z"
+          />
+        </g>
+      </svg>
+    </div>
+    <span>{{ authService.user()?.name }}</span>
+  </div>
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    class="transition-transform"
+    [class.rotate-180]="isOpen()"
+  >
+    <path
+      d="M6 9L12 15L18 9"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+</button>
+
+<!-- Sidebar content -->
+<div
+  class="w-full space-y-6 rounded-2xl bg-white px-6 py-4 pb-8 shadow-low lg:block"
+  [class.hidden]="!isOpen()"
+  [class.block]="isOpen()"
+  [class.mt-2]="isOpen()"
+>
+  <div class="flex items-center gap-4">
+    <div
+      class="flex h-16 w-16 items-center justify-center rounded-full bg-platinum-10"
+    >
+      <svg width="28" height="28" viewBox="0 0 24 24">
+        <title xmlns="">user-linear</title>
+        <g fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="6" r="4" />
+          <path
+            d="M20 17.5c0 2.485 0 4.5-8 4.5s-8-2.015-8-4.5S7.582 13 12 13s8 2.015 8 4.5Z"
+          />
+        </g>
+      </svg>
+    </div>
+
+    <div>
+      <h2 class="text-lg">{{ authService.user()?.name }}</h2>
+      <p class="text-sm text-platinum-50">{{ authService.user()?.email }}</p>
+    </div>
+  </div>
+
+  <div class="h-px bg-platinum-20"></div>
+
+  <div class="flex flex-col gap-1 font-bold">
+    <a
+      routerLink="/profile/orders"
+      class="flex items-center gap-2.5 rounded-full px-4 py-3 transition-colors"
+      routerLinkActive="bg-green-10 text-green-70 hover:bg-green-20"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M9 8H15M9 12H15M18 20L15 17L12 20L9 17L6 20V5.5C6 4.67157 6.67157 4 7.5 4H16.5C17.3284 4 18 4.67157 18 5.5V20Z"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      შეკვეთები</a
+    >
+    <a
+      routerLink="/profile/addresses"
+      class="flex items-center gap-2.5 rounded-full px-4 py-3 transition-colors"
+      routerLinkActive="bg-green-10 text-green-70 hover:bg-green-20"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M18.7312 10.8148C18.7312 14.4197 15.5789 17.6744 13.5622 19.3877C12.6013 20.2041 11.2315 20.2041 10.2705 19.3877C8.25381 17.6743 5.10156 14.4197 5.10156 10.8148C5.10156 9.00741 5.81955 7.27404 7.09757 5.99601C8.3756 4.71799 10.109 4 11.9164 4C13.7238 4 15.4571 4.71799 16.7352 5.99601C18.0132 7.27404 18.7312 9.00741 18.7312 10.8148Z"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M11.9164 13.0864C13.1709 13.0864 14.188 12.0694 14.188 10.8148C14.188 9.56024 13.1709 8.54321 11.9164 8.54321C10.6618 8.54321 9.64477 9.56024 9.64477 10.8148C9.64477 12.0694 10.6618 13.0864 11.9164 13.0864Z"
+          stroke="#212121"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      მისამართები</a
+    >
+    <a
+      routerLink="/profile/cards"
+      class="flex items-center gap-2.5 rounded-full px-4 py-3 transition-colors"
+      routerLinkActive="bg-green-10 text-green-70 hover:bg-green-20"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M13.7743 13.9368C13.3601 13.9368 13.0243 14.2725 13.0243 14.6868C13.0243 15.101 13.3601 15.4368 13.7743 15.4368V14.6868V13.9368ZM16.2665 15.4368C16.6807 15.4368 17.0165 15.101 17.0165 14.6868C17.0165 14.2725 16.6807 13.9368 16.2665 13.9368V14.6868V15.4368ZM4.00001 15L4.75001 15V15L4.00001 15ZM4.00001 9L4.75001 9V9H4.00001ZM4 10V10.75H20V10V9.25H4V10ZM13.7743 14.6868V15.4368H16.2665V14.6868V13.9368H13.7743V14.6868ZM4.00001 15L3.25001 15C3.25 17.0711 4.92893 18.75 7 18.75V18V17.25C5.75736 17.25 4.75 16.2426 4.75001 15L4.00001 15ZM20 15H19.25C19.25 16.2426 18.2427 17.25 17 17.25V18V18.75C19.0711 18.75 20.75 17.0711 20.75 15H20ZM20 9H20.75C20.75 6.92893 19.0711 5.25 17 5.25V6V6.75C18.2427 6.75 19.25 7.75736 19.25 9H20ZM4.00001 9H4.75001C4.75001 7.75736 5.75737 6.75 7.00001 6.75V6V5.25C4.92894 5.25 3.25001 6.92893 3.25001 9H4.00001ZM20 9H19.25V15H20H20.75V9H20ZM4.00001 15L4.75001 15L4.75001 9L4.00001 9L3.25001 9L3.25001 15L4.00001 15ZM7.00001 6V6.75H17V6V5.25H7.00001V6ZM17 18V17.25H7V18V18.75H17V18Z"
+          fill="currentColor"
+        />
+      </svg>
+      ჩემი ბარათები</a
+    >
+  </div>
+
+  <div class="h-px bg-platinum-20"></div>
+
+  <button
+    type="button"
+    class="flex items-center gap-2.5 px-4 font-bold text-valencia-70"
+    (click)="authService.logout()"
+  >
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9.33333 20H7C5.34315 20 4 18.6569 4 17V7C4 5.34315 5.34315 4 7 4H9.33333M15.5556 16.4444L20 12M20 12L15.5556 7.55556M20 12H10.3333"
+        stroke="#C61008"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+    გამოსვლა
+  </button>
+</div>

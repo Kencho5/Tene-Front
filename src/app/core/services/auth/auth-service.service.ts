@@ -77,7 +77,7 @@ export class AuthService {
     if (this.isBrowser) localStorage.setItem(TOKEN_KEY, token);
 
     if (user.role === 'admin') {
-      this.router.navigate(['/admin/dashboard']);
+      this.router.navigate(['/admin']);
     } else {
       this.router.navigate(['/profile']);
     }

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { adminGuard } from '@core/guards/admin.guard';
 import { MainLayoutComponent } from '@shared/layouts/main-layout/main-layout.component';
 import { productResolver } from '@core/resolvers/product.resolver';
+import { authGuard } from '@core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -85,6 +86,29 @@ export const routes: Routes = [
   },
 
   {
+    path: 'profile',
+    loadComponent: () =>
+      import('./shared/layouts/profile-layout/profile-layout.component').then(
+        (m) => m.ProfileLayoutComponent,
+      ),
+    canActivateChild: [authGuard],
+    children: [
+      {
+        path: '',
+        redirectTo: 'orders',
+        pathMatch: 'full',
+      },
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./pages/profile/orders/orders.component').then(
+            (m) => m.OrdersComponent,
+          ),
+      },
+    ],
+  },
+
+  {
     path: 'admin',
     loadComponent: () =>
       import('./shared/layouts/admin-layout/admin-layout.component').then(
@@ -107,16 +131,16 @@ export const routes: Routes = [
       {
         path: 'products/new',
         loadComponent: () =>
-          import('./pages/admin/product-form/admin-product-form.component').then(
-            (m) => m.AdminProductFormComponent,
-          ),
+          import(
+            './pages/admin/product-form/admin-product-form.component'
+          ).then((m) => m.AdminProductFormComponent),
       },
       {
         path: 'products/:id/edit',
         loadComponent: () =>
-          import('./pages/admin/product-form/admin-product-form.component').then(
-            (m) => m.AdminProductFormComponent,
-          ),
+          import(
+            './pages/admin/product-form/admin-product-form.component'
+          ).then((m) => m.AdminProductFormComponent),
       },
       {
         path: 'users',
@@ -142,16 +166,16 @@ export const routes: Routes = [
       {
         path: 'categories/new',
         loadComponent: () =>
-          import('./pages/admin/category-form/admin-category-form.component').then(
-            (m) => m.AdminCategoryFormComponent,
-          ),
+          import(
+            './pages/admin/category-form/admin-category-form.component'
+          ).then((m) => m.AdminCategoryFormComponent),
       },
       {
         path: 'categories/:id/edit',
         loadComponent: () =>
-          import('./pages/admin/category-form/admin-category-form.component').then(
-            (m) => m.AdminCategoryFormComponent,
-          ),
+          import(
+            './pages/admin/category-form/admin-category-form.component'
+          ).then((m) => m.AdminCategoryFormComponent),
       },
     ],
   },
