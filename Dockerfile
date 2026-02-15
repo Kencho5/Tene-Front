@@ -20,16 +20,7 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-RUN npm install -g pnpm
-
-# Copy dependency files first for better layer caching
-COPY --from=build /app/package.json /app/pnpm-lock.yaml ./
-
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
-    pnpm install --frozen-lockfile && \
-    pnpm store prune
-
-# Copy the entire dist folder last (includes both server and browser)
+# Server bundle is self-contained — no node_modules needed
 COPY --from=build /app/dist ./dist
 
 EXPOSE 4000

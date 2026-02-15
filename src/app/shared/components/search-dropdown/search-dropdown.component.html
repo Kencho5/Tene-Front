@@ -1,0 +1,134 @@
+<div class="relative" (outsideClick)="close()">
+  <button class="p-2 xl:p-0" (click)="toggle()">
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M20 20L16.1333 16.1333M18.2222 11.1111C18.2222 15.0385 15.0385 18.2222 11.1111 18.2222C7.18375 18.2222 4 15.0385 4 11.1111C4 7.18375 7.18375 4 11.1111 4C15.0385 4 18.2222 7.18375 18.2222 11.1111Z"
+        stroke="#212121"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </button>
+
+  @if (open()) {
+    <div
+      class="fixed inset-x-0 top-[72px] bottom-0 z-50 overflow-y-auto bg-white p-4 shadow-lg sm:absolute sm:inset-x-auto sm:bottom-auto sm:-right-10 sm:top-full sm:mt-8 sm:max-h-[80vh] sm:w-[512px] sm:rounded-xl sm:p-6"
+    >
+      <div class="flex flex-col gap-5">
+        <div class="relative">
+          <svg
+            width="20"
+            height="20"
+            fill="none"
+            class="absolute left-3.5 top-1/2 -translate-y-1/2"
+          >
+            <path
+              d="m16.6692 16.6666-3.2222-3.2222m1.7408-4.18523c0 3.27283-2.6531 5.92593-5.92594 5.92593-3.2728 0-5.92592-2.6531-5.92592-5.92593 0-3.27279 2.65312-5.92592 5.92592-5.92592 3.27284 0 5.92594 2.65313 5.92594 5.92592Z"
+              stroke="#212121"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <input
+            type="text"
+            (input)="query.set($event.target.value)"
+            placeholder="ძიება..."
+            class="h-[48px] w-full rounded-full border-[1.5px] border-green-60 bg-platinum-10 px-4 py-3 pl-10 outline-none"
+          />
+        </div>
+
+        @if (results.value()?.products) {
+          <div class="space-y-4">
+            <h3 class="text-xl">ძებნის შედეგი</h3>
+
+            <div class="flex flex-col gap-4">
+              @for (result of results.value()!.products; track result.data.id) {
+                <a
+                  [routerLink]="['/products', result.data.id]"
+                  class="flex items-center justify-between rounded-2xl bg-white px-4 py-3 shadow-low"
+                >
+                  <div class="flex min-w-0 items-center gap-4">
+                    <img
+                      [src]="getImageSrc(result.data.id, result.images[0])"
+                      width="60"
+                      height="60"
+                      class="shrink-0 rounded-full border border-platinum-20"
+                    />
+
+                    <div class="min-w-0">
+                      <h4 class="truncate font-normal">
+                        {{ result.data.name }}
+                      </h4>
+                      <p class="text-sm text-platinum-50">
+                        {{ result.data.price }} ₾
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              }
+            </div>
+
+            <a
+              routerLink="/search"
+              [queryParams]="{ query: query() }"
+              class="flex h-10 items-center justify-center rounded-full border border-green-60 px-4 py-2.5 font-medium text-green-60"
+            >
+              მეტის ნახვა
+            </a>
+          </div>
+        } @else if (results.isLoading()) {
+          <app-spinner
+            [size]="46"
+            [textColor]="'text-white'"
+            [fillColor]="'fill-green-60'"
+          />
+        }
+
+        <div class="space-y-4">
+          <h3 class="text-xl">ტოპ კატეგორიები</h3>
+
+          <div class="grid grid-cols-3 gap-4 text-center text-sm sm:grid-cols-4">
+            @if (categories.isLoading()) {
+              <app-spinner
+                [size]="46"
+                [textColor]="'text-white'"
+                [fillColor]="'fill-green-60'"
+              />
+            } @else {
+              @for (
+                category of categories.value().categories;
+                track category.id
+              ) {
+                <a
+                  routerLink="/search"
+                  [queryParams]="{ category_id: category.id }"
+                  (click)="toggle()"
+                  class="space-y-2"
+                >
+                  <div
+                    class="mx-auto flex h-[76px] w-[76px] items-center justify-center rounded-full bg-platinum-10 sm:h-[100px] sm:w-[100px]"
+                  >
+                    <img
+                      [src]="category.image_url"
+                      class="h-[52px] w-[52px] sm:h-[68px] sm:w-[68px]"
+                    />
+                  </div>
+
+                  <h4>{{ category.name }}</h4>
+                </a>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

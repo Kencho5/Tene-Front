@@ -214,24 +214,10 @@
 
     <!-- Action Buttons -->
     <div class="flex items-center space-x-2 xl:space-x-6">
-      <!-- Search Icon -->
-      <button class="p-2 xl:p-0">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M20 20L16.1333 16.1333M18.2222 11.1111C18.2222 15.0385 15.0385 18.2222 11.1111 18.2222C7.18375 18.2222 4 15.0385 4 11.1111C4 7.18375 7.18375 4 11.1111 4C15.0385 4 18.2222 7.18375 18.2222 11.1111Z"
-            stroke="#212121"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </button>
+      <!-- Search -->
+      @defer {
+        <app-search-dropdown />
+      }
 
       <!-- Cart Icon -->
       <a class="relative p-2 xl:p-0" routerLink="/cart">
