@@ -6,12 +6,11 @@ import { CategoryTreeResponse } from '@core/interfaces/categories.interface';
 import { CategoriesService } from '@core/services/categories/categories.service';
 import { SharedModule } from '@shared/shared.module';
 import { SpinnerComponent } from '../ui/spinner/spinner.component';
-import {
-  ProductImage,
-  ProductSearchResponse,
-} from '@core/interfaces/products.interface';
+import { ProductImage } from '@core/interfaces/products.interface';
 import { ProductsService } from '@core/services/products/products.service';
 import { getProductImageUrl } from '@utils/product-image-url';
+import { Router } from '@angular/router';
+import { generateSlug } from '@utils/slug';
 
 @Component({
   selector: 'app-search-dropdown',
@@ -21,13 +20,20 @@ import { getProductImageUrl } from '@utils/product-image-url';
 export class SearchDropdownComponent {
   private readonly categoriesService = inject(CategoriesService);
   private readonly productsService = inject(ProductsService);
+  private readonly router = inject(Router);
 
   readonly open = model(false);
   readonly query = signal('');
 
   readonly categories = rxResource({
     defaultValue: {} as CategoryTreeResponse,
-    stream: () => this.categoriesService.getCategoryTree(),
+    params: () => (this.open() ? true : undefined),
+    stream: ({ params }) => {
+      if (!params) {
+        return of({} as CategoryTreeResponse);
+      }
+      return this.categoriesService.getCategoryTree();
+    },
   });
 
   readonly results = rxResource({
@@ -52,5 +58,9 @@ export class SearchDropdownComponent {
 
   getImageSrc(productId: number, image: ProductImage): string {
     return getProductImageUrl(productId, image.image_uuid, image.extension);
+  }
+
+  openProduct(id: number, name: string): void {
+    this.router.navigate(['/products', generateSlug(name), id]);
   }
 }
