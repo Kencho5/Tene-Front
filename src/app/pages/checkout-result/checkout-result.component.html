@@ -1,0 +1,186 @@
+<div class="px-4 lg:px-0">
+  <div class="container mb-10 mt-24 md:mt-36">
+    <h1 class="text-2xl md:text-4xl">შეკვეთის შედეგი</h1>
+
+    <div class="my-6 h-px bg-platinum-20"></div>
+
+    <app-breadcrumb [items]="breadcrumbs" />
+
+    <div class="mt-10 flex justify-center">
+      @if (loading()) {
+        <div class="flex flex-col items-center gap-4 py-16">
+          <svg
+            class="h-10 w-10 animate-spin text-green-60"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            ></path>
+          </svg>
+          <p class="text-platinum-50">იტვირთება...</p>
+        </div>
+      } @else if (error()) {
+        <div
+          class="w-full max-w-lg rounded-2xl bg-white p-8 text-center shadow-low"
+        >
+          <div
+            class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-valencia-10"
+          >
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#EF1E07"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="15" y1="9" x2="9" y2="15" />
+              <line x1="9" y1="9" x2="15" y2="15" />
+            </svg>
+          </div>
+          <h2 class="text-xl font-semibold">შეცდომა</h2>
+          <p class="mt-2 text-platinum-50">
+            შეკვეთის ინფორმაციის ჩატვირთვა ვერ მოხერხდა
+          </p>
+          <a
+            routerLink="/profile/orders"
+            class="mt-6 inline-flex h-[44px] items-center justify-center rounded-full bg-green-60 px-6 font-medium text-white transition-all hover:brightness-95"
+          >
+            ჩემი შეკვეთები
+          </a>
+        </div>
+      } @else if (latestOrder(); as order) {
+        <div
+          class="w-full max-w-lg rounded-2xl bg-white p-8 text-center shadow-low"
+        >
+          @if (isSuccess()) {
+            <div
+              class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-10"
+            >
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#0BB705"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
+            </div>
+          } @else if (isFailed()) {
+            <div
+              class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-valencia-10"
+            >
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#EF1E07"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="15" y1="9" x2="9" y2="15" />
+                <line x1="9" y1="9" x2="15" y2="15" />
+              </svg>
+            </div>
+          } @else {
+            <div
+              class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-platinum-10"
+            >
+              <svg
+                class="h-8 w-8 animate-spin text-platinum-50"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                ></path>
+              </svg>
+            </div>
+          }
+
+          <h2 class="text-xl font-semibold" [class]="statusColor()">
+            {{ statusText() }}
+          </h2>
+
+          <div class="mt-6 space-y-3 text-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-platinum-50">შეკვეთის ID</span>
+              <span class="font-medium">{{ order.order_id }}</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-platinum-50">თანხა</span>
+              <span class="font-medium"
+                >{{ formatAmount(order.amount) }} {{ order.currency }}</span
+              >
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-platinum-50">მისამართი</span>
+              <span class="font-medium">{{ order.address }}</span>
+            </div>
+          </div>
+
+          <div class="mt-8 flex flex-col gap-3">
+            <a
+              routerLink="/profile/orders"
+              class="inline-flex h-[44px] items-center justify-center rounded-full bg-green-60 px-6 font-medium text-white transition-all hover:brightness-95"
+            >
+              ჩემი შეკვეთები
+            </a>
+            <a
+              routerLink="/"
+              class="inline-flex h-[44px] items-center justify-center rounded-full border border-platinum-20 px-6 font-medium transition-all hover:bg-platinum-10"
+            >
+              მთავარ გვერდზე დაბრუნება
+            </a>
+          </div>
+        </div>
+      } @else {
+        <div
+          class="w-full max-w-lg rounded-2xl bg-white p-8 text-center shadow-low"
+        >
+          <h2 class="text-xl font-semibold">შეკვეთა ვერ მოიძებნა</h2>
+          <p class="mt-2 text-platinum-50">
+            თქვენ ჯერ არ გაქვთ შეკვეთები
+          </p>
+          <a
+            routerLink="/"
+            class="mt-6 inline-flex h-[44px] items-center justify-center rounded-full bg-green-60 px-6 font-medium text-white transition-all hover:brightness-95"
+          >
+            მთავარ გვერდზე დაბრუნება
+          </a>
+        </div>
+      }
+    </div>
+  </div>
+</div>

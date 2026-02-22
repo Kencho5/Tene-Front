@@ -19,6 +19,7 @@ export class PriceSummaryComponent {
   readonly deliveryPrice = input<number>(5);
   readonly showCheckoutButton = input<boolean>(true);
   readonly checkoutButtonText = input<string>('შეკვეთის გაფორმება');
+  readonly checkoutLoading = input<boolean>(false);
 
   readonly checkout = output<void>();
 

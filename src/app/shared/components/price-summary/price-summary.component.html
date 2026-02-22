@@ -39,7 +39,8 @@
     <button
       type="button"
       (click)="onCheckout()"
-      class="inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 text-base font-medium text-white transition-all hover:brightness-95"
+      [disabled]="checkoutLoading()"
+      class="inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 text-base font-medium text-white transition-all hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
       style="
         background: linear-gradient(
           90deg,
@@ -51,7 +52,15 @@
         box-shadow: 0px 20px 16px -8px #0ad10426;
       "
     >
-      {{ checkoutButtonText() }}
+      @if (checkoutLoading()) {
+        <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+        </svg>
+        იტვირთება...
+      } @else {
+        {{ checkoutButtonText() }}
+      }
     </button>
   }
 </div>

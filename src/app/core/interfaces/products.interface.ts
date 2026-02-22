@@ -74,6 +74,63 @@ export interface ProductCategoryCard {
   color?: string;
 }
 
+export interface CheckoutRequest {
+  customer_type: string;
+  individual: { name: string; surname: string } | null;
+  company: {
+    organization_type: string;
+    organization_name: string;
+    organization_code: string;
+  } | null;
+  email: string;
+  phone_number: number;
+  address: string;
+  delivery_type: string;
+  delivery_time: string;
+  items: { product_id: number; quantity: number }[];
+}
+
+export interface CheckoutResponse {
+  order_id: string;
+  checkout_url: string;
+}
+
+export interface Order {
+  id: number;
+  user_id: number;
+  order_id: string;
+  status: 'pending' | 'approved' | 'declined' | 'expired' | 'processing';
+  payment_id: number | null;
+  amount: number;
+  currency: string;
+  customer_type: string;
+  customer_name: string | null;
+  customer_surname: string | null;
+  organization_type: string | null;
+  organization_name: string | null;
+  organization_code: string | null;
+  email: string;
+  phone_number: number;
+  address: string;
+  delivery_type: string;
+  delivery_time: string;
+  checkout_url: string | null;
+  created_at: string;
+  updated_at: string;
+  items: OrderItem[];
+}
+
+export interface OrderItem {
+  id: number;
+  order_id: number;
+  product_id: number;
+  quantity: number;
+  price_at_purchase: number;
+  product_name: string;
+  product_image: ProductImage | null;
+  created_at: string;
+}
+
 export interface ProductBrandCard {
   brand: string;
   title: string;

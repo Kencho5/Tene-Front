@@ -1,0 +1,216 @@
+<div class="w-full space-y-6">
+  <div>
+    <h1 class="text-2xl font-semibold text-platinum-100">ჩემი შეკვეთები</h1>
+    <p class="mt-1 text-sm text-platinum-50">
+      სულ {{ totalOrders() }} შეკვეთა
+    </p>
+  </div>
+
+  <div class="overflow-hidden rounded-xl border border-platinum-20 bg-white">
+    <table class="w-full">
+      <thead class="border-b border-platinum-20 bg-platinum-10">
+        <tr>
+          <th
+            class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60"
+          >
+            პროდუქტი
+          </th>
+          <th
+            class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60 md:table-cell"
+          >
+            თარიღი
+          </th>
+          <th
+            class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60 sm:table-cell"
+          >
+            ღირებულება
+          </th>
+          <th
+            class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-platinum-60"
+          >
+            სტატუსი
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-platinum-20">
+        @if (orders.isLoading()) {
+          @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
+            <tr>
+              <td class="px-4 py-4">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="h-12 w-12 flex-shrink-0 animate-pulse rounded-xl bg-platinum-20"
+                  ></div>
+                  <div class="min-w-0 space-y-2">
+                    <div
+                      class="h-4 w-32 animate-pulse rounded bg-platinum-20"
+                    ></div>
+                    <div
+                      class="h-3 w-20 animate-pulse rounded bg-platinum-20"
+                    ></div>
+                  </div>
+                </div>
+              </td>
+              <td class="hidden px-4 py-4 md:table-cell">
+                <div
+                  class="h-4 w-24 animate-pulse rounded bg-platinum-20"
+                ></div>
+              </td>
+              <td class="hidden px-4 py-4 sm:table-cell">
+                <div
+                  class="h-4 w-16 animate-pulse rounded bg-platinum-20"
+                ></div>
+              </td>
+              <td class="px-4 py-4">
+                <div class="flex justify-end">
+                  <div
+                    class="h-6 w-20 animate-pulse rounded-full bg-platinum-20"
+                  ></div>
+                </div>
+              </td>
+            </tr>
+          }
+        } @else if (orders.value().length === 0) {
+          <tr>
+            <td colspan="4" class="px-4 py-16 text-center">
+              <div class="flex flex-col items-center gap-3">
+                <svg
+                  width="48"
+                  height="48"
+                  viewBox="0 0 48 48"
+                  fill="none"
+                  class="text-platinum-30"
+                >
+                  <path
+                    d="M42 30V18L24 9L6 18V30L24 39L42 30Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M6 18L24 27L42 18M24 39V27"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <div>
+                  <p class="text-sm font-medium text-platinum-100">
+                    შეკვეთები არ მოიძებნა
+                  </p>
+                  <p class="mt-1 text-sm text-platinum-50">
+                    თქვენ ჯერ არ გაქვთ შეკვეთები
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        } @else {
+          @for (order of orders.value(); track order.id) {
+            <tr class="transition-colors hover:bg-platinum-10">
+              <td class="px-4 py-4">
+                <div class="flex items-center gap-3">
+                  @if (order.items.length > 0) {
+                    @if (getItemImageUrl(order.items[0]); as imgUrl) {
+                      <div
+                        class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-xl border border-platinum-20"
+                      >
+                        <img
+                          [src]="imgUrl"
+                          [alt]="order.items[0].product_name"
+                          class="h-full w-full object-cover"
+                        />
+                      </div>
+                    } @else {
+                      <div
+                        class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-platinum-20 bg-platinum-10"
+                      >
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          class="text-platinum-40"
+                        >
+                          <path
+                            d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </div>
+                    }
+                  }
+                  <div class="min-w-0">
+                    <p class="truncate font-medium text-platinum-100">
+                      {{ order.items[0]?.product_name ?? "შეკვეთა" }}
+                    </p>
+                    @if (order.items.length > 1) {
+                      <p class="text-sm text-platinum-50">
+                        +{{ order.items.length - 1 }} სხვა ნივთი
+                      </p>
+                    }
+                    <p class="mt-0.5 text-sm text-platinum-50 sm:hidden">
+                      {{ formatAmount(order.amount) }} {{ order.currency }}
+                    </p>
+                  </div>
+                </div>
+              </td>
+
+              <td class="hidden px-4 py-4 md:table-cell">
+                <span class="text-sm text-platinum-70">
+                  {{ formatDate(order.created_at) }}
+                </span>
+              </td>
+
+              <td class="hidden px-4 py-4 sm:table-cell">
+                <span class="font-semibold text-platinum-100">
+                  {{ formatAmount(order.amount) }} {{ order.currency }}
+                </span>
+              </td>
+
+              <td class="px-4 py-4">
+                <div class="flex justify-end">
+                  @switch (order.status) {
+                    @case ("approved") {
+                      <span
+                        class="inline-flex items-center rounded-full bg-green-10 px-2.5 py-1 text-xs font-medium text-green-70"
+                      >
+                        {{ statusLabel(order.status) }}
+                      </span>
+                    }
+                    @case ("declined") {
+                      <span
+                        class="inline-flex items-center rounded-full bg-valencia-10 px-2.5 py-1 text-xs font-medium text-valencia-60"
+                      >
+                        {{ statusLabel(order.status) }}
+                      </span>
+                    }
+                    @case ("expired") {
+                      <span
+                        class="inline-flex items-center rounded-full bg-valencia-10 px-2.5 py-1 text-xs font-medium text-valencia-60"
+                      >
+                        {{ statusLabel(order.status) }}
+                      </span>
+                    }
+                    @default {
+                      <span
+                        class="inline-flex items-center rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-70"
+                      >
+                        {{ statusLabel(order.status) }}
+                      </span>
+                    }
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

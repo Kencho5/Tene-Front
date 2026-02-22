@@ -544,7 +544,10 @@
         </div>
       </div>
 
-      <app-price-summary (checkout)="handleCheckout()" />
+      <app-price-summary
+        [checkoutLoading]="checkoutLoading()"
+        (checkout)="handleCheckout()"
+      />
     </div>
   </div>
 </div>
