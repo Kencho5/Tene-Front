@@ -228,9 +228,9 @@
         </svg>
       </div>
 
-      <!-- Brand list with scroll -->
-      <div class="max-h-[200px] space-y-4 overflow-y-auto" style="scrollbar-width: none">
-        @for (brand of filteredBrands(); track brand.id) {
+      <!-- Brand list -->
+      <div class="space-y-4">
+        @for (brand of showAllBrands() ? filteredBrands() : filteredBrands().slice(0, 5); track brand.id) {
         <div class="flex items-center justify-between" [class.opacity-50]="brand.count === 0">
           <div class="flex items-center gap-2">
             <p>{{ brand.name }}</p>
@@ -273,6 +273,16 @@
         <p class="text-sm text-platinum-50">ბრენდი არ მოიძებნა</p>
         }
       </div>
+
+      @if (filteredBrands().length > 5) {
+        <button
+          type="button"
+          (click)="showAllBrands.set(!showAllBrands())"
+          class="text-sm font-medium text-green-70"
+        >
+          {{ showAllBrands() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + filteredBrands().length + ")" }}
+        </button>
+      }
       }
     </div>
 
@@ -294,8 +304,8 @@
       </div>
       } @else {
       <!-- Colors list -->
-      <div class="max-h-[240px] space-y-4 overflow-y-auto" style="scrollbar-width: none">
-        @for (color of facets().colors; track color.value) {
+      <div class="space-y-4">
+        @for (color of showAllColors() ? facets().colors : facets().colors.slice(0, 5); track color.value) {
         <div class="flex items-center justify-between" [class.opacity-50]="color.count === 0">
           <div class="flex items-center gap-2">
             <span
@@ -342,6 +352,16 @@
         <p class="text-sm text-platinum-50">მონაცემები არ მოიძებნა</p>
         }
       </div>
+
+      @if (facets().colors.length > 5) {
+        <button
+          type="button"
+          (click)="showAllColors.set(!showAllColors())"
+          class="text-sm font-medium text-green-70"
+        >
+          {{ showAllColors() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + facets().colors.length + ")" }}
+        </button>
+      }
       }
     </div>
   </div>

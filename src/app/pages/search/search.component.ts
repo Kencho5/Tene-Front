@@ -62,6 +62,8 @@ export class SearchComponent {
   readonly isLoading = signal<boolean>(false);
   readonly isFacetsLoading = signal<boolean>(false);
   readonly brandSearch = signal<string>('');
+  readonly showAllBrands = signal(false);
+  readonly showAllColors = signal(false);
   readonly selectedCategoryValue = signal<string | undefined>(undefined);
 
   readonly categoryOptions = toSignal(
