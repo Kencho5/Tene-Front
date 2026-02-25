@@ -1,0 +1,322 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-semibold text-platinum-100">შეკვეთები</h1>
+    <p class="mt-1 text-sm text-platinum-50">
+      სულ {{ totalOrders() }} შეკვეთა
+    </p>
+  </div>
+
+  <!-- Filters Bar -->
+  <div
+    class="flex flex-col gap-3 rounded-xl border border-platinum-20 bg-white p-4 sm:flex-row sm:items-center"
+  >
+    <!-- Search Input -->
+    <div class="relative flex-1">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-platinum-50"
+      >
+        <path
+          d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <input
+        type="text"
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+        placeholder="ძიება შეკვეთის ID-ით..."
+        class="h-[44px] w-full rounded-xl border border-platinum-20 py-2.5 pl-10 pr-10 text-sm outline-none transition-colors focus:border-green-60 focus:ring-1 focus:ring-green-60"
+      />
+      @if (searchQuery()) {
+        <button
+          type="button"
+          (click)="clearSearch()"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-platinum-50 transition-colors hover:text-platinum-100"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M12 4L4 12M4 4L12 12"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      }
+    </div>
+
+    <!-- Status Filter -->
+    <div class="w-full sm:w-[220px]">
+      <app-dropdown
+        [selectedValue]="params()['status'] ?? 'all'"
+        (selectedValueChange)="onStatusChange($event)"
+        placeholder="სტატუსი"
+        [items]="statusOptions"
+      />
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="overflow-hidden rounded-xl border border-platinum-20 bg-white">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="border-b border-platinum-20 bg-platinum-10">
+          <tr>
+            <th
+              class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60"
+            >
+              პროდუქტი
+            </th>
+            <th
+              class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60 md:table-cell"
+            >
+              მომხმარებელი
+            </th>
+            <th
+              class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60 lg:table-cell"
+            >
+              თარიღი
+            </th>
+            <th
+              class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60"
+            >
+              ღირებულება
+            </th>
+            <th
+              class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-platinum-60"
+            >
+              სტატუსი
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-platinum-20">
+          @if (isLoading()) {
+            @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
+              <tr class="hover:bg-platinum-10">
+                <td class="px-4 py-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="h-12 w-12 animate-pulse rounded-xl bg-platinum-20"
+                    ></div>
+                    <div class="space-y-2">
+                      <div
+                        class="h-4 w-32 animate-pulse rounded bg-platinum-20"
+                      ></div>
+                      <div
+                        class="h-3 w-20 animate-pulse rounded bg-platinum-20"
+                      ></div>
+                    </div>
+                  </div>
+                </td>
+                <td class="hidden px-4 py-4 md:table-cell">
+                  <div
+                    class="h-4 w-28 animate-pulse rounded bg-platinum-20"
+                  ></div>
+                </td>
+                <td class="hidden px-4 py-4 lg:table-cell">
+                  <div
+                    class="h-4 w-24 animate-pulse rounded bg-platinum-20"
+                  ></div>
+                </td>
+                <td class="px-4 py-4">
+                  <div
+                    class="h-4 w-16 animate-pulse rounded bg-platinum-20"
+                  ></div>
+                </td>
+                <td class="px-4 py-4">
+                  <div class="flex justify-end">
+                    <div
+                      class="h-6 w-20 animate-pulse rounded-full bg-platinum-20"
+                    ></div>
+                  </div>
+                </td>
+              </tr>
+            }
+          } @else if (orders().length === 0) {
+            <tr>
+              <td colspan="5" class="px-4 py-16 text-center">
+                <div class="flex flex-col items-center gap-3">
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 48 48"
+                    fill="none"
+                    class="text-platinum-30"
+                  >
+                    <path
+                      d="M42 30V18L24 9L6 18V30L24 39L42 30Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M6 18L24 27L42 18M24 39V27"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <div>
+                    <p class="text-sm font-medium text-platinum-100">
+                      შეკვეთები არ მოიძებნა
+                    </p>
+                    <p class="mt-1 text-sm text-platinum-50">
+                      სცადეთ სხვა ძებნის პარამეტრები
+                    </p>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          } @else {
+            @for (order of orders(); track order.id) {
+              <tr class="transition-colors hover:bg-platinum-10">
+                <!-- Product -->
+                <td class="px-4 py-4">
+                  <div class="flex items-center gap-3">
+                    @if (order.items.length > 0) {
+                      @if (getItemImageUrl(order.items[0]); as imgUrl) {
+                        <div
+                          class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-xl border border-platinum-20"
+                        >
+                          <img
+                            [src]="imgUrl"
+                            [alt]="order.items[0].product_name"
+                            class="h-full w-full object-cover"
+                          />
+                        </div>
+                      } @else {
+                        <div
+                          class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-platinum-20 bg-platinum-10"
+                        >
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            class="text-platinum-40"
+                          >
+                            <path
+                              d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </div>
+                      }
+                    }
+                    <div class="min-w-0">
+                      <p class="truncate font-medium text-platinum-100">
+                        {{ order.items[0]?.product_name ?? "შეკვეთა" }}
+                      </p>
+                      <p class="truncate text-sm text-platinum-50">
+                        ID: {{ order.id }}
+                      </p>
+                      @if (order.items.length > 1) {
+                        <p class="text-sm text-platinum-50">
+                          +{{ order.items.length - 1 }} სხვა ნივთი
+                        </p>
+                      }
+                    </div>
+                  </div>
+                </td>
+
+                <!-- User -->
+                <td class="hidden px-4 py-4 md:table-cell">
+                  <div>
+                    @if (
+                      order.customer_type === "company" &&
+                      order.organization_name
+                    ) {
+                      <p class="text-sm font-medium text-platinum-100">
+                        {{ order.organization_name }}
+                      </p>
+                    } @else {
+                      <p class="text-sm font-medium text-platinum-100">
+                        {{ order.customer_name }} {{ order.customer_surname }}
+                      </p>
+                    }
+                    <p class="text-sm text-platinum-50">{{ order.email }}</p>
+                  </div>
+                </td>
+
+                <!-- Date -->
+                <td class="hidden px-4 py-4 lg:table-cell">
+                  <span class="text-sm text-platinum-70">
+                    {{ formatDate(order.created_at) }}
+                  </span>
+                </td>
+
+                <!-- Amount -->
+                <td class="px-4 py-4">
+                  <span class="font-semibold text-platinum-100">
+                    {{ formatAmount(order.amount) }} {{ order.currency }}
+                  </span>
+                </td>
+
+                <!-- Status -->
+                <td class="px-4 py-4">
+                  <div class="flex justify-end">
+                    @switch (order.status) {
+                      @case ("approved") {
+                        <span
+                          class="inline-flex items-center rounded-full bg-green-10 px-2.5 py-1 text-xs font-medium text-green-70"
+                        >
+                          {{ statusLabel(order.status) }}
+                        </span>
+                      }
+                      @case ("declined") {
+                        <span
+                          class="inline-flex items-center rounded-full bg-valencia-10 px-2.5 py-1 text-xs font-medium text-valencia-60"
+                        >
+                          {{ statusLabel(order.status) }}
+                        </span>
+                      }
+                      @case ("expired") {
+                        <span
+                          class="inline-flex items-center rounded-full bg-valencia-10 px-2.5 py-1 text-xs font-medium text-valencia-60"
+                        >
+                          {{ statusLabel(order.status) }}
+                        </span>
+                      }
+                      @default {
+                        <span
+                          class="inline-flex items-center rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-70"
+                        >
+                          {{ statusLabel(order.status) }}
+                        </span>
+                      }
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [totalItems]="totalOrders()"
+      [showingFrom]="showingFrom()"
+      [showingTo]="showingTo()"
+      [limit]="limit()"
+      (pageChange)="onPageChange($event)"
+      (limitChange)="onLimitChangeValue($event)"
+    />
+  </div>
+</div>

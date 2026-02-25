@@ -11,25 +11,20 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('./pages/home/home.component').then((m) => m.HomeComponent),
+        loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
       },
       {
         path: 'bins',
-        loadComponent: () =>
-          import('./pages/bins/bins.component').then((m) => m.BinsComponent),
+        loadComponent: () => import('./pages/bins/bins.component').then((m) => m.BinsComponent),
       },
       {
         path: 'cart',
-        loadComponent: () =>
-          import('./pages/cart/cart.component').then((m) => m.CartComponent),
+        loadComponent: () => import('./pages/cart/cart.component').then((m) => m.CartComponent),
       },
       {
         path: 'checkout',
         loadComponent: () =>
-          import('./pages/checkout/checkout.component').then(
-            (m) => m.CheckoutComponent,
-          ),
+          import('./pages/checkout/checkout.component').then((m) => m.CheckoutComponent),
       },
       {
         path: 'checkout/result',
@@ -41,31 +36,23 @@ export const routes: Routes = [
       {
         path: 'products',
         loadComponent: () =>
-          import('./pages/products/products.component').then(
-            (m) => m.ProductsComponent,
-          ),
+          import('./pages/products/products.component').then((m) => m.ProductsComponent),
       },
       {
         path: 'products/:slug/:product_id',
         loadComponent: () =>
-          import('./pages/product/product.component').then(
-            (m) => m.ProductComponent,
-          ),
+          import('./pages/product/product.component').then((m) => m.ProductComponent),
         resolve: { product: productResolver },
       },
       {
         path: 'search',
         loadComponent: () =>
-          import('./pages/search/search.component').then(
-            (m) => m.SearchComponent,
-          ),
+          import('./pages/search/search.component').then((m) => m.SearchComponent),
       },
       {
         path: '404',
         loadComponent: () =>
-          import('./pages/not-found/not-found.component').then(
-            (m) => m.NotFoundComponent,
-          ),
+          import('./pages/not-found/not-found.component').then((m) => m.NotFoundComponent),
       },
     ],
   },
@@ -79,15 +66,12 @@ export const routes: Routes = [
     children: [
       {
         path: 'login',
-        loadComponent: () =>
-          import('./pages/login/login.component').then((m) => m.LoginComponent),
+        loadComponent: () => import('./pages/login/login.component').then((m) => m.LoginComponent),
       },
       {
         path: 'register',
         loadComponent: () =>
-          import('./pages/register/register.component').then(
-            (m) => m.RegisterComponent,
-          ),
+          import('./pages/register/register.component').then((m) => m.RegisterComponent),
       },
     ],
   },
@@ -108,16 +92,12 @@ export const routes: Routes = [
       {
         path: 'orders',
         loadComponent: () =>
-          import('./pages/profile/orders/orders.component').then(
-            (m) => m.OrdersComponent,
-          ),
+          import('./pages/profile/orders/orders.component').then((m) => m.OrdersComponent),
       },
       {
         path: 'addresses',
         loadComponent: () =>
-          import('./pages/profile/addresses/addresses.component').then(
-            (m) => m.AddressesComponent,
-          ),
+          import('./pages/profile/addresses/addresses.component').then((m) => m.AddressesComponent),
       },
     ],
   },
@@ -145,29 +125,34 @@ export const routes: Routes = [
       {
         path: 'products/new',
         loadComponent: () =>
-          import(
-            './pages/admin/product-form/admin-product-form.component'
-          ).then((m) => m.AdminProductFormComponent),
+          import('./pages/admin/product-form/admin-product-form.component').then(
+            (m) => m.AdminProductFormComponent,
+          ),
       },
       {
         path: 'products/:id/edit',
         loadComponent: () =>
-          import(
-            './pages/admin/product-form/admin-product-form.component'
-          ).then((m) => m.AdminProductFormComponent),
+          import('./pages/admin/product-form/admin-product-form.component').then(
+            (m) => m.AdminProductFormComponent,
+          ),
       },
       {
         path: 'users',
         loadComponent: () =>
-          import('./pages/admin/users/admin-users.component').then(
-            (m) => m.AdminUsersComponent,
-          ),
+          import('./pages/admin/users/admin-users.component').then((m) => m.AdminUsersComponent),
       },
       {
         path: 'users/:id/edit',
         loadComponent: () =>
           import('./pages/admin/user-form/admin-user-form.component').then(
             (m) => m.AdminUserFormComponent,
+          ),
+      },
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./pages/admin/orders/admin-orders.component').then(
+            (m) => m.AdminOrdersComponent,
           ),
       },
       {
@@ -180,16 +165,23 @@ export const routes: Routes = [
       {
         path: 'categories/new',
         loadComponent: () =>
-          import(
-            './pages/admin/category-form/admin-category-form.component'
-          ).then((m) => m.AdminCategoryFormComponent),
+          import('./pages/admin/category-form/admin-category-form.component').then(
+            (m) => m.AdminCategoryFormComponent,
+          ),
       },
       {
         path: 'categories/:id/edit',
         loadComponent: () =>
-          import(
-            './pages/admin/category-form/admin-category-form.component'
-          ).then((m) => m.AdminCategoryFormComponent),
+          import('./pages/admin/category-form/admin-category-form.component').then(
+            (m) => m.AdminCategoryFormComponent,
+          ),
+      },
+      {
+        path: 'categories/new',
+        loadComponent: () =>
+          import('./pages/admin/category-form/admin-category-form.component').then(
+            (m) => m.AdminCategoryFormComponent,
+          ),
       },
     ],
   },

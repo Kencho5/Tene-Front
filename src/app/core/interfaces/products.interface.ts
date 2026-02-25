@@ -131,6 +131,13 @@ export interface OrderItem {
   created_at: string;
 }
 
+export interface OrderSearchResponse {
+  orders: Order[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
 export interface ProductBrandCard {
   brand: string;
   title: string;

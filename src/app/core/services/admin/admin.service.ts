@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpStatusCode } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
+  OrderSearchResponse,
   ProductResponse,
   ProductSearchResponse,
 } from '@core/interfaces/products.interface';
@@ -85,6 +86,11 @@ export class AdminService {
       `/admin/products/${productId}/images/${imageUuid}`,
       payload,
     );
+  }
+
+  // Order Management
+  searchOrders(params: string): Observable<OrderSearchResponse> {
+    return this.http.get<OrderSearchResponse>(`/admin/orders?${params}`);
   }
 
   // User Management

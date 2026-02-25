@@ -1,9 +1,4 @@
-import {
-  Component,
-  inject,
-  signal,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { LoadingService } from '@core/services/loading.service';
