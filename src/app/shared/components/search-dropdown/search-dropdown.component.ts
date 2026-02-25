@@ -42,7 +42,7 @@ export class SearchDropdownComponent {
       if (!params) {
         return of(undefined);
       }
-      const queryString = new URLSearchParams({ query: params }).toString();
+      const queryString = new URLSearchParams({ query: params, limit: '5' }).toString();
       return this.productsService.searchProduct(queryString);
     },
   });

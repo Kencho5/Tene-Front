@@ -18,6 +18,7 @@ import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.compo
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
+import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
 import {
   catchError,
@@ -40,6 +41,7 @@ import { getColorLabel } from '@utils/colors';
     BreadcrumbComponent,
     ProductCardComponent,
     ProductCardSkeletonComponent,
+    PaginationComponent,
   ],
   templateUrl: './search.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -103,6 +105,20 @@ export class SearchComponent {
 
   readonly products = computed(() => this.searchResponse().products);
   readonly totalProducts = computed(() => this.searchResponse().total);
+  readonly limit = computed(() => Number(this.params()['limit']) || 15);
+  readonly offset = computed(() => Number(this.params()['offset']) || 0);
+  readonly currentPage = computed(() =>
+    Math.floor(this.offset() / this.limit()) + 1,
+  );
+  readonly totalPages = computed(() =>
+    Math.ceil(this.totalProducts() / this.limit()),
+  );
+  readonly showingFrom = computed(() =>
+    Math.min(this.offset() + 1, this.totalProducts()),
+  );
+  readonly showingTo = computed(() =>
+    Math.min(this.offset() + this.limit(), this.totalProducts()),
+  );
 
   readonly facets = toSignal(
     this.route.queryParams.pipe(
@@ -214,5 +230,22 @@ export class SearchComponent {
     this.router.navigate([], { relativeTo: this.route });
   }
 
-  // TODO: pagination
+  onPageChange(page: number): void {
+    const offset = (page - 1) * this.limit();
+    this.updateParams({ offset, limit: this.limit() });
+  }
+
+  onLimitChangeValue(value: string): void {
+    this.updateParams({ limit: value || '15', offset: 0 });
+  }
+
+  private updateParams(
+    params: Record<string, string | number | undefined>,
+  ): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      queryParamsHandling: 'merge',
+    });
+  }
 }

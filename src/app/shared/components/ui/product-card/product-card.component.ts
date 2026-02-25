@@ -38,6 +38,11 @@ export class ProductCardComponent {
     );
   });
 
+  formatPrice(price: number): string {
+    const num = Number(price);
+    return num >= 1000 ? Math.round(num).toString() : num.toFixed(2);
+  }
+
   addToCart(): void {
     const productData = this.product().data;
     const primaryImage = this.product().images.find(

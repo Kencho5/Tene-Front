@@ -26,10 +26,10 @@ export class PaginationComponent {
   limitChange = output<string>();
 
   readonly limitOptions: ComboboxItems[] = [
-    { label: '10', value: '10' },
-    { label: '20', value: '20' },
-    { label: '50', value: '50' },
-    { label: '100', value: '100' },
+    { label: '15', value: '15' },
+    { label: '30', value: '30' },
+    { label: '45', value: '45' },
+    { label: '60', value: '60' },
   ];
 
   readonly pageNumbers = computed(() => {
@@ -68,6 +68,6 @@ export class PaginationComponent {
   }
 
   onLimitChange(value: string | undefined): void {
-    this.limitChange.emit(value || '10');
+    this.limitChange.emit(value || '15');
   }
 }

@@ -1,9 +1,9 @@
 <!-- Mobile backdrop -->
 @if (isFilterOpen()) {
-  <div
-    (click)="isFilterOpen.set(false)"
-    class="fixed inset-0 z-40 bg-black/50 sm:z-30 md:hidden"
-  ></div>
+<div
+  (click)="isFilterOpen.set(false)"
+  class="fixed inset-0 z-40 bg-black/50 sm:z-30 md:hidden"
+></div>
 }
 
 <div class="container flex items-start gap-10 px-4 py-10 xl:px-0">
@@ -15,18 +15,10 @@
     <div class="flex items-center justify-between">
       <h2 class="text-xl">ფილტრი</h2>
       <div class="flex items-center gap-4">
-        <button
-          type="button"
-          (click)="clearAll()"
-          class="text-sm text-platinum-50"
-        >
+        <button type="button" (click)="clearAll()" class="text-sm text-platinum-50">
           გასუფთავება
         </button>
-        <button
-          type="button"
-          (click)="isFilterOpen.set(false)"
-          class="md:hidden"
-        >
+        <button type="button" (click)="isFilterOpen.set(false)" class="md:hidden">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path
               d="M18 6L6 18M6 6L18 18"
@@ -200,97 +192,87 @@
       <p class="font-semibold">ბრენდი</p>
 
       @if (isFacetsLoading()) {
-        <!-- Loading skeleton -->
-        <div class="space-y-4">
-          @for (skeleton of [1, 2, 3]; track skeleton) {
-            <div class="flex items-center justify-between">
-              <div class="h-4 w-24 animate-pulse rounded bg-platinum-20"></div>
-              <div class="h-5 w-5 animate-pulse rounded bg-platinum-20"></div>
-            </div>
-          }
+      <!-- Loading skeleton -->
+      <div class="space-y-4">
+        @for (skeleton of [1, 2, 3]; track skeleton) {
+        <div class="flex items-center justify-between">
+          <div class="h-4 w-24 animate-pulse rounded bg-platinum-20"></div>
+          <div class="h-5 w-5 animate-pulse rounded bg-platinum-20"></div>
         </div>
+        }
+      </div>
       } @else {
-        <!-- Brand search input -->
-        <div class="relative">
-          <input
-            type="text"
-            [value]="brandSearch()"
-            (input)="brandSearch.set($any($event.target).value)"
-            placeholder="ძიება..."
-            class="w-full rounded-full bg-platinum-10 p-3 pl-10 outline-none"
-          />
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
-          >
-            <path
-              d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
-              stroke="#212121"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </div>
-
-        <!-- Brand list with scroll -->
-        <div
-          class="max-h-[200px] space-y-4 overflow-y-auto"
-          style="scrollbar-width: none"
+      <!-- Brand search input -->
+      <div class="relative">
+        <input
+          type="text"
+          [value]="brandSearch()"
+          (input)="brandSearch.set($any($event.target).value)"
+          placeholder="ძიება..."
+          class="w-full rounded-full bg-platinum-10 p-3 pl-10 outline-none"
+        />
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
         >
-          @for (brand of filteredBrands(); track brand.id) {
-            <div
-              class="flex items-center justify-between"
-              [class.opacity-50]="brand.count === 0"
-            >
-              <div class="flex items-center gap-2">
-                <p>{{ brand.name }}</p>
-                <span class="text-xs text-platinum-50"
-                  >({{ brand.count }})</span
-                >
-              </div>
+          <path
+            d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
+            stroke="#212121"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
 
-              <label class="relative inline-block h-5 w-5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  [checked]="hasValue('brand', '' + brand.id)"
-                  [disabled]="brand.count === 0"
-                  (change)="
+      <!-- Brand list with scroll -->
+      <div class="max-h-[200px] space-y-4 overflow-y-auto" style="scrollbar-width: none">
+        @for (brand of filteredBrands(); track brand.id) {
+        <div class="flex items-center justify-between" [class.opacity-50]="brand.count === 0">
+          <div class="flex items-center gap-2">
+            <p>{{ brand.name }}</p>
+            <span class="text-xs text-platinum-50">({{ brand.count }})</span>
+          </div>
+
+          <label class="relative inline-block h-5 w-5 cursor-pointer">
+            <input
+              type="checkbox"
+              [checked]="hasValue('brand', '' + brand.id)"
+              [disabled]="brand.count === 0"
+              (change)="
                     toggleParam(
                       'brand',
                       '' + brand.id,
                       $any($event.target).checked
                     )
                   "
-                  class="peer sr-only"
-                />
-                <span
-                  class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
-                ></span>
-                <svg
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
-                >
-                  <path
-                    d="M16.6667 5L7.50004 14.1667L3.33337 10"
-                    stroke="white"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </label>
-            </div>
-          }
-
-          @if (filteredBrands().length === 0) {
-            <p class="text-sm text-platinum-50">ბრენდი არ მოიძებნა</p>
-          }
+              class="peer sr-only"
+            />
+            <span
+              class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
+            ></span>
+            <svg
+              viewBox="0 0 20 20"
+              fill="none"
+              class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+            >
+              <path
+                d="M16.6667 5L7.50004 14.1667L3.33337 10"
+                stroke="white"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </label>
         </div>
+        } @if (filteredBrands().length === 0) {
+        <p class="text-sm text-platinum-50">ბრენდი არ მოიძებნა</p>
+        }
+      </div>
       }
     </div>
 
@@ -301,75 +283,65 @@
       <p class="font-semibold">ფერი</p>
 
       @if (isFacetsLoading()) {
-        <!-- Loading skeleton -->
-        <div class="space-y-4">
-          @for (skeleton of [1, 2, 3]; track skeleton) {
-            <div class="flex items-center justify-between">
-              <div class="h-4 w-20 animate-pulse rounded bg-platinum-20"></div>
-              <div class="h-5 w-5 animate-pulse rounded bg-platinum-20"></div>
-            </div>
-          }
+      <!-- Loading skeleton -->
+      <div class="space-y-4">
+        @for (skeleton of [1, 2, 3]; track skeleton) {
+        <div class="flex items-center justify-between">
+          <div class="h-4 w-20 animate-pulse rounded bg-platinum-20"></div>
+          <div class="h-5 w-5 animate-pulse rounded bg-platinum-20"></div>
         </div>
+        }
+      </div>
       } @else {
-        <!-- Colors list -->
-        <div
-          class="max-h-[240px] space-y-4 overflow-y-auto"
-          style="scrollbar-width: none"
-        >
-          @for (color of facets().colors; track color.value) {
-            <div
-              class="flex items-center justify-between"
-              [class.opacity-50]="color.count === 0"
-            >
-              <div class="flex items-center gap-2">
-                <span
-                  class="h-4 w-4 flex-shrink-0 rounded-full border border-platinum-20"
-                  [style.background-color]="color.value.toLowerCase()"
-                ></span>
-                <p>{{ getColorLabel(color.value) }}</p>
-                <span class="text-xs text-platinum-50"
-                  >({{ color.count }})</span
-                >
-              </div>
+      <!-- Colors list -->
+      <div class="max-h-[240px] space-y-4 overflow-y-auto" style="scrollbar-width: none">
+        @for (color of facets().colors; track color.value) {
+        <div class="flex items-center justify-between" [class.opacity-50]="color.count === 0">
+          <div class="flex items-center gap-2">
+            <span
+              class="h-4 w-4 flex-shrink-0 rounded-full border border-platinum-20"
+              [style.background-color]="color.value.toLowerCase()"
+            ></span>
+            <p>{{ getColorLabel(color.value) }}</p>
+            <span class="text-xs text-platinum-50">({{ color.count }})</span>
+          </div>
 
-              <label class="relative inline-block h-5 w-5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  [checked]="hasValue('color', color.value.toLowerCase())"
-                  [disabled]="color.count === 0"
-                  (change)="
+          <label class="relative inline-block h-5 w-5 cursor-pointer">
+            <input
+              type="checkbox"
+              [checked]="hasValue('color', color.value.toLowerCase())"
+              [disabled]="color.count === 0"
+              (change)="
                     toggleParam(
                       'color',
                       color.value.toLowerCase(),
                       $any($event.target).checked
                     )
                   "
-                  class="peer sr-only"
-                />
-                <span
-                  class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
-                ></span>
-                <svg
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
-                >
-                  <path
-                    d="M16.6667 5L7.50004 14.1667L3.33337 10"
-                    stroke="white"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </label>
-            </div>
-          }
-
-          @if (facets().colors.length === 0) {
-            <p class="text-sm text-platinum-50">მონაცემები არ მოიძებნა</p>
-          }
+              class="peer sr-only"
+            />
+            <span
+              class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
+            ></span>
+            <svg
+              viewBox="0 0 20 20"
+              fill="none"
+              class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+            >
+              <path
+                d="M16.6667 5L7.50004 14.1667L3.33337 10"
+                stroke="white"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </label>
         </div>
+        } @if (facets().colors.length === 0) {
+        <p class="text-sm text-platinum-50">მონაცემები არ მოიძებნა</p>
+        }
+      </div>
       }
     </div>
   </div>
@@ -415,30 +387,33 @@
     </div>
 
     <div class="flex flex-col gap-6 sm:flex-row sm:flex-wrap sm:gap-6">
-      @if (isLoading()) {
-        @for (skeleton of [1, 2, 3, 4, 5, 6]; track skeleton) {
-          <app-product-card-skeleton />
-        }
-      } @else {
-        @if (products().length == 0) {
-          <div
-            class="mx-auto my-10 flex max-w-[320px] flex-col items-center gap-6 text-center sm:my-32"
-          >
-            <img
-              src="/assets/images/products/empty-search.webp"
-              width="120"
-              height="120"
-            />
-            <p class="text-sm text-platinum-50">
-              შედეგები ვერ მოიძებნა, სცადეთ სხვა ძებნის მეთოდი.
-            </p>
-          </div>
-        } @else {
-          @for (product of products(); track product.data.id) {
-            <app-product-card [product]="product" />
-          }
-        }
-      }
+      @if (isLoading()) { @for (skeleton of [1, 2, 3, 4, 5, 6]; track skeleton) {
+      <app-product-card-skeleton />
+      } } @else { @if (products().length == 0) {
+      <div
+        class="mx-auto my-10 flex max-w-[320px] flex-col items-center gap-6 text-center sm:my-32"
+      >
+        <img src="/assets/images/products/empty-search.webp" width="120" height="120" />
+        <p class="text-sm text-platinum-50">შედეგები ვერ მოიძებნა, სცადეთ სხვა ძებნის მეთოდი.</p>
+      </div>
+      } @else { @for (product of products(); track product.data.id) {
+      <app-product-card [product]="product" />
+      } } }
     </div>
+
+    @if (totalProducts() > 0) {
+    <div class="pt-6">
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [totalItems]="totalProducts()"
+        [showingFrom]="showingFrom()"
+        [showingTo]="showingTo()"
+        [limit]="limit()"
+        (pageChange)="onPageChange($event)"
+        (limitChange)="onLimitChangeValue($event)"
+      />
+    </div>
+    }
   </div>
 </div>

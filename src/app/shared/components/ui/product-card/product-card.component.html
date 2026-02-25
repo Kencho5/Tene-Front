@@ -38,12 +38,12 @@
       @if (product().data.discount > 0) {
         <div>
           <p class="text-sm text-platinum-50 line-through">
-            {{ product().data.price }}₾
+            {{ formatPrice(product().data.price) }}₾
           </p>
-          <h2 class="text-xl">{{ discountedPrice() | number: "1.2-2" }}₾</h2>
+          <h2 class="text-xl">{{ formatPrice(discountedPrice()) }}₾</h2>
         </div>
       } @else {
-        <h2 class="text-xl">{{ product().data.price }}₾</h2>
+        <h2 class="text-xl">{{ formatPrice(product().data.price) }}₾</h2>
       }
       <button
         type="button"
