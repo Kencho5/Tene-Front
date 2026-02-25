@@ -29,6 +29,7 @@ import { getProductImageUrl } from '@utils/product-image-url';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
 import { flattenCategoryTree } from '@utils/category';
+import { colorLabels } from '@utils/colors';
 
 interface SpecificationEntry {
   key: string;
@@ -64,21 +65,9 @@ export class AdminProductFormComponent {
   readonly selectedCategoryIds = signal<number[]>([]);
   readonly categoryOptions = signal<ComboboxItems[]>([]);
 
-  readonly colorOptions: ComboboxItems[] = [
-    { label: 'შავი', value: 'black' },
-    { label: 'თეთრი', value: 'white' },
-    { label: 'ნაცრისფერი', value: 'gray' },
-    { label: 'წითელი', value: 'red' },
-    { label: 'ლურჯი', value: 'blue' },
-    { label: 'მწვანე', value: 'green' },
-    { label: 'ყვითელი', value: 'yellow' },
-    { label: 'ნარინჯისფერი', value: 'orange' },
-    { label: 'იისფერი', value: 'purple' },
-    { label: 'ვარდისფერი', value: 'pink' },
-    { label: 'ყავისფერი', value: 'brown' },
-    { label: 'ოქროსფერი', value: 'gold' },
-    { label: 'ვერცხლისფერი', value: 'silver' },
-  ];
+  readonly colorOptions: ComboboxItems[] = Object.entries(colorLabels).map(
+    ([value, label]) => ({ label, value }),
+  );
 
   readonly productId = computed(() => {
     const id = this.route.snapshot.paramMap.get('id');
@@ -124,7 +113,7 @@ export class AdminProductFormComponent {
     price: null as any,
     discount: null as any,
     quantity: null as any,
-    brand: '',
+    brand_id: null as any,
     warranty: '',
   });
 
@@ -187,7 +176,7 @@ export class AdminProductFormComponent {
       price: product.price,
       discount: product.discount,
       quantity: product.quantity,
-      brand: product.brand,
+      brand_id: product.brand_id,
       warranty: product.warranty,
     });
     if (this.categoryOptions().length > 0 && categories.length > 0) {
@@ -386,7 +375,7 @@ export class AdminProductFormComponent {
       discount: Number(productData.discount) || 0,
       quantity: Number(productData.quantity) || 0,
       specifications,
-      brand: productData.brand,
+      brand_id: productData.brand_id ? Number(productData.brand_id) : null,
       warranty: productData.warranty,
     };
   }

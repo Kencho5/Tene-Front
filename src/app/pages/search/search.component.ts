@@ -29,6 +29,7 @@ import {
 } from 'rxjs';
 import { ProductFacets } from '@core/interfaces/products.interface';
 import { flattenCategoryTree } from '@utils/category';
+import { getColorLabel } from '@utils/colors';
 
 @Component({
   selector: 'app-search',
@@ -49,6 +50,8 @@ export class SearchComponent {
   private readonly productsService = inject(ProductsService);
   private readonly categoriesService = inject(CategoriesService);
   private debounceTimer?: number;
+
+  readonly getColorLabel = getColorLabel;
 
   readonly params = toSignal(this.route.queryParams, {
     initialValue: {} as Params,
@@ -124,12 +127,25 @@ export class SearchComponent {
         this.productsService
           .getFacets(query)
           .pipe(
-            catchError(() => of({ brands: [], colors: [] } as ProductFacets)),
+            catchError(
+              () =>
+                of({
+                  brands: [],
+                  colors: [],
+                  categories: [],
+                } as ProductFacets),
+            ),
           ),
       ),
       tap(() => this.isFacetsLoading.set(false)),
     ),
-    { initialValue: { brands: [], colors: [] } as ProductFacets },
+    {
+      initialValue: {
+        brands: [],
+        colors: [],
+        categories: [],
+      } as ProductFacets,
+    },
   );
 
   readonly filteredBrands = computed(() => {
@@ -137,12 +153,12 @@ export class SearchComponent {
     const brands = this.facets().brands;
 
     if (!search) {
-      return brands.slice(0, 5);
+      return brands;
     }
 
-    return brands
-      .filter((brand) => brand.value.toLowerCase().includes(search))
-      .slice(0, 5);
+    return brands.filter((brand) =>
+      brand.name.toLowerCase().includes(search),
+    );
   });
 
   setParam(key: string, value: string | undefined, debounce = 0): void {

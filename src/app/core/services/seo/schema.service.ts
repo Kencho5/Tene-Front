@@ -17,7 +17,7 @@ export class SchemaService {
     description: string;
     image: string;
     sku: string;
-    brand?: string;
+    brand_name?: string;
     price: number;
     currency: string;
     availability: 'InStock' | 'OutOfStock' | 'PreOrder';
@@ -30,10 +30,10 @@ export class SchemaService {
       description: data.description,
       image: data.image,
       sku: data.sku,
-      brand: data.brand
+      brand: data.brand_name
         ? {
             '@type': 'Brand',
-            name: data.brand,
+            name: data.brand_name,
           }
         : undefined,
       offers: {

@@ -72,10 +72,10 @@
 
         <!-- Brand -->
         <app-input
-          [field]="productForm.brand"
-          [error]="submitted() && productForm.brand().invalid()"
-          type="text"
-          placeholder="ბრენდი"
+          [field]="productForm.brand_id"
+          [error]="submitted() && productForm.brand_id().invalid()"
+          type="number"
+          placeholder="ბრენდის ID"
         />
 
         <!-- Warranty -->

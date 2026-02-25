@@ -13,7 +13,8 @@ export interface Product {
   quantity: number;
   specifications: string;
   warranty: string;
-  brand: string;
+  brand_id: number;
+  brand_name: string;
   enabled: boolean;
   categories: ProductCategory[];
   created_at: string;
@@ -149,7 +150,20 @@ export interface FacetValue {
   count: number;
 }
 
+export interface BrandFacet {
+  id: number;
+  name: string;
+  count: number;
+}
+
+export interface CategoryFacet {
+  id: number;
+  name: string;
+  count: number;
+}
+
 export interface ProductFacets {
-  brands: FacetValue[];
+  brands: BrandFacet[];
   colors: FacetValue[];
+  categories: CategoryFacet[];
 }

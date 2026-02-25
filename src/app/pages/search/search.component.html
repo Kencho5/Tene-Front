@@ -237,14 +237,17 @@
         </div>
 
         <!-- Brand list with scroll -->
-        <div class="max-h-[200px] space-y-4 overflow-y-auto">
-          @for (brand of filteredBrands(); track brand.value) {
+        <div
+          class="max-h-[200px] space-y-4 overflow-y-auto"
+          style="scrollbar-width: none"
+        >
+          @for (brand of filteredBrands(); track brand.id) {
             <div
               class="flex items-center justify-between"
               [class.opacity-50]="brand.count === 0"
             >
               <div class="flex items-center gap-2">
-                <p>{{ brand.value | titlecase }}</p>
+                <p>{{ brand.name }}</p>
                 <span class="text-xs text-platinum-50"
                   >({{ brand.count }})</span
                 >
@@ -253,12 +256,12 @@
               <label class="relative inline-block h-5 w-5 cursor-pointer">
                 <input
                   type="checkbox"
-                  [checked]="hasValue('brand', brand.value.toLowerCase())"
+                  [checked]="hasValue('brand', '' + brand.id)"
                   [disabled]="brand.count === 0"
                   (change)="
                     toggleParam(
                       'brand',
-                      brand.value.toLowerCase(),
+                      '' + brand.id,
                       $any($event.target).checked
                     )
                   "
@@ -309,14 +312,21 @@
         </div>
       } @else {
         <!-- Colors list -->
-        <div class="space-y-4">
+        <div
+          class="max-h-[240px] space-y-4 overflow-y-auto"
+          style="scrollbar-width: none"
+        >
           @for (color of facets().colors; track color.value) {
             <div
               class="flex items-center justify-between"
               [class.opacity-50]="color.count === 0"
             >
               <div class="flex items-center gap-2">
-                <p>{{ color.value }}</p>
+                <span
+                  class="h-4 w-4 flex-shrink-0 rounded-full border border-platinum-20"
+                  [style.background-color]="color.value.toLowerCase()"
+                ></span>
+                <p>{{ getColorLabel(color.value) }}</p>
                 <span class="text-xs text-platinum-50"
                   >({{ color.count }})</span
                 >
