@@ -1,19 +1,23 @@
-<div class="space-y-6">
+<div class="space-y-5">
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-2xl font-semibold text-platinum-100">
+      <h1 class="text-xl font-semibold text-platinum-100">
         მომხმარებლის რედაქტირება
       </h1>
-      <p class="mt-1 text-sm text-platinum-50">
+      <p class="mt-0.5 text-sm text-platinum-50">
         მომხმარებლის ID: {{ userId() }}
       </p>
     </div>
   </div>
 
   <!-- Form -->
-  <form (submit)="onSubmit(); $event.preventDefault()" novalidate class="space-y-6">
-    <div class="rounded-xl border border-platinum-20 bg-white p-6">
+  <form (submit)="onSubmit(); $event.preventDefault()" novalidate class="space-y-5">
+    <div class="rounded-lg border border-platinum-20 bg-white p-5">
+      <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-platinum-50">
+        მომხმარებლის ინფორმაცია
+      </h2>
+
       <div class="flex flex-col gap-4">
         <!-- Name -->
         <app-input
@@ -31,7 +35,7 @@
 
         <!-- Role -->
         <div>
-          <label for="role" class="mb-2 block text-sm font-medium text-platinum-100">
+          <label for="role" class="mb-1.5 block text-sm font-medium text-platinum-70">
             როლი *
           </label>
           <app-dropdown
@@ -49,14 +53,14 @@
       <button
         type="button"
         (click)="cancel()"
-        class="rounded-xl border border-platinum-20 px-6 py-2.5 text-sm font-medium text-platinum-100 transition-colors hover:bg-platinum-10"
+        class="rounded-lg border border-platinum-20 px-5 py-2 text-sm font-medium text-platinum-60 transition-colors hover:bg-platinum-10"
       >
         გაუქმება
       </button>
       <button
         type="submit"
         [disabled]="isSubmitting()"
-        class="rounded-xl bg-green-60 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-green-70 disabled:cursor-not-allowed disabled:opacity-50"
+        class="inline-flex items-center gap-1.5 rounded-lg bg-green-60 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70 disabled:cursor-not-allowed disabled:opacity-50"
       >
         @if (isSubmitting()) {
           <span>შენახვა...</span>

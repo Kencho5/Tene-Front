@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { DropdownComponent } from '../dropdown/dropdown.component';
 
@@ -26,6 +20,7 @@ export class PaginationComponent {
   limitChange = output<string>();
 
   readonly limitOptions: ComboboxItems[] = [
+    { label: '10', value: '10' },
     { label: '15', value: '15' },
     { label: '30', value: '30' },
     { label: '45', value: '45' },

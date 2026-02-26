@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
@@ -22,12 +16,7 @@ import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-admin-products',
-  imports: [
-    SharedModule,
-    DropdownComponent,
-    ConfirmationModalComponent,
-    PaginationComponent,
-  ],
+  imports: [SharedModule, DropdownComponent, ConfirmationModalComponent, PaginationComponent],
   templateUrl: './admin-products.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -103,11 +92,7 @@ export class AdminProductsComponent {
   getProductImage(product: ProductResponse): string {
     const primaryImage = product.images.find((image) => image.is_primary);
     if (!primaryImage) return '';
-    return getProductImageUrl(
-      product.data.id,
-      primaryImage.image_uuid,
-      primaryImage.extension,
-    );
+    return getProductImageUrl(product.data.id, primaryImage.image_uuid, primaryImage.extension);
   }
 
   getProductLink(product: ProductResponse): string[] {
@@ -148,9 +133,7 @@ export class AdminProductsComponent {
     this.updateQueryParams({ query: undefined, id: undefined });
   }
 
-  private updateQueryParams(
-    params: Record<string, string | number | undefined>,
-  ): void {
+  private updateQueryParams(params: Record<string, string | number | undefined>): void {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: params,
@@ -172,19 +155,13 @@ export class AdminProductsComponent {
     const productId = this.productToDelete();
     if (productId === null) return;
 
-    let toastParams: [string, string, number, 'success' | 'error'] | null =
-      null;
+    let toastParams: [string, string, number, 'success' | 'error'] | null = null;
 
     this.adminService
       .deleteProduct(productId)
       .pipe(
         tap(() => {
-          toastParams = [
-            'წარმატება',
-            'პროდუქტი წარმატებით წაიშალა',
-            3000,
-            'success',
-          ];
+          toastParams = ['წარმატება', 'პროდუქტი წარმატებით წაიშალა', 3000, 'success'];
           this.updateQueryParams({ _t: Date.now() });
         }),
         catchError((error) => {
@@ -211,8 +188,7 @@ export class AdminProductsComponent {
   }
 
   toggleProductStatus(productId: number, currentStatus: boolean): void {
-    let toastParams: [string, string, number, 'success' | 'error'] | null =
-      null;
+    let toastParams: [string, string, number, 'success' | 'error'] | null = null;
 
     this.adminService
       .updateProduct(productId, { enabled: !currentStatus } as any)
