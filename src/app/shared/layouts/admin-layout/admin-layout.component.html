@@ -1,6 +1,9 @@
 <!-- Mobile backdrop -->
 @if (isMobileSidebarOpen()) {
-<div (click)="closeMobileSidebar()" class="fixed inset-0 z-40 bg-black/20 lg:hidden"></div>
+<div
+  (click)="closeMobileSidebar()"
+  class="fixed inset-0 z-40 bg-platinum-100/20 lg:hidden"
+></div>
 }
 
 <div class="flex h-screen overflow-hidden bg-white">
@@ -8,304 +11,289 @@
   <aside
     [class.translate-x-0]="isMobileSidebarOpen()"
     [class.-translate-x-full]="!isMobileSidebarOpen()"
-    [class.lg:w-64]="isSidebarOpen()"
-    [class.lg:w-20]="!isSidebarOpen()"
-    class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-platinum-20 bg-white transition-all duration-200 lg:relative lg:translate-x-0"
+    [class.lg:w-[232px]]="isSidebarOpen()"
+    [class.lg:w-16]="!isSidebarOpen()"
+    class="fixed inset-y-0 left-0 z-50 flex w-[232px] flex-col bg-white transition-all duration-200 lg:relative lg:translate-x-0"
   >
-    <!-- Logo & Toggle -->
-    <div class="flex h-16 items-center justify-between border-b border-platinum-20 px-4">
+    <!-- Logo -->
+    <div
+      class="flex h-14 flex-shrink-0 items-center justify-between"
+      [class.px-5]="isSidebarOpen()"
+      [class.px-3]="!isSidebarOpen()"
+    >
       @if (isSidebarOpen()) {
-      <a routerLink="/" class="flex items-center gap-3">
-        <img src="/logo.svg" class="h-8" alt="Logo" />
+      <a routerLink="/" class="flex items-center">
+        <img src="/logo.svg" class="h-6" alt="Logo" />
       </a>
 
-      <div class="flex items-center gap-2">
-        <!-- Desktop Sidebar Toggle -->
-        <button
-          type="button"
-          (click)="toggleSidebar()"
-          class="hidden rounded-lg p-1.5 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:block"
-          aria-label="Toggle sidebar"
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M3 5H17M3 10H17M3 15H17"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
-
-        <!-- Mobile Close Button -->
-        <button
-          type="button"
-          (click)="closeMobileSidebar()"
-          class="rounded-lg p-1.5 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:hidden"
-          aria-label="Close sidebar"
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M15 5L5 15M5 5L15 15"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
-      </div>
-      } @else {
-      <!-- Collapsed Sidebar Toggle -->
       <button
         type="button"
         (click)="toggleSidebar()"
-        class="hidden w-full justify-center rounded-lg p-1.5 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:flex"
+        class="hidden text-platinum-30 transition-colors hover:text-platinum-60 lg:block"
+        aria-label="Toggle sidebar"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M2.5 4H13.5M2.5 8H13.5M2.5 12H13.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        (click)="closeMobileSidebar()"
+        class="text-platinum-30 transition-colors hover:text-platinum-60 lg:hidden"
+        aria-label="Close sidebar"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+        </svg>
+      </button>
+      } @else {
+      <button
+        type="button"
+        (click)="toggleSidebar()"
+        class="hidden w-full justify-center text-platinum-30 transition-colors hover:text-platinum-60 lg:flex"
         aria-label="Expand sidebar"
       >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M3 5H17M3 10H17M3 15H17"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M2.5 4H13.5M2.5 8H13.5M2.5 12H13.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
         </svg>
       </button>
       }
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 space-y-0.5 overflow-y-auto p-2">
-      @for (item of navItems; track item.route) {
-      <a
-        [routerLink]="item.route"
-        routerLinkActive="bg-platinum-10 font-medium text-platinum-100"
-        [routerLinkActiveOptions]="{ exact: false }"
-        (click)="closeMobileSidebar()"
-        [class.justify-center]="!isSidebarOpen()"
-        [class.px-3]="isSidebarOpen()"
-        [class.px-2]="!isSidebarOpen()"
-        class="flex items-center gap-3 rounded-lg py-2 text-sm text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100"
-      >
-        @switch (item.icon) { @case ("products") {
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
-          <path
-            d="M17.5 12.5V7.5L10 3.75L2.5 7.5V12.5L10 16.25L17.5 12.5Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M2.5 7.5L10 11.25L17.5 7.5M10 16.25V11.25"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        } @case ("orders") {
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
-          <path
-            d="M15.833 2.5H4.16634C3.24587 2.5 2.49967 3.24619 2.49967 4.16667V15.8333C2.49967 16.7538 3.24587 17.5 4.16634 17.5H15.833C16.7535 17.5 17.4997 16.7538 17.4997 15.8333V4.16667C17.4997 3.24619 16.7535 2.5 15.833 2.5Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M13.333 1.66663V4.16663M6.66634 1.66663V4.16663M2.49967 6.66663H17.4997"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        } @case ("users") {
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
-          <path
-            d="M14.1667 17.5V15.8333C14.1667 14.9493 13.8155 14.1014 13.1904 13.4763C12.5652 12.8512 11.7174 12.5 10.8333 12.5H4.16667C3.28261 12.5 2.43476 12.8512 1.80964 13.4763C1.18452 14.1014 0.833336 14.9493 0.833336 15.8333V17.5"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M7.50001 9.16667C9.34096 9.16667 10.8333 7.67428 10.8333 5.83333C10.8333 3.99238 9.34096 2.5 7.50001 2.5C5.65906 2.5 4.16667 3.99238 4.16667 5.83333C4.16667 7.67428 5.65906 9.16667 7.50001 9.16667Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M19.1667 17.5V15.8333C19.1662 15.0948 18.9201 14.3773 18.4677 13.7936C18.0153 13.2099 17.3819 12.793 16.6667 12.6083"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M13.333 2.60834C14.0503 2.79192 14.686 3.20892 15.1399 3.79359C15.5937 4.37827 15.8407 5.09736 15.8407 5.8375C15.8407 6.57765 15.5937 7.29674 15.1399 7.88142C14.686 8.46609 14.0503 8.88309 13.333 9.06667"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        } @case ("brands") {
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
-          <path
-            d="M17.5 5.83333L10 2.5L2.5 5.83333L10 9.16667L17.5 5.83333Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M2.5 14.1667L10 17.5L17.5 14.1667"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M2.5 10L10 13.3333L17.5 10"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        } @case ("categories") {
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
-          <path
-            d="M8.33333 2.5H2.5V8.33333H8.33333V2.5Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M17.5 2.5H11.6667V8.33333H17.5V2.5Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M17.5 11.6667H11.6667V17.5H17.5V11.6667Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M8.33333 11.6667H2.5V17.5H8.33333V11.6667Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        } @case ("analytics") {
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
-          <path
-            d="M15.8333 17.5V9.16666"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M10 17.5V2.5"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M4.16667 17.5V12.5"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        } @case ("settings") {
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
-          <path
-            d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M16.1667 12.5C16.0557 12.7513 16.0228 13.0301 16.0722 13.3006C16.1216 13.5711 16.2512 13.8203 16.4433 14.0167L16.4933 14.0667C16.6436 14.2169 16.7627 14.3951 16.8438 14.5913C16.9249 14.7875 16.9665 14.9979 16.9665 15.2104C16.9665 15.4229 16.9249 15.6333 16.8438 15.8295C16.7627 16.0257 16.6436 16.2039 16.4933 16.3542C16.3431 16.5044 16.1649 16.6236 15.9687 16.7047C15.7725 16.7858 15.5621 16.8274 15.3496 16.8274C15.1371 16.8274 14.9267 16.7858 14.7305 16.7047C14.5343 16.6236 14.3561 16.5044 14.2058 16.3542L14.1558 16.3042C13.9594 16.1121 13.7102 15.9825 13.4397 15.9331C13.1692 15.8836 12.8904 15.9165 12.6392 16.0275C12.3929 16.1332 12.1845 16.3089 12.0401 16.5331C11.8956 16.7574 11.8213 17.0204 11.8267 17.2875V17.5C11.8267 17.9203 11.6597 18.3234 11.363 18.6203C11.0661 18.9171 10.663 19.0842 10.2427 19.0842C9.82235 19.0842 9.41926 18.9171 9.12233 18.6203C8.8254 18.3234 8.65833 17.9203 8.65833 17.5V17.425C8.64779 17.1475 8.56148 16.878 8.40892 16.6478C8.25636 16.4176 8.04372 16.2356 7.79417 16.1217C7.54292 16.0107 7.26408 15.9778 6.99359 16.0272C6.7231 16.0766 6.47389 16.2062 6.2775 16.3983L6.2275 16.4483C6.07723 16.5986 5.89904 16.7177 5.70284 16.7988C5.50664 16.8799 5.29625 16.9215 5.08375 16.9215C4.87125 16.9215 4.66086 16.8799 4.46466 16.7988C4.26846 16.7177 4.09027 16.5986 3.94 16.4483C3.78974 16.2981 3.67063 16.1199 3.58952 15.9237C3.50841 15.7275 3.46682 15.5171 3.46682 15.3046C3.46682 15.0921 3.50841 14.8817 3.58952 14.6855C3.67063 14.4893 3.78974 14.3111 3.94 14.1608L3.99 14.1108C4.18208 13.9144 4.31165 13.6652 4.36107 13.3947C4.41049 13.1242 4.3776 12.8454 4.26667 12.5942C4.16097 12.3479 3.98524 12.1395 3.76102 11.995C3.5368 11.8506 3.27378 11.7763 3.00667 11.7817H2.825C2.40471 11.7817 2.00161 11.6146 1.70469 11.3177C1.40776 11.0207 1.24069 10.6177 1.24069 10.1973C1.24069 9.77704 1.40776 9.37395 1.70469 9.07702C2.00161 8.78009 2.40471 8.61302 2.825 8.61302H2.9C3.17752 8.60248 3.44704 8.51617 3.67724 8.36361C3.90744 8.21105 4.08947 7.99841 4.20333 7.74885C4.31427 7.4976 4.34716 7.21876 4.29774 6.94827C4.24832 6.67778 4.11875 6.42857 3.92667 6.23219L3.87667 6.18219C3.7264 6.03191 3.6073 5.85372 3.52619 5.65752C3.44507 5.46132 3.40349 5.25093 3.40349 5.03844C3.40349 4.82594 3.44507 4.61555 3.52619 4.41935C3.6073 4.22315 3.7264 4.04496 3.87667 3.89469C4.02694 3.74442 4.20513 3.62531 4.40133 3.5442C4.59753 3.46309 4.80792 3.4215 5.02042 3.4215C5.23291 3.4215 5.4433 3.46309 5.6395 3.5442C5.8357 3.62531 6.01389 3.74442 6.16417 3.89469L6.21417 3.94469C6.41054 4.13677 6.65975 4.26634 6.93024 4.31576C7.20073 4.36518 7.47957 4.33229 7.73083 4.22135H7.79417C8.04048 4.11565 8.24886 3.93993 8.39332 3.7157C8.53778 3.49148 8.61206 3.22846 8.60667 2.96135V2.77969C8.60667 2.3594 8.77373 1.9563 9.07066 1.65938C9.36759 1.36245 9.77069 1.19538 10.191 1.19538C10.6113 1.19538 11.0144 1.36245 11.3113 1.65938C11.6082 1.9563 11.7753 2.3594 11.7753 2.77969V2.85469C11.7799 3.1218 11.8542 3.38482 11.9987 3.60904C12.1431 3.83327 12.3515 4.00899 12.5978 4.11469C12.8491 4.22562 13.1279 4.25851 13.3984 4.20909C13.6689 4.15967 13.9181 4.0301 14.1145 3.83802L14.1645 3.78802C14.3148 3.63775 14.493 3.51864 14.6892 3.43753C14.8854 3.35641 15.0958 3.31483 15.3083 3.31483C15.5208 3.31483 15.7312 3.35641 15.9274 3.43753C16.1236 3.51864 16.3018 3.63775 16.452 3.78802C16.6023 3.93829 16.7214 4.11648 16.8025 4.31268C16.8836 4.50888 16.9252 4.71927 16.9252 4.93177C16.9252 5.14426 16.8836 5.35465 16.8025 5.55085C16.7214 5.74705 16.6023 5.92524 16.452 6.07552L16.402 6.12552C16.2099 6.32189 16.0803 6.5711 16.0309 6.84159C15.9815 7.11208 16.0144 7.39092 16.1253 7.64219V7.70552C16.231 7.95183 16.4067 8.16021 16.6309 8.30467C16.8552 8.44913 17.1182 8.52341 17.3853 8.51802H17.567C17.9873 8.51802 18.3904 8.68509 18.6873 8.98201C18.9842 9.27894 19.1513 9.68204 19.1513 10.1023C19.1513 10.5226 18.9842 10.9257 18.6873 11.2226C18.3904 11.5196 17.9873 11.6866 17.567 11.6866H17.492C17.2249 11.6912 16.9618 11.7655 16.7376 11.91C16.5134 12.0544 16.3377 12.2628 16.232 12.5092V12.5Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        } } @if (isSidebarOpen()) {
-        <span class="truncate">{{ item.label }}</span>
+    <nav
+      class="flex-1 overflow-y-auto"
+      [class.px-3]="isSidebarOpen()"
+      [class.px-2]="!isSidebarOpen()"
+    >
+      <div class="space-y-0.5 py-2">
+        @for (item of navItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive
+          #rla="routerLinkActive"
+          [routerLinkActiveOptions]="{ exact: false }"
+          (click)="closeMobileSidebar()"
+          [class.justify-center]="!isSidebarOpen()"
+          [class.px-2.5]="isSidebarOpen()"
+          [class.px-0]="!isSidebarOpen()"
+          [class.bg-green-10]="rla.isActive"
+          [class.text-green-80]="rla.isActive"
+          [class.font-medium]="rla.isActive"
+          [class.text-platinum-50]="!rla.isActive"
+          class="flex items-center gap-2.5 rounded-md py-[7px] text-[13px] transition-colors hover:text-platinum-100"
+        >
+          @switch (item.icon) { @case ("products") {
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
+            <path
+              d="M17.5 12.5V7.5L10 3.75L2.5 7.5V12.5L10 16.25L17.5 12.5Z"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2.5 7.5L10 11.25L17.5 7.5M10 16.25V11.25"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          } @case ("orders") {
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
+            <path
+              d="M15.833 2.5H4.16634C3.24587 2.5 2.49967 3.24619 2.49967 4.16667V15.8333C2.49967 16.7538 3.24587 17.5 4.16634 17.5H15.833C16.7535 17.5 17.4997 16.7538 17.4997 15.8333V4.16667C17.4997 3.24619 16.7535 2.5 15.833 2.5Z"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M13.333 1.66663V4.16663M6.66634 1.66663V4.16663M2.49967 6.66663H17.4997"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          } @case ("users") {
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
+            <path
+              d="M14.1667 17.5V15.8333C14.1667 14.9493 13.8155 14.1014 13.1904 13.4763C12.5652 12.8512 11.7174 12.5 10.8333 12.5H4.16667C3.28261 12.5 2.43476 12.8512 1.80964 13.4763C1.18452 14.1014 0.833336 14.9493 0.833336 15.8333V17.5"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M7.50001 9.16667C9.34096 9.16667 10.8333 7.67428 10.8333 5.83333C10.8333 3.99238 9.34096 2.5 7.50001 2.5C5.65906 2.5 4.16667 3.99238 4.16667 5.83333C4.16667 7.67428 5.65906 9.16667 7.50001 9.16667Z"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M19.1667 17.5V15.8333C19.1662 15.0948 18.9201 14.3773 18.4677 13.7936C18.0153 13.2099 17.3819 12.793 16.6667 12.6083"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M13.333 2.60834C14.0503 2.79192 14.686 3.20892 15.1399 3.79359C15.5937 4.37827 15.8407 5.09736 15.8407 5.8375C15.8407 6.57765 15.5937 7.29674 15.1399 7.88142C14.686 8.46609 14.0503 8.88309 13.333 9.06667"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          } @case ("brands") {
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
+            <path
+              d="M17.5 5.83333L10 2.5L2.5 5.83333L10 9.16667L17.5 5.83333Z"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2.5 14.1667L10 17.5L17.5 14.1667"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2.5 10L10 13.3333L17.5 10"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          } @case ("categories") {
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
+            <path
+              d="M8.33333 2.5H2.5V8.33333H8.33333V2.5Z"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M17.5 2.5H11.6667V8.33333H17.5V2.5Z"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M17.5 11.6667H11.6667V17.5H17.5V11.6667Z"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M8.33333 11.6667H2.5V17.5H8.33333V11.6667Z"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          } @case ("analytics") {
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
+            <path d="M15.8333 17.5V9.16666" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M10 17.5V2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M4.16667 17.5V12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          } @case ("settings") {
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
+            <path
+              d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M16.1667 12.5C16.0557 12.7513 16.0228 13.0301 16.0722 13.3006C16.1216 13.5711 16.2512 13.8203 16.4433 14.0167L16.4933 14.0667C16.6436 14.2169 16.7627 14.3951 16.8438 14.5913C16.9249 14.7875 16.9665 14.9979 16.9665 15.2104C16.9665 15.4229 16.9249 15.6333 16.8438 15.8295C16.7627 16.0257 16.6436 16.2039 16.4933 16.3542C16.3431 16.5044 16.1649 16.6236 15.9687 16.7047C15.7725 16.7858 15.5621 16.8274 15.3496 16.8274C15.1371 16.8274 14.9267 16.7858 14.7305 16.7047C14.5343 16.6236 14.3561 16.5044 14.2058 16.3542L14.1558 16.3042C13.9594 16.1121 13.7102 15.9825 13.4397 15.9331C13.1692 15.8836 12.8904 15.9165 12.6392 16.0275C12.3929 16.1332 12.1845 16.3089 12.0401 16.5331C11.8956 16.7574 11.8213 17.0204 11.8267 17.2875V17.5C11.8267 17.9203 11.6597 18.3234 11.363 18.6203C11.0661 18.9171 10.663 19.0842 10.2427 19.0842C9.82235 19.0842 9.41926 18.9171 9.12233 18.6203C8.8254 18.3234 8.65833 17.9203 8.65833 17.5V17.425C8.64779 17.1475 8.56148 16.878 8.40892 16.6478C8.25636 16.4176 8.04372 16.2356 7.79417 16.1217C7.54292 16.0107 7.26408 15.9778 6.99359 16.0272C6.7231 16.0766 6.47389 16.2062 6.2775 16.3983L6.2275 16.4483C6.07723 16.5986 5.89904 16.7177 5.70284 16.7988C5.50664 16.8799 5.29625 16.9215 5.08375 16.9215C4.87125 16.9215 4.66086 16.8799 4.46466 16.7988C4.26846 16.7177 4.09027 16.5986 3.94 16.4483C3.78974 16.2981 3.67063 16.1199 3.58952 15.9237C3.50841 15.7275 3.46682 15.5171 3.46682 15.3046C3.46682 15.0921 3.50841 14.8817 3.58952 14.6855C3.67063 14.4893 3.78974 14.3111 3.94 14.1608L3.99 14.1108C4.18208 13.9144 4.31165 13.6652 4.36107 13.3947C4.41049 13.1242 4.3776 12.8454 4.26667 12.5942C4.16097 12.3479 3.98524 12.1395 3.76102 11.995C3.5368 11.8506 3.27378 11.7763 3.00667 11.7817H2.825C2.40471 11.7817 2.00161 11.6146 1.70469 11.3177C1.40776 11.0207 1.24069 10.6177 1.24069 10.1973C1.24069 9.77704 1.40776 9.37395 1.70469 9.07702C2.00161 8.78009 2.40471 8.61302 2.825 8.61302H2.9C3.17752 8.60248 3.44704 8.51617 3.67724 8.36361C3.90744 8.21105 4.08947 7.99841 4.20333 7.74885C4.31427 7.4976 4.34716 7.21876 4.29774 6.94827C4.24832 6.67778 4.11875 6.42857 3.92667 6.23219L3.87667 6.18219C3.7264 6.03191 3.6073 5.85372 3.52619 5.65752C3.44507 5.46132 3.40349 5.25093 3.40349 5.03844C3.40349 4.82594 3.44507 4.61555 3.52619 4.41935C3.6073 4.22315 3.7264 4.04496 3.87667 3.89469C4.02694 3.74442 4.20513 3.62531 4.40133 3.5442C4.59753 3.46309 4.80792 3.4215 5.02042 3.4215C5.23291 3.4215 5.4433 3.46309 5.6395 3.5442C5.8357 3.62531 6.01389 3.74442 6.16417 3.89469L6.21417 3.94469C6.41054 4.13677 6.65975 4.26634 6.93024 4.31576C7.20073 4.36518 7.47957 4.33229 7.73083 4.22135H7.79417C8.04048 4.11565 8.24886 3.93993 8.39332 3.7157C8.53778 3.49148 8.61206 3.22846 8.60667 2.96135V2.77969C8.60667 2.3594 8.77373 1.9563 9.07066 1.65938C9.36759 1.36245 9.77069 1.19538 10.191 1.19538C10.6113 1.19538 11.0144 1.36245 11.3113 1.65938C11.6082 1.9563 11.7753 2.3594 11.7753 2.77969V2.85469C11.7799 3.1218 11.8542 3.38482 11.9987 3.60904C12.1431 3.83327 12.3515 4.00899 12.5978 4.11469C12.8491 4.22562 13.1279 4.25851 13.3984 4.20909C13.6689 4.15967 13.9181 4.0301 14.1145 3.83802L14.1645 3.78802C14.3148 3.63775 14.493 3.51864 14.6892 3.43753C14.8854 3.35641 15.0958 3.31483 15.3083 3.31483C15.5208 3.31483 15.7312 3.35641 15.9274 3.43753C16.1236 3.51864 16.3018 3.63775 16.452 3.78802C16.6023 3.93829 16.7214 4.11648 16.8025 4.31268C16.8836 4.50888 16.9252 4.71927 16.9252 4.93177C16.9252 5.14426 16.8836 5.35465 16.8025 5.55085C16.7214 5.74705 16.6023 5.92524 16.452 6.07552L16.402 6.12552C16.2099 6.32189 16.0803 6.5711 16.0309 6.84159C15.9815 7.11208 16.0144 7.39092 16.1253 7.64219V7.70552C16.231 7.95183 16.4067 8.16021 16.6309 8.30467C16.8552 8.44913 17.1182 8.52341 17.3853 8.51802H17.567C17.9873 8.51802 18.3904 8.68509 18.6873 8.98201C18.9842 9.27894 19.1513 9.68204 19.1513 10.1023C19.1513 10.5226 18.9842 10.9257 18.6873 11.2226C18.3904 11.5196 17.9873 11.6866 17.567 11.6866H17.492C17.2249 11.6912 16.9618 11.7655 16.7376 11.91C16.5134 12.0544 16.3377 12.2628 16.232 12.5092V12.5Z"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          } }
+
+          @if (isSidebarOpen()) {
+          <span class="truncate">{{ item.label }}</span>
+          }
+        </a>
         }
-      </a>
-      }
+      </div>
     </nav>
 
-    <!-- User Profile Section -->
-    <div class="border-t border-platinum-20 p-2">
+    <!-- Bottom Section -->
+    <div
+      class="flex-shrink-0 py-3"
+      [class.px-3]="isSidebarOpen()"
+      [class.px-2]="!isSidebarOpen()"
+    >
+      <!-- Separator -->
+      <div class="mb-3 h-px bg-platinum-20"></div>
+
       @if (user()) {
       <div
         [class.flex-col]="!isSidebarOpen()"
         [class.items-center]="!isSidebarOpen()"
         [class.gap-2]="!isSidebarOpen()"
-        class="mb-2 flex gap-3 rounded-lg border border-platinum-20 p-2.5"
+        [class.px-2.5]="isSidebarOpen()"
+        class="mb-1 flex items-center gap-2.5 py-1"
       >
         <div
-          class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-green-60 text-sm font-medium text-white"
+          class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-platinum-100 text-[11px] font-medium text-white"
         >
           {{ user()!.name.charAt(0).toUpperCase() }}
         </div>
 
         @if (isSidebarOpen()) {
         <div class="flex-1 overflow-hidden">
-          <p class="truncate text-sm font-medium text-platinum-100">{{ user()!.name }}</p>
-          <p class="truncate text-xs text-platinum-50">{{ user()!.email }}</p>
+          <p class="truncate text-[13px] font-medium text-platinum-90">{{ user()!.name }}</p>
+          <p class="truncate text-[11px] text-platinum-40">{{ user()!.email }}</p>
         </div>
         }
       </div>
       }
 
-      <button
-        type="button"
+      <a
         (click)="logout()"
         [class.justify-center]="!isSidebarOpen()"
-        [class.px-3]="isSidebarOpen()"
-        [class.px-2]="!isSidebarOpen()"
-        class="flex w-full items-center gap-3 rounded-lg py-2 text-sm text-valencia-60 transition-colors hover:bg-valencia-10 hover:text-valencia-70"
+        [class.px-2.5]="isSidebarOpen()"
+        class="flex cursor-pointer items-center gap-2.5 rounded-md py-[7px] text-[13px] text-platinum-40 transition-colors hover:text-valencia-60"
       >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="flex-shrink-0">
           <path
             d="M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5"
             stroke="currentColor"
-            stroke-width="1.5"
+            stroke-width="1.4"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
           <path
             d="M13.333 14.1667L17.4997 10L13.333 5.83337"
             stroke="currentColor"
-            stroke-width="1.5"
+            stroke-width="1.4"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
           <path
             d="M17.5 10H7.5"
             stroke="currentColor"
-            stroke-width="1.5"
+            stroke-width="1.4"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
@@ -313,30 +301,27 @@
         @if (isSidebarOpen()) {
         <span>გასვლა</span>
         }
-      </button>
+      </a>
     </div>
   </aside>
+
+  <!-- Sidebar border - separate element for hairline precision -->
+  <div class="hidden w-px flex-shrink-0 bg-platinum-20 lg:block"></div>
 
   <!-- Main Content -->
   <div class="flex flex-1 flex-col overflow-hidden">
     <!-- Top Bar -->
-    <header class="flex h-16 items-center border-b border-platinum-20 bg-white px-4 lg:px-6">
-      <!-- Left Section: Navigation Controls -->
-      <div class="flex flex-1 items-center gap-3">
+    <header class="flex h-14 flex-shrink-0 items-center bg-white px-5 lg:px-8">
+      <div class="flex flex-1 items-center gap-4">
         <!-- Mobile Sidebar Toggle -->
         <button
           type="button"
           (click)="toggleMobileSidebar()"
-          class="rounded-lg p-2 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:hidden"
+          class="text-platinum-30 transition-colors hover:text-platinum-60 lg:hidden"
           aria-label="Toggle sidebar"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M3 5H17M3 10H17M3 15H17"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
+            <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
           </svg>
         </button>
 
@@ -344,50 +329,53 @@
         <button
           type="button"
           (click)="goBack()"
-          class="flex items-center gap-2 text-platinum-60"
+          class="flex items-center gap-1.5 text-platinum-40 transition-colors hover:text-platinum-90"
           aria-label="Go back"
         >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <svg width="15" height="15" viewBox="0 0 18 18" fill="none">
             <path
               d="M11.25 13.5L6.75 9L11.25 4.5"
               stroke="currentColor"
-              stroke-width="1.5"
+              stroke-width="1.25"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
           </svg>
-          <span class="hidden text-sm font-medium sm:inline">უკან</span>
+          <span class="hidden text-[13px] sm:inline">უკან</span>
         </button>
 
         <!-- Divider -->
-        <div class="h-6 w-px bg-platinum-20"></div>
+        <div class="h-4 w-px bg-platinum-20"></div>
 
         <!-- Home Link -->
         <a
           routerLink="/"
-          class="flex items-center gap-2 rounded-lg px-3 py-2 text-platinum-80 transition-colors hover:bg-platinum-10 hover:text-platinum-100"
+          class="flex items-center gap-1.5 text-platinum-40 transition-colors hover:text-platinum-90"
           aria-label="Go to main website"
         >
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
             <path
               d="M2.5 7.5L10 2.5L17.5 7.5V16.25C17.5 16.5815 17.3683 16.8995 17.1339 17.1339C16.8995 17.3683 16.5815 17.5 16.25 17.5H3.75C3.41848 17.5 3.10054 17.3683 2.86612 17.1339C2.6317 16.8995 2.5 16.5815 2.5 16.25V7.5Z"
               stroke="currentColor"
-              stroke-width="1.5"
+              stroke-width="1.25"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
           </svg>
-          <span class="hidden text-sm font-medium sm:inline">მთავარი</span>
+          <span class="hidden text-[13px] sm:inline">მთავარი</span>
         </a>
       </div>
     </header>
 
+    <!-- Header border -->
+    <div class="h-px bg-platinum-20"></div>
+
     <!-- Page Content -->
-    <main class="relative flex-1 overflow-y-auto bg-platinum-10 p-4 lg:p-6">
+    <main class="relative flex-1 overflow-y-auto bg-platinum-10/50 p-5 lg:p-8">
       @if (!loadingService.loading()) {
       <router-outlet />
       } @else {
-      <div class="absolute inset-0 z-0 flex items-center justify-center bg-platinum-10">
+      <div class="absolute inset-0 flex items-center justify-center bg-platinum-10/50">
         <app-spinner [size]="46" [textColor]="'text-platinum-100'" [fillColor]="'fill-green-60'" />
       </div>
       }
