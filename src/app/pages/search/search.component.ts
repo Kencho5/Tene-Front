@@ -9,13 +9,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ProductsService } from '@core/services/products/products.service';
-import { CategoriesService } from '@core/services/categories/categories.service';
 import {
   BreadcrumbComponent,
   BreadcrumbItem,
 } from '@shared/components/ui/breadcrumb/breadcrumb.component';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
-import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
@@ -29,7 +27,6 @@ import {
   tap,
 } from 'rxjs';
 import { ProductFacets } from '@core/interfaces/products.interface';
-import { flattenCategoryTree } from '@utils/category';
 import { getColorLabel } from '@utils/colors';
 
 @Component({
