@@ -5,14 +5,13 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { OrderItem } from '@core/interfaces/products.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { getProductImageUrl } from '@utils/product-image-url';
 import { AdminService } from '@core/services/admin/admin.service';
 
@@ -28,7 +27,6 @@ export class AdminOrdersComponent {
   private readonly adminService = inject(AdminService);
   private debounceTimer?: number;
 
-  readonly isLoading = signal(false);
   readonly searchQuery = signal('');
 
   readonly statusOptions: ComboboxItems[] = [
@@ -44,22 +42,14 @@ export class AdminOrdersComponent {
     initialValue: {} as Params,
   });
 
-  readonly searchResponse = toSignal(
-    this.route.queryParams.pipe(
-      tap(() => this.isLoading.set(true)),
-      map((params) => new URLSearchParams(params).toString()),
-      switchMap((query) =>
-        this.adminService.searchOrders(query).pipe(
-          catchError(() => of({ orders: [], total: 0, limit: 0, offset: 0 })),
-        ),
-      ),
-      tap(() => this.isLoading.set(false)),
-    ),
-    { initialValue: { orders: [], total: 0, limit: 0, offset: 0 } },
-  );
+  readonly searchResponse = rxResource({
+    defaultValue: { orders: [], total: 0, limit: 0, offset: 0 },
+    params: () => new URLSearchParams(this.params()).toString(),
+    stream: ({ params }) => this.adminService.searchOrders(params),
+  });
 
-  readonly orders = computed(() => this.searchResponse().orders);
-  readonly totalOrders = computed(() => this.searchResponse().total);
+  readonly orders = computed(() => this.searchResponse.value().orders);
+  readonly totalOrders = computed(() => this.searchResponse.value().total);
   readonly currentPage = computed(() => {
     const offset = Number(this.params()['offset']) || 0;
     const limit = Number(this.params()['limit']) || 10;

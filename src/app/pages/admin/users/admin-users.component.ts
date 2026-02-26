@@ -5,14 +5,14 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AdminService } from '@core/services/admin/admin.service';
 import { ToastService } from '@core/services/toast.service';
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
-import { catchError, finalize, map, of, switchMap, tap } from 'rxjs';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { UserRole } from '@core/interfaces/admin/users.interface';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
@@ -35,7 +35,6 @@ export class AdminUsersComponent {
   private readonly toastService = inject(ToastService);
   private debounceTimer?: number;
 
-  readonly isLoading = signal<boolean>(false);
   readonly searchQuery = signal<string>('');
   readonly isDeleteModalOpen = signal<boolean>(false);
   readonly userToDelete = signal<number | null>(null);
@@ -50,24 +49,14 @@ export class AdminUsersComponent {
     initialValue: {} as Params,
   });
 
-  readonly searchResponse = toSignal(
-    this.route.queryParams.pipe(
-      tap(() => this.isLoading.set(true)),
-      map((params) => new URLSearchParams(params).toString()),
-      switchMap((query) =>
-        this.adminService
-          .searchUsers(query)
-          .pipe(
-            catchError(() => of({ users: [], total: 0, limit: 0, offset: 0 })),
-          ),
-      ),
-      tap(() => this.isLoading.set(false)),
-    ),
-    { initialValue: { users: [], total: 0, limit: 0, offset: 0 } },
-  );
+  readonly searchResponse = rxResource({
+    defaultValue: { users: [], total: 0, limit: 0, offset: 0 },
+    params: () => new URLSearchParams(this.params()).toString(),
+    stream: ({ params }) => this.adminService.searchUsers(params),
+  });
 
-  readonly users = computed(() => this.searchResponse().users);
-  readonly totalUsers = computed(() => this.searchResponse().total);
+  readonly users = computed(() => this.searchResponse.value().users);
+  readonly totalUsers = computed(() => this.searchResponse.value().total);
   readonly currentPage = computed(() => {
     const offset = Number(this.params()['offset']) || 0;
     const limit = Number(this.params()['limit']) || 10;

@@ -1,18 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
-import { ProductResponse } from '@core/interfaces/products.interface';
+import { catchError, finalize, map, of, tap } from 'rxjs';
+import { ProductResponse, ProductSearchResponse } from '@core/interfaces/products.interface';
 import { generateProductSlug } from '@utils/slug';
 import { getProductImageUrl } from '@utils/product-image-url';
 import { AdminService } from '@core/services/admin/admin.service';
 import { ToastService } from '@core/services/toast.service';
-import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-admin-products',
@@ -27,7 +26,6 @@ export class AdminProductsComponent {
   private readonly toastService = inject(ToastService);
   private debounceTimer?: number;
 
-  readonly isLoading = signal<boolean>(false);
   readonly searchQuery = signal<string>('');
   readonly isDeleteModalOpen = signal<boolean>(false);
   readonly productToDelete = signal<number | null>(null);
@@ -47,25 +45,14 @@ export class AdminProductsComponent {
     initialValue: {} as Params,
   });
 
-  readonly searchResponse = toSignal(
-    this.route.queryParams.pipe(
-      tap(() => this.isLoading.set(true)),
-      map((params) => new URLSearchParams(params).toString()),
-      switchMap((query) =>
-        this.adminService.searchProduct(query).pipe(
-          map((response) => {
-            return response;
-          }),
-          catchError(() => of({ products: [], total: 0, limit: 0, offset: 0 })),
-        ),
-      ),
-      tap(() => this.isLoading.set(false)),
-    ),
-    { initialValue: { products: [], total: 0, limit: 0, offset: 0 } },
-  );
+  readonly searchResponse = rxResource({
+    defaultValue: { products: [], total: 0, limit: 0, offset: 0 } as ProductSearchResponse,
+    params: () => new URLSearchParams(this.params()).toString(),
+    stream: ({ params }) => this.adminService.searchProduct(params),
+  });
 
-  readonly products = computed(() => this.searchResponse().products);
-  readonly totalProducts = computed(() => this.searchResponse().total);
+  readonly products = computed(() => this.searchResponse.value().products);
+  readonly totalProducts = computed(() => this.searchResponse.value().total);
   readonly currentPage = computed(() => {
     const offset = Number(this.params()['offset']) || 0;
     const limit = Number(this.params()['limit']) || 10;

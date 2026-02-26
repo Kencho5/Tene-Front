@@ -1,28 +1,17 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
-import { catchError, of, switchMap, tap } from 'rxjs';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { AdminService } from '@core/services/admin/admin.service';
 import { ToastService } from '@core/services/toast.service';
-import { finalize } from 'rxjs';
 import { Brand } from '@core/interfaces/admin/brands.interface';
 
 @Component({
   selector: 'app-admin-brands',
-  imports: [
-    SharedModule,
-    ConfirmationModalComponent,
-    PaginationComponent,
-  ],
+  imports: [SharedModule, ConfirmationModalComponent, PaginationComponent],
   templateUrl: './admin-brands.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -33,7 +22,6 @@ export class AdminBrandsComponent {
   private readonly toastService = inject(ToastService);
   private debounceTimer?: number;
 
-  readonly isLoading = signal<boolean>(false);
   readonly searchQuery = signal<string>('');
   readonly isDeleteModalOpen = signal<boolean>(false);
   readonly brandToDelete = signal<number | null>(null);
@@ -42,29 +30,19 @@ export class AdminBrandsComponent {
     initialValue: {} as Params,
   });
 
-  readonly allBrands = toSignal(
-    this.route.queryParams.pipe(
-      tap(() => this.isLoading.set(true)),
-      switchMap(() =>
-        this.adminService.getBrands().pipe(
-          catchError(() => of([])),
-        ),
-      ),
-      tap(() => this.isLoading.set(false)),
-    ),
-    { initialValue: [] },
-  );
+  readonly allBrands = rxResource({
+    defaultValue: [] as Brand[],
+    stream: () => this.adminService.getBrands(),
+  });
 
   readonly searchResponse = computed(() => {
     const params = this.params();
-    let filtered = this.allBrands();
+    let filtered = this.allBrands.value();
 
     const query = params['query']?.toLowerCase();
     const id = params['id'];
     if (query) {
-      filtered = filtered.filter((brand) =>
-        brand.name.toLowerCase().includes(query),
-      );
+      filtered = filtered.filter((brand) => brand.name.toLowerCase().includes(query));
     } else if (id) {
       filtered = filtered.filter((brand) => brand.id === Number(id));
     }
@@ -126,9 +104,7 @@ export class AdminBrandsComponent {
     this.updateQueryParams({ query: undefined, id: undefined, offset: 0 });
   }
 
-  private updateQueryParams(
-    params: Record<string, string | number | undefined>,
-  ): void {
+  private updateQueryParams(params: Record<string, string | number | undefined>): void {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: params,
@@ -156,16 +132,16 @@ export class AdminBrandsComponent {
       .deleteBrand(brandId)
       .pipe(
         tap(() => {
-          toastParams = [
-            'წარმატება',
-            'ბრენდი წარმატებით წაიშალა',
-            3000,
-            'success',
-          ];
+          toastParams = ['წარმატება', 'ბრენდი წარმატებით წაიშალა', 3000, 'success'];
           this.updateQueryParams({ _t: Date.now() });
         }),
         catchError((error) => {
-          toastParams = ['შეცდომა', error.error?.message || 'ბრენდის წაშლა ვერ მოხერხდა', 3000, 'error'];
+          toastParams = [
+            'შეცდომა',
+            error.error?.message || 'ბრენდის წაშლა ვერ მოხერხდა',
+            3000,
+            'error',
+          ];
           return of(null);
         }),
         finalize(() => {

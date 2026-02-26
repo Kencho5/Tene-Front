@@ -5,17 +5,16 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { catchError, finalize, map, of, tap } from 'rxjs';
 import { AdminService } from '@core/services/admin/admin.service';
 import { ToastService } from '@core/services/toast.service';
-import { finalize } from 'rxjs';
 import { Category } from '@core/interfaces/admin/categories.interface';
 import { CategoryTreeNode } from '@core/interfaces/categories.interface';
 
@@ -41,7 +40,6 @@ export class AdminCategoriesComponent {
   private readonly toastService = inject(ToastService);
   private debounceTimer?: number;
 
-  readonly isLoading = signal<boolean>(false);
   readonly searchQuery = signal<string>('');
   readonly isDeleteModalOpen = signal<boolean>(false);
   readonly categoryToDelete = signal<number | null>(null);
@@ -82,23 +80,16 @@ export class AdminCategoriesComponent {
     return result;
   }
 
-  readonly allCategories = toSignal(
-    this.route.queryParams.pipe(
-      tap(() => this.isLoading.set(true)),
-      switchMap(() =>
-        this.adminService.getAdminCategoryTree().pipe(
-          map((response) => this.flattenTree(response.categories)),
-          catchError(() => of([])),
-        ),
-      ),
-      tap(() => this.isLoading.set(false)),
+  readonly allCategories = rxResource({
+    defaultValue: [] as CategoryWithDepth[],
+    stream: () => this.adminService.getAdminCategoryTree().pipe(
+      map((response) => this.flattenTree(response.categories)),
     ),
-    { initialValue: [] },
-  );
+  });
 
   readonly searchResponse = computed(() => {
     const params = this.params();
-    let filtered = this.allCategories();
+    let filtered = this.allCategories.value();
 
     // Search filter
     const query = params['query']?.toLowerCase();
