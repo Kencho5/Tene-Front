@@ -60,6 +60,19 @@ export class ProductComponent {
   readonly quantity = signal(1);
   readonly activeTab = signal<TabName>('specifications');
 
+  readonly hasSpecifications = computed(() => {
+    const product = this.product();
+    if (!product) return false;
+    const specs = product.data.specifications;
+    if (!specs || specs === '{}' || specs === '[]') return false;
+    try {
+      const parsed = typeof specs === 'string' ? JSON.parse(specs) : specs;
+      return parsed && typeof parsed === 'object' && Object.keys(parsed).length > 0;
+    } catch {
+      return false;
+    }
+  });
+
   readonly imageBaseUrl = getProductImageBaseUrl();
 
   readonly breadcrumbs = computed<BreadcrumbItem[]>(() => {
@@ -174,6 +187,12 @@ export class ProductComponent {
       const slug = this.expectedSlug();
       if (product && slug) {
         this.updateSEO(product, slug);
+      }
+    });
+
+    effect(() => {
+      if (!this.hasSpecifications()) {
+        this.activeTab.set('description');
       }
     });
   }

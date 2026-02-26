@@ -72,6 +72,7 @@ export interface ProductCategoryCard {
   text: string;
   image: string;
   route: string;
+  categoryId?: number;
   color?: string;
 }
 
@@ -141,6 +142,7 @@ export interface OrderSearchResponse {
 
 export interface ProductBrandCard {
   brand: string;
+  brandId: number;
   title: string;
   color: string;
 }

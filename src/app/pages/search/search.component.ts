@@ -136,6 +136,8 @@ export class SearchComponent {
           searchParams.set('price_from', urlParams.get('price_from')!);
         if (urlParams.has('price_to'))
           searchParams.set('price_to', urlParams.get('price_to')!);
+        if (urlParams.has('category_id'))
+          searchParams.set('category_id', urlParams.get('category_id')!);
 
         return searchParams.toString();
       }),

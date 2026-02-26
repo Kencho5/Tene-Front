@@ -312,53 +312,65 @@
       </div>
     </div>
 
-    <div
-      class="mt-10 flex w-full flex-col rounded-2xl bg-white px-6 py-4 shadow-low sm:w-1/2"
-    >
-      <div class="space-x-6 text-sm font-semibold">
-        <button
-          type="button"
-          (click)="selectTab('specifications')"
-          [class]="
-            activeTab() === 'specifications'
-              ? 'text-green-60'
-              : 'text-platinum-50'
-          "
-        >
-          ტექნუკური მონაცემები
-        </button>
-        <button
-          type="button"
-          (click)="selectTab('description')"
-          [class]="
-            activeTab() === 'description' ? 'text-green-60' : 'text-platinum-50'
-          "
-        >
-          აღწერა
-        </button>
-      </div>
+    @if (hasSpecifications() || product.data.description) {
+      <div
+        class="mt-10 flex w-full flex-col rounded-2xl bg-white px-6 py-4 shadow-low sm:w-1/2"
+      >
+        @if (hasSpecifications()) {
+          <div class="space-x-6 text-sm font-semibold">
+            <button
+              type="button"
+              (click)="selectTab('specifications')"
+              [class]="
+                activeTab() === 'specifications'
+                  ? 'text-green-60'
+                  : 'text-platinum-50'
+              "
+            >
+              ტექნიკური მონაცემები
+            </button>
+            @if (product.data.description) {
+              <button
+                type="button"
+                (click)="selectTab('description')"
+                [class]="
+                  activeTab() === 'description' ? 'text-green-60' : 'text-platinum-50'
+                "
+              >
+                აღწერა
+              </button>
+            }
+          </div>
 
-      <div class="mt-2 h-px bg-platinum-20"></div>
+          <div class="mt-2 h-px bg-platinum-20"></div>
 
-      @if (activeTab() === "specifications") {
-        <div class="mt-4 space-y-3">
-          @for (
-            spec of product.data.specifications | keyvalue;
-            track spec.key
-          ) {
-            <div class="grid grid-cols-1 gap-1 text-sm sm:grid-cols-2">
-              <span class="text-left text-platinum-50">{{ spec.key }}</span>
-              <span class="text-left text-platinum-90">{{ spec.value }}</span>
+          @if (activeTab() === "specifications") {
+            <div class="mt-4 space-y-3">
+              @for (
+                spec of product.data.specifications | keyvalue;
+                track spec.key
+              ) {
+                <div class="grid grid-cols-1 gap-1 text-sm sm:grid-cols-2">
+                  <span class="text-left text-platinum-50">{{ spec.key }}</span>
+                  <span class="text-left text-platinum-90">{{ spec.value }}</span>
+                </div>
+              }
             </div>
+          } @else if (product.data.description) {
+            <div
+              class="product-description mt-4 text-sm leading-relaxed text-platinum-90"
+              [innerHTML]="product.data.description"
+            ></div>
           }
-        </div>
-      } @else {
-        <div
-          class="mt-4 whitespace-pre-line text-sm leading-relaxed text-platinum-90"
-        >
-          {{ product.data.description }}
-        </div>
-      }
-    </div>
+        } @else if (product.data.description) {
+          <h2 class="text-sm font-semibold text-green-60">აღწერა</h2>
+          <div class="mt-2 h-px bg-platinum-20"></div>
+          <div
+            class="product-description mt-4 text-sm leading-relaxed text-platinum-90"
+            [innerHTML]="product.data.description"
+          ></div>
+        }
+      </div>
+    }
   }
 </div>
