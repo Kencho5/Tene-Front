@@ -12,10 +12,11 @@ import {
   productBrandCards,
 } from '@utils/productsCards';
 import { SeoService } from '@core/services/seo/seo.service';
+import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
 
 @Component({
   selector: 'app-products',
-  imports: [SharedModule, ProductCardComponent, ImageComponent],
+  imports: [SharedModule, ProductCardComponent, ImageComponent, DragScrollDirective],
   templateUrl: './products.component.html',
   styles: `
     .hide-scrollbar::-webkit-scrollbar {
