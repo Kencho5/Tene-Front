@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
@@ -18,14 +12,7 @@ import { ProductCardComponent } from '@shared/components/ui/product-card/product
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
-import {
-  catchError,
-  distinctUntilChanged,
-  map,
-  of,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { catchError, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 import { ProductFacets } from '@core/interfaces/products.interface';
 import { getColorLabel } from '@utils/colors';
 
@@ -34,7 +21,6 @@ import { getColorLabel } from '@utils/colors';
   imports: [
     SharedModule,
     DropdownComponent,
-    ComboboxComponent,
     BreadcrumbComponent,
     ProductCardComponent,
     ProductCardSkeletonComponent,
@@ -47,7 +33,6 @@ export class SearchComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly productsService = inject(ProductsService);
-  private readonly categoriesService = inject(CategoriesService);
   private debounceTimer?: number;
 
   readonly getColorLabel = getColorLabel;
@@ -59,17 +44,10 @@ export class SearchComponent {
   readonly isLoading = signal<boolean>(false);
   readonly isFacetsLoading = signal<boolean>(false);
   readonly brandSearch = signal<string>('');
+  readonly categorySearch = signal<string>('');
   readonly showAllBrands = signal(false);
   readonly showAllColors = signal(false);
-  readonly selectedCategoryValue = signal<string | undefined>(undefined);
-
-  readonly categoryOptions = toSignal(
-    this.categoriesService.getCategoryTree().pipe(
-      map((response) => flattenCategoryTree(response.categories)),
-      catchError(() => of([])),
-    ),
-    { initialValue: [] },
-  );
+  readonly showAllCategories = signal(false);
 
   readonly breadcrumbItems: BreadcrumbItem[] = [
     { label: 'მთავარი', route: '/' },
@@ -106,53 +84,30 @@ export class SearchComponent {
   readonly totalProducts = computed(() => this.searchResponse().total);
   readonly limit = computed(() => Number(this.params()['limit']) || 15);
   readonly offset = computed(() => Number(this.params()['offset']) || 0);
-  readonly currentPage = computed(() =>
-    Math.floor(this.offset() / this.limit()) + 1,
-  );
-  readonly totalPages = computed(() =>
-    Math.ceil(this.totalProducts() / this.limit()),
-  );
-  readonly showingFrom = computed(() =>
-    Math.min(this.offset() + 1, this.totalProducts()),
-  );
-  readonly showingTo = computed(() =>
-    Math.min(this.offset() + this.limit(), this.totalProducts()),
-  );
+  readonly currentPage = computed(() => Math.floor(this.offset() / this.limit()) + 1);
+  readonly totalPages = computed(() => Math.ceil(this.totalProducts() / this.limit()));
+  readonly showingFrom = computed(() => Math.min(this.offset() + 1, this.totalProducts()));
+  readonly showingTo = computed(() => Math.min(this.offset() + this.limit(), this.totalProducts()));
 
   readonly facets = toSignal(
     this.route.queryParams.pipe(
       map((params) => {
         const urlParams = new URLSearchParams(params);
-        const searchParams = new URLSearchParams();
-
-        if (urlParams.has('query'))
-          searchParams.set('query', urlParams.get('query')!);
-        if (urlParams.has('product_type'))
-          searchParams.set('product_type', urlParams.get('product_type')!);
-        if (urlParams.has('price_from'))
-          searchParams.set('price_from', urlParams.get('price_from')!);
-        if (urlParams.has('price_to'))
-          searchParams.set('price_to', urlParams.get('price_to')!);
-        if (urlParams.has('category_id'))
-          searchParams.set('category_id', urlParams.get('category_id')!);
-
-        return searchParams.toString();
+        urlParams.delete('brand');
+        return urlParams.toString();
       }),
       distinctUntilChanged(),
       tap(() => this.isFacetsLoading.set(true)),
       switchMap((query) =>
-        this.productsService
-          .getFacets(query)
-          .pipe(
-            catchError(
-              () =>
-                of({
-                  brands: [],
-                  colors: [],
-                  categories: [],
-                } as ProductFacets),
-            ),
+        this.productsService.getFacets(query).pipe(
+          catchError(() =>
+            of({
+              brands: [],
+              colors: [],
+              categories: [],
+            } as ProductFacets),
           ),
+        ),
       ),
       tap(() => this.isFacetsLoading.set(false)),
     ),
@@ -173,9 +128,18 @@ export class SearchComponent {
       return brands;
     }
 
-    return brands.filter((brand) =>
-      brand.name.toLowerCase().includes(search),
-    );
+    return brands.filter((brand) => brand.name.toLowerCase().includes(search));
+  });
+
+  readonly filteredCategories = computed(() => {
+    const search = this.categorySearch().toLowerCase();
+    const categories = this.facets().categories;
+
+    if (!search) {
+      return categories;
+    }
+
+    return categories.filter((category) => category.name.toLowerCase().includes(search));
   });
 
   setParam(key: string, value: string | undefined, debounce = 0): void {
@@ -200,9 +164,7 @@ export class SearchComponent {
   toggleParam(key: string, value: string, checked: boolean): void {
     const current = this.params()[key] as string | undefined;
     const values = current ? current.split(',') : [];
-    const updated = checked
-      ? [...values, value]
-      : values.filter((v: string) => v !== value);
+    const updated = checked ? [...values, value] : values.filter((v: string) => v !== value);
 
     this.setParam(key, updated.length ? updated.join(',') : undefined);
   }
@@ -210,21 +172,6 @@ export class SearchComponent {
   hasValue(key: string, value: string): boolean {
     const current = this.params()[key] as string | undefined;
     return current ? current.split(',').includes(value) : false;
-  }
-
-  onCategorySelectionChange(categoryId: string | undefined): void {
-    this.setParam('category_id', categoryId);
-  }
-
-  getSelectedCategoryValue(): string | undefined {
-    const params = this.params();
-    const categoryId = params['category_id'];
-
-    if (!categoryId) return undefined;
-
-    const options = this.categoryOptions();
-    const option = options.find((opt) => opt.value.split(':')[1] === categoryId);
-    return option?.value;
   }
 
   clearAll(): void {
@@ -240,9 +187,7 @@ export class SearchComponent {
     this.updateParams({ limit: value || '15', offset: 0 });
   }
 
-  private updateParams(
-    params: Record<string, string | number | undefined>,
-  ): void {
+  private updateParams(params: Record<string, string | number | undefined>): void {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: params,

@@ -105,16 +105,103 @@
 
     <div class="h-px bg-platinum-20"></div>
 
-    <div class="flex flex-col gap-3">
+    <!-- Categories Section -->
+    <div class="space-y-6">
       <p class="font-semibold">კატეგორია</p>
-      <app-combobox
-        [selectedValue]="getSelectedCategoryValue()"
-        (selectedValueChange)="onCategorySelectionChange($event)"
-        [items]="categoryOptions()"
-        placeholder="აირჩიეთ კატეგორია"
-        searchPlaceholder="ძიება..."
-        notFoundText="კატეგორია ვერ მოიძებნა"
-      />
+
+      @if (isFacetsLoading()) {
+      <!-- Loading skeleton -->
+      <div class="space-y-4">
+        @for (skeleton of [1, 2, 3]; track skeleton) {
+        <div class="flex items-center justify-between">
+          <div class="h-4 w-24 animate-pulse rounded bg-platinum-20"></div>
+          <div class="h-5 w-5 animate-pulse rounded bg-platinum-20"></div>
+        </div>
+        }
+      </div>
+      } @else {
+      <!-- Category search input -->
+      <div class="relative">
+        <input
+          type="text"
+          [value]="categorySearch()"
+          (input)="categorySearch.set($any($event.target).value)"
+          placeholder="ძიება..."
+          class="w-full rounded-full bg-platinum-10 p-3 pl-10 outline-none"
+        />
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
+        >
+          <path
+            d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
+            stroke="#212121"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+
+      <!-- Category list -->
+      <div class="space-y-4">
+        @for (category of showAllCategories() ? filteredCategories() : filteredCategories().slice(0, 5); track category.id) {
+        <div class="flex items-center justify-between" [class.opacity-50]="category.count === 0">
+          <div class="flex items-center gap-2">
+            <p>{{ category.name }}</p>
+            <span class="text-xs text-platinum-50">({{ category.count }})</span>
+          </div>
+
+          <label class="relative inline-block h-5 w-5 cursor-pointer">
+            <input
+              type="checkbox"
+              [checked]="hasValue('category_id', '' + category.id)"
+              [disabled]="category.count === 0"
+              (change)="
+                    toggleParam(
+                      'category_id',
+                      '' + category.id,
+                      $any($event.target).checked
+                    )
+                  "
+              class="peer sr-only"
+            />
+            <span
+              class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
+            ></span>
+            <svg
+              viewBox="0 0 20 20"
+              fill="none"
+              class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+            >
+              <path
+                d="M16.6667 5L7.50004 14.1667L3.33337 10"
+                stroke="white"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </label>
+        </div>
+        } @if (filteredCategories().length === 0) {
+        <p class="text-sm text-platinum-50">კატეგორია არ მოიძებნა</p>
+        }
+      </div>
+
+      @if (filteredCategories().length > 5) {
+        <button
+          type="button"
+          (click)="showAllCategories.set(!showAllCategories())"
+          class="text-sm font-medium text-green-70"
+        >
+          {{ showAllCategories() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + filteredCategories().length + ")" }}
+        </button>
+      }
+      }
     </div>
 
     <div class="h-px bg-platinum-20"></div>
