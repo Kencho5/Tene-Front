@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ProductsService } from '@core/services/products/products.service';
@@ -12,8 +12,7 @@ import { ProductCardComponent } from '@shared/components/ui/product-card/product
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
-import { catchError, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
-import { ProductFacets } from '@core/interfaces/products.interface';
+import { ProductFacets, ProductSearchResponse } from '@core/interfaces/products.interface';
 import { getColorLabel } from '@utils/colors';
 
 @Component({
@@ -41,8 +40,6 @@ export class SearchComponent {
     initialValue: {} as Params,
   });
   readonly isFilterOpen = signal<boolean>(false);
-  readonly isLoading = signal<boolean>(false);
-  readonly isFacetsLoading = signal<boolean>(false);
   readonly brandSearch = signal<string>('');
   readonly categorySearch = signal<string>('');
   readonly showAllBrands = signal(false);
@@ -59,29 +56,14 @@ export class SearchComponent {
     { label: 'ფასი: ზრდადობით', value: 'price_asc' },
   ];
 
-  readonly searchResponse = toSignal(
-    this.route.queryParams.pipe(
-      tap(() => {
-        this.isLoading.set(true);
-      }),
-      map((params) => new URLSearchParams(params).toString()),
-      switchMap((query) =>
-        this.productsService.searchProduct(query).pipe(
-          map((response) => {
-            return response;
-          }),
-          catchError(() => of({ products: [], total: 0, limit: 0, offset: 0 })),
-        ),
-      ),
-      tap(() => {
-        this.isLoading.set(false);
-      }),
-    ),
-    { initialValue: { products: [], total: 0, limit: 0, offset: 0 } },
-  );
+  readonly searchResponse = rxResource({
+    defaultValue: { products: [], total: 0, limit: 0, offset: 0 } as ProductSearchResponse,
+    params: () => new URLSearchParams(this.params()).toString(),
+    stream: ({ params }) => this.productsService.searchProduct(params),
+  });
 
-  readonly products = computed(() => this.searchResponse().products);
-  readonly totalProducts = computed(() => this.searchResponse().total);
+  readonly products = computed(() => this.searchResponse.value().products);
+  readonly totalProducts = computed(() => this.searchResponse.value().total);
   readonly limit = computed(() => Number(this.params()['limit']) || 15);
   readonly offset = computed(() => Number(this.params()['offset']) || 0);
   readonly currentPage = computed(() => Math.floor(this.offset() / this.limit()) + 1);
@@ -89,40 +71,20 @@ export class SearchComponent {
   readonly showingFrom = computed(() => Math.min(this.offset() + 1, this.totalProducts()));
   readonly showingTo = computed(() => Math.min(this.offset() + this.limit(), this.totalProducts()));
 
-  readonly facets = toSignal(
-    this.route.queryParams.pipe(
-      map((params) => {
-        const urlParams = new URLSearchParams(params);
-        urlParams.delete('brand');
-        return urlParams.toString();
-      }),
-      distinctUntilChanged(),
-      tap(() => this.isFacetsLoading.set(true)),
-      switchMap((query) =>
-        this.productsService.getFacets(query).pipe(
-          catchError(() =>
-            of({
-              brands: [],
-              colors: [],
-              categories: [],
-            } as ProductFacets),
-          ),
-        ),
-      ),
-      tap(() => this.isFacetsLoading.set(false)),
-    ),
-    {
-      initialValue: {
-        brands: [],
-        colors: [],
-        categories: [],
-      } as ProductFacets,
+  readonly facets = rxResource({
+    defaultValue: { brands: [], colors: [], categories: [] } as ProductFacets,
+    params: () => {
+      const urlParams = new URLSearchParams(this.params());
+      urlParams.delete('brand');
+      urlParams.delete('color');
+      return urlParams.toString();
     },
-  );
+    stream: ({ params }) => this.productsService.getFacets(params),
+  });
 
   readonly filteredBrands = computed(() => {
     const search = this.brandSearch().toLowerCase();
-    const brands = this.facets().brands;
+    const brands = this.facets.value().brands;
 
     if (!search) {
       return brands;
@@ -133,7 +95,7 @@ export class SearchComponent {
 
   readonly filteredCategories = computed(() => {
     const search = this.categorySearch().toLowerCase();
-    const categories = this.facets().categories;
+    const categories = this.facets.value().categories;
 
     if (!search) {
       return categories;

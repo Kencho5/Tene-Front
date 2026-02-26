@@ -109,7 +109,7 @@
     <div class="space-y-6">
       <p class="font-semibold">კატეგორია</p>
 
-      @if (isFacetsLoading()) {
+      @if (facets.isLoading()) {
       <!-- Loading skeleton -->
       <div class="space-y-4">
         @for (skeleton of [1, 2, 3]; track skeleton) {
@@ -278,7 +278,7 @@
     <div class="space-y-6">
       <p class="font-semibold">ბრენდი</p>
 
-      @if (isFacetsLoading()) {
+      @if (facets.isLoading()) {
       <!-- Loading skeleton -->
       <div class="space-y-4">
         @for (skeleton of [1, 2, 3]; track skeleton) {
@@ -379,7 +379,7 @@
     <div class="space-y-6">
       <p class="font-semibold">ფერი</p>
 
-      @if (isFacetsLoading()) {
+      @if (facets.isLoading()) {
       <!-- Loading skeleton -->
       <div class="space-y-4">
         @for (skeleton of [1, 2, 3]; track skeleton) {
@@ -392,7 +392,7 @@
       } @else {
       <!-- Colors list -->
       <div class="space-y-4">
-        @for (color of showAllColors() ? facets().colors : facets().colors.slice(0, 5); track color.value) {
+        @for (color of showAllColors() ? facets.value().colors : facets.value().colors.slice(0, 5); track color.value) {
         <div class="flex items-center justify-between" [class.opacity-50]="color.count === 0">
           <div class="flex items-center gap-2">
             <span
@@ -435,18 +435,18 @@
             </svg>
           </label>
         </div>
-        } @if (facets().colors.length === 0) {
+        } @if (facets.value().colors.length === 0) {
         <p class="text-sm text-platinum-50">მონაცემები არ მოიძებნა</p>
         }
       </div>
 
-      @if (facets().colors.length > 5) {
+      @if (facets.value().colors.length > 5) {
         <button
           type="button"
           (click)="showAllColors.set(!showAllColors())"
           class="text-sm font-medium text-green-70"
         >
-          {{ showAllColors() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + facets().colors.length + ")" }}
+          {{ showAllColors() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + facets.value().colors.length + ")" }}
         </button>
       }
       }
@@ -494,7 +494,7 @@
     </div>
 
     <div class="flex flex-col gap-6 sm:flex-row sm:flex-wrap sm:gap-6">
-      @if (isLoading()) { @for (skeleton of [1, 2, 3, 4, 5, 6]; track skeleton) {
+      @if (searchResponse.isLoading()) { @for (skeleton of [1, 2, 3, 4, 5, 6]; track skeleton) {
       <app-product-card-skeleton />
       } } @else { @if (products().length == 0) {
       <div
