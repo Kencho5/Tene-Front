@@ -54,6 +54,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/not-found/not-found.component').then((m) => m.NotFoundComponent),
       },
+      {
+        path: 'coming-soon',
+        loadComponent: () =>
+          import('./pages/coming-soon/coming-soon.component').then(
+            (m) => m.ComingSoonComponent,
+          ),
+      },
     ],
   },
 
@@ -207,5 +214,5 @@ export const routes: Routes = [
     ],
   },
 
-  { path: '**', redirectTo: '/404' },
+  { path: '**', redirectTo: '/coming-soon' },
 ];
