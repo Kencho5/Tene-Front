@@ -133,7 +133,7 @@ export class AdminBrandsComponent {
       .pipe(
         tap(() => {
           toastParams = ['წარმატება', 'ბრენდი წარმატებით წაიშალა', 3000, 'success'];
-          this.updateQueryParams({ _t: Date.now() });
+          this.allBrands.reload();
         }),
         catchError((error) => {
           toastParams = [

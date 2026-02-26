@@ -149,7 +149,7 @@ export class AdminProductsComponent {
       .pipe(
         tap(() => {
           toastParams = ['წარმატება', 'პროდუქტი წარმატებით წაიშალა', 3000, 'success'];
-          this.updateQueryParams({ _t: Date.now() });
+          this.searchResponse.reload();
         }),
         catchError((error) => {
           toastParams = ['შეცდომა', error.error.message, 3000, 'error'];
@@ -187,7 +187,7 @@ export class AdminProductsComponent {
             3000,
             'success',
           ];
-          this.updateQueryParams({ _t: Date.now() });
+          this.searchResponse.reload();
         }),
         catchError((error) => {
           toastParams = ['შეცდომა', error.error.message, 3000, 'error'];

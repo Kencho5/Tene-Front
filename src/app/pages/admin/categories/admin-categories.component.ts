@@ -215,7 +215,7 @@ export class AdminCategoriesComponent {
             3000,
             'success',
           ];
-          this.updateQueryParams({ _t: Date.now() });
+          this.allCategories.reload();
         }),
         catchError((error) => {
           toastParams = ['შეცდომა', error.error.message, 3000, 'error'];
@@ -254,7 +254,7 @@ export class AdminCategoriesComponent {
             3000,
             'success',
           ];
-          this.updateQueryParams({ _t: Date.now() });
+          this.allCategories.reload();
         }),
         catchError((error) => {
           toastParams = ['შეცდომა', error.error.message, 3000, 'error'];
