@@ -1,0 +1,78 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold text-platinum-100">
+        {{ pageTitle() }}
+      </h1>
+      <p class="mt-1 text-sm text-platinum-50">
+        @if (isEditMode()) {
+          ბრენდის ID: {{ brandId() }}
+        } @else {
+          შეავსეთ ყველა სავალდებულო ველი
+        }
+      </p>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form (submit)="onSubmit($event)" novalidate class="space-y-6">
+    <!-- Basic Information Card -->
+    <div class="rounded-xl border border-platinum-20 bg-white p-6">
+      <h2 class="mb-6 text-lg font-semibold text-platinum-100">
+        ძირითადი ინფორმაცია
+      </h2>
+
+      <div class="flex flex-col gap-5">
+        <!-- Brand Name -->
+        <app-input
+          [field]="brandForm.name"
+          [error]="submitted() && brandForm.name().invalid()"
+          type="text"
+          placeholder="ბრენდის სახელი *"
+        />
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex items-center justify-end gap-3">
+      <button
+        type="button"
+        (click)="cancel()"
+        class="rounded-xl border border-platinum-20 px-6 py-2.5 text-sm font-medium text-platinum-60 transition-colors hover:bg-platinum-10"
+      >
+        გაუქმება
+      </button>
+      <button
+        type="submit"
+        [disabled]="isLoading()"
+        [class]="
+          'flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-medium text-white transition-colors ' +
+          (isLoading()
+            ? 'cursor-not-allowed bg-platinum-40'
+            : 'bg-green-60 hover:bg-green-70')
+        "
+      >
+        @if (isLoading()) {
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            class="animate-spin"
+          >
+            <path
+              d="M8 2V4M8 12V14M14 8H12M4 8H2M12.2426 3.75736L10.8284 5.17157M5.17157 10.8284L3.75736 12.2426M12.2426 12.2426L10.8284 10.8284M5.17157 5.17157L3.75736 3.75736"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span>მუშავდება...</span>
+        } @else {
+          <span>{{ isEditMode() ? "განახლება" : "დამატება" }}</span>
+        }
+      </button>
+    </div>
+  </form>
+</div>

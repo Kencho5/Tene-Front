@@ -23,6 +23,7 @@ import {
   CategoryImagePresignedResponse,
 } from '@core/interfaces/admin/categories.interface';
 import { CategoryTreeResponse } from '@core/interfaces/categories.interface';
+import { Brand, BrandRequest } from '@core/interfaces/admin/brands.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -156,5 +157,22 @@ export class AdminService {
     return this.http.put(`/admin/products/${productId}/categories`, {
       category_ids: categoryIds,
     });
+  }
+
+  // Brand Management
+  getBrands(): Observable<Brand[]> {
+    return this.http.get<Brand[]>('/admin/brands');
+  }
+
+  createBrand(payload: BrandRequest): Observable<Brand> {
+    return this.http.post<Brand>('/admin/brands', payload);
+  }
+
+  updateBrand(brandId: number, payload: BrandRequest): Observable<Brand> {
+    return this.http.put<Brand>(`/admin/brands/${brandId}`, payload);
+  }
+
+  deleteBrand(brandId: number): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/brands/${brandId}`);
   }
 }

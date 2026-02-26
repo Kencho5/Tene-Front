@@ -5,7 +5,6 @@ import { OutsideClickDirective } from '@core/directives/outside-click.directive'
 import { CategoryTreeResponse } from '@core/interfaces/categories.interface';
 import { CategoriesService } from '@core/services/categories/categories.service';
 import { SharedModule } from '@shared/shared.module';
-import { SpinnerComponent } from '../ui/spinner/spinner.component';
 import { ProductImage } from '@core/interfaces/products.interface';
 import { ProductsService } from '@core/services/products/products.service';
 import { getProductImageUrl } from '@utils/product-image-url';
@@ -14,7 +13,7 @@ import { generateSlug } from '@utils/slug';
 
 @Component({
   selector: 'app-search-dropdown',
-  imports: [SharedModule, OutsideClickDirective, SpinnerComponent],
+  imports: [SharedModule, OutsideClickDirective],
   templateUrl: './search-dropdown.component.html',
 })
 export class SearchDropdownComponent {

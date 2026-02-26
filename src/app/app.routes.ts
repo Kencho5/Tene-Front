@@ -156,6 +156,27 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'brands',
+        loadComponent: () =>
+          import('./pages/admin/brands/admin-brands.component').then(
+            (m) => m.AdminBrandsComponent,
+          ),
+      },
+      {
+        path: 'brands/new',
+        loadComponent: () =>
+          import('./pages/admin/brand-form/admin-brand-form.component').then(
+            (m) => m.AdminBrandFormComponent,
+          ),
+      },
+      {
+        path: 'brands/:id/edit',
+        loadComponent: () =>
+          import('./pages/admin/brand-form/admin-brand-form.component').then(
+            (m) => m.AdminBrandFormComponent,
+          ),
+      },
+      {
         path: 'categories',
         loadComponent: () =>
           import('./pages/admin/categories/admin-categories.component').then(

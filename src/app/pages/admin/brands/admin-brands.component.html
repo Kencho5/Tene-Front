@@ -1,0 +1,273 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div
+    class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <div>
+      <h1 class="text-2xl font-semibold text-platinum-100">ბრენდები</h1>
+      <p class="mt-1 text-sm text-platinum-50">
+        სულ {{ totalBrands() }} ბრენდი
+      </p>
+    </div>
+
+    <a
+      [routerLink]="['/admin/brands/new']"
+      class="flex items-center justify-center gap-2 rounded-xl bg-green-60 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path
+          d="M8 3.33337V12.6667M3.33334 8.00004H12.6667"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+      ახალი ბრენდი
+    </a>
+  </div>
+
+  <!-- Filters Bar -->
+  <div
+    class="flex flex-col gap-3 rounded-xl border border-platinum-20 bg-white p-4 sm:flex-row sm:items-center"
+  >
+    <!-- Search Input -->
+    <div class="relative flex-1">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-platinum-50"
+      >
+        <path
+          d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <input
+        type="text"
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+        placeholder="ძიება ბრენდის სახელით ან ID-ით..."
+        class="h-[44px] w-full rounded-xl border border-platinum-20 py-2.5 pl-10 pr-10 text-sm outline-none transition-colors focus:border-green-60 focus:ring-1 focus:ring-green-60"
+      />
+      @if (searchQuery()) {
+        <button
+          type="button"
+          (click)="clearSearch()"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-platinum-50 transition-colors hover:text-platinum-100"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M12 4L4 12M4 4L12 12"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="overflow-hidden rounded-xl border border-platinum-20 bg-white">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="border-b border-platinum-20 bg-platinum-10">
+          <tr>
+            <th
+              class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60"
+            >
+              ბრენდი
+            </th>
+            <th
+              class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-platinum-60 md:table-cell"
+            >
+              შექმნის თარიღი
+            </th>
+            <th
+              class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-platinum-60"
+            >
+              მოქმედებები
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-platinum-20">
+          @if (isLoading()) {
+            @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
+              <tr class="hover:bg-platinum-10">
+                <td class="px-4 py-4">
+                  <div class="space-y-2">
+                    <div
+                      class="h-4 w-32 animate-pulse rounded bg-platinum-20"
+                    ></div>
+                    <div
+                      class="h-3 w-20 animate-pulse rounded bg-platinum-20"
+                    ></div>
+                  </div>
+                </td>
+                <td class="hidden px-4 py-4 md:table-cell">
+                  <div
+                    class="h-4 w-24 animate-pulse rounded bg-platinum-20"
+                  ></div>
+                </td>
+                <td class="px-4 py-4">
+                  <div class="flex justify-end gap-2">
+                    <div
+                      class="h-8 w-8 animate-pulse rounded-xl bg-platinum-20"
+                    ></div>
+                    <div
+                      class="h-8 w-8 animate-pulse rounded-xl bg-platinum-20"
+                    ></div>
+                  </div>
+                </td>
+              </tr>
+            }
+          } @else if (brands().length === 0) {
+            <tr>
+              <td colspan="3" class="px-4 py-16 text-center">
+                <div class="flex flex-col items-center gap-3">
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 48 48"
+                    fill="none"
+                    class="text-platinum-30"
+                  >
+                    <path
+                      d="M40 8H8C5.79086 8 4 9.79086 4 12V36C4 38.2091 5.79086 40 8 40H40C42.2091 40 44 38.2091 44 36V12C44 9.79086 42.2091 8 40 8Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M16 20L24 28L32 20"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <div>
+                    <p class="text-sm font-medium text-platinum-100">
+                      ბრენდები არ მოიძებნა
+                    </p>
+                    <p class="mt-1 text-sm text-platinum-50">
+                      სცადეთ სხვა ძებნის პარამეტრები
+                    </p>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          } @else {
+            @for (brand of brands(); track brand.id) {
+              <tr class="transition-colors hover:bg-platinum-10">
+                <!-- Brand Name -->
+                <td class="px-4 py-4">
+                  <div>
+                    <p class="font-medium text-platinum-100">
+                      {{ brand.name }}
+                    </p>
+                    <p class="text-xs text-platinum-50">
+                      ID: {{ brand.id }}
+                    </p>
+                  </div>
+                </td>
+
+                <!-- Created At -->
+                <td class="hidden px-4 py-4 md:table-cell">
+                  <span class="text-sm text-platinum-60">
+                    {{ formatDate(brand.created_at) }}
+                  </span>
+                </td>
+
+                <!-- Actions -->
+                <td class="px-4 py-4">
+                  <div class="flex items-center justify-end gap-2">
+                    <a
+                      [routerLink]="['/admin/brands', brand.id, 'edit']"
+                      class="flex items-center justify-center rounded-xl p-2 text-platinum-60 transition-colors hover:bg-platinum-10 hover:text-platinum-100"
+                      aria-label="რედაქტირება"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M11.3333 2.00004C11.5084 1.82494 11.7163 1.68605 11.9451 1.59129C12.1739 1.49653 12.419 1.44775 12.6666 1.44775C12.9143 1.44775 13.1594 1.49653 13.3882 1.59129C13.617 1.68605 13.8249 1.82494 14 2.00004C14.1751 2.17513 14.314 2.383 14.4087 2.61178C14.5035 2.84055 14.5523 3.08569 14.5523 3.33337C14.5523 3.58106 14.5035 3.8262 14.4087 4.05497C14.314 4.28375 14.1751 4.49162 14 4.66671L5.00001 13.6667L1.33334 14.6667L2.33334 11L11.3333 2.00004Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </a>
+                    <button
+                      type="button"
+                      (click)="openDeleteModal(brand.id)"
+                      class="rounded-xl p-2 text-platinum-60 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
+                      aria-label="წაშლა"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M2 4H3.33333H14"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M5.33334 4.00004V2.66671C5.33334 2.31309 5.47381 1.97395 5.72386 1.7239C5.97391 1.47385 6.31305 1.33337 6.66668 1.33337H9.33334C9.68697 1.33337 10.0261 1.47385 10.2762 1.7239C10.5262 1.97395 10.6667 2.31309 10.6667 2.66671V4.00004M12.6667 4.00004V13.3334C12.6667 13.687 12.5262 14.0261 12.2762 14.2762C12.0261 14.5262 11.687 14.6667 11.3333 14.6667H4.66668C4.31305 14.6667 3.97391 14.5262 3.72386 14.2762C3.47381 14.0261 3.33334 13.687 3.33334 13.3334V4.00004H12.6667Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [totalItems]="totalBrands()"
+      [showingFrom]="showingFrom()"
+      [showingTo]="showingTo()"
+      [limit]="limit()"
+      (pageChange)="onPageChange($event)"
+      (limitChange)="onLimitChangeValue($event)"
+    />
+  </div>
+</div>
+
+<app-confirmation-modal
+  [isOpen]="isDeleteModalOpen()"
+  title="ბრენდის წაშლა"
+  message="დარწმუნებული ხართ, რომ გსურთ ამ ბრენდის წაშლა? ეს მოქმედება შეუქცევადია."
+  confirmText="წაშლა"
+  cancelText="გაუქმება"
+  confirmButtonGradientStart="#ef4444"
+  confirmButtonGradientEnd="#dc2626"
+  (confirm)="confirmDelete()"
+  (cancel)="closeDeleteModal()"
+/>
