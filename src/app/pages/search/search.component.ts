@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
@@ -47,6 +47,7 @@ export class SearchComponent {
   });
   readonly isFilterOpen = signal<boolean>(false);
   readonly isCategoryExpanded = signal(false);
+  readonly expandedParentId = linkedSignal(() => this.parentCategories()[0]?.id ?? null);
   readonly brandSearch = signal<string>('');
   readonly categorySearch = signal<string>('');
   readonly showAllBrands = signal(false);
