@@ -23,9 +23,9 @@
           <h2 class="mb-4 sm:mb-6">{{ title }}</h2>
 
           <div class="flex flex-col gap-3 text-sm text-platinum-50 sm:gap-4">
-            @for (link of links[title]; track $index) {
-              <a routerLink="" class="transition-colors hover:text-green-60">{{
-                link
+            @for (link of links[title]; track link.route) {
+              <a [routerLink]="link.route" class="transition-colors hover:text-green-60">{{
+                link.label
               }}</a>
             }
           </div>
@@ -44,7 +44,9 @@
     <!-- Social media links -->
     <div class="flex items-center gap-4">
       <a
-        href=""
+        href="https://www.facebook.com/TeneUSB"
+        target="_blank"
+        rel="noopener noreferrer"
         aria-label="Facebook"
         class="transition-transform hover:scale-110"
       >
@@ -70,7 +72,9 @@
       </a>
 
       <a
-        href=""
+        href="https://m.me/TeneUSB"
+        target="_blank"
+        rel="noopener noreferrer"
         aria-label="Messenger"
         class="transition-transform hover:scale-110"
       >
@@ -102,7 +106,9 @@
       </a>
 
       <a
-        href=""
+        href="https://www.instagram.com/teneusb/"
+        target="_blank"
+        rel="noopener noreferrer"
         aria-label="Instagram"
         class="transition-transform hover:scale-110"
       >

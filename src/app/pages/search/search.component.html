@@ -1,198 +1,228 @@
 <!-- Parent Categories Bar -->
 @if (parentCategories().length > 0) {
-  <div class="relative z-30 border-b border-platinum-20 bg-white">
-    <div class="container relative px-4 xl:px-0">
-      <div class="pointer-events-none absolute right-0 top-0 z-10 h-full w-12 bg-gradient-to-l from-white to-transparent xl:-right-0"></div>
-      <nav appDragScroll class="hide-scrollbar -mx-4 flex items-center overflow-x-auto scroll-smooth px-4 pr-12 sm:mx-0 sm:px-0 sm:pr-12">
-        <!-- "ყველა" button at start -->
-        <button
-          type="button"
-          (click)="isCategoryExpanded.set(!isCategoryExpanded())"
-          class="flex flex-shrink-0 items-center gap-1 border-b-2 px-4 py-3 text-sm font-semibold transition-colors"
-          [class]="isCategoryExpanded()
+<div class="fixed top-[72px] left-0 right-0 z-30 border-b border-platinum-20 bg-white sm:top-20">
+  <div class="container relative px-4 xl:px-0">
+    <div
+      class="pointer-events-none absolute right-0 top-0 z-10 h-full w-12 bg-gradient-to-l from-white to-transparent xl:-right-0"
+    ></div>
+    <nav
+      appDragScroll
+      class="hide-scrollbar -mx-4 flex items-center overflow-x-auto scroll-smooth px-4 pr-12 sm:mx-0 sm:px-0 sm:pr-12"
+    >
+      <!-- "ყველა" button at start -->
+      <button
+        type="button"
+        (click)="isCategoryExpanded.set(!isCategoryExpanded())"
+        class="flex flex-shrink-0 items-center gap-1 border-b-2 px-4 py-3 text-sm font-semibold transition-colors"
+        [class]="isCategoryExpanded()
             ? 'border-green-60 text-green-70'
             : 'border-transparent text-platinum-60 hover:text-green-70'"
+      >
+        ყველა
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          class="transition-transform"
+          [class.rotate-180]="isCategoryExpanded()"
         >
-          ყველა
-          <svg
-            width="16" height="16" viewBox="0 0 16 16" fill="none"
-            class="transition-transform"
-            [class.rotate-180]="isCategoryExpanded()"
-          >
-            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        @for (category of parentCategories(); track category.id) {
-          <button
-            type="button"
-            (click)="setParam('category_id', '' + category.id)"
-            class="flex flex-shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors"
-            [class]="selectedCategoryId() === '' + category.id
+          <path
+            d="M4 6L8 10L12 6"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+      @for (category of parentCategories(); track category.id) {
+      <button
+        type="button"
+        (click)="setParam('category_id', '' + category.id)"
+        class="flex flex-shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors"
+        [class]="selectedCategoryId() === '' + category.id
               ? 'border-green-60 text-green-70'
               : 'border-transparent text-platinum-60 hover:text-green-70'"
-          >
-            @if (category.image_url) {
-              <img
-                [src]="category.image_url"
-                [alt]="category.name"
-                class="h-5 w-5 object-contain"
-              />
-            }
-            {{ category.name }}
-          </button>
-        }
-      </nav>
-    </div>
+      >
+        @if (category.image_url) {
+        <img [src]="category.image_url" [alt]="category.name" class="h-5 w-5 object-contain" />
+        } {{ category.name }}
+      </button>
+      }
+    </nav>
   </div>
+</div>
 }
 
 <!-- Category Expanded Overlay + Panel -->
 @if (isCategoryExpanded()) {
-  <div
-    (click)="isCategoryExpanded.set(false)"
-    class="fixed inset-0 z-20 bg-black/40 backdrop-blur-sm"
-  ></div>
-  <div class="fixed inset-0 z-30 flex flex-col bg-white md:absolute md:inset-x-0 md:bottom-auto md:top-0 md:shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-    <div class="container flex flex-1 flex-col overflow-hidden px-4 pb-8 pt-6 xl:px-0 md:flex-none">
-      <!-- Header -->
-      <div class="mb-6 flex items-center justify-between">
-        <h2 class="text-lg font-bold tracking-tight">ყველა კატეგორია</h2>
+<div
+  (click)="isCategoryExpanded.set(false)"
+  class="fixed inset-0 z-20 bg-black/40 backdrop-blur-sm"
+></div>
+<div
+  class="fixed inset-0 z-30 flex flex-col bg-white md:absolute md:inset-x-0 md:bottom-auto md:top-0 md:shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
+>
+  <div class="container flex flex-1 flex-col overflow-hidden px-4 pb-8 pt-6 md:flex-none xl:px-0">
+    <!-- Header -->
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="text-lg font-bold tracking-tight">ყველა კატეგორია</h2>
+      <button
+        type="button"
+        (click)="isCategoryExpanded.set(false)"
+        class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-platinum-20 transition-colors hover:bg-platinum-10"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M18 6L6 18M6 6L18 18"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile: Accordion layout -->
+    <div class="hide-scrollbar flex-1 space-y-1 overflow-y-auto md:hidden">
+      @for (category of parentCategories(); track category.id) {
+      <div>
         <button
           type="button"
-          (click)="isCategoryExpanded.set(false)"
-          class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-platinum-20 transition-colors hover:bg-platinum-10"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Mobile: Accordion layout -->
-      <div class="hide-scrollbar flex-1 space-y-1 overflow-y-auto md:hidden">
-        @for (category of parentCategories(); track category.id) {
-          <div>
-            <button
-              type="button"
-              (click)="expandedParentId.set(expandedParentId() === category.id ? null! : category.id)"
-              class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-3 transition-all duration-150"
-              [class]="expandedParentId() === category.id
+          (click)="expandedParentId.set(expandedParentId() === category.id ? null! : category.id)"
+          class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-3 transition-all duration-150"
+          [class]="expandedParentId() === category.id
                 ? 'bg-platinum-10 text-platinum-100'
                 : 'text-platinum-60'"
-            >
-              @if (category.image_url) {
-                <img
-                  [src]="category.image_url"
-                  [alt]="category.name"
-                  class="h-8 w-8 flex-shrink-0 object-contain"
-                />
-              }
-              <span class="truncate text-sm font-medium">{{ category.name }}</span>
-              @if (category.children.length > 0) {
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-                  class="ml-auto flex-shrink-0 transition-transform duration-200"
-                  [class.rotate-90]="expandedParentId() === category.id"
-                >
-                  <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              }
-            </button>
-            @if (expandedParentId() === category.id && category.children.length > 0) {
-              <div class="grid grid-cols-2 gap-2 px-2 pb-2 pt-1">
-                @for (child of category.children; track child.id) {
-                  <button
-                    type="button"
-                    (click)="setParam('category_id', '' + child.id); isCategoryExpanded.set(false)"
-                    class="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 transition-all duration-150"
-                    [class]="selectedCategoryId() === '' + child.id
+        >
+          @if (category.image_url) {
+          <img
+            [src]="category.image_url"
+            [alt]="category.name"
+            class="h-8 w-8 flex-shrink-0 object-contain"
+          />
+          }
+          <span class="truncate text-sm font-medium">{{ category.name }}</span>
+          @if (category.children.length > 0) {
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            class="ml-auto flex-shrink-0 transition-transform duration-200"
+            [class.rotate-90]="expandedParentId() === category.id"
+          >
+            <path
+              d="M6 4L10 8L6 12"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          }
+        </button>
+        @if (expandedParentId() === category.id && category.children.length > 0) {
+        <div class="grid grid-cols-2 gap-2 px-2 pb-2 pt-1">
+          @for (child of category.children; track child.id) {
+          <button
+            type="button"
+            (click)="setParam('category_id', '' + child.id); isCategoryExpanded.set(false)"
+            class="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 transition-all duration-150"
+            [class]="selectedCategoryId() === '' + child.id
                       ? 'bg-green-10 text-green-70'
                       : 'text-platinum-60 hover:bg-platinum-10'"
-                  >
-                    @if (child.image_url) {
-                      <img
-                        [src]="child.image_url"
-                        [alt]="child.name"
-                        class="h-7 w-7 flex-shrink-0 object-contain"
-                      />
-                    }
-                    <span class="truncate text-xs font-medium">{{ child.name }}</span>
-                  </button>
-                }
-              </div>
+          >
+            @if (child.image_url) {
+            <img
+              [src]="child.image_url"
+              [alt]="child.name"
+              class="h-7 w-7 flex-shrink-0 object-contain"
+            />
             }
-          </div>
+            <span class="truncate text-xs font-medium">{{ child.name }}</span>
+          </button>
+          }
+        </div>
+        }
+      </div>
+      }
+    </div>
+
+    <!-- Desktop: Two-panel layout -->
+    <div class="hidden gap-6 md:flex">
+      <!-- Parent categories list -->
+      <div class="hide-scrollbar w-56 flex-shrink-0 space-y-1 overflow-y-auto lg:w-64">
+        @for (category of parentCategories(); track category.id) {
+        <button
+          type="button"
+          (mouseenter)="expandedParentId.set(category.id)"
+          (click)="setParam('category_id', '' + category.id); isCategoryExpanded.set(false)"
+          class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-150"
+          [class]="expandedParentId() === category.id
+                ? 'bg-platinum-10 text-platinum-100'
+                : 'text-platinum-60 hover:text-platinum-100'"
+        >
+          @if (category.image_url) {
+          <img
+            [src]="category.image_url"
+            [alt]="category.name"
+            class="h-8 w-8 flex-shrink-0 object-contain"
+          />
+          }
+          <span class="truncate text-sm font-medium">{{ category.name }}</span>
+          @if (category.children.length > 0) {
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="ml-auto flex-shrink-0">
+            <path
+              d="M6 4L10 8L6 12"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          }
+        </button>
         }
       </div>
 
-      <!-- Desktop: Two-panel layout -->
-      <div class="hidden gap-6 md:flex">
-        <!-- Parent categories list -->
-        <div class="hide-scrollbar w-56 flex-shrink-0 space-y-1 overflow-y-auto lg:w-64">
-          @for (category of parentCategories(); track category.id) {
-            <button
-              type="button"
-              (mouseenter)="expandedParentId.set(category.id)"
-              (click)="setParam('category_id', '' + category.id); isCategoryExpanded.set(false)"
-              class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-150"
-              [class]="expandedParentId() === category.id
-                ? 'bg-platinum-10 text-platinum-100'
-                : 'text-platinum-60 hover:text-platinum-100'"
-            >
-              @if (category.image_url) {
-                <img
-                  [src]="category.image_url"
-                  [alt]="category.name"
-                  class="h-8 w-8 flex-shrink-0 object-contain"
-                />
-              }
-              <span class="truncate text-sm font-medium">{{ category.name }}</span>
-              @if (category.children.length > 0) {
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="ml-auto flex-shrink-0">
-                  <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              }
-            </button>
-          }
-        </div>
-
-        <!-- Children grid -->
-        <div class="min-h-[200px] flex-1 border-l border-platinum-20 pl-6">
-          @for (category of parentCategories(); track category.id) {
-            @if (expandedParentId() === category.id && category.children.length > 0) {
-              <div class="grid grid-cols-2 gap-2.5 lg:grid-cols-3 xl:grid-cols-4">
-                @for (child of category.children; track child.id) {
-                  <button
-                    type="button"
-                    (click)="setParam('category_id', '' + child.id); isCategoryExpanded.set(false)"
-                    class="flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 transition-all duration-150"
-                    [class]="selectedCategoryId() === '' + child.id
+      <!-- Children grid -->
+      <div class="min-h-[200px] flex-1 border-l border-platinum-20 pl-6">
+        @for (category of parentCategories(); track category.id) { @if (expandedParentId() ===
+        category.id && category.children.length > 0) {
+        <div class="grid grid-cols-2 gap-2.5 lg:grid-cols-3 xl:grid-cols-4">
+          @for (child of category.children; track child.id) {
+          <button
+            type="button"
+            (click)="setParam('category_id', '' + child.id); isCategoryExpanded.set(false)"
+            class="flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 transition-all duration-150"
+            [class]="selectedCategoryId() === '' + child.id
                       ? 'border-green-60 bg-green-10'
                       : 'border-transparent hover:bg-platinum-10'"
-                  >
-                    @if (child.image_url) {
-                      <img
-                        [src]="child.image_url"
-                        [alt]="child.name"
-                        class="h-9 w-9 flex-shrink-0 object-contain"
-                      />
-                    }
-                    <span class="truncate text-sm text-platinum-70">{{ child.name }}</span>
-                  </button>
-                }
-              </div>
+          >
+            @if (child.image_url) {
+            <img
+              [src]="child.image_url"
+              [alt]="child.name"
+              class="h-9 w-9 flex-shrink-0 object-contain"
+            />
             }
-          }
-          @for (category of parentCategories(); track category.id) {
-            @if (expandedParentId() === category.id && category.children.length === 0) {
-              <div class="flex h-full items-center justify-center">
-                <p class="text-sm text-platinum-40">ქვეკატეგორია არ მოიძებნა</p>
-              </div>
-            }
+            <span class="truncate text-sm text-platinum-70">{{ child.name }}</span>
+          </button>
           }
         </div>
+        } } @for (category of parentCategories(); track category.id) { @if (expandedParentId() ===
+        category.id && category.children.length === 0) {
+        <div class="flex h-full items-center justify-center">
+          <p class="text-sm text-platinum-40">ქვეკატეგორია არ მოიძებნა</p>
+        </div>
+        } }
       </div>
     </div>
   </div>
+</div>
 }
 
 <!-- Mobile backdrop -->
@@ -203,7 +233,7 @@
 ></div>
 }
 
-<div class="container flex items-start gap-10 px-4 py-10 xl:px-0">
+<div class="container flex items-start gap-10 px-4 py-10 pt-[120px] sm:pt-[128px] xl:px-0">
   <!--FILTERS BOX-->
   <div
     [class.hidden]="!isFilterOpen()"
@@ -345,7 +375,8 @@
 
       <!-- Category list -->
       <div class="space-y-4">
-        @for (category of showAllCategories() ? filteredCategories() : filteredCategories().slice(0, 5); track category.id) {
+        @for (category of showAllCategories() ? filteredCategories() : filteredCategories().slice(0,
+        5); track category.id) {
         <div class="flex items-center justify-between" [class.opacity-50]="category.count === 0">
           <div class="flex items-center gap-2">
             <p>{{ category.name }}</p>
@@ -390,15 +421,15 @@
       </div>
 
       @if (filteredCategories().length > 5) {
-        <button
-          type="button"
-          (click)="showAllCategories.set(!showAllCategories())"
-          class="text-sm font-medium text-green-70"
-        >
-          {{ showAllCategories() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + filteredCategories().length + ")" }}
-        </button>
-      }
-      }
+      <button
+        type="button"
+        (click)="showAllCategories.set(!showAllCategories())"
+        class="text-sm font-medium text-green-70"
+      >
+        {{ showAllCategories() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + filteredCategories().length
+        + ")" }}
+      </button>
+      } }
     </div>
 
     <div class="h-px bg-platinum-20"></div>
@@ -514,7 +545,8 @@
 
       <!-- Brand list -->
       <div class="space-y-4">
-        @for (brand of showAllBrands() ? filteredBrands() : filteredBrands().slice(0, 5); track brand.id) {
+        @for (brand of showAllBrands() ? filteredBrands() : filteredBrands().slice(0, 5); track
+        brand.id) {
         <div class="flex items-center justify-between" [class.opacity-50]="brand.count === 0">
           <div class="flex items-center gap-2">
             <p>{{ brand.name }}</p>
@@ -559,15 +591,15 @@
       </div>
 
       @if (filteredBrands().length > 5) {
-        <button
-          type="button"
-          (click)="showAllBrands.set(!showAllBrands())"
-          class="text-sm font-medium text-green-70"
-        >
-          {{ showAllBrands() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + filteredBrands().length + ")" }}
-        </button>
-      }
-      }
+      <button
+        type="button"
+        (click)="showAllBrands.set(!showAllBrands())"
+        class="text-sm font-medium text-green-70"
+      >
+        {{ showAllBrands() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + filteredBrands().length + ")"
+        }}
+      </button>
+      } }
     </div>
 
     <div class="h-px bg-platinum-20"></div>
@@ -589,7 +621,8 @@
       } @else {
       <!-- Colors list -->
       <div class="space-y-4">
-        @for (color of showAllColors() ? facets.value().colors : facets.value().colors.slice(0, 5); track color.value) {
+        @for (color of showAllColors() ? facets.value().colors : facets.value().colors.slice(0, 5);
+        track color.value) {
         <div class="flex items-center justify-between" [class.opacity-50]="color.count === 0">
           <div class="flex items-center gap-2">
             <span
@@ -638,15 +671,15 @@
       </div>
 
       @if (facets.value().colors.length > 5) {
-        <button
-          type="button"
-          (click)="showAllColors.set(!showAllColors())"
-          class="text-sm font-medium text-green-70"
-        >
-          {{ showAllColors() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + facets.value().colors.length + ")" }}
-        </button>
-      }
-      }
+      <button
+        type="button"
+        (click)="showAllColors.set(!showAllColors())"
+        class="text-sm font-medium text-green-70"
+      >
+        {{ showAllColors() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + facets.value().colors.length +
+        ")" }}
+      </button>
+      } }
     </div>
   </div>
 
