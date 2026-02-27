@@ -83,8 +83,9 @@ export class SearchComponent {
     defaultValue: { brands: [], colors: [], categories: [] } as ProductFacets,
     params: () => {
       const urlParams = new URLSearchParams(this.params());
-      urlParams.delete('brand');
-      urlParams.delete('color');
+      urlParams.delete('sort_by');
+      urlParams.delete('offset');
+      urlParams.delete('limit');
       return urlParams.toString();
     },
     stream: ({ params }) => this.productsService.getFacets(params),
@@ -99,10 +100,29 @@ export class SearchComponent {
 
   readonly parentCategories = computed(() => this.categoryTree.value());
 
-  readonly selectedCategoryId = computed(() => {
+  readonly selectedCategoryIds = computed(() => {
     const ids = this.params()['category_id'];
-    return ids ? ids.split(',')[0] : null;
+    return ids ? ids.split(',') : [];
   });
+
+  readonly selectedParentId = computed(() => {
+    const ids = this.selectedCategoryIds();
+    if (ids.length === 0) return null;
+
+    const firstId = ids[0];
+    const parents = this.parentCategories();
+
+    if (parents.some((p) => '' + p.id === firstId)) {
+      return firstId;
+    }
+
+    const parent = parents.find((p) =>
+      p.children.some((c) => '' + c.id === firstId),
+    );
+    return parent ? '' + parent.id : null;
+  });
+
+  readonly selectedCategoryId = this.selectedParentId;
 
   readonly filteredBrands = computed(() => {
     const search = this.brandSearch().toLowerCase();
@@ -117,7 +137,16 @@ export class SearchComponent {
 
   readonly filteredCategories = computed(() => {
     const search = this.categorySearch().toLowerCase();
-    const categories = this.facets.value().categories;
+    const parentId = this.selectedParentId();
+    let categories = this.facets.value().categories;
+
+    if (parentId) {
+      const parent = this.parentCategories().find((p) => '' + p.id === parentId);
+      if (parent && parent.children.length > 0) {
+        const childIds = new Set(parent.children.map((c) => c.id));
+        categories = categories.filter((cat) => childIds.has(cat.id));
+      }
+    }
 
     if (!search) {
       return categories;
@@ -137,19 +166,32 @@ export class SearchComponent {
     }
   }
 
+  private readonly paginationKeys = new Set(['offset', 'limit', 'sort_by']);
+
   private updateParam(key: string, value: string | undefined): void {
+    const queryParams: Record<string, string | number | undefined> = { [key]: value };
+
+    if (!this.paginationKeys.has(key)) {
+      queryParams['offset'] = undefined;
+    }
+
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { [key]: value },
+      queryParams,
       queryParamsHandling: 'merge',
     });
   }
 
   toggleParam(key: string, value: string, checked: boolean): void {
     const current = this.params()[key] as string | undefined;
-    const values = current ? current.split(',') : [];
-    const updated = checked ? [...values, value] : values.filter((v: string) => v !== value);
+    let values = current ? current.split(',') : [];
 
+    if (key === 'category_id') {
+      const parentIds = new Set(this.parentCategories().map((p) => '' + p.id));
+      values = values.filter((v) => !parentIds.has(v));
+    }
+
+    const updated = checked ? [...values, value] : values.filter((v: string) => v !== value);
     this.setParam(key, updated.length ? updated.join(',') : undefined);
   }
 
