@@ -1,6 +1,6 @@
 <a
   [routerLink]="['/products', productSlug(), product().data.id]"
-  class="relative flex h-[366px] w-full max-w-full flex-col gap-4 rounded-2xl bg-white p-4 shadow-low sm:w-[280px] sm:max-w-[280px]"
+  class="relative flex h-auto w-full min-w-0 flex-col gap-3 rounded-2xl bg-white p-3 shadow-low sm:h-[366px] sm:gap-4 sm:p-4"
 >
   @if (product().data.discount > 0) {
     <div
@@ -10,7 +10,7 @@
     </div>
   }
   <div
-    class="h-[180px] w-full overflow-hidden rounded-xl border-[0.5px] border-platinum-20"
+    class="h-[140px] w-full overflow-hidden rounded-xl border-[0.5px] border-platinum-20 sm:h-[180px]"
   >
     <app-image
       [src]="productImage()"
@@ -29,12 +29,12 @@
           {{ product().data.categories[0].name }}
         </p>
       }
-      <p class="text-base font-normal">
+      <p class="line-clamp-2 text-sm font-normal sm:text-base">
         {{ product().data.name }}
       </p>
     </div>
 
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between gap-2">
       @if (product().data.discount > 0) {
         <div>
           <p class="text-sm text-platinum-50 line-through">
@@ -47,7 +47,7 @@
       }
       <button
         type="button"
-        class="flex h-[44px] items-center justify-center gap-2 rounded-full border border-green-60 px-5 py-3 font-semibold text-green-70"
+        class="flex h-[44px] w-[44px] flex-shrink-0 items-center justify-center rounded-full border border-green-60 font-semibold text-green-70 xl:w-auto xl:gap-2 xl:px-5"
         (click)="addToCart(); $event.preventDefault(); $event.stopPropagation()"
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -57,7 +57,7 @@
           />
         </svg>
 
-        დამატება
+        <span class="hidden xl:inline">დამატება</span>
       </button>
     </div>
   </div>

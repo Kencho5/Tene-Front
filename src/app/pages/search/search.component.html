@@ -493,12 +493,12 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-6 sm:flex-row sm:flex-wrap sm:gap-6">
+    <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-6">
       @if (searchResponse.isLoading()) { @for (skeleton of [1, 2, 3, 4, 5, 6]; track skeleton) {
       <app-product-card-skeleton />
       } } @else { @if (products().length == 0) {
       <div
-        class="mx-auto my-10 flex max-w-[320px] flex-col items-center gap-6 text-center sm:my-32"
+        class="col-span-full mx-auto my-10 flex max-w-[320px] flex-col items-center gap-6 text-center sm:my-32"
       >
         <img src="/assets/images/products/empty-search.webp" width="120" height="120" />
         <p class="text-sm text-platinum-50">შედეგები ვერ მოიძებნა, სცადეთ სხვა ძებნის მეთოდი.</p>
