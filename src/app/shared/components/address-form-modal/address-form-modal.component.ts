@@ -5,7 +5,7 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { form, required, Field } from '@angular/forms/signals';
+import { form, required, FormField } from '@angular/forms/signals';
 import { AddressData } from '@core/interfaces/address.interface';
 import { AddressService } from '@core/services/address.service';
 import { ToastService } from '@core/services/toast.service';
@@ -16,7 +16,7 @@ import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.compo
 
 @Component({
   selector: 'app-address-form-modal',
-  imports: [ModalComponent, InputComponent, ComboboxComponent, Field],
+  imports: [ModalComponent, InputComponent, ComboboxComponent, FormField],
   templateUrl: './address-form-modal.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -6,7 +6,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { email, Field, form, hidden, required } from '@angular/forms/signals';
+import { email, FormField, form, hidden, required } from '@angular/forms/signals';
 import { catchError, EMPTY, of } from 'rxjs';
 import {
   CheckoutFields,
@@ -41,7 +41,7 @@ import { AddressFormModalComponent } from '@shared/components/address-form-modal
     InputComponent,
     ComboboxComponent,
     AddressFormModalComponent,
-    Field,
+    FormField,
   ],
   templateUrl: './checkout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

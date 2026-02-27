@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { form, Field, required, min } from '@angular/forms/signals';
+import { form, FormField, required, min } from '@angular/forms/signals';
 import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
@@ -47,7 +47,7 @@ interface ImageWithMetadata {
 
 @Component({
   selector: 'app-admin-product-form',
-  imports: [SharedModule, InputComponent, Field, ComboboxComponent],
+  imports: [SharedModule, InputComponent, FormField, ComboboxComponent],
   templateUrl: './admin-product-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

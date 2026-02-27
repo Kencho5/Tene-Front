@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { form, Field, required } from '@angular/forms/signals';
+import { form, FormField, required } from '@angular/forms/signals';
 import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
@@ -21,7 +21,7 @@ interface BrandFormData {
 
 @Component({
   selector: 'app-admin-brand-form',
-  imports: [SharedModule, InputComponent, Field],
+  imports: [SharedModule, InputComponent, FormField],
   templateUrl: './admin-brand-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

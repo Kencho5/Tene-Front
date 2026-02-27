@@ -9,7 +9,7 @@ import { AuthTitleService } from '@core/services/auth/auth-title.service';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import {
   form,
-  Field,
+  FormField,
   required,
   email,
   minLength,
@@ -25,7 +25,7 @@ import { SharedModule } from '@shared/shared.module';
 
 @Component({
   selector: 'app-login',
-  imports: [SharedModule, InputComponent, Field],
+  imports: [SharedModule, InputComponent, FormField],
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -26,7 +26,7 @@
       <div class="flex flex-col gap-4">
         <!-- Category Name -->
         <app-input
-          [field]="categoryForm.name"
+          [formField]="categoryForm.name"
           [error]="submitted() && categoryForm.name().invalid()"
           type="text"
           placeholder="კატეგორიის სახელი *"
@@ -35,7 +35,7 @@
 
         <!-- Slug -->
         <app-input
-          [field]="categoryForm.slug"
+          [formField]="categoryForm.slug"
           [error]="submitted() && categoryForm.slug().invalid()"
           type="text"
           placeholder="სლაგი (URL) *"
@@ -58,7 +58,7 @@
 
         <!-- Description -->
         <textarea
-          [field]="categoryForm.description"
+          [formField]="categoryForm.description"
           rows="4"
           placeholder="კატეგორიის დეტალური აღწერა (სურვილისამებრ)"
           class="w-full resize-none rounded-lg border border-platinum-20 bg-white px-3.5 py-2.5 text-sm text-platinum-100 placeholder:text-platinum-40 outline-none focus:border-platinum-40 focus:ring-1 focus:ring-platinum-40"
@@ -129,7 +129,7 @@
 
         <!-- Display Order -->
         <app-input
-          [field]="categoryForm.display_order"
+          [formField]="categoryForm.display_order"
           type="number"
           placeholder="ჩვენების რიგი"
         />

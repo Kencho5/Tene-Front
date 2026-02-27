@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { form, Field, required } from '@angular/forms/signals';
+import { form, FormField, required } from '@angular/forms/signals';
 import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
@@ -35,7 +35,7 @@ interface CategoryFormData {
 
 @Component({
   selector: 'app-admin-category-form',
-  imports: [SharedModule, InputComponent, Field, ComboboxComponent],
+  imports: [SharedModule, InputComponent, FormField, ComboboxComponent],
   templateUrl: './admin-category-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import {
   form,
-  Field,
+  FormField,
   required,
   email,
   minLength,
@@ -25,7 +25,7 @@ import { GoogleAuthService } from '@core/services/auth/google-auth-service.servi
 
 @Component({
   selector: 'app-register',
-  imports: [SharedModule, InputComponent, Field],
+  imports: [SharedModule, InputComponent, FormField],
   templateUrl: './register.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

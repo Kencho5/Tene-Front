@@ -26,7 +26,7 @@
       <div class="flex flex-col gap-4">
         <!-- Product ID -->
         <app-input
-          [field]="productForm.id"
+          [formField]="productForm.id"
           [error]="submitted() && productForm.id().invalid()"
           type="number"
           placeholder="პროდუქტის ID *"
@@ -34,7 +34,7 @@
 
         <!-- Product Name -->
         <app-input
-          [field]="productForm.name"
+          [formField]="productForm.name"
           [error]="submitted() && productForm.name().invalid()"
           type="text"
           placeholder="პროდუქტის სახელი *"
@@ -42,7 +42,7 @@
 
         <!-- Description -->
         <textarea
-          [field]="productForm.description"
+          [formField]="productForm.description"
           rows="4"
           placeholder="პროდუქტის დეტალური აღწერა"
           [ngClass]="{
@@ -72,7 +72,7 @@
 
         <!-- Brand -->
         <app-input
-          [field]="productForm.brand_id"
+          [formField]="productForm.brand_id"
           [error]="submitted() && productForm.brand_id().invalid()"
           type="number"
           placeholder="ბრენდის ID"
@@ -80,7 +80,7 @@
 
         <!-- Warranty -->
         <app-input
-          [field]="productForm.warranty"
+          [formField]="productForm.warranty"
           [error]="submitted() && productForm.warranty().invalid()"
           type="text"
           placeholder="გარანტია (მაგ: 12 თვე)"
@@ -97,7 +97,7 @@
       <div class="grid gap-4 sm:grid-cols-3">
         <!-- Price -->
         <app-input
-          [field]="productForm.price"
+          [formField]="productForm.price"
           [error]="submitted() && productForm.price().invalid()"
           type="number"
           placeholder="ფასი (₾) *"
@@ -105,7 +105,7 @@
 
         <!-- Discount -->
         <app-input
-          [field]="productForm.discount"
+          [formField]="productForm.discount"
           [error]="submitted() && productForm.discount().invalid()"
           type="number"
           placeholder="ფასდაკლება (%)"
@@ -113,7 +113,7 @@
 
         <!-- Quantity -->
         <app-input
-          [field]="productForm.quantity"
+          [formField]="productForm.quantity"
           [error]="submitted() && productForm.quantity().invalid()"
           type="number"
           placeholder="რაოდენობა *"

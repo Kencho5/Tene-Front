@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { form, Field, required, email } from '@angular/forms/signals';
+import { form, FormField, required, email } from '@angular/forms/signals';
 import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
@@ -26,7 +26,7 @@ interface UserFormData {
 
 @Component({
   selector: 'app-admin-user-form',
-  imports: [SharedModule, InputComponent, Field, DropdownComponent],
+  imports: [SharedModule, InputComponent, FormField, DropdownComponent],
   templateUrl: './admin-user-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
