@@ -14,7 +14,6 @@ import { InputComponent } from '@shared/components/ui/input/input.component';
 import { catchError, of } from 'rxjs';
 import { AdminService } from '@core/services/admin/admin.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Brand } from '@core/interfaces/admin/brands.interface';
 
 interface BrandFormData {
   name: string;
@@ -41,9 +40,7 @@ export class AdminBrandFormComponent {
   });
 
   readonly isEditMode = computed(() => this.brandId() !== null);
-  readonly pageTitle = computed(() =>
-    this.isEditMode() ? 'ბრენდის რედაქტირება' : 'ახალი ბრენდი',
-  );
+  readonly pageTitle = computed(() => (this.isEditMode() ? 'ბრენდის რედაქტირება' : 'ახალი ბრენდი'));
 
   readonly brandModel = signal<BrandFormData>({
     name: '',
@@ -53,12 +50,9 @@ export class AdminBrandFormComponent {
     required(fieldPath.name, { message: 'სახელი აუცილებელია' });
   });
 
-  readonly allBrands = toSignal(
-    this.adminService.getBrands().pipe(
-      catchError(() => of([])),
-    ),
-    { initialValue: [] },
-  );
+  readonly allBrands = toSignal(this.adminService.getBrands().pipe(catchError(() => of([]))), {
+    initialValue: [],
+  });
 
   readonly brand = computed(() => {
     const id = this.brandId();
@@ -86,12 +80,7 @@ export class AdminBrandFormComponent {
           ? errors[0].message
           : 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი';
 
-      this.toastService.add(
-        'ბრენდის დამატება ვერ მოხერხდა',
-        errorMessage,
-        5000,
-        'error',
-      );
+      this.toastService.add('ბრენდის დამატება ვერ მოხერხდა', errorMessage, 5000, 'error');
       return;
     }
 
@@ -119,9 +108,7 @@ export class AdminBrandFormComponent {
           this.isLoading.set(false);
           this.toastService.add(
             'წარმატებული',
-            this.isEditMode()
-              ? 'ბრენდი წარმატებით განახლდა'
-              : 'ბრენდი წარმატებით დაემატა',
+            this.isEditMode() ? 'ბრენდი წარმატებით განახლდა' : 'ბრენდი წარმატებით დაემატა',
             3000,
             'success',
           );

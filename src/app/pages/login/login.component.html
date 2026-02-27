@@ -1,13 +1,13 @@
 <form (submit)="onSubmit($event)" novalidate class="flex flex-col gap-4">
   <app-input
-    [field]="loginForm.email"
+    [formField]="loginForm.email"
     [error]="submitted() && loginForm.email().invalid()"
     type="email"
     placeholder="ელ. ფოსტა"
   />
 
   <app-input
-    [field]="loginForm.password"
+    [formField]="loginForm.password"
     [error]="submitted() && loginForm.password().invalid()"
     type="password"
     placeholder="პაროლი"

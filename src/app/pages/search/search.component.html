@@ -1,3 +1,104 @@
+<!-- Parent Categories Bar -->
+@if (parentCategories().length > 0) {
+  <div class="relative z-30 border-b border-platinum-20 bg-white">
+    <div class="container relative px-4 xl:px-0">
+      <div class="pointer-events-none absolute right-0 top-0 z-10 h-full w-12 bg-gradient-to-l from-white to-transparent xl:-right-0"></div>
+      <nav appDragScroll class="hide-scrollbar -mx-4 flex items-center overflow-x-auto scroll-smooth px-4 pr-12 sm:mx-0 sm:px-0 sm:pr-12">
+        <!-- "ყველა" button at start -->
+        <button
+          type="button"
+          (click)="isCategoryExpanded.set(!isCategoryExpanded())"
+          class="flex flex-shrink-0 items-center gap-1 border-b-2 px-4 py-3 text-sm font-semibold transition-colors"
+          [class]="isCategoryExpanded()
+            ? 'border-green-60 text-green-70'
+            : 'border-transparent text-platinum-60 hover:text-green-70'"
+        >
+          ყველა
+          <svg
+            width="16" height="16" viewBox="0 0 16 16" fill="none"
+            class="transition-transform"
+            [class.rotate-180]="isCategoryExpanded()"
+          >
+            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        @for (category of parentCategories(); track category.id) {
+          <button
+            type="button"
+            (click)="setParam('category_id', '' + category.id)"
+            class="flex flex-shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors"
+            [class]="selectedCategoryId() === '' + category.id
+              ? 'border-green-60 text-green-70'
+              : 'border-transparent text-platinum-60 hover:text-green-70'"
+          >
+            @if (category.image_url) {
+              <img
+                [src]="category.image_url"
+                [alt]="category.name"
+                class="h-5 w-5 object-contain"
+              />
+            }
+            {{ category.name }}
+          </button>
+        }
+      </nav>
+    </div>
+  </div>
+}
+
+<!-- Category Expanded Overlay + Panel -->
+@if (isCategoryExpanded()) {
+  <div
+    (click)="isCategoryExpanded.set(false)"
+    class="fixed inset-0 z-20 bg-black/40 backdrop-blur-sm transition-opacity"
+  ></div>
+  <div class="absolute inset-x-0 z-30 border-b border-platinum-20 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+    <div class="container px-4 py-6 xl:px-0">
+      <!-- Header -->
+      <div class="mb-5 flex items-center justify-between">
+        <div>
+          <h2 class="text-lg font-bold tracking-tight">ყველა კატეგორია</h2>
+          <p class="mt-0.5 text-xs text-platinum-50">{{ parentCategories().length }} კატეგორია</p>
+        </div>
+        <button
+          type="button"
+          (click)="isCategoryExpanded.set(false)"
+          class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-platinum-20 transition-colors hover:bg-platinum-10"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Category Grid -->
+      <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        @for (category of parentCategories(); track category.id) {
+          <button
+            type="button"
+            (click)="setParam('category_id', '' + category.id); isCategoryExpanded.set(false)"
+            class="group flex cursor-pointer items-center gap-3 rounded-xl border border-transparent bg-platinum-10/60 px-3.5 py-3 transition-all duration-200 hover:border-platinum-20 hover:bg-white hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)]"
+            [class]="selectedCategoryId() === '' + category.id
+              ? 'border-green-60 bg-green-60/5 ring-1 ring-green-60/30'
+              : 'border-transparent bg-platinum-10/60'"
+          >
+            @if (category.image_url) {
+              <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-white p-1.5 shadow-sm">
+                <img
+                  [src]="category.image_url"
+                  [alt]="category.name"
+                  class="h-full w-full object-contain"
+                />
+              </div>
+            }
+            <span class="truncate text-sm font-medium text-platinum-70">{{ category.name }}</span>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}
+
 <!-- Mobile backdrop -->
 @if (isFilterOpen()) {
 <div
@@ -10,7 +111,7 @@
   <!--FILTERS BOX-->
   <div
     [class.hidden]="!isFilterOpen()"
-    class="fixed inset-x-0 bottom-0 z-40 max-h-[80vh] space-y-6 overflow-y-auto rounded-t-2xl bg-white p-6 shadow-low sm:z-30 md:static md:block md:max-h-none md:w-[350px] md:flex-shrink-0 md:rounded-2xl"
+    class="fixed inset-x-0 bottom-0 z-40 max-h-[80vh] space-y-6 overflow-y-auto rounded-t-2xl bg-white p-6 shadow-low sm:z-30 md:relative md:z-10 md:block md:max-h-none md:w-[350px] md:flex-shrink-0 md:rounded-2xl"
   >
     <div class="flex items-center justify-between">
       <h2 class="text-xl">ფილტრი</h2>

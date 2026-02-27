@@ -3,6 +3,8 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ProductsService } from '@core/services/products/products.service';
+import { CategoriesService } from '@core/services/categories/categories.service';
+import { CategoryTreeNode } from '@core/interfaces/categories.interface';
 import {
   BreadcrumbComponent,
   BreadcrumbItem,
@@ -12,13 +14,16 @@ import { ProductCardComponent } from '@shared/components/ui/product-card/product
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
+import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
 import { ProductFacets, ProductSearchResponse } from '@core/interfaces/products.interface';
 import { getColorLabel } from '@utils/colors';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-search',
   imports: [
     SharedModule,
+    DragScrollDirective,
     DropdownComponent,
     BreadcrumbComponent,
     ProductCardComponent,
@@ -32,6 +37,7 @@ export class SearchComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly productsService = inject(ProductsService);
+  private readonly categoriesService = inject(CategoriesService);
   private debounceTimer?: number;
 
   readonly getColorLabel = getColorLabel;
@@ -40,6 +46,7 @@ export class SearchComponent {
     initialValue: {} as Params,
   });
   readonly isFilterOpen = signal<boolean>(false);
+  readonly isCategoryExpanded = signal(false);
   readonly brandSearch = signal<string>('');
   readonly categorySearch = signal<string>('');
   readonly showAllBrands = signal(false);
@@ -80,6 +87,20 @@ export class SearchComponent {
       return urlParams.toString();
     },
     stream: ({ params }) => this.productsService.getFacets(params),
+  });
+
+  readonly categoryTree = rxResource({
+    defaultValue: [] as CategoryTreeNode[],
+    stream: () => this.categoriesService.getCategoryTree().pipe(
+      map((res) => res.categories),
+    ),
+  });
+
+  readonly parentCategories = computed(() => this.categoryTree.value());
+
+  readonly selectedCategoryId = computed(() => {
+    const ids = this.params()['category_id'];
+    return ids ? ids.split(',')[0] : null;
   });
 
   readonly filteredBrands = computed(() => {
