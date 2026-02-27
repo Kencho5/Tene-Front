@@ -64,6 +64,20 @@
                   "with": "src/environments/environment.dev.ts"
                 }
               ]
+            },
+            "development-no-ssr": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "outputMode": "static",
+              "server": false,
+              "ssr": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -79,6 +93,9 @@
             },
             "development": {
               "buildTarget": "tene:build:development"
+            },
+            "development-no-ssr": {
+              "buildTarget": "tene:build:development-no-ssr"
             }
           },
           "defaultConfiguration": "development"
