@@ -1,4 +1,51 @@
 <div class="container space-y-16 px-4 py-10 md:py-20">
+  <!-- USB Cable Banner -->
+  <div
+    class="relative flex flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-[#F0F7F0] to-white px-4 py-6 lg:flex-row lg:items-center lg:justify-between lg:px-10 lg:py-12"
+  >
+    <!-- Glow -->
+    <div
+      class="pointer-events-none absolute -right-10 -top-10 h-80 w-80 rounded-full bg-green-200/50 blur-[100px]"
+    ></div>
+
+    <img
+      src="/assets/images/home-cards/main-cable.webp"
+      class="relative z-10 h-[140px] w-full object-contain lg:hidden"
+    />
+
+    <div
+      class="relative z-20 mt-6 flex flex-col items-center gap-4 text-center lg:mt-0 lg:items-start lg:text-left"
+    >
+      <h2 class="text-[28px] lg:text-[32px]">პირველი ქართული</h2>
+      <h2 class="text-[28px] text-green-60 lg:text-[32px]">USB კაბელი</h2>
+
+      <a
+        routerLink="/search"
+        [queryParams]="{ brand: 22 }"
+        class="mt-4 inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-full border-white/40 px-6 py-2.5 text-base font-medium text-white transition-all hover:brightness-95 lg:w-fit"
+        style="
+          background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%);
+          box-shadow: 0px 20px 16px -8px #0ad10426;
+        "
+      >
+        შეიძინე
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+          <path
+            d="M12.082 5.41669L16.5594 9.89305C16.63 9.96248 16.6654 10.0535 16.6654 10.1445M12.082 14.5834L16.5594 10.3959C16.63 10.3265 16.6654 10.2355 16.6654 10.1445M16.6654 10.1445H3.33203"
+            stroke="white"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </a>
+    </div>
+
+    <img
+      src="/assets/images/home-cards/main-cable.webp"
+      class="absolute right-0 top-0 z-10 hidden h-full w-[45%] object-contain object-right lg:block"
+    />
+  </div>
+
   <div
     class="relative flex flex-col overflow-hidden rounded-2xl bg-platinum-10 px-4 py-6 lg:flex-row lg:items-center lg:justify-between lg:px-10 lg:py-12"
   >
@@ -27,6 +74,7 @@
 
       <a
         routerLink="/search"
+        [queryParams]="{ sale_type: 'discount' }"
         class="mt-4 inline-flex h-[46px] w-full items-center justify-center rounded-full border-white/40 px-6 py-2.5 text-base font-medium text-white transition-all hover:brightness-95 lg:w-fit"
         style="
           background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%);
