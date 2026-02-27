@@ -7,7 +7,7 @@
     ></div>
     <nav
       appDragScroll
-      class="hide-scrollbar -mx-4 flex items-center overflow-x-auto scroll-smooth px-4 pr-12 sm:mx-0 sm:px-0 sm:pr-12"
+      class="hide-scrollbar -mx-4 flex items-center overflow-x-auto px-4 pr-12 sm:mx-0 sm:px-0 sm:pr-12"
     >
       <!-- "ყველა" button at start -->
       <button
@@ -39,7 +39,7 @@
       @for (category of parentCategories(); track category.id) {
       <button
         type="button"
-        (click)="setParam('category_id', '' + category.id)"
+        (click)="setParam('category_id', selectedCategoryId() === '' + category.id ? undefined : '' + category.id)"
         class="flex flex-shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors"
         [class]="selectedCategoryId() === '' + category.id
               ? 'border-green-60 text-green-70'
