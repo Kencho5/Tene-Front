@@ -60,11 +60,13 @@ export const routes: Routes = [
           import('./pages/contact/contact.component').then((m) => m.ContactComponent),
       },
       {
+        path: 'about',
+        loadComponent: () => import('./pages/about/about.component').then((m) => m.AboutComponent),
+      },
+      {
         path: 'coming-soon',
         loadComponent: () =>
-          import('./pages/coming-soon/coming-soon.component').then(
-            (m) => m.ComingSoonComponent,
-          ),
+          import('./pages/coming-soon/coming-soon.component').then((m) => m.ComingSoonComponent),
       },
     ],
   },
@@ -163,16 +165,12 @@ export const routes: Routes = [
       {
         path: 'orders',
         loadComponent: () =>
-          import('./pages/admin/orders/admin-orders.component').then(
-            (m) => m.AdminOrdersComponent,
-          ),
+          import('./pages/admin/orders/admin-orders.component').then((m) => m.AdminOrdersComponent),
       },
       {
         path: 'brands',
         loadComponent: () =>
-          import('./pages/admin/brands/admin-brands.component').then(
-            (m) => m.AdminBrandsComponent,
-          ),
+          import('./pages/admin/brands/admin-brands.component').then((m) => m.AdminBrandsComponent),
       },
       {
         path: 'brands/new',
