@@ -4,13 +4,13 @@
 >
   @if (primaryImageQuantity() === 0) {
     <div
-      class="absolute left-6 top-6 z-10 flex h-[32px] items-center justify-center rounded-2xl border border-platinum-30 bg-white px-2.5 py-2 text-sm font-semibold text-platinum-50"
+      class="absolute left-3 top-3 z-10 flex h-[28px] items-center justify-center rounded-2xl border border-platinum-30 bg-white px-2 py-1.5 text-xs font-semibold text-platinum-50 sm:left-6 sm:top-6 sm:h-[32px] sm:px-2.5 sm:py-2 sm:text-sm"
     >
       არ არის მარაგში
     </div>
   } @else if (product().data.discount > 0) {
     <div
-      class="absolute right-6 top-6 z-10 flex h-[32px] items-center justify-center rounded-2xl border border-valencia-30 bg-valencia-10 px-2.5 py-2 text-sm font-semibold text-valencia-60"
+      class="absolute right-3 top-3 z-10 flex h-[28px] items-center justify-center rounded-2xl border border-valencia-30 bg-valencia-10 px-2 py-1.5 text-xs font-semibold text-valencia-60 sm:right-6 sm:top-6 sm:h-[32px] sm:px-2.5 sm:py-2 sm:text-sm"
     >
       -{{ product().data.discount | number }}%
     </div>

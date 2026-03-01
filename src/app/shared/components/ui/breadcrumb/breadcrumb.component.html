@@ -18,7 +18,7 @@
     </button>
   }
 
-  <div class="flex items-center gap-1 text-sm text-platinum-50">
+  <div class="flex flex-wrap items-center gap-1 text-sm text-platinum-50">
     @for (item of items(); track $index; let isLast = $last) {
       @if (item.route) {
         <a [routerLink]="item.route" [queryParams]="item.queryParams">{{ item.label }}</a>
