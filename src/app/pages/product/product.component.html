@@ -235,7 +235,7 @@
 
             <h2>{{ quantity() }}</h2>
 
-            <button type="button" (click)="updateProductCount(+1)">
+            <button type="button" (click)="updateProductCount(+1)" [disabled]="quantity() >= product.data.quantity" class="disabled:opacity-30 disabled:cursor-not-allowed">
               <svg
                 width="24"
                 height="24"

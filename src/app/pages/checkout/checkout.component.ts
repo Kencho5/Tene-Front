@@ -15,6 +15,7 @@ import {
 import { organizationTypes } from '@utils/organizationTypes';
 import { CartService } from '@core/services/products/cart.service';
 import { OrderService } from '@core/services/order.service';
+import { Router } from '@angular/router';
 import { ToastService } from '@core/services/toast.service';
 import { AddressService } from '@core/services/address.service';
 import { CartItemComponent } from '@shared/components/cart-item/cart-item.component';
@@ -49,6 +50,7 @@ import { AddressFormModalComponent } from '@shared/components/address-form-modal
 export class CheckoutComponent {
   readonly cartService = inject(CartService);
   readonly orderService = inject(OrderService);
+  private readonly router = inject(Router);
   readonly toastService = inject(ToastService);
   readonly addressService = inject(AddressService);
 
@@ -142,6 +144,10 @@ export class CheckoutComponent {
   });
 
   constructor() {
+    if (this.cartService.items().length === 0) {
+      this.router.navigate(['/cart']);
+    }
+
     this.addressService
       .getAddresses()
       .pipe(
@@ -232,7 +238,6 @@ export class CheckoutComponent {
         }),
       )
       .subscribe((response) => {
-        this.cartService.clearCart();
         window.location.href = response.checkout_url;
       });
   }

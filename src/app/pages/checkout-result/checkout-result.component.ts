@@ -9,6 +9,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 import { Order } from '@core/interfaces/products.interface';
 import { OrderService } from '@core/services/order.service';
+import { CartService } from '@core/services/products/cart.service';
 import { SharedModule } from '@shared/shared.module';
 import {
   BreadcrumbComponent,
@@ -23,6 +24,7 @@ import {
 })
 export class CheckoutResultComponent {
   private readonly orderService = inject(OrderService);
+  private readonly cartService = inject(CartService);
 
   readonly breadcrumbs: BreadcrumbItem[] = [
     { label: 'შეკვეთის გაფორმება', route: '/checkout' },
@@ -83,7 +85,11 @@ export class CheckoutResultComponent {
       )
       .subscribe((orders) => {
         if (orders.length > 0) {
-          this.latestOrder.set(orders[0]);
+          const order = orders[0];
+          this.latestOrder.set(order);
+          if (order.status === 'approved') {
+            this.cartService.clearCart();
+          }
         }
         this.loading.set(false);
       });

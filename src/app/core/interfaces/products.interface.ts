@@ -27,6 +27,7 @@ export interface ProductImage {
   color: string;
   is_primary: boolean;
   extension: string;
+  quantity: number;
 }
 
 export interface ProductResponse {
