@@ -13,11 +13,9 @@ import { SharedModule } from '@shared/shared.module';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsService } from '@core/services/products/products.service';
 import { ProductResolverData } from '@core/resolvers/product.resolver';
-import { catchError, of, finalize } from 'rxjs';
-import {
-  ProductResponse,
-  ProductImage,
-} from '@core/interfaces/products.interface';
+import { catchError, of, finalize, map } from 'rxjs';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { ProductResponse, ProductImage } from '@core/interfaces/products.interface';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
 import {
   BreadcrumbComponent,
@@ -26,10 +24,9 @@ import {
 import { CartService } from '@core/services/products/cart.service';
 import { SeoService } from '@core/services/seo/seo.service';
 import { SchemaService } from '@core/services/seo/schema.service';
-import {
-  getProductImageBaseUrl,
-  getProductImageUrl,
-} from '@utils/product-image-url';
+import { getProductImageBaseUrl, getProductImageUrl } from '@utils/product-image-url';
+import { CategoriesService } from '@core/services/categories/categories.service';
+import { CategoryTreeNode } from '@core/interfaces/categories.interface';
 
 type TabName = 'specifications' | 'description';
 
@@ -43,7 +40,17 @@ export class ProductComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly productsService = inject(ProductsService);
+  private readonly categoriesService = inject(CategoriesService);
   private readonly cartService = inject(CartService);
+
+  readonly categoryTree = rxResource({
+    defaultValue: [] as CategoryTreeNode[],
+    stream: () =>
+      this.categoriesService.getCategoryTree().pipe(
+        map((res) => res.categories),
+        catchError(() => of([] as CategoryTreeNode[])),
+      ),
+  });
   private readonly seoService = inject(SeoService);
   private readonly schemaService = inject(SchemaService);
   private readonly platformId = inject(PLATFORM_ID);
@@ -77,19 +84,36 @@ export class ProductComponent {
 
   readonly breadcrumbs = computed<BreadcrumbItem[]>(() => {
     const product = this.product();
-    if (!product || !product.categories.length) {
-      return [
-        { label: 'მთავარი', route: '/' },
-        { label: 'პროდუქცია', route: '/products' },
-      ];
+    const base: BreadcrumbItem[] = [];
+
+    if (!product) return base;
+
+    const productCategoryIds = new Set((product.categories ?? []).map((c) => c.id));
+    const tree = this.categoryTree.value() ?? [];
+
+    const findPath = (
+      nodes: CategoryTreeNode[],
+      path: CategoryTreeNode[],
+    ): CategoryTreeNode[] | null => {
+      for (const node of nodes) {
+        const current = [...path, node];
+        if (productCategoryIds.has(node.id)) return current;
+        const found = findPath(node.children, current);
+        if (found) return found;
+      }
+      return null;
+    };
+
+    const categoryPath = findPath(tree, []);
+    if (categoryPath) {
+      for (const node of categoryPath) {
+        base.push({ label: node.name, route: '/search', queryParams: { category_id: node.id } });
+      }
     }
 
-    const category = product.categories[0];
-    return [
-      { label: 'მთავარი', route: '/' },
-      { label: 'პროდუქცია', route: '/products' },
-      { label: category.name, route: '/search', queryParams: { category_id: category.id } },
-    ];
+    base.push({ label: product.data.name });
+
+    return base;
   });
 
   readonly availableColors = computed(() => {
@@ -139,9 +163,7 @@ export class ProductComponent {
     const imageId = this.selectedImageId();
 
     if (imageId) {
-      const matchingImage = availableImages.find(
-        (img) => img.image_uuid === imageId,
-      );
+      const matchingImage = availableImages.find((img) => img.image_uuid === imageId);
       if (matchingImage) {
         return matchingImage;
       }
@@ -151,9 +173,7 @@ export class ProductComponent {
   });
 
   constructor() {
-    const resolvedData = this.route.snapshot.data[
-      'product'
-    ] as ProductResolverData;
+    const resolvedData = this.route.snapshot.data['product'] as ProductResolverData;
 
     if (resolvedData) {
       const { product, expectedSlug, slugMismatch } = resolvedData;
@@ -185,6 +205,7 @@ export class ProductComponent {
     effect(() => {
       const product = this.product();
       const slug = this.expectedSlug();
+      this.categoryTree.value(); // re-run when tree loads for accurate breadcrumb schema
       if (product && slug) {
         this.updateSEO(product, slug);
       }
@@ -231,9 +252,7 @@ export class ProductComponent {
     this.imageLoading.set(true);
     this.selectedColor.set(color);
 
-    const colorImages = this.product()?.images.filter(
-      (img) => img.color === color,
-    );
+    const colorImages = this.product()?.images.filter((img) => img.color === color);
     if (colorImages && colorImages.length > 0) {
       this.selectedImageId.set(colorImages[0].image_uuid);
     } else {
@@ -284,9 +303,7 @@ export class ProductComponent {
 
     if (!productData || !color || !imageId) return;
 
-    const selectedImage = productData.images.find(
-      (img) => img.image_uuid === imageId,
-    );
+    const selectedImage = productData.images.find((img) => img.image_uuid === imageId);
     if (!selectedImage) return;
 
     this.cartService.addItem({
@@ -303,11 +320,7 @@ export class ProductComponent {
   private updateSEO(product: ProductResponse, slug: string): void {
     const price = this.finalPrice();
     const image = product.images[0];
-    const imageUrl = getProductImageUrl(
-      product.data.id,
-      image.image_uuid,
-      image.extension,
-    );
+    const imageUrl = getProductImageUrl(product.data.id, image.image_uuid, image.extension);
 
     const productDescription = product.data.description || product.data.name;
     const description =
