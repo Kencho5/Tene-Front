@@ -47,7 +47,9 @@
       }
       <button
         type="button"
-        class="flex h-[44px] w-[44px] flex-shrink-0 items-center justify-center rounded-full border border-green-60 font-semibold text-green-70 xl:w-auto xl:gap-2 xl:px-5"
+        [disabled]="product().data.quantity === 0"
+        class="flex h-[44px] w-[44px] flex-shrink-0 items-center justify-center rounded-full border font-semibold xl:w-auto xl:gap-2 xl:px-5"
+        [ngClass]="product().data.quantity === 0 ? 'border-platinum-30 text-platinum-40 cursor-not-allowed' : 'border-green-60 text-green-70'"
         (click)="addToCart(); $event.preventDefault(); $event.stopPropagation()"
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">

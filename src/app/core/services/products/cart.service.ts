@@ -52,6 +52,8 @@ export class CartService {
   }
 
   addItem(item: CartItem): void {
+    if (item.product.quantity === 0) return;
+    this.items.set(this.loadCartFromStorage());
     this.items.update((currentItems) => {
       const existingItemIndex = currentItems.findIndex(
         (i) =>
