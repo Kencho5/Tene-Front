@@ -2,384 +2,348 @@
   <app-breadcrumb [items]="breadcrumbs()" />
 
   @if (isLoading()) {
-    <!-- Loading Skeleton -->
-    <div
-      class="mt-5 flex flex-col gap-6 sm:mt-8 sm:grid sm:grid-cols-[auto_1fr] sm:items-start sm:gap-8"
-    >
-      <!--IMAGES SECTION SKELETON-->
-      <div class="flex flex-col-reverse gap-6 sm:flex-row">
-        <!-- Thumbnail images skeleton -->
-        <div class="flex flex-row gap-2.5 sm:flex-col sm:gap-4">
-          @for (i of [1, 2, 3]; track i) {
-            <div
-              class="h-[92px] w-[92px] animate-pulse rounded-2xl bg-platinum-20"
-            ></div>
-          }
-        </div>
-
-        <!-- Main display image skeleton -->
-        <div
-          class="h-[642px] w-full animate-pulse rounded-2xl bg-platinum-20 sm:w-[642px]"
-        ></div>
-      </div>
-
-      <!-- Product details skeleton -->
-      <div
-        class="flex flex-col gap-[28px] rounded-2xl bg-white px-4 py-5 shadow-low sm:p-6"
-      >
-        <div>
-          <div class="h-8 w-3/4 animate-pulse rounded bg-platinum-20"></div>
-          <div
-            class="mt-2 h-5 w-1/4 animate-pulse rounded bg-platinum-20"
-          ></div>
-        </div>
-
-        <div class="h-6 w-1/3 animate-pulse rounded bg-platinum-20"></div>
-
-        <div class="h-px bg-platinum-20"></div>
-
-        <div>
-          <div class="h-5 w-16 animate-pulse rounded bg-platinum-20"></div>
-          <div class="mt-4 flex gap-2">
-            @for (i of [1, 2, 3]; track i) {
-              <div
-                class="h-8 w-8 animate-pulse rounded-full bg-platinum-20"
-              ></div>
-            }
-          </div>
-        </div>
-
-        <div class="h-px bg-platinum-20"></div>
-
-        <div class="flex gap-3">
-          <div
-            class="h-[46px] w-[126px] animate-pulse rounded-full bg-platinum-20"
-          ></div>
-          <div
-            class="h-[46px] w-full animate-pulse rounded-full bg-platinum-20"
-          ></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tabs section skeleton -->
-    <div
-      class="mt-10 flex w-full flex-col rounded-2xl bg-white px-6 py-4 shadow-low sm:w-1/2"
-    >
-      <div class="flex space-x-6">
-        <div class="h-5 w-32 animate-pulse rounded bg-platinum-20"></div>
-        <div class="h-5 w-24 animate-pulse rounded bg-platinum-20"></div>
-      </div>
-      <div class="mt-2 h-px bg-platinum-20"></div>
-      <div class="mt-4 space-y-3">
-        @for (i of [1, 2, 3, 4]; track i) {
-          <div class="h-5 w-full animate-pulse rounded bg-platinum-20"></div>
+  <!-- Loading Skeleton -->
+  <div
+    class="mt-5 flex flex-col gap-6 sm:mt-8 sm:grid sm:grid-cols-[auto_1fr] sm:items-start sm:gap-8"
+  >
+    <!--IMAGES SECTION SKELETON-->
+    <div class="flex flex-col-reverse gap-6 sm:flex-row">
+      <!-- Thumbnail images skeleton -->
+      <div class="flex flex-row gap-2.5 sm:flex-col sm:gap-4">
+        @for (i of [1, 2, 3]; track i) {
+        <div class="h-[92px] w-[92px] animate-pulse rounded-2xl bg-platinum-20"></div>
         }
       </div>
+
+      <!-- Main display image skeleton -->
+      <div class="h-[642px] w-full animate-pulse rounded-2xl bg-platinum-20 sm:w-[642px]"></div>
     </div>
-  } @else if (product(); as product) {
-    <div
-      class="mt-5 flex flex-col gap-6 sm:mt-8 sm:grid sm:grid-cols-[auto_1fr] sm:items-start sm:gap-8"
-    >
-      <!--IMAGES SECTION-->
-      <div class="flex flex-col-reverse gap-6 sm:flex-row">
-        <!-- Thumbnail images -->
-        <div class="flex flex-row gap-2.5 sm:flex-col sm:gap-4">
-          @for (image of colorImages(); track image.image_uuid) {
-            <button
-              type="button"
-              (click)="selectImage(image.image_uuid)"
-              class="rounded-2xl border-2"
-              [ngClass]="{
-                'border-green-60/50': selectedImageId() == image.image_uuid,
-              }"
-            >
-              <app-image
-                [src]="getImageSrc(image.image_uuid)"
-                [alt]="product.data.name + ' - ' + image.color"
-                [width]="92"
-                [height]="92"
-                loading="lazy"
-                class="rounded-2xl"
-              />
-            </button>
+
+    <!-- Product details skeleton -->
+    <div class="flex flex-col gap-[28px] rounded-2xl bg-white px-4 py-5 shadow-low sm:p-6">
+      <div>
+        <div class="h-8 w-3/4 animate-pulse rounded bg-platinum-20"></div>
+        <div class="mt-2 h-5 w-1/4 animate-pulse rounded bg-platinum-20"></div>
+      </div>
+
+      <div class="h-6 w-1/3 animate-pulse rounded bg-platinum-20"></div>
+
+      <div class="h-px bg-platinum-20"></div>
+
+      <div>
+        <div class="h-5 w-16 animate-pulse rounded bg-platinum-20"></div>
+        <div class="mt-4 flex gap-2">
+          @for (i of [1, 2, 3]; track i) {
+          <div class="h-8 w-8 animate-pulse rounded-full bg-platinum-20"></div>
           }
         </div>
+      </div>
 
-        <!-- Main display image -->
-        <div class="relative h-[300px] w-full sm:h-[642px] sm:w-[642px]">
-          @if (imageLoading()) {
-            <div
-              class="absolute inset-0 flex items-center justify-center rounded-2xl bg-platinum-10"
-            >
-              <div
-                class="h-8 w-8 animate-spin rounded-full border-4 border-platinum-20 border-t-green-60"
-              ></div>
-            </div>
-          }
-          @if (displayImage(); as mainImage) {
-            <app-image
-              [src]="getImageSrc(mainImage.image_uuid)"
-              [alt]="
+      <div class="h-px bg-platinum-20"></div>
+
+      <div class="flex gap-3">
+        <div class="h-[46px] w-[126px] animate-pulse rounded-full bg-platinum-20"></div>
+        <div class="h-[46px] w-full animate-pulse rounded-full bg-platinum-20"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs section skeleton -->
+  <div class="mt-10 flex w-full flex-col rounded-2xl bg-white px-6 py-4 shadow-low sm:w-1/2">
+    <div class="flex space-x-6">
+      <div class="h-5 w-32 animate-pulse rounded bg-platinum-20"></div>
+      <div class="h-5 w-24 animate-pulse rounded bg-platinum-20"></div>
+    </div>
+    <div class="mt-2 h-px bg-platinum-20"></div>
+    <div class="mt-4 space-y-3">
+      @for (i of [1, 2, 3, 4]; track i) {
+      <div class="h-5 w-full animate-pulse rounded bg-platinum-20"></div>
+      }
+    </div>
+  </div>
+  } @else if (product(); as product) {
+  <div
+    class="mt-5 flex flex-col gap-6 sm:mt-8 sm:grid sm:grid-cols-[auto_1fr] sm:items-start sm:gap-8"
+  >
+    <!--IMAGES SECTION-->
+    <div class="flex flex-col-reverse gap-6 sm:flex-row">
+      <!-- Thumbnail images -->
+      <div class="flex flex-row gap-2.5 sm:flex-col sm:gap-4">
+        @for (image of colorImages(); track image.image_uuid) {
+        <button
+          type="button"
+          (click)="selectImage(image.image_uuid)"
+          class="rounded-2xl border-2"
+          [ngClass]="{
+                'border-green-60/50': selectedImageId() == image.image_uuid,
+              }"
+        >
+          <app-image
+            [src]="getImageSrc(image.image_uuid)"
+            [alt]="product.data.name + ' - ' + image.color"
+            [width]="92"
+            [height]="92"
+            loading="lazy"
+            class="rounded-2xl"
+          />
+        </button>
+        }
+      </div>
+
+      <!-- Main display image -->
+      <div class="relative h-[300px] w-full sm:h-[642px] sm:w-[642px]">
+        @if (imageLoading()) {
+        <div class="absolute inset-0 flex items-center justify-center rounded-2xl bg-platinum-10">
+          <div
+            class="h-8 w-8 animate-spin rounded-full border-4 border-platinum-20 border-t-green-60"
+          ></div>
+        </div>
+        } @if (displayImage(); as mainImage) {
+        <app-image
+          [src]="getImageSrc(mainImage.image_uuid)"
+          [alt]="
                 product.data.name +
                 ' - ' +
                 mainImage.color
               "
-              [width]="642"
-              [height]="642"
-              loading="lazy"
-              class="h-full w-full rounded-2xl object-cover"
-              (imageLoad)="onMainImageLoad()"
-            />
-          }
-        </div>
+          [width]="642"
+          [height]="642"
+          loading="lazy"
+          class="h-full w-full rounded-2xl object-cover"
+          (imageLoad)="onMainImageLoad()"
+        />
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4 rounded-2xl bg-white px-4 py-5 shadow-low sm:p-6">
+      <h1 class="text-2xl sm:text-[28px]">{{ product.data.name }}</h1>
+
+      <div class="flex items-center gap-2.5 text-platinum-50">
+        <p>ID: {{ product.data.id }}</p>
+
+        <div class="h-[6px] w-[6px] rounded-full bg-platinum-40/30"></div>
+
+        <p>მარაგშია: {{ selectedImageQuantity() }}</p>
       </div>
 
-      <div
-        class="flex flex-col gap-4 rounded-2xl bg-white px-4 py-5 shadow-low sm:p-6"
-      >
-        <h1 class="text-2xl sm:text-[28px]">
-          {{ product.data.name }}
-        </h1>
+      @if (product.data.discount == 0) {
+      <h2 class="text-xl">{{ product.data.price }}₾</h2>
+      } @else {
+      <div class="flex items-center gap-3">
+        <h2 class="text-xl">{{ finalPrice() }}₾</h2>
+        <p class="text-sm text-platinum-50 line-through">₾{{ product.data.price }}</p>
 
-        <div class="flex items-center gap-2.5 text-platinum-50">
-          <p>ID: {{ product.data.id }}</p>
+        <h2 class="rounded-full bg-valencia-20 px-2 py-1.5 font-bold text-valencia-60">
+          -{{ product.data.discount | number }}%
+        </h2>
+      </div>
+      }
 
-          <div class="h-[6px] w-[6px] rounded-full bg-platinum-40/30"></div>
+      <div class="h-px bg-platinum-20"></div>
 
-          <p>მარაგშია: {{ selectedImageQuantity() }}</p>
-        </div>
+      <div>
+        <h2>ფერი</h2>
 
-        @if (product.data.discount == 0) {
-          <h2 class="text-xl">{{ product.data.price }}₾</h2>
-        } @else {
-          <div class="flex items-center gap-3">
-            <h2 class="text-xl">{{ finalPrice() }}₾</h2>
-            <p class="text-sm text-platinum-50 line-through">
-              ₾{{ product.data.price }}
-            </p>
-
-            <h2
-              class="rounded-full bg-valencia-20 px-2 py-1.5 font-bold text-valencia-60"
-            >
-              -{{ product.data.discount | number }}%
-            </h2>
-          </div>
-        }
-
-        <div class="h-px bg-platinum-20"></div>
-
-        <div>
-          <h2>ფერი</h2>
-
-          <!-- Color selector -->
-          <div class="mt-4 flex gap-2">
-            @for (color of availableColors(); track color) {
-              <button
-                type="button"
-                (click)="selectColor(color)"
-                [class]="
+        <!-- Color selector -->
+        <div class="mt-4 flex gap-2">
+          @for (color of availableColors(); track color) {
+          <button
+            type="button"
+            (click)="selectColor(color)"
+            [class]="
                   'h-8 w-8 rounded-full transition-all ' +
                   (selectedColor() === color
                     ? 'scale-110 border-4 border-white outline outline-platinum-20'
                     : 'border-platinum-20')
                 "
-                [style.background-color]="color"
-              ></button>
-            }
-          </div>
+            [style.background-color]="color"
+          ></button>
+          }
         </div>
+      </div>
 
-        <div class="my-2 h-px bg-platinum-20"></div>
+      <div class="my-2 h-px bg-platinum-20"></div>
 
-        <!-- Categories Display -->
-        @if (product.data.categories && product.data.categories.length > 0) {
-          <div>
-            <h2 class="mb-3">კატეგორიები</h2>
-            <div class="flex flex-wrap gap-2">
-              @for (category of product.data.categories; track category.id) {
-                <a
-                  [routerLink]="['/search']"
-                  [queryParams]="{ category_id: category.id }"
-                  class="rounded-full border border-platinum-20 px-3 py-1.5 text-sm transition-colors hover:border-green-60 hover:bg-green-10"
-                >
-                  {{ category.name }}
-                </a>
-              }
-            </div>
-          </div>
-
-          <div class="my-2 h-px bg-platinum-20"></div>
-        }
-
-        <div class="flex gap-3">
-          <div
-            class="flex h-[46px] w-[126px] flex-shrink-0 items-center justify-between rounded-full border border-platinum-20 p-2"
+      <!-- Categories Display -->
+      @if (product.data.categories && product.data.categories.length > 0) {
+      <div>
+        <h2 class="mb-3">კატეგორიები</h2>
+        <div class="flex flex-wrap gap-2">
+          @for (category of product.data.categories; track category.id) {
+          <a
+            [routerLink]="['/search']"
+            [queryParams]="{ category_id: category.id }"
+            class="rounded-full border border-platinum-20 px-3 py-1.5 text-sm transition-colors hover:border-green-60 hover:bg-green-10"
           >
-            <button type="button" (click)="updateProductCount(-1)">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M20 12L4 12"
-                  stroke="#0BB705"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </button>
+            {{ category.name }}
+          </a>
+          }
+        </div>
+      </div>
 
-            <h2>{{ quantity() }}</h2>
+      <div class="my-2 h-px bg-platinum-20"></div>
+      }
 
-            <button type="button" (click)="updateProductCount(+1)" [disabled]="quantity() >= selectedImageQuantity()" class="disabled:opacity-30 disabled:cursor-not-allowed">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 4L12 20M20 12L4 12"
-                  stroke="#0BB705"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </button>
-          </div>
+      <div class="flex gap-3">
+        <div
+          class="flex h-[46px] w-[126px] flex-shrink-0 items-center justify-between rounded-full border border-platinum-20 p-2"
+        >
+          <button type="button" (click)="updateProductCount(-1)">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M20 12L4 12" stroke="#0BB705" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
+
+          <h2>{{ quantity() }}</h2>
 
           <button
             type="button"
-            [disabled]="selectedImageQuantity() === 0"
-            class="inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-full border-[1.5px] px-6 py-3 font-medium transition-all"
-            [ngClass]="selectedImageQuantity() === 0
-              ? 'border-platinum-20 bg-platinum-20 text-platinum-40 cursor-not-allowed'
-              : 'border-white/40 text-white hover:brightness-95'"
-            [style]="selectedImageQuantity() === 0 ? '' : 'background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%); box-shadow: 0px 20px 16px -8px #0ad10426;'"
-            (click)="addToCart()"
+            (click)="updateProductCount(+1)"
+            [disabled]="quantity() >= selectedImageQuantity()"
+            class="disabled:cursor-not-allowed disabled:opacity-30"
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
-                d="M13.3255 10C13.3255 9.58583 12.9897 9.25004 12.5755 9.25004C12.1613 9.25004 11.8255 9.58583 11.8255 10H12.5755H13.3255ZM9.90881 12.6667V13.4167V12.6667ZM7.99214 10C7.99214 9.58583 7.65635 9.25004 7.24214 9.25004C6.82793 9.25004 6.49214 9.58583 6.49214 10H7.24214H7.99214ZM16.5619 7.14859L17.2803 6.93308L16.5619 7.14859ZM3.33399 7.86696L4.08399 7.86696V7.86696H3.33399ZM3.43943 7.1486L2.72106 6.93309L3.43943 7.1486ZM3.33399 14.1667L4.08399 14.1667V14.1667H3.33399ZM15.9518 5.115L15.2334 5.33051V5.33051L15.9518 5.115ZM4.0495 5.11501L4.76787 5.33052L4.0495 5.11501ZM12.5755 10H11.8255C11.8255 10.5084 11.6235 10.9959 11.2641 11.3553L11.7944 11.8857L12.3248 12.416C12.9655 11.7752 13.3255 10.9062 13.3255 10H12.5755ZM11.7944 11.8857L11.2641 11.3553C10.9047 11.7148 10.4171 11.9167 9.90881 11.9167V12.6667V13.4167C10.815 13.4167 11.684 13.0567 12.3248 12.416L11.7944 11.8857ZM9.90881 12.6667V11.9167C9.40048 11.9167 8.91296 11.7148 8.55352 11.3553L8.02319 11.8857L7.49286 12.416C8.13361 13.0567 9.00265 13.4167 9.90881 13.4167V12.6667ZM8.02319 11.8857L8.55352 11.3553C8.19408 10.9959 7.99214 10.5084 7.99214 10H7.24214H6.49214C6.49214 10.9062 6.85211 11.7752 7.49286 12.416L8.02319 11.8857ZM3.33398 7.50004V8.25004H16.4836V7.50004V6.75004H3.33398V7.50004ZM3.43943 7.1486L4.1578 7.3641L4.76787 5.33052L4.0495 5.11501L3.33113 4.8995L2.72106 6.93309L3.43943 7.1486ZM15.9518 5.115L15.2334 5.33051L15.8435 7.3641L16.5619 7.14859L17.2803 6.93308L16.6702 4.89949L15.9518 5.115ZM16.5619 7.14859L15.8435 7.3641C15.8925 7.52724 15.9173 7.69665 15.9173 7.86697H16.6673H17.4173C17.4173 7.55066 17.3712 7.23605 17.2803 6.93308L16.5619 7.14859ZM3.33399 7.86696H4.08399C4.08399 7.69664 4.10886 7.52724 4.1578 7.3641L3.43943 7.1486L2.72106 6.93309C2.63017 7.23605 2.58399 7.55066 2.58399 7.86696H3.33399ZM3.33399 14.1667L2.58399 14.1667C2.58399 15.9616 4.03906 17.4167 5.83399 17.4167V16.6667V15.9167C4.86749 15.9167 4.08399 15.1332 4.08399 14.1667L3.33399 14.1667ZM16.6673 14.1667H15.9173C15.9173 15.1332 15.1338 15.9167 14.1673 15.9167V16.6667V17.4167C15.9623 17.4167 17.4173 15.9616 17.4173 14.1667H16.6673ZM13.5572 3.33337V4.08337C14.3301 4.08337 15.0114 4.59029 15.2334 5.33051L15.9518 5.115L16.6702 4.89949C16.2578 3.52479 14.9925 2.58337 13.5572 2.58337V3.33337ZM6.44407 3.33337V2.58337C5.00884 2.58337 3.74353 3.5248 3.33113 4.8995L4.0495 5.11501L4.76787 5.33052C4.98993 4.5903 5.67125 4.08337 6.44407 4.08337V3.33337ZM16.6673 7.86697H15.9173V14.1667H16.6673H17.4173V7.86697H16.6673ZM3.33399 14.1667H4.08399L4.08399 7.86696L3.33399 7.86696L2.58399 7.86696L2.58399 14.1667L3.33399 14.1667ZM6.44407 3.33337V4.08337H13.5572V3.33337V2.58337H6.44407V3.33337ZM14.1673 16.6667V15.9167H5.83399V16.6667V17.4167H14.1673V16.6667Z"
-                fill="white"
-              />
-            </svg>
-
-            დამატება
-          </button>
-        </div>
-
-        <div class="my-2 h-px bg-platinum-20"></div>
-
-        <div class="flex items-center gap-2 rounded-full bg-green-20 px-3 py-2">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M10.8244 19.6499C11.5552 20.1167 12.4687 20.1167 13.1994 19.6499C15.1024 18.4341 18.6234 15.6957 18.6234 12.0771V7.56471C18.6234 6.79916 18.1485 6.11391 17.4317 5.84511L12.9792 4.1754C12.3555 3.94153 11.6683 3.94153 11.0446 4.1754L6.59207 5.84511C5.87527 6.11391 5.40039 6.79916 5.40039 7.56471V12.0771C5.40039 15.6957 8.92146 18.4341 10.8244 19.6499Z"
-              stroke="#068C0B"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M9.09961 11.8L10.3925 13.0929C10.783 13.4835 11.4162 13.4835 11.8067 13.0929L15.0996 9.80005"
-              stroke="#068C0B"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-
-          <p class="mb-0.5 text-sm text-green-70">
-            გარანტია {{ product.data.warranty }}
-          </p>
-        </div>
-
-        @if (selectedImageQuantity() === 0) {
-          <div class="flex items-center gap-2 rounded-full bg-valencia-10 px-3 py-2">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 7V13M12 16V17M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                stroke="#FF1E07"
-                stroke-width="1.5"
+                d="M12 4L12 20M20 12L4 12"
+                stroke="#0BB705"
+                stroke-width="2"
                 stroke-linecap="round"
               />
             </svg>
-            <p class="mb-0.5 text-sm text-valencia-60">პროდუქტი არ არის მარაგში</p>
-          </div>
-        }
-      </div>
-    </div>
+          </button>
+        </div>
 
-    @if (hasSpecifications() || product.data.description) {
-      <div
-        class="mt-10 flex w-full flex-col rounded-2xl bg-white px-6 py-4 shadow-low sm:w-1/2"
-      >
-        @if (hasSpecifications()) {
-          <div class="space-x-6 text-sm font-semibold">
-            <button
-              type="button"
-              (click)="selectTab('specifications')"
-              [class]="
+        <button
+          type="button"
+          [disabled]="selectedImageQuantity() === 0"
+          class="inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-full border-[1.5px] px-6 py-3 font-medium transition-all"
+          [ngClass]="selectedImageQuantity() === 0
+              ? 'border-platinum-20 bg-platinum-20 text-platinum-40 cursor-not-allowed'
+              : 'border-white/40 text-white hover:brightness-95'"
+          [style]="selectedImageQuantity() === 0 ? '' : 'background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%); box-shadow: 0px 20px 16px -8px #0ad10426;'"
+          (click)="addToCart()"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path
+              d="M13.3255 10C13.3255 9.58583 12.9897 9.25004 12.5755 9.25004C12.1613 9.25004 11.8255 9.58583 11.8255 10H12.5755H13.3255ZM9.90881 12.6667V13.4167V12.6667ZM7.99214 10C7.99214 9.58583 7.65635 9.25004 7.24214 9.25004C6.82793 9.25004 6.49214 9.58583 6.49214 10H7.24214H7.99214ZM16.5619 7.14859L17.2803 6.93308L16.5619 7.14859ZM3.33399 7.86696L4.08399 7.86696V7.86696H3.33399ZM3.43943 7.1486L2.72106 6.93309L3.43943 7.1486ZM3.33399 14.1667L4.08399 14.1667V14.1667H3.33399ZM15.9518 5.115L15.2334 5.33051V5.33051L15.9518 5.115ZM4.0495 5.11501L4.76787 5.33052L4.0495 5.11501ZM12.5755 10H11.8255C11.8255 10.5084 11.6235 10.9959 11.2641 11.3553L11.7944 11.8857L12.3248 12.416C12.9655 11.7752 13.3255 10.9062 13.3255 10H12.5755ZM11.7944 11.8857L11.2641 11.3553C10.9047 11.7148 10.4171 11.9167 9.90881 11.9167V12.6667V13.4167C10.815 13.4167 11.684 13.0567 12.3248 12.416L11.7944 11.8857ZM9.90881 12.6667V11.9167C9.40048 11.9167 8.91296 11.7148 8.55352 11.3553L8.02319 11.8857L7.49286 12.416C8.13361 13.0567 9.00265 13.4167 9.90881 13.4167V12.6667ZM8.02319 11.8857L8.55352 11.3553C8.19408 10.9959 7.99214 10.5084 7.99214 10H7.24214H6.49214C6.49214 10.9062 6.85211 11.7752 7.49286 12.416L8.02319 11.8857ZM3.33398 7.50004V8.25004H16.4836V7.50004V6.75004H3.33398V7.50004ZM3.43943 7.1486L4.1578 7.3641L4.76787 5.33052L4.0495 5.11501L3.33113 4.8995L2.72106 6.93309L3.43943 7.1486ZM15.9518 5.115L15.2334 5.33051L15.8435 7.3641L16.5619 7.14859L17.2803 6.93308L16.6702 4.89949L15.9518 5.115ZM16.5619 7.14859L15.8435 7.3641C15.8925 7.52724 15.9173 7.69665 15.9173 7.86697H16.6673H17.4173C17.4173 7.55066 17.3712 7.23605 17.2803 6.93308L16.5619 7.14859ZM3.33399 7.86696H4.08399C4.08399 7.69664 4.10886 7.52724 4.1578 7.3641L3.43943 7.1486L2.72106 6.93309C2.63017 7.23605 2.58399 7.55066 2.58399 7.86696H3.33399ZM3.33399 14.1667L2.58399 14.1667C2.58399 15.9616 4.03906 17.4167 5.83399 17.4167V16.6667V15.9167C4.86749 15.9167 4.08399 15.1332 4.08399 14.1667L3.33399 14.1667ZM16.6673 14.1667H15.9173C15.9173 15.1332 15.1338 15.9167 14.1673 15.9167V16.6667V17.4167C15.9623 17.4167 17.4173 15.9616 17.4173 14.1667H16.6673ZM13.5572 3.33337V4.08337C14.3301 4.08337 15.0114 4.59029 15.2334 5.33051L15.9518 5.115L16.6702 4.89949C16.2578 3.52479 14.9925 2.58337 13.5572 2.58337V3.33337ZM6.44407 3.33337V2.58337C5.00884 2.58337 3.74353 3.5248 3.33113 4.8995L4.0495 5.11501L4.76787 5.33052C4.98993 4.5903 5.67125 4.08337 6.44407 4.08337V3.33337ZM16.6673 7.86697H15.9173V14.1667H16.6673H17.4173V7.86697H16.6673ZM3.33399 14.1667H4.08399L4.08399 7.86696L3.33399 7.86696L2.58399 7.86696L2.58399 14.1667L3.33399 14.1667ZM6.44407 3.33337V4.08337H13.5572V3.33337V2.58337H6.44407V3.33337ZM14.1673 16.6667V15.9167H5.83399V16.6667V17.4167H14.1673V16.6667Z"
+              fill="currentColor"
+            />
+          </svg>
+
+          დამატება
+        </button>
+      </div>
+
+      <div class="my-2 h-px bg-platinum-20"></div>
+
+      <div class="flex items-center gap-2 rounded-full bg-green-20 px-3 py-2">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10.8244 19.6499C11.5552 20.1167 12.4687 20.1167 13.1994 19.6499C15.1024 18.4341 18.6234 15.6957 18.6234 12.0771V7.56471C18.6234 6.79916 18.1485 6.11391 17.4317 5.84511L12.9792 4.1754C12.3555 3.94153 11.6683 3.94153 11.0446 4.1754L6.59207 5.84511C5.87527 6.11391 5.40039 6.79916 5.40039 7.56471V12.0771C5.40039 15.6957 8.92146 18.4341 10.8244 19.6499Z"
+            stroke="#068C0B"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M9.09961 11.8L10.3925 13.0929C10.783 13.4835 11.4162 13.4835 11.8067 13.0929L15.0996 9.80005"
+            stroke="#068C0B"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+
+        <p class="mb-0.5 text-sm text-green-70">გარანტია {{ product.data.warranty }}</p>
+      </div>
+
+      @if (selectedImageQuantity() === 0) {
+      <div class="flex items-center gap-2 rounded-full bg-valencia-10 px-3 py-2">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M12 7V13M12 16V17M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+            stroke="#FF1E07"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <p class="mb-0.5 text-sm text-valencia-60">პროდუქტი არ არის მარაგში</p>
+      </div>
+      }
+    </div>
+  </div>
+
+  @if (hasSpecifications() || product.data.description) {
+  <div class="mt-10 flex w-full flex-col rounded-2xl bg-white px-6 py-4 shadow-low sm:w-1/2">
+    @if (hasSpecifications()) {
+    <div class="space-x-6 text-sm font-semibold">
+      <button
+        type="button"
+        (click)="selectTab('specifications')"
+        [class]="
                 activeTab() === 'specifications'
                   ? 'text-green-60'
                   : 'text-platinum-50'
               "
-            >
-              ტექნიკური მონაცემები
-            </button>
-            @if (product.data.description) {
-              <button
-                type="button"
-                (click)="selectTab('description')"
-                [class]="
+      >
+        ტექნიკური მონაცემები
+      </button>
+      @if (product.data.description) {
+      <button
+        type="button"
+        (click)="selectTab('description')"
+        [class]="
                   activeTab() === 'description' ? 'text-green-60' : 'text-platinum-50'
                 "
-              >
-                აღწერა
-              </button>
-            }
-          </div>
+      >
+        აღწერა
+      </button>
+      }
+    </div>
 
-          <div class="mt-2 h-px bg-platinum-20"></div>
+    <div class="mt-2 h-px bg-platinum-20"></div>
 
-          @if (activeTab() === "specifications") {
-            <div class="mt-4 space-y-3">
-              @for (
-                spec of product.data.specifications | keyvalue;
-                track spec.key
-              ) {
-                <div class="grid grid-cols-1 gap-1 text-sm sm:grid-cols-2">
-                  <span class="text-left text-platinum-50">{{ spec.key }}</span>
-                  <span class="text-left text-platinum-90">{{ spec.value }}</span>
-                </div>
-              }
-            </div>
-          } @else if (product.data.description) {
-            <div
-              class="product-description mt-4 text-sm leading-relaxed text-platinum-90"
-              [innerHTML]="product.data.description"
-            ></div>
-          }
-        } @else if (product.data.description) {
-          <h2 class="text-sm font-semibold text-green-60">აღწერა</h2>
-          <div class="mt-2 h-px bg-platinum-20"></div>
-          <div
-            class="product-description mt-4 text-sm leading-relaxed text-platinum-90"
-            [innerHTML]="product.data.description"
-          ></div>
-        }
+    @if (activeTab() === "specifications") {
+    <div class="mt-4 space-y-3">
+      @for ( spec of product.data.specifications | keyvalue; track spec.key ) {
+      <div class="grid grid-cols-1 gap-1 text-sm sm:grid-cols-2">
+        <span class="text-left text-platinum-50">{{ spec.key }}</span>
+        <span class="text-left text-platinum-90">{{ spec.value }}</span>
       </div>
+      }
+    </div>
+    } @else if (product.data.description) {
+    <div
+      class="product-description mt-4 text-sm leading-relaxed text-platinum-90"
+      [innerHTML]="product.data.description"
+    ></div>
+    } } @else if (product.data.description) {
+    <h2 class="text-sm font-semibold text-green-60">აღწერა</h2>
+    <div class="mt-2 h-px bg-platinum-20"></div>
+    <div
+      class="product-description mt-4 text-sm leading-relaxed text-platinum-90"
+      [innerHTML]="product.data.description"
+    ></div>
     }
-  }
+  </div>
+  } }
 </div>
