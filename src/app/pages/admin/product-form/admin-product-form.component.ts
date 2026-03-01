@@ -12,11 +12,7 @@ import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { catchError, forkJoin, Observable, of, switchMap } from 'rxjs';
-import {
-  Product,
-  ProductCategory,
-  ProductImage,
-} from '@core/interfaces/products.interface';
+import { Product, ProductCategory, ProductImage } from '@core/interfaces/products.interface';
 import {
   ProductFormData,
   CreateProductPayload,
@@ -30,6 +26,7 @@ import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
 import { flattenCategoryTree } from '@utils/category';
 import { colorLabels } from '@utils/colors';
+import { Brand } from '@core/interfaces/admin/brands.interface';
 
 interface SpecificationEntry {
   key: string;
@@ -41,6 +38,7 @@ interface ImageWithMetadata {
   previewUrl: string;
   color: string;
   isPrimary: boolean;
+  quantity: number;
   uuid?: string;
   isExisting: boolean;
 }
@@ -65,9 +63,12 @@ export class AdminProductFormComponent {
   readonly selectedCategoryIds = signal<number[]>([]);
   readonly categoryOptions = signal<ComboboxItems[]>([]);
 
-  readonly colorOptions: ComboboxItems[] = Object.entries(colorLabels).map(
-    ([value, label]) => ({ label, value }),
-  );
+  readonly colorOptions: ComboboxItems[] = Object.entries(colorLabels).map(([value, label]) => ({
+    label,
+    value,
+  }));
+
+  readonly brandOptions = signal<ComboboxItems[]>([]);
 
   readonly productId = computed(() => {
     const id = this.route.snapshot.paramMap.get('id');
@@ -93,14 +94,13 @@ export class AdminProductFormComponent {
     ),
   );
 
-  readonly imagePreviewUrls = computed(() =>
-    this.images().map((img) => img.previewUrl),
-  );
+  readonly imagePreviewUrls = computed(() => this.images().map((img) => img.previewUrl));
 
   readonly imageMetadata = computed(() =>
     this.images().map((img) => ({
       color: img.color,
       is_primary: img.isPrimary,
+      quantity: img.quantity,
       image_uuid: img.uuid,
       isExisting: img.isExisting,
     })),
@@ -112,7 +112,6 @@ export class AdminProductFormComponent {
     description: '',
     price: null as any,
     discount: null as any,
-    quantity: null as any,
     brand_id: null as any,
     warranty: '',
   });
@@ -125,23 +124,29 @@ export class AdminProductFormComponent {
     min(fieldPath.discount, 0, {
       message: 'ფასდაკლება უნდა იყოს 0-დან 100-მდე',
     });
-    required(fieldPath.quantity, { message: 'რაოდენობა აუცილებელია' });
-    min(fieldPath.quantity, 0, { message: 'რაოდენობა უნდა იყოს 0 ზე მეტი' });
   });
 
   constructor() {
     this.loadCategoryOptions();
+    this.loadBrandOptions();
 
     effect(() => {
       const response = this.product();
       if (this.isEditMode() && response) {
-        this.loadProductData(
-          response.data,
-          response.images,
-          response.categories,
-        );
+        this.loadProductData(response.data, response.images, response.categories);
       }
     });
+  }
+
+  private loadBrandOptions(): void {
+    this.adminService
+      .getBrands()
+      .pipe(catchError(() => of([] as Brand[])))
+      .subscribe((brands) => {
+        this.brandOptions.set(
+          brands.map((b) => ({ label: b.name, value: String(b.id) })),
+        );
+      });
   }
 
   private loadCategoryOptions(): void {
@@ -175,7 +180,6 @@ export class AdminProductFormComponent {
       description: product.description ?? '',
       price: product.price,
       discount: product.discount,
-      quantity: product.quantity,
       brand_id: product.brand_id,
       warranty: product.warranty,
     });
@@ -184,24 +188,19 @@ export class AdminProductFormComponent {
     }
 
     if (product.specifications) {
-      const specs = Object.entries(product.specifications).map(
-        ([key, value]) => ({
-          key,
-          value: String(value),
-        }),
-      );
+      const specs = Object.entries(product.specifications).map(([key, value]) => ({
+        key,
+        value: String(value),
+      }));
       this.specifications.set(specs);
     }
 
     if (productImages.length > 0) {
       const loadedImages: ImageWithMetadata[] = productImages.map((img) => ({
-        previewUrl: getProductImageUrl(
-          product.id,
-          img.image_uuid,
-          img.extension,
-        ),
+        previewUrl: getProductImageUrl(product.id, img.image_uuid, img.extension),
         color: img.color || '',
         isPrimary: img.is_primary,
+        quantity: img.quantity ?? 0,
         uuid: img.image_uuid,
         isExisting: true,
       }));
@@ -217,12 +216,7 @@ export class AdminProductFormComponent {
     const validImages = files.filter((file) => file.type.startsWith('image/'));
 
     if (validImages.length !== files.length) {
-      this.toastService.add(
-        'შეცდომა',
-        'გთხოვთ აირჩიოთ მხოლოდ სურათები',
-        3000,
-        'error',
-      );
+      this.toastService.add('შეცდომა', 'გთხოვთ აირჩიოთ მხოლოდ სურათები', 3000, 'error');
       return;
     }
 
@@ -237,6 +231,7 @@ export class AdminProductFormComponent {
           previewUrl: e.target?.result as string,
           color: '',
           isPrimary: isFirstBatch && index === 0,
+          quantity: null as any,
           isExisting: false,
         };
         this.images.update((imgs) => [...imgs, newImage]);
@@ -256,15 +251,17 @@ export class AdminProductFormComponent {
   }
 
   updateImageColor(index: number, color: string): void {
+    this.images.update((imgs) => imgs.map((img, i) => (i === index ? { ...img, color } : img)));
+  }
+
+  updateImageQuantity(index: number, quantity: number): void {
     this.images.update((imgs) =>
-      imgs.map((img, i) => (i === index ? { ...img, color } : img)),
+      imgs.map((img, i) => (i === index ? { ...img, quantity: Math.max(0, quantity) } : img)),
     );
   }
 
   setPrimaryImage(index: number): void {
-    this.images.update((imgs) =>
-      imgs.map((img, i) => ({ ...img, isPrimary: i === index })),
-    );
+    this.images.update((imgs) => imgs.map((img, i) => ({ ...img, isPrimary: i === index })));
   }
 
   addSpecification(): void {
@@ -307,9 +304,7 @@ export class AdminProductFormComponent {
         switchMap((response) =>
           this.handleImageOperations(response.data.id).pipe(
             switchMap(() =>
-              this.assignCategories(response.data.id).pipe(
-                switchMap(() => of(response)),
-              ),
+              this.assignCategories(response.data.id).pipe(switchMap(() => of(response))),
             ),
           ),
         ),
@@ -333,12 +328,7 @@ export class AdminProductFormComponent {
           ? errors[0].message
           : 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი';
 
-      this.toastService.add(
-        'პროდუქტის დამატება ვერ მოხერხდა',
-        errorMessage,
-        5000,
-        'error',
-      );
+      this.toastService.add('პროდუქტის დამატება ვერ მოხერხდა', errorMessage, 5000, 'error');
       return false;
     }
 
@@ -373,7 +363,6 @@ export class AdminProductFormComponent {
       description: productData.description,
       price: Number(productData.price) || 0,
       discount: Number(productData.discount) || 0,
-      quantity: Number(productData.quantity) || 0,
       specifications,
       brand_id: productData.brand_id ? Number(productData.brand_id) : null,
       warranty: productData.warranty,
@@ -400,6 +389,7 @@ export class AdminProductFormComponent {
         .updateProductImage(productId, img.uuid!, {
           color: img.color || undefined,
           is_primary: img.isPrimary,
+          quantity: img.quantity,
         })
         .pipe(
           catchError((error) => {
@@ -420,37 +410,28 @@ export class AdminProductFormComponent {
     );
   }
 
-  private getDeletedImages(
-    currentExistingImages: ImageWithMetadata[],
-  ): string[] {
+  private getDeletedImages(currentExistingImages: ImageWithMetadata[]): string[] {
     const productResponse = this.product();
     if (!productResponse?.images) return [];
 
-    const currentUuids = new Set(
-      currentExistingImages.map((img) => img.uuid).filter(Boolean),
-    );
+    const currentUuids = new Set(currentExistingImages.map((img) => img.uuid).filter(Boolean));
     return productResponse.images
       .filter((img) => !currentUuids.has(img.image_uuid))
       .map((img) => img.image_uuid);
   }
 
-  private uploadNewImages(
-    productId: number,
-    newImages: ImageWithMetadata[],
-  ): Observable<unknown> {
+  private uploadNewImages(productId: number, newImages: ImageWithMetadata[]): Observable<unknown> {
     const imageRequests: ImageUploadRequest[] = newImages.map((img) => ({
       color: img.color,
       is_primary: img.isPrimary,
       content_type: img.file!.type,
+      quantity: img.quantity,
     }));
 
     return this.adminService.getPresignedUrls(productId, imageRequests).pipe(
       switchMap((presignedResponse) => {
         const uploads = presignedResponse.images.map((presignedUrl, index) =>
-          this.adminService.uploadToS3(
-            presignedUrl.upload_url,
-            newImages[index].file!,
-          ),
+          this.adminService.uploadToS3(presignedUrl.upload_url, newImages[index].file!),
         );
         return uploads.length > 0 ? forkJoin(uploads) : of([]);
       }),
@@ -465,9 +446,7 @@ export class AdminProductFormComponent {
     this.isLoading.set(false);
     this.toastService.add(
       'წარმატებული',
-      this.isEditMode()
-        ? 'პროდუქტი წარმატებით განახლდა'
-        : 'პროდუქტი წარმატებით დაემატა',
+      this.isEditMode() ? 'პროდუქტი წარმატებით განახლდა' : 'პროდუქტი წარმატებით დაემატა',
       3000,
       'success',
     );
@@ -486,14 +465,12 @@ export class AdminProductFormComponent {
       return of(null);
     }
 
-    return this.adminService
-      .assignProductCategories(productId, categoryIds)
-      .pipe(
-        catchError((error) => {
-          console.error('Category assignment error:', error);
-          return of(null);
-        }),
-      );
+    return this.adminService.assignProductCategories(productId, categoryIds).pipe(
+      catchError((error) => {
+        console.error('Category assignment error:', error);
+        return of(null);
+      }),
+    );
   }
 
   toggleCategory(categoryId: string): void {
@@ -518,9 +495,7 @@ export class AdminProductFormComponent {
     const categoryId = selectedIds[0];
     const options = this.categoryOptions();
 
-    const option = options.find(
-      (opt) => opt.value.split(':')[1] === String(categoryId),
-    );
+    const option = options.find((opt) => opt.value.split(':')[1] === String(categoryId));
 
     return option?.value;
   }
@@ -531,6 +506,18 @@ export class AdminProductFormComponent {
     } else {
       this.selectedCategoryIds.set([]);
     }
+  }
+
+  getSelectedBrandValue(): string | undefined {
+    const brandId = this.productModel().brand_id;
+    return brandId ? String(brandId) : undefined;
+  }
+
+  onBrandChange(value: string | undefined): void {
+    this.productModel.update((m) => ({
+      ...m,
+      brand_id: value ? Number(value) : null,
+    }));
   }
 
   cancel(): void {

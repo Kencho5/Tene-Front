@@ -25,10 +25,12 @@ export class ProductCardComponent {
     return calculateDiscount(this.product().data);
   });
 
+  readonly primaryImage = computed(() => {
+    return this.product().images.find((image) => image.is_primary) ?? null;
+  });
+
   readonly productImage = computed(() => {
-    const primaryImage = this.product().images.find(
-      (image) => image.is_primary,
-    );
+    const primaryImage = this.primaryImage();
     if (!primaryImage) return '';
 
     return getProductImageUrl(
@@ -38,6 +40,10 @@ export class ProductCardComponent {
     );
   });
 
+  readonly primaryImageQuantity = computed(() => {
+    return this.primaryImage()?.quantity ?? 0;
+  });
+
   formatPrice(price: number): string {
     const num = Number(price);
     return num >= 1000 ? Math.round(num).toString() : num.toFixed(2);
@@ -45,9 +51,7 @@ export class ProductCardComponent {
 
   addToCart(): void {
     const productData = this.product().data;
-    const primaryImage = this.product().images.find(
-      (image) => image.is_primary,
-    );
+    const primaryImage = this.primaryImage();
 
     if (!productData || !primaryImage) return;
 
@@ -57,6 +61,7 @@ export class ProductCardComponent {
       selectedColor: primaryImage.color,
       selectedImageId: primaryImage.image_uuid,
       selectedImageExtension: primaryImage.extension,
+      selectedImageQuantity: primaryImage.quantity,
     });
   }
 }

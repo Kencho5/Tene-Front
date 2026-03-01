@@ -67,6 +67,10 @@ export class ProductComponent {
   readonly quantity = signal(1);
   readonly activeTab = signal<TabName>('specifications');
 
+  readonly selectedImageQuantity = computed(() => {
+    return this.displayImage()?.quantity ?? 0;
+  });
+
   readonly hasSpecifications = computed(() => {
     const product = this.product();
     if (!product) return false;
@@ -251,6 +255,7 @@ export class ProductComponent {
   selectColor(color: string): void {
     this.imageLoading.set(true);
     this.selectedColor.set(color);
+    this.quantity.set(1);
 
     const colorImages = this.product()?.images.filter((img) => img.color === color);
     if (colorImages && colorImages.length > 0) {
@@ -280,10 +285,7 @@ export class ProductComponent {
   }
 
   updateProductCount(changeAmount: number): void {
-    const product = this.product();
-    if (!product) return;
-
-    const maxAvailable = product.data.quantity;
+    const maxAvailable = this.selectedImageQuantity();
     const currentQuantity = this.quantity();
     const newQuantity = currentQuantity + changeAmount;
 
@@ -312,6 +314,7 @@ export class ProductComponent {
       selectedColor: color,
       selectedImageId: imageId,
       selectedImageExtension: selectedImage.extension,
+      selectedImageQuantity: selectedImage.quantity,
     });
 
     this.quantity.set(1);

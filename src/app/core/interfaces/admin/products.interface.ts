@@ -4,7 +4,6 @@ export interface ProductFormData {
   description: string;
   price: number;
   discount: number;
-  quantity: number;
   brand_id: number | null;
   warranty: string;
 }
@@ -15,7 +14,6 @@ export interface CreateProductPayload {
   description: string;
   price: number;
   discount: number;
-  quantity: number;
   specifications: Record<string, string>;
   brand_id: number | null;
   warranty: string;
@@ -25,6 +23,7 @@ export interface ImageUploadRequest {
   color: string;
   is_primary: boolean;
   content_type: string;
+  quantity: number;
 }
 
 export interface PresignedUrlResponse {

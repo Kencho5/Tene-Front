@@ -49,6 +49,7 @@ export interface CartItem {
   selectedColor: string;
   selectedImageId: string;
   selectedImageExtension: string;
+  selectedImageQuantity: number;
 }
 
 export interface CheckoutFields {
@@ -90,7 +91,7 @@ export interface CheckoutRequest {
   address: string;
   delivery_type: string;
   delivery_time: string;
-  items: { product_id: number; quantity: number }[];
+  items: { product_id: number; quantity: number; color: string }[];
 }
 
 export interface CheckoutResponse {

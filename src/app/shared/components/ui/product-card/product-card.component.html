@@ -2,7 +2,7 @@
   [routerLink]="['/products', productSlug(), product().data.id]"
   class="relative flex h-auto w-full min-w-0 flex-col gap-3 rounded-2xl bg-white p-3 shadow-low sm:h-[366px] sm:gap-4 sm:p-4"
 >
-  @if (product().data.quantity === 0) {
+  @if (primaryImageQuantity() === 0) {
     <div
       class="absolute left-6 top-6 z-10 flex h-[32px] items-center justify-center rounded-2xl border border-platinum-30 bg-white px-2.5 py-2 text-sm font-semibold text-platinum-50"
     >
@@ -53,9 +53,9 @@
       }
       <button
         type="button"
-        [disabled]="product().data.quantity === 0"
+        [disabled]="primaryImageQuantity() === 0"
         class="flex h-[44px] w-[44px] flex-shrink-0 items-center justify-center rounded-full border font-semibold xl:w-auto xl:gap-2 xl:px-5"
-        [ngClass]="product().data.quantity === 0 ? 'border-platinum-30 text-platinum-40 cursor-not-allowed' : 'border-green-60 text-green-70'"
+        [ngClass]="primaryImageQuantity() === 0 ? 'border-platinum-30 text-platinum-40 cursor-not-allowed' : 'border-green-60 text-green-70'"
         (click)="addToCart(); $event.preventDefault(); $event.stopPropagation()"
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">

@@ -52,7 +52,7 @@ export class CartService {
   }
 
   addItem(item: CartItem): void {
-    if (item.product.quantity === 0) return;
+    if (item.selectedImageQuantity === 0) return;
     this.items.set(this.loadCartFromStorage());
     this.items.update((currentItems) => {
       const existingItemIndex = currentItems.findIndex(
@@ -65,7 +65,7 @@ export class CartService {
       if (existingItemIndex !== -1) {
         const updatedItems = [...currentItems];
         const existingItem = updatedItems[existingItemIndex];
-        const maxQuantity = existingItem.product.quantity;
+        const maxQuantity = existingItem.selectedImageQuantity;
         const newQuantity = Math.min(
           existingItem.quantity + item.quantity,
           maxQuantity,
@@ -111,7 +111,7 @@ export class CartService {
         ) {
           const clampedQuantity = Math.max(
             1,
-            Math.min(quantity, item.product.quantity),
+            Math.min(quantity, item.selectedImageQuantity),
           );
           return { ...item, quantity: clampedQuantity };
         }

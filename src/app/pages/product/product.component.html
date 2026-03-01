@@ -147,7 +147,7 @@
 
           <div class="h-[6px] w-[6px] rounded-full bg-platinum-40/30"></div>
 
-          <p>მარაგშია: {{ product.data.quantity }}</p>
+          <p>მარაგშია: {{ selectedImageQuantity() }}</p>
         </div>
 
         @if (product.data.discount == 0) {
@@ -235,7 +235,7 @@
 
             <h2>{{ quantity() }}</h2>
 
-            <button type="button" (click)="updateProductCount(+1)" [disabled]="quantity() >= product.data.quantity" class="disabled:opacity-30 disabled:cursor-not-allowed">
+            <button type="button" (click)="updateProductCount(+1)" [disabled]="quantity() >= selectedImageQuantity()" class="disabled:opacity-30 disabled:cursor-not-allowed">
               <svg
                 width="24"
                 height="24"
@@ -255,12 +255,12 @@
 
           <button
             type="button"
-            [disabled]="product.data.quantity === 0"
+            [disabled]="selectedImageQuantity() === 0"
             class="inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-full border-[1.5px] px-6 py-3 font-medium transition-all"
-            [ngClass]="product.data.quantity === 0
+            [ngClass]="selectedImageQuantity() === 0
               ? 'border-platinum-20 bg-platinum-20 text-platinum-40 cursor-not-allowed'
               : 'border-white/40 text-white hover:brightness-95'"
-            [style]="product.data.quantity === 0 ? '' : 'background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%); box-shadow: 0px 20px 16px -8px #0ad10426;'"
+            [style]="selectedImageQuantity() === 0 ? '' : 'background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%); box-shadow: 0px 20px 16px -8px #0ad10426;'"
             (click)="addToCart()"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -305,7 +305,7 @@
           </p>
         </div>
 
-        @if (product.data.quantity === 0) {
+        @if (selectedImageQuantity() === 0) {
           <div class="flex items-center gap-2 rounded-full bg-valencia-10 px-3 py-2">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path

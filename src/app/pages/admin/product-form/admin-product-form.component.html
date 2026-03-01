@@ -71,12 +71,19 @@
         </div>
 
         <!-- Brand -->
-        <app-input
-          [formField]="productForm.brand_id"
-          [error]="submitted() && productForm.brand_id().invalid()"
-          type="number"
-          placeholder="ბრენდის ID"
-        />
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-platinum-70">
+            ბრენდი
+          </label>
+          <app-combobox
+            [selectedValue]="getSelectedBrandValue()"
+            (selectedValueChange)="onBrandChange($event)"
+            [items]="brandOptions()"
+            placeholder="აირჩიეთ ბრენდი"
+            searchPlaceholder="ძიება..."
+            notFoundText="ბრენდი ვერ მოიძებნა"
+          />
+        </div>
 
         <!-- Warranty -->
         <app-input
@@ -111,13 +118,7 @@
           placeholder="ფასდაკლება (%)"
         />
 
-        <!-- Quantity -->
-        <app-input
-          [formField]="productForm.quantity"
-          [error]="submitted() && productForm.quantity().invalid()"
-          type="number"
-          placeholder="რაოდენობა *"
-        />
+        <!-- Quantity is auto-computed from image variants -->
       </div>
     </div>
 
@@ -329,6 +330,16 @@
                   placeholder="აირჩიეთ ფერი"
                   searchPlaceholder="ძიება..."
                   notFoundText="ფერი ვერ მოიძებნა"
+                />
+
+                <!-- Quantity -->
+                <input
+                  type="number"
+                  min="0"
+                  [value]="imageMetadata()[$index]?.quantity"
+                  (input)="updateImageQuantity($index, +$any($event.target).value)"
+                  placeholder="რაოდენობა"
+                  class="w-full rounded-lg border border-platinum-20 px-3.5 py-2 text-sm text-platinum-100 outline-none transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
                 />
               </div>
             </div>

@@ -221,6 +221,7 @@ export class CheckoutComponent {
       items: this.cartService.items().map((item) => ({
         product_id: item.product.id,
         quantity: item.quantity,
+        color: item.selectedColor,
       })),
     };
 

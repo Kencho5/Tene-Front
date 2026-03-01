@@ -52,7 +52,7 @@
 
         <h2>{{ item().quantity }}</h2>
 
-        <button type="button" (click)="onUpdateQuantity($event, 1)" [disabled]="item().quantity >= item().product.quantity" class="disabled:opacity-30 disabled:cursor-not-allowed">
+        <button type="button" (click)="onUpdateQuantity($event, 1)" [disabled]="item().quantity >= item().selectedImageQuantity" class="disabled:opacity-30 disabled:cursor-not-allowed">
           <svg
             width="24"
             height="24"

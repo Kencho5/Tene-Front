@@ -81,7 +81,7 @@ export class AdminService {
   updateProductImage(
     productId: number,
     imageUuid: string,
-    payload: { color?: string; is_primary?: boolean },
+    payload: { color?: string; is_primary?: boolean; quantity?: number },
   ): Observable<any> {
     return this.http.patch(
       `/admin/products/${productId}/images/${imageUuid}`,
