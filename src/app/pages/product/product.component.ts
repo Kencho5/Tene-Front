@@ -253,6 +253,8 @@ export class ProductComponent {
   }
 
   selectColor(color: string): void {
+    if (this.selectedColor() === color) return;
+
     this.imageLoading.set(true);
     this.selectedColor.set(color);
     this.quantity.set(1);
