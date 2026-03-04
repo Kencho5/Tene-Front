@@ -1,23 +1,30 @@
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+  OnInit,
+} from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { ProductsService } from '@core/services/products/products.service';
 import { CategoriesService } from '@core/services/categories/categories.service';
-import { map, catchError } from 'rxjs';
+import { catchError, map } from 'rxjs';
 import { of } from 'rxjs';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { SharedModule } from '@shared/shared.module';
-import {
-  productTopCategoryCards,
-  productBrandCards,
-} from '@utils/productsCards';
+import { productTopCategoryCards, productBrandCards } from '@utils/productsCards';
 import { SeoService } from '@core/services/seo/seo.service';
 import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
+import { CategoryTreeNode } from '@core/interfaces/categories.interface';
+import { ProductSearchResponse } from '@core/interfaces/products.interface';
 
 @Component({
   selector: 'app-products',
   imports: [SharedModule, ProductCardComponent, ImageComponent, DragScrollDirective],
   templateUrl: './products.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: `
     .hide-scrollbar::-webkit-scrollbar {
       display: none;
@@ -33,28 +40,25 @@ export class ProductsComponent implements OnInit {
   readonly productBrandCards = productBrandCards;
   readonly scrollStates = signal<Record<string, boolean>>({});
 
-  readonly categoriesTree = toSignal(
-    this.categoriesService
-      .getCategoryTree()
-      .pipe(catchError(() => of({ categories: [] }))),
-    { initialValue: { categories: [] } },
-  );
-
-  readonly topLevelCategories = computed(() => {
-    const tree = this.categoriesTree();
-    return tree.categories.slice(0, 8);
+  readonly categoriesTree = rxResource({
+    defaultValue: [] as CategoryTreeNode[],
+    stream: () =>
+      this.categoriesService.getCategoryTree().pipe(
+        map((res) => res.categories),
+        catchError(() => of([] as CategoryTreeNode[])),
+      ),
   });
 
-  readonly searchResponse = toSignal(
-    this.productsService.searchProduct('').pipe(
-      map((response) => {
-        return response;
-      }),
-    ),
-    { initialValue: { products: [], total: 0, limit: 0, offset: 0 } },
-  );
+  readonly topLevelCategories = computed(() => {
+    return this.categoriesTree.value().slice(0, 8);
+  });
 
-  readonly products = computed(() => this.searchResponse().products);
+  readonly searchResponse = rxResource({
+    defaultValue: { products: [], total: 0, limit: 0, offset: 0 } as ProductSearchResponse,
+    stream: () => this.productsService.searchProduct('in_stock=true'),
+  });
+
+  readonly products = computed(() => this.searchResponse.value().products);
 
   ngOnInit(): void {
     this.seoService.setMetaTags({
@@ -89,8 +93,7 @@ export class ProductsComponent implements OnInit {
 
   getBrandGradient(color: string): string {
     const gradients: Record<string, string> = {
-      cream:
-        'linear-gradient(270deg, rgba(247, 193, 82, 0.45) 0%, transparent 50%)',
+      cream: 'linear-gradient(270deg, rgba(247, 193, 82, 0.45) 0%, transparent 50%)',
       pear: 'linear-gradient(270deg, rgba(243, 249, 144, 0.5) 0%, transparent 50%)',
       info: 'linear-gradient(270deg, rgba(2, 132, 199, 0.45) 0%, transparent 50%)',
     };
