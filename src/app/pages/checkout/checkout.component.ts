@@ -1,17 +1,8 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { email, FormField, form, hidden, required } from '@angular/forms/signals';
 import { catchError, EMPTY, of } from 'rxjs';
-import {
-  CheckoutFields,
-  CheckoutRequest,
-} from '@core/interfaces/products.interface';
+import { CheckoutFields, CheckoutRequest } from '@core/interfaces/products.interface';
 import { organizationTypes } from '@utils/organizationTypes';
 import { CartService } from '@core/services/products/cart.service';
 import { OrderService } from '@core/services/order.service';
@@ -117,10 +108,7 @@ export class CheckoutComponent {
   readonly checkoutForm = form(this.checkoutModel, (fieldPath) => {
     required(fieldPath.customer_type, { message: 'პირის არჩევა აუცილებელია' });
 
-    hidden(
-      fieldPath.company,
-      ({ valueOf }) => valueOf(fieldPath.customer_type) === 'individual',
-    );
+    hidden(fieldPath.company, ({ valueOf }) => valueOf(fieldPath.customer_type) === 'individual');
     required(fieldPath.company.organization_name, {
       message: 'ორგანიზაციის სახელი აუცილებელია',
     });
@@ -128,10 +116,7 @@ export class CheckoutComponent {
       message: 'საიდენტიფიკაციო კოდი აუცილებელია',
     });
 
-    hidden(
-      fieldPath.individual,
-      ({ valueOf }) => valueOf(fieldPath.customer_type) === 'company',
-    );
+    hidden(fieldPath.individual, ({ valueOf }) => valueOf(fieldPath.customer_type) === 'company');
     required(fieldPath.individual.name, { message: 'სახელი აუცილებელია' });
     required(fieldPath.individual.surname, { message: 'გვარი აუცილებელია' });
 
@@ -153,12 +138,7 @@ export class CheckoutComponent {
       .pipe(
         takeUntilDestroyed(),
         catchError(() => {
-          this.toastService.add(
-            'შეცდომა',
-            'მისამართების ჩატვირთვა ვერ მოხერხდა',
-            5000,
-            'error',
-          );
+          this.toastService.add('შეცდომა', 'მისამართების ჩატვირთვა ვერ მოხერხდა', 5000, 'error');
           return of([]);
         }),
       )
@@ -175,9 +155,7 @@ export class CheckoutComponent {
     if (this.checkoutForm().invalid()) {
       const errors = this.checkoutForm().errorSummary();
       const errorMessage =
-        errors.length > 0
-          ? errors[0].message
-          : 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი';
+        errors.length > 0 ? errors[0].message : 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი';
 
       this.toastService.add(
         'შეკვეთის გაფორმება ვერ მოხერხდა',
@@ -189,12 +167,7 @@ export class CheckoutComponent {
     }
 
     if (this.cartService.items().length === 0) {
-      this.toastService.add(
-        'კალათა ცარიელია',
-        'გთხოვთ დაამატოთ ნივთები კალათაში',
-        5000,
-        'error',
-      );
+      this.toastService.add('კალათა ცარიელია', 'გთხოვთ დაამატოთ ნივთები კალათაში', 5000, 'error');
       return;
     }
 
@@ -203,16 +176,13 @@ export class CheckoutComponent {
 
     const request: CheckoutRequest = {
       customer_type: model.customer_type,
-      individual: isIndividual
+      ...(isIndividual
         ? { name: model.individual.name, surname: model.individual.surname }
-        : null,
-      company: !isIndividual
-        ? {
+        : {
             organization_type: model.company.organization_type,
             organization_name: model.company.organization_name,
             organization_code: model.company.organization_code,
-          }
-        : null,
+          }),
       email: model.email,
       phone_number: Number(model.phone_number),
       address: model.address,
@@ -231,8 +201,7 @@ export class CheckoutComponent {
       .checkout(request)
       .pipe(
         catchError((error) => {
-          const message =
-            error?.error?.message || 'შეკვეთის გაფორმება ვერ მოხერხდა';
+          const message = error?.error?.message || 'შეკვეთის გაფორმება ვერ მოხერხდა';
           this.toastService.add('შეცდომა', message, 5000, 'error');
           this.checkoutLoading.set(false);
           return EMPTY;
@@ -243,9 +212,7 @@ export class CheckoutComponent {
       });
   }
 
-  toggleSection(
-    section: 'contactDetails' | 'deliveryDetails' | 'paymentMethod',
-  ) {
+  toggleSection(section: 'contactDetails' | 'deliveryDetails' | 'paymentMethod') {
     this.sectionStates.update((state) => ({
       ...state,
       [section]: !state[section],
@@ -255,9 +222,7 @@ export class CheckoutComponent {
   onAddressSaved(address: AddressData) {
     const existing = this.addresses().find((a) => a.id === address.id);
     if (existing) {
-      this.addresses.update((addrs) =>
-        addrs.map((a) => (a.id === address.id ? address : a)),
-      );
+      this.addresses.update((addrs) => addrs.map((a) => (a.id === address.id ? address : a)));
     } else {
       this.addresses.set([...this.addresses(), address]);
     }

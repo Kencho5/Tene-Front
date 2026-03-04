@@ -80,12 +80,11 @@ export interface ProductCategoryCard {
 
 export interface CheckoutRequest {
   customer_type: string;
-  individual: { name: string; surname: string } | null;
-  company: {
-    organization_type: string;
-    organization_name: string;
-    organization_code: string;
-  } | null;
+  name?: string;
+  surname?: string;
+  organization_type?: string;
+  organization_name?: string;
+  organization_code?: string;
   email: string;
   phone_number: number;
   address: string;
