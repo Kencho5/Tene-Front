@@ -72,38 +72,20 @@ export class CheckoutComponent {
   readonly checkoutModel = signal<CheckoutFields>({
     customer_type: 'individual',
     individual: {
-      name: 'giorgi',
-      surname: 'kenchadze',
+      name: '',
+      surname: '',
     },
     company: {
       organization_type: 'llc',
       organization_name: '',
       organization_code: '',
     },
-    email: 'giokenchadze@gmail.com',
-    phone_number: 557325235,
+    email: '',
+    phone_number: null,
     address: '',
     delivery_type: 'delivery',
     delivery_time: 'same_day',
   });
-
-  // readonly checkoutModel = signal<CheckoutFields>({
-  //   customer_type: 'individual',
-  //   individual: {
-  //     name: '',
-  //     surname: '',
-  //   },
-  //   company: {
-  //     organization_type: 'llc',
-  //     organization_name: '',
-  //     organization_code: '',
-  //   },
-  //   email: '',
-  //   phone_number: null,
-  //   address: '',
-  //   delivery_type: 'delivery',
-  //   delivery_time: 'same_day',
-  // });
 
   readonly checkoutForm = form(this.checkoutModel, (fieldPath) => {
     required(fieldPath.customer_type, { message: 'პირის არჩევა აუცილებელია' });
