@@ -11,7 +11,8 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
+        loadComponent: () =>
+          import('./pages/products/products.component').then((m) => m.ProductsComponent),
       },
       {
         path: 'bins',

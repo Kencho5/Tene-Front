@@ -1,53 +1,6 @@
-<div class="container space-y-16 px-4 py-10 md:py-20">
-  <!-- USB Cable Banner -->
+<div class="container space-y-16 px-4 pt-10 md:pt-16">
   <div
-    class="relative flex flex-col overflow-hidden rounded-2xl bg-linear-to-b from-[#F0F7F0] to-white px-4 py-6 lg:flex-row lg:items-center lg:justify-between lg:px-10 lg:py-12"
-  >
-    <!-- Glow -->
-    <div
-      class="pointer-events-none absolute -right-10 -top-10 h-80 w-80 rounded-full bg-green-200/50 blur-[100px]"
-    ></div>
-
-    <img
-      src="/assets/images/home-cards/main-cable.webp"
-      class="relative z-10 h-[140px] w-full object-contain lg:hidden"
-    />
-
-    <div
-      class="relative z-20 mt-6 flex flex-col items-center gap-4 text-center lg:mt-0 lg:items-start lg:text-left"
-    >
-      <h2 class="text-[28px] lg:text-[32px]">პირველი ქართული</h2>
-      <h2 class="text-[28px] text-green-60 lg:text-[32px]">USB კაბელი</h2>
-
-      <a
-        routerLink="/search"
-        [queryParams]="{ brand: 22 }"
-        class="mt-4 inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-full border-white/40 px-6 py-2.5 text-base font-medium text-white transition-all hover:brightness-95 lg:w-fit"
-        style="
-          background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%);
-          box-shadow: 0px 20px 16px -8px #0ad10426;
-        "
-      >
-        შეიძინე
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M12.082 5.41669L16.5594 9.89305C16.63 9.96248 16.6654 10.0535 16.6654 10.1445M12.082 14.5834L16.5594 10.3959C16.63 10.3265 16.6654 10.2355 16.6654 10.1445M16.6654 10.1445H3.33203"
-            stroke="white"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
-        </svg>
-      </a>
-    </div>
-
-    <img
-      src="/assets/images/home-cards/main-cable.webp"
-      class="absolute right-0 top-0 z-10 hidden h-full w-[45%] object-contain object-right lg:block"
-    />
-  </div>
-
-  <div
-    class="relative flex flex-col overflow-hidden rounded-2xl bg-platinum-10 px-4 py-6 lg:flex-row lg:items-center lg:justify-between lg:px-10 lg:py-12"
+    class="bg-platinum-10 relative flex flex-col overflow-hidden rounded-2xl px-4 py-6 lg:flex-row lg:items-center lg:justify-between lg:px-10 lg:py-12"
   >
     <img
       src="/assets/images/products/main-banner-mobile.webp"
@@ -56,19 +9,19 @@
 
     <img
       src="/assets/images/products/main-banner.webp"
-      class="absolute right-0 top-0 z-10 hidden h-full w-auto object-cover lg:block"
+      class="absolute top-0 right-0 z-10 hidden h-full w-auto object-cover lg:block"
     />
 
     <div
       class="relative z-20 mt-6 flex flex-col items-center gap-4 text-center lg:mt-0 lg:items-start lg:text-left"
     >
-      <h1 class="w-fit rounded-2xl bg-valencia-40 p-2.5 text-[20px] text-white lg:text-[28px]">
+      <h1 class="bg-valencia-40 w-fit rounded-2xl p-2.5 text-[20px] text-white lg:text-[28px]">
         30% ფასდაკლება
       </h1>
 
       <h2 class="text-[28px] lg:text-[32px]">სეზონურ შეთავაზებებზე</h2>
 
-      <p class="max-w-[628px] text-base text-platinum-50 lg:text-lg">
+      <p class="text-platinum-50 max-w-[628px] text-base lg:text-lg">
         მიიღე ფასდაკლება ტექნიკაზე, აქსესუარებზე სხვა და ყოველდღიურ ნივთებზე.
       </p>
 
@@ -90,7 +43,7 @@
       height="351"
       viewBox="0 0 851 351"
       fill="none"
-      class="pointer-events-none absolute -right-1/2 -top-32 hidden rounded-2xl blur-[135px] lg:-bottom-20 lg:right-0 lg:block"
+      class="pointer-events-none absolute -top-32 -right-1/2 hidden rounded-2xl blur-[135px] lg:right-0 lg:-bottom-20 lg:block"
     >
       <g filter="url(#filter0_f_1818_8029)">
         <path
@@ -130,7 +83,12 @@
 
   <!-- Categories -->
   <div class="space-y-6">
-    <h1 class="text-xl sm:text-[28px]">კატეგორიები</h1>
+    <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+      <h1 class="text-xl sm:text-[28px]">კატეგორიები</h1>
+      <a routerLink="/search" class="text-green-60 hover:text-green-70 text-[13px] font-medium sm:text-sm">
+        ყველას ნახვა →
+      </a>
+    </div>
 
     <div class="relative">
       <div
@@ -147,7 +105,7 @@
           class="group flex w-[130px] shrink-0 flex-col items-center gap-3 sm:w-[150px]"
         >
           <div
-            class="relative h-[100px] w-[100px] overflow-hidden rounded-2xl border border-platinum-20/60 bg-white shadow-[0_1px_4px_rgba(0,0,0,0.04)] transition-all group-hover:border-green-40 group-hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] sm:h-[120px] sm:w-[120px]"
+            class="border-platinum-20/60 group-hover:border-green-40 relative h-[100px] w-[100px] overflow-hidden rounded-2xl border bg-white shadow-[0_1px_4px_rgba(0,0,0,0.04)] transition-all group-hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] sm:h-[120px] sm:w-[120px]"
           >
             @if (category.image_url) {
             <img
@@ -158,7 +116,7 @@
               class="h-full w-full object-cover"
             />
             } @else {
-            <div class="flex h-full w-full items-center justify-center bg-green-10">
+            <div class="bg-green-10 flex h-full w-full items-center justify-center">
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none" class="text-green-60/40">
                 <path
                   d="M3 7C3 5.11438 3 4.17157 3.58579 3.58579C4.17157 3 5.11438 3 7 3H17C18.8856 3 19.8284 3 20.4142 3.58579C21 4.17157 21 5.11438 21 7V17C21 18.8856 21 19.8284 20.4142 20.4142C19.8284 21 18.8856 21 17 21H7C5.11438 21 4.17157 21 3.58579 20.4142C3 19.8284 3 18.8856 3 17V7Z"
@@ -177,7 +135,7 @@
           </div>
 
           <p
-            class="text-center text-[13px] font-medium leading-tight text-platinum-80 transition-colors group-hover:text-green-70 sm:text-sm"
+            class="text-platinum-80 group-hover:text-green-70 text-center text-[13px] leading-tight font-medium transition-colors sm:text-sm"
           >
             {{ category.name }}
           </p>
@@ -189,7 +147,7 @@
       <button
         type="button"
         (click)="scrollLeft(scrollContainer)"
-        class="absolute left-0 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-platinum-20 bg-white shadow-low transition-all hover:bg-platinum-10 lg:flex"
+        class="border-platinum-20 shadow-low hover:bg-platinum-10 absolute top-1/2 left-0 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border bg-white transition-all lg:flex"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="rotate-180">
           <path
@@ -205,7 +163,7 @@
       <button
         type="button"
         (click)="scrollRight(scrollContainer)"
-        class="absolute right-0 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-platinum-20 bg-white shadow-low transition-all hover:bg-platinum-10 lg:flex"
+        class="border-platinum-20 shadow-low hover:bg-platinum-10 absolute top-1/2 right-0 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border bg-white transition-all lg:flex"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path
@@ -218,14 +176,19 @@
       </button>
 
       <div
-        class="pointer-events-none absolute bottom-0 right-0 top-0 hidden w-20 bg-linear-to-l from-white to-transparent lg:block"
+        class="pointer-events-none absolute top-0 right-0 bottom-0 hidden w-20 bg-linear-to-l from-white to-transparent lg:block"
       ></div>
     </div>
   </div>
 
   <!-- Top Products -->
   <div class="space-y-6">
-    <h1 class="text-xl sm:text-[28px]">ტოპ პროდუქტები</h1>
+    <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+      <h1 class="text-xl sm:text-[28px]">ტოპ პროდუქტები</h1>
+      <a routerLink="/search" class="text-green-60 hover:text-green-70 text-[13px] font-medium sm:text-sm">
+        ყველას ნახვა →
+      </a>
+    </div>
 
     <div class="relative">
       <div
@@ -244,7 +207,7 @@
       <button
         type="button"
         (click)="scrollLeft(productsScrollContainer)"
-        class="absolute left-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-green-10 p-3 shadow-low transition-all hover:bg-green-20 lg:flex"
+        class="bg-green-10 shadow-low hover:bg-green-20 absolute top-1/2 left-0 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-all lg:flex"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="rotate-180">
           <path
@@ -260,7 +223,7 @@
       <button
         type="button"
         (click)="scrollRight(productsScrollContainer)"
-        class="absolute right-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-green-10 p-3 shadow-low transition-all hover:bg-green-20 lg:flex"
+        class="bg-green-10 shadow-low hover:bg-green-20 absolute top-1/2 right-0 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-all lg:flex"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path
@@ -273,7 +236,7 @@
       </button>
 
       <div
-        class="pointer-events-none absolute bottom-0 right-0 top-0 hidden w-20 bg-linear-to-l from-white to-transparent lg:block"
+        class="pointer-events-none absolute top-0 right-0 bottom-0 hidden w-20 bg-linear-to-l from-white to-transparent lg:block"
       ></div>
     </div>
   </div>
@@ -295,16 +258,16 @@
           [routerLink]="['/search']"
           [queryParams]="{ brand: brandCard.brandId }"
           [style.background]="getBrandGradient(brandCard.color)"
-          class="flex h-[184px] shrink-0 items-center gap-4 rounded-2xl p-4 shadow-low transition-all hover:brightness-[0.97] sm:w-[410px]"
+          class="shadow-low flex h-[184px] shrink-0 items-center gap-4 rounded-2xl p-4 transition-all hover:brightness-[0.97] sm:w-[410px]"
         >
           <div class="space-y-4 p-2">
-            <div class="inline-block rounded-full bg-platinum-10 px-3 py-2">
+            <div class="bg-platinum-10 inline-block rounded-full px-3 py-2">
               <img src="/assets/images/products/{{ brandCard.brand }}.svg" class="h-5" />
             </div>
 
             <h2 class="max-w-[161px] sm:text-xl">{{ brandCard.title }}</h2>
 
-            <p class="flex items-center gap-1.5 text-sm font-semibold text-green-70">
+            <p class="text-green-70 flex items-center gap-1.5 text-sm font-semibold">
               აღმოაჩინე
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path
@@ -330,7 +293,7 @@
       <button
         type="button"
         (click)="scrollLeft(brandsScrollContainer)"
-        class="absolute left-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-green-10 p-3 shadow-low transition-all hover:bg-green-20 lg:flex"
+        class="bg-green-10 shadow-low hover:bg-green-20 absolute top-1/2 left-0 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-all lg:flex"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="rotate-180">
           <path
@@ -346,7 +309,7 @@
       <button
         type="button"
         (click)="scrollRight(brandsScrollContainer)"
-        class="absolute right-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-green-10 p-3 shadow-low transition-all hover:bg-green-20 lg:flex"
+        class="bg-green-10 shadow-low hover:bg-green-20 absolute top-1/2 right-0 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-all lg:flex"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path
@@ -359,7 +322,7 @@
       </button>
 
       <div
-        class="pointer-events-none absolute bottom-0 right-0 top-0 hidden w-20 bg-linear-to-l from-white to-transparent lg:block"
+        class="pointer-events-none absolute top-0 right-0 bottom-0 hidden w-20 bg-linear-to-l from-white to-transparent lg:block"
       ></div>
     </div>
   </div>
@@ -383,7 +346,7 @@
         <a
           [routerLink]="['/search']"
           [queryParams]="topCategoryCard.categoryId ? { category_id: topCategoryCard.categoryId } : {}"
-          class="relative flex h-[187px] flex-col items-center justify-between rounded-2xl bg-white p-2 shadow-low sm:h-[320px] sm:p-3"
+          class="shadow-low relative flex h-[187px] flex-col items-center justify-between rounded-2xl bg-white p-2 sm:h-[320px] sm:p-3"
         >
           <img
             src="/assets/images/products/category-{{
