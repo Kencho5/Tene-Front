@@ -9,7 +9,7 @@
       <div
         class="absolute inset-0 z-10 flex items-center justify-center"
       >
-        <span class="rounded-lg bg-platinum-100/60 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
+        <span class="rounded-lg bg-platinum-100/60 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-xs">
           არ არის მარაგში
         </span>
       </div>
@@ -99,7 +99,7 @@
       <button
         type="button"
         [disabled]="primaryImageQuantity() === 0"
-        class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border transition-all duration-200 sm:h-9 sm:w-auto sm:gap-1.5 sm:rounded-full sm:px-3"
+        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-all duration-200 sm:h-9 sm:w-auto sm:gap-1.5 sm:rounded-full sm:px-3"
         [ngClass]="
           primaryImageQuantity() === 0
             ? 'border-platinum-20 text-platinum-30 cursor-not-allowed'

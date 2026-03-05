@@ -31,7 +31,7 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         placeholder="ძიება შეკვეთის ID-ით..."
-        class="h-10 w-full rounded-lg border border-platinum-20 bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-none transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
+        class="h-10 w-full rounded-lg border border-platinum-20 bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
       />
       @if (searchQuery()) {
         <button
@@ -104,19 +104,19 @@
                   <div class="flex items-center gap-3">
                     <div class="h-11 w-11 animate-pulse rounded-lg bg-platinum-10"></div>
                     <div class="space-y-1.5">
-                      <div class="h-4 w-32 animate-pulse rounded bg-platinum-10"></div>
-                      <div class="h-3 w-20 animate-pulse rounded bg-platinum-10"></div>
+                      <div class="h-4 w-32 animate-pulse rounded-sm bg-platinum-10"></div>
+                      <div class="h-3 w-20 animate-pulse rounded-sm bg-platinum-10"></div>
                     </div>
                   </div>
                 </td>
                 <td class="hidden px-4 py-3.5 md:table-cell">
-                  <div class="h-4 w-28 animate-pulse rounded bg-platinum-10"></div>
+                  <div class="h-4 w-28 animate-pulse rounded-sm bg-platinum-10"></div>
                 </td>
                 <td class="hidden px-4 py-3.5 lg:table-cell">
-                  <div class="h-4 w-24 animate-pulse rounded bg-platinum-10"></div>
+                  <div class="h-4 w-24 animate-pulse rounded-sm bg-platinum-10"></div>
                 </td>
                 <td class="px-4 py-3.5">
-                  <div class="h-4 w-16 animate-pulse rounded bg-platinum-10"></div>
+                  <div class="h-4 w-16 animate-pulse rounded-sm bg-platinum-10"></div>
                 </td>
                 <td class="px-4 py-3.5">
                   <div class="flex justify-end">
@@ -165,7 +165,7 @@
                     @if (order.items.length > 0) {
                       @if (getItemImageUrl(order.items[0]); as imgUrl) {
                         <div
-                          class="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg border border-platinum-20"
+                          class="h-11 w-11 shrink-0 overflow-hidden rounded-lg border border-platinum-20"
                         >
                           <img
                             [src]="imgUrl"
@@ -175,7 +175,7 @@
                         </div>
                       } @else {
                         <div
-                          class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg border border-platinum-20 bg-platinum-10"
+                          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-platinum-20 bg-platinum-10"
                         >
                           <svg
                             width="20"

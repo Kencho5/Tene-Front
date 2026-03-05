@@ -35,18 +35,18 @@
         <tr>
           <td class="px-4 py-4">
             <div class="flex items-center gap-3">
-              <div class="h-12 w-12 flex-shrink-0 animate-pulse rounded-xl bg-platinum-20"></div>
+              <div class="h-12 w-12 shrink-0 animate-pulse rounded-xl bg-platinum-20"></div>
               <div class="min-w-0 space-y-2">
-                <div class="h-4 w-32 animate-pulse rounded bg-platinum-20"></div>
-                <div class="h-3 w-20 animate-pulse rounded bg-platinum-20"></div>
+                <div class="h-4 w-32 animate-pulse rounded-sm bg-platinum-20"></div>
+                <div class="h-3 w-20 animate-pulse rounded-sm bg-platinum-20"></div>
               </div>
             </div>
           </td>
           <td class="hidden px-4 py-4 md:table-cell">
-            <div class="h-4 w-24 animate-pulse rounded bg-platinum-20"></div>
+            <div class="h-4 w-24 animate-pulse rounded-sm bg-platinum-20"></div>
           </td>
           <td class="hidden px-4 py-4 sm:table-cell">
-            <div class="h-4 w-16 animate-pulse rounded bg-platinum-20"></div>
+            <div class="h-4 w-16 animate-pulse rounded-sm bg-platinum-20"></div>
           </td>
           <td class="px-4 py-4">
             <div class="flex justify-end">
@@ -87,7 +87,7 @@
             <div class="flex items-center gap-3">
               @if (order.items.length > 0) { @if (getItemImageUrl(order.items[0]); as imgUrl) {
               <div
-                class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-xl border border-platinum-20"
+                class="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-platinum-20"
               >
                 <img
                   [src]="imgUrl"
@@ -97,7 +97,7 @@
               </div>
               } @else {
               <div
-                class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-platinum-20 bg-platinum-10"
+                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-platinum-20 bg-platinum-10"
               >
                 <svg
                   width="24"

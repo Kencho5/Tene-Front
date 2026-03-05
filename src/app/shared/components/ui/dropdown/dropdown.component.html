@@ -2,7 +2,7 @@
   <button
     [class]="customClass()"
     type="button"
-    class="flex h-[44px] w-full items-center justify-between gap-4 rounded-xl border border-platinum-20 bg-white px-3.5 py-2.5 text-sm text-platinum-100 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+    class="flex h-[44px] w-full items-center justify-between gap-4 rounded-xl border border-platinum-20 bg-white px-3.5 py-2.5 text-sm text-platinum-100 transition-colors focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
     [ngClass]="{
       'border-valencia-50 hover:border-valencia-50 focus:border-valencia-50 focus:ring-1 focus:ring-valencia-50':
         error(),
@@ -58,7 +58,7 @@
               <span>{{ item.label }}</span>
               @if (selectedValue() === item.value) {
                 <svg
-                  class="h-5 w-5 flex-shrink-0 text-green-60"
+                  class="h-5 w-5 shrink-0 text-green-60"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"

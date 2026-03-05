@@ -33,7 +33,7 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         placeholder="ძიება ელ-ფოსტით ან ID-ით..."
-        class="h-10 w-full rounded-lg border border-platinum-20 bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-none transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
+        class="h-10 w-full rounded-lg border border-platinum-20 bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
       />
       @if (searchQuery()) {
         <button
@@ -97,16 +97,16 @@
             @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
               <tr class="border-b border-platinum-20 last:border-b-0">
                 <td class="px-4 py-3.5">
-                  <div class="h-4 w-12 animate-pulse rounded bg-platinum-10"></div>
+                  <div class="h-4 w-12 animate-pulse rounded-sm bg-platinum-10"></div>
                 </td>
                 <td class="px-4 py-3.5">
-                  <div class="h-4 w-32 animate-pulse rounded bg-platinum-10"></div>
+                  <div class="h-4 w-32 animate-pulse rounded-sm bg-platinum-10"></div>
                 </td>
                 <td class="hidden px-4 py-3.5 md:table-cell">
-                  <div class="h-4 w-40 animate-pulse rounded bg-platinum-10"></div>
+                  <div class="h-4 w-40 animate-pulse rounded-sm bg-platinum-10"></div>
                 </td>
                 <td class="hidden px-4 py-3.5 lg:table-cell">
-                  <div class="h-4 w-28 animate-pulse rounded bg-platinum-10"></div>
+                  <div class="h-4 w-28 animate-pulse rounded-sm bg-platinum-10"></div>
                 </td>
                 <td class="px-4 py-3.5">
                   <div class="h-8 w-32 animate-pulse rounded-lg bg-platinum-10"></div>
