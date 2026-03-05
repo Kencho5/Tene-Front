@@ -1,21 +1,11 @@
-import {
-  Injectable,
-  inject,
-  signal,
-  computed,
-  PLATFORM_ID,
-} from '@angular/core';
+import { Injectable, inject, signal, computed, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { isPlatformBrowser } from '@angular/common';
-import {
-  AuthResponse,
-  LoginFields,
-  RegisterFields,
-  User,
-} from '@core/interfaces/auth.interface';
+import { AuthResponse, LoginFields, RegisterFields, User } from '@core/interfaces/auth.interface';
+import { PosthogService } from '@core/services/posthog.service';
 
 const TOKEN_KEY = 'token';
 
@@ -26,6 +16,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly posthog = inject(PosthogService);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   private readonly userSignal = signal<User | null>(null);
@@ -76,6 +67,8 @@ export class AuthService {
     this.tokenSignal.set(token);
     if (this.isBrowser) localStorage.setItem(TOKEN_KEY, token);
 
+    this.posthog.identify(String(user.user_id), { email: user.email, name: user.name });
+
     if (user.role === 'admin') {
       this.router.navigate(['/admin']);
     } else {
@@ -87,6 +80,7 @@ export class AuthService {
     this.userSignal.set(null);
     this.tokenSignal.set(null);
     if (this.isBrowser) localStorage.removeItem(TOKEN_KEY);
+    this.posthog.reset();
     this.router.navigate(['/auth/login']);
   }
 

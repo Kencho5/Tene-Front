@@ -5,9 +5,9 @@ export function getProductImageUrl(
   imageUuid: string,
   extension: string,
 ): string {
-  return `${environment.product_image_url}/products-${environment.environment}/${productId}/${imageUuid}.${extension}`;
+  return `${environment.product_image_url}/products-${environment.branch}/${productId}/${imageUuid}.${extension}`;
 }
 
 export function getProductImageBaseUrl(): string {
-  return `${environment.product_image_url}/products-${environment.environment}`;
+  return `${environment.product_image_url}/products-${environment.branch}`;
 }
