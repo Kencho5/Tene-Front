@@ -1,56 +1,58 @@
 <!-- Parent Categories Bar -->
 @if (parentCategories().length > 0) {
-<div class="fixed top-[72px] left-0 right-0 z-30 border-b border-platinum-20 bg-white sm:top-20">
-  <div class="container relative px-4 xl:px-0">
-    <div
-      class="pointer-events-none absolute right-0 top-0 z-10 h-full w-12 bg-gradient-to-l from-white to-transparent xl:-right-0"
-    ></div>
-    <nav
-      appDragScroll
-      class="hide-scrollbar -mx-4 flex items-center overflow-x-auto px-4 pr-12 sm:mx-0 sm:px-0 sm:pr-12"
-    >
-      <!-- "ყველა" button at start -->
-      <button
-        type="button"
-        (click)="isCategoryExpanded.set(!isCategoryExpanded())"
-        class="flex flex-shrink-0 items-center gap-1 border-b-2 px-4 py-3 text-sm font-semibold transition-colors"
-        [class]="isCategoryExpanded()
-            ? 'border-green-60 text-green-70'
-            : 'border-transparent text-platinum-60 hover:text-green-70'"
+<div class="border-b border-platinum-20 bg-white">
+  <div class="container px-4 xl:px-0">
+    <div class="relative">
+      <div
+        class="pointer-events-none absolute right-0 top-0 z-10 h-full w-12 bg-gradient-to-l from-white to-transparent"
+      ></div>
+      <nav
+        appDragScroll
+        class="hide-scrollbar -ml-4 flex items-center overflow-x-auto pr-12"
       >
-        ყველა
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          class="transition-transform"
-          [class.rotate-180]="isCategoryExpanded()"
-        >
-          <path
-            d="M4 6L8 10L12 6"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </button>
-      @for (category of parentCategories(); track category.id) {
-      <button
-        type="button"
-        (click)="setParam('category_id', selectedCategoryId() === '' + category.id ? undefined : '' + category.id)"
-        class="flex flex-shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors"
-        [class]="selectedCategoryId() === '' + category.id
+        <!-- "ყველა" button -->
+        <button
+          type="button"
+          (click)="isCategoryExpanded.set(!isCategoryExpanded())"
+          class="flex flex-shrink-0 items-center gap-1 border-b-2 px-3 py-2.5 text-xs font-semibold transition-colors sm:px-4 sm:py-3 sm:text-sm"
+          [class]="isCategoryExpanded()
               ? 'border-green-60 text-green-70'
               : 'border-transparent text-platinum-60 hover:text-green-70'"
-      >
-        @if (category.image_url) {
-        <img [src]="category.image_url" [alt]="category.name" class="h-5 w-5 object-contain" />
-        } {{ category.name }}
-      </button>
-      }
-    </nav>
+        >
+          ყველა
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            class="transition-transform"
+            [class.rotate-180]="isCategoryExpanded()"
+          >
+            <path
+              d="M4 6L8 10L12 6"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+        @for (category of parentCategories(); track category.id) {
+        <button
+          type="button"
+          (click)="setParam('category_id', selectedCategoryId() === '' + category.id ? undefined : '' + category.id)"
+          class="flex flex-shrink-0 items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-medium transition-colors sm:gap-2 sm:px-4 sm:py-3 sm:text-sm"
+          [class]="selectedCategoryId() === '' + category.id
+                ? 'border-green-60 text-green-70'
+                : 'border-transparent text-platinum-60 hover:text-green-70'"
+        >
+          @if (category.image_url) {
+          <img [src]="category.image_url" [alt]="category.name" class="h-4 w-4 object-contain sm:h-5 sm:w-5" />
+          } {{ category.name }}
+        </button>
+        }
+      </nav>
+    </div>
   </div>
 </div>
 }
@@ -225,7 +227,7 @@
 </div>
 }
 
-<!-- Mobile backdrop -->
+<!-- Mobile filter backdrop -->
 @if (isFilterOpen()) {
 <div
   (click)="isFilterOpen.set(false)"
@@ -233,524 +235,515 @@
 ></div>
 }
 
-<div class="container flex items-start gap-10 px-4 py-10 pt-[120px] sm:pt-[128px] xl:px-0">
-  <!--FILTERS BOX-->
-  <div
-    [class.hidden]="!isFilterOpen()"
-    class="fixed inset-x-0 bottom-0 z-40 max-h-[80vh] space-y-6 overflow-y-auto rounded-t-2xl bg-white p-6 shadow-low sm:z-30 md:relative md:z-10 md:block md:max-h-none md:w-[350px] md:flex-shrink-0 md:rounded-2xl"
-  >
-    <div class="flex items-center justify-between">
-      <h2 class="text-xl">ფილტრი</h2>
-      <div class="flex items-center gap-4">
-        <button type="button" (click)="clearAll()" class="text-sm text-platinum-50">
+<!-- Main Content -->
+<div class="container px-4 pb-10 pt-8 sm:pt-10 xl:px-0">
+  <!-- Two-column layout: Sidebar + Products -->
+  <div class="flex items-start gap-6 lg:gap-8">
+    <!-- FILTERS SIDEBAR (Walmart-style collapsible sections) -->
+    <aside
+      [class.hidden]="!isFilterOpen()"
+      class="fixed inset-x-0 bottom-0 z-40 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-white p-6 shadow-low sm:z-30 md:relative md:z-10 md:block md:max-h-none md:w-[240px] md:flex-shrink-0 md:overflow-visible md:border-r md:border-platinum-20/60 md:rounded-none md:p-0 md:pr-5 md:shadow-none lg:w-[260px] lg:pr-6"
+    >
+      <!-- Mobile header -->
+      <div class="mb-4 flex items-center justify-between md:hidden">
+        <h2 class="text-lg font-bold">ფილტრი</h2>
+        <div class="flex items-center gap-4">
+          <button type="button" (click)="clearAll()" class="text-sm text-green-60">
+            გასუფთავება
+          </button>
+          <button type="button" (click)="isFilterOpen.set(false)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M18 6L6 18M6 6L18 18"
+                stroke="#6D6D6D"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Desktop filter title (aligns with products header) -->
+      <div class="mb-4 hidden min-h-[42px] items-center justify-between md:flex">
+        <h2 class="text-base font-bold text-platinum-100 md:text-xl">ფილტრი</h2>
+        <button
+          type="button"
+          (click)="clearAll()"
+          class="text-xs font-medium text-platinum-50 transition-colors hover:text-green-60"
+        >
           გასუფთავება
         </button>
-        <button type="button" (click)="isFilterOpen.set(false)" class="md:hidden">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      </div>
+
+      <!-- Price Section -->
+      <div class="border-b border-platinum-20 py-4 md:pt-0">
+        <p class="mb-3 text-sm font-bold text-platinum-100">ფასი</p>
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1">
+            <input
+              type="number"
+              [value]="params()['price_from'] ?? ''"
+              (input)="
+                setParam(
+                  'price_from',
+                  $any($event.target).value || undefined,
+                  400
+                )
+              "
+              placeholder="დან"
+              class="w-full rounded-lg border border-platinum-20 px-3 py-2 text-sm outline-none transition-colors focus:border-green-60"
+            />
+          </div>
+          <span class="text-platinum-40">—</span>
+          <div class="relative flex-1">
+            <input
+              type="number"
+              [value]="params()['price_to'] ?? ''"
+              (input)="
+                setParam('price_to', $any($event.target).value || undefined, 400)
+              "
+              placeholder="მდე"
+              class="w-full rounded-lg border border-platinum-20 px-3 py-2 text-sm outline-none transition-colors focus:border-green-60"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories Section -->
+      <div class="border-b border-platinum-20 py-4">
+        <p class="mb-3 text-sm font-bold text-platinum-100">კატეგორია</p>
+
+        @if (facets.isLoading()) {
+        <div class="space-y-3">
+          @for (skeleton of [1, 2, 3]; track skeleton) {
+          <div class="flex items-center justify-between">
+            <div class="h-4 w-24 animate-pulse rounded bg-platinum-20"></div>
+            <div class="h-4 w-4 animate-pulse rounded bg-platinum-20"></div>
+          </div>
+          }
+        </div>
+        } @else {
+        <!-- Category search -->
+        <div class="relative mb-3">
+          <input
+            type="text"
+            [value]="categorySearch()"
+            (input)="categorySearch.set($any($event.target).value)"
+            placeholder="ძიება..."
+            class="w-full rounded-lg border border-platinum-20 py-2 pl-8 pr-3 text-sm outline-none transition-colors focus:border-green-60"
+          />
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 20 20"
+            fill="none"
+            class="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2"
+          >
             <path
-              d="M18 6L6 18M6 6L18 18"
-              stroke="#6D6D6D"
-              stroke-width="2"
+              d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
+              stroke="#888888"
+              stroke-width="1.5"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
           </svg>
+        </div>
+
+        <!-- Category list -->
+        <div class="space-y-1">
+          @for (category of showAllCategories() ? filteredCategories() :
+          filteredCategories().slice(0, 5); track category.id) {
+          <label
+            class="flex cursor-pointer items-center gap-2 rounded-md px-1 py-1.5 transition-colors hover:bg-platinum-10"
+            [class.opacity-50]="category.count === 0"
+          >
+            <span class="relative inline-block h-[18px] w-[18px] flex-shrink-0">
+              <input
+                type="checkbox"
+                [checked]="hasValue('category_id', '' + category.id)"
+                [disabled]="category.count === 0"
+                (change)="
+                  toggleParam(
+                    'category_id',
+                    '' + category.id,
+                    $any($event.target).checked
+                  )
+                "
+                class="peer sr-only"
+              />
+              <span
+                class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
+              ></span>
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+              >
+                <path
+                  d="M16.6667 5L7.50004 14.1667L3.33337 10"
+                  stroke="white"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="flex-1 truncate text-sm text-platinum-70">{{ category.name }}</span>
+            <span class="text-xs text-platinum-40">({{ category.count }})</span>
+          </label>
+          } @if (filteredCategories().length === 0) {
+          <p class="py-2 text-sm text-platinum-40">კატეგორია არ მოიძებნა</p>
+          }
+        </div>
+
+        @if (filteredCategories().length > 5) {
+        <button
+          type="button"
+          (click)="showAllCategories.set(!showAllCategories())"
+          class="mt-2 text-xs font-medium text-green-60 hover:underline"
+        >
+          {{ showAllCategories() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" +
+          filteredCategories().length + ")" }}
         </button>
+        } }
       </div>
-    </div>
 
-    <div class="space-y-3">
-      <p class="font-semibold">ფასი</p>
-
-      <div class="flex gap-3">
-        <div class="relative flex-1">
-          <input
-            type="number"
-            [value]="params()['price_from'] ?? ''"
-            (input)="
-              setParam(
-                'price_from',
-                $any($event.target).value || undefined,
-                400
-              )
-            "
-            placeholder="დან"
-            class="w-full rounded-xl border border-platinum-20 p-3.5 outline-none"
-          />
-
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            class="absolute right-4 top-1/2 -translate-y-1/2"
+      <!-- Sale Type Section -->
+      <div class="border-b border-platinum-20 py-4">
+        <p class="mb-3 text-sm font-bold text-platinum-100">აქციის ტიპი</p>
+        <div class="space-y-1">
+          <label
+            class="flex cursor-pointer items-center gap-2 rounded-md px-1 py-1.5 transition-colors hover:bg-platinum-10"
           >
-            <path
-              d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8Z"
-              stroke="#888888"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-            <path
-              d="M5.66786 10.6667V9.96545L6.44348 9.88753V9.85636C5.67586 9.40441 5.33203 8.6174 5.33203 7.72129C5.33203 6.49012 5.97171 5.54727 7.17911 5.25896V4.66675H7.74682V5.17324C7.82678 5.16545 7.91474 5.16545 8.01069 5.16545C8.09865 5.16545 8.17861 5.16545 8.26656 5.17324V4.66675H8.83428V5.25896C10.0497 5.55506 10.6654 6.54467 10.6654 7.94727H9.61789C9.61789 7.0122 9.386 6.37324 8.83428 6.08493V7.93948H8.26656V5.92909C8.1866 5.9135 8.09865 5.9135 8.01069 5.9135C7.91474 5.9135 7.82678 5.9135 7.74682 5.92909V7.93948H7.17911V6.08493C6.62738 6.35766 6.37951 6.96545 6.37951 7.80701C6.37951 9.03818 7.09115 9.84077 8.1946 9.84077H10.3215V10.6667H5.66786Z"
-              fill="#888888"
-            />
-          </svg>
-        </div>
-        <div class="relative flex-1">
-          <input
-            type="number"
-            [value]="params()['price_to'] ?? ''"
-            (input)="
-              setParam('price_to', $any($event.target).value || undefined, 400)
-            "
-            placeholder="მდე"
-            class="w-full rounded-xl border border-platinum-20 p-3.5 outline-none"
-          />
-
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            class="absolute right-4 top-1/2 -translate-y-1/2"
-          >
-            <path
-              d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8Z"
-              stroke="#888888"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-            <path
-              d="M5.66786 10.6667V9.96545L6.44348 9.88753V9.85636C5.67586 9.40441 5.33203 8.6174 5.33203 7.72129C5.33203 6.49012 5.97171 5.54727 7.17911 5.25896V4.66675H7.74682V5.17324C7.82678 5.16545 7.91474 5.16545 8.01069 5.16545C8.09865 5.16545 8.17861 5.16545 8.26656 5.17324V4.66675H8.83428V5.25896C10.0497 5.55506 10.6654 6.54467 10.6654 7.94727H9.61789C9.61789 7.0122 9.386 6.37324 8.83428 6.08493V7.93948H8.26656V5.92909C8.1866 5.9135 8.09865 5.9135 8.01069 5.9135C7.91474 5.9135 7.82678 5.9135 7.74682 5.92909V7.93948H7.17911V6.08493C6.62738 6.35766 6.37951 6.96545 6.37951 7.80701C6.37951 9.03818 7.09115 9.84077 8.1946 9.84077H10.3215V10.6667H5.66786Z"
-              fill="#888888"
-            />
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="h-px bg-platinum-20"></div>
-
-    <!-- Categories Section -->
-    <div class="space-y-6">
-      <p class="font-semibold">კატეგორია</p>
-
-      @if (facets.isLoading()) {
-      <!-- Loading skeleton -->
-      <div class="space-y-4">
-        @for (skeleton of [1, 2, 3]; track skeleton) {
-        <div class="flex items-center justify-between">
-          <div class="h-4 w-24 animate-pulse rounded bg-platinum-20"></div>
-          <div class="h-5 w-5 animate-pulse rounded bg-platinum-20"></div>
-        </div>
-        }
-      </div>
-      } @else {
-      <!-- Category search input -->
-      <div class="relative">
-        <input
-          type="text"
-          [value]="categorySearch()"
-          (input)="categorySearch.set($any($event.target).value)"
-          placeholder="ძიება..."
-          class="w-full rounded-full bg-platinum-10 p-3 pl-10 outline-none"
-        />
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
-        >
-          <path
-            d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
-            stroke="#212121"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </div>
-
-      <!-- Category list -->
-      <div class="space-y-4">
-        @for (category of showAllCategories() ? filteredCategories() : filteredCategories().slice(0,
-        5); track category.id) {
-        <div class="flex items-center justify-between" [class.opacity-50]="category.count === 0">
-          <div class="flex items-center gap-2">
-            <p>{{ category.name }}</p>
-            <span class="text-xs text-platinum-50">({{ category.count }})</span>
-          </div>
-
-          <label class="relative inline-block h-5 w-5 cursor-pointer">
-            <input
-              type="checkbox"
-              [checked]="hasValue('category_id', '' + category.id)"
-              [disabled]="category.count === 0"
-              (change)="
-                    toggleParam(
-                      'category_id',
-                      '' + category.id,
-                      $any($event.target).checked
-                    )
-                  "
-              class="peer sr-only"
-            />
-            <span
-              class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
-            ></span>
-            <svg
-              viewBox="0 0 20 20"
-              fill="none"
-              class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
-            >
-              <path
-                d="M16.6667 5L7.50004 14.1667L3.33337 10"
-                stroke="white"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+            <span class="relative inline-block h-[18px] w-[18px] flex-shrink-0">
+              <input
+                type="checkbox"
+                [checked]="hasValue('sale_type', 'discount')"
+                (change)="toggleParam('sale_type', 'discount', $any($event.target).checked)"
+                class="peer sr-only"
               />
-            </svg>
+              <span
+                class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60"
+              ></span>
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+              >
+                <path
+                  d="M16.6667 5L7.50004 14.1667L3.33337 10"
+                  stroke="white"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="text-sm text-platinum-70">ფასდაკლება</span>
+          </label>
+
+          <label
+            class="flex cursor-pointer items-center gap-2 rounded-md px-1 py-1.5 transition-colors hover:bg-platinum-10"
+          >
+            <span class="relative inline-block h-[18px] w-[18px] flex-shrink-0">
+              <input
+                type="checkbox"
+                [checked]="hasValue('sale_type', 'coins')"
+                (change)="toggleParam('sale_type', 'coins', $any($event.target).checked)"
+                class="peer sr-only"
+              />
+              <span
+                class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60"
+              ></span>
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+              >
+                <path
+                  d="M16.6667 5L7.50004 14.1667L3.33337 10"
+                  stroke="white"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="text-sm text-platinum-70">ტენე ქულები</span>
           </label>
         </div>
-        } @if (filteredCategories().length === 0) {
-        <p class="text-sm text-platinum-50">კატეგორია არ მოიძებნა</p>
-        }
       </div>
 
-      @if (filteredCategories().length > 5) {
-      <button
-        type="button"
-        (click)="showAllCategories.set(!showAllCategories())"
-        class="text-sm font-medium text-green-70"
-      >
-        {{ showAllCategories() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + filteredCategories().length
-        + ")" }}
-      </button>
-      } }
-    </div>
+      <!-- Brands Section -->
+      <div class="border-b border-platinum-20 py-4">
+        <p class="mb-3 text-sm font-bold text-platinum-100">ბრენდი</p>
 
-    <div class="h-px bg-platinum-20"></div>
-
-    <div class="space-y-6">
-      <p class="font-semibold">აქციის ტიპი</p>
-
-      <div class="flex items-center justify-between">
-        <p>ფასდაკლება</p>
-
-        <label class="relative inline-block h-5 w-5 cursor-pointer">
+        @if (facets.isLoading()) {
+        <div class="space-y-3">
+          @for (skeleton of [1, 2, 3]; track skeleton) {
+          <div class="flex items-center justify-between">
+            <div class="h-4 w-24 animate-pulse rounded bg-platinum-20"></div>
+            <div class="h-4 w-4 animate-pulse rounded bg-platinum-20"></div>
+          </div>
+          }
+        </div>
+        } @else {
+        <!-- Brand search -->
+        <div class="relative mb-3">
           <input
-            type="checkbox"
-            [checked]="hasValue('sale_type', 'discount')"
-            (change)="
-              toggleParam('sale_type', 'discount', $any($event.target).checked)
-            "
-            class="peer sr-only"
+            type="text"
+            [value]="brandSearch()"
+            (input)="brandSearch.set($any($event.target).value)"
+            placeholder="ძიება..."
+            class="w-full rounded-lg border border-platinum-20 py-2 pl-8 pr-3 text-sm outline-none transition-colors focus:border-green-60"
           />
-          <span
-            class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60"
-          ></span>
           <svg
+            width="16"
+            height="16"
             viewBox="0 0 20 20"
             fill="none"
-            class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+            class="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2"
           >
             <path
-              d="M16.6667 5L7.50004 14.1667L3.33337 10"
-              stroke="white"
-              stroke-width="2.5"
+              d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
+              stroke="#888888"
+              stroke-width="1.5"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
           </svg>
-        </label>
-      </div>
+        </div>
 
-      <div class="flex items-center justify-between">
-        <p>ტენე ქულები</p>
-
-        <label class="relative inline-block h-5 w-5 cursor-pointer">
-          <input
-            type="checkbox"
-            [checked]="hasValue('sale_type', 'coins')"
-            (change)="
-              toggleParam('sale_type', 'coins', $any($event.target).checked)
-            "
-            class="peer sr-only"
-          />
-          <span
-            class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60"
-          ></span>
-          <svg
-            viewBox="0 0 20 20"
-            fill="none"
-            class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+        <!-- Brand list -->
+        <div class="space-y-1">
+          @for (brand of showAllBrands() ? filteredBrands() : filteredBrands().slice(0, 5); track
+          brand.id) {
+          <label
+            class="flex cursor-pointer items-center gap-2 rounded-md px-1 py-1.5 transition-colors hover:bg-platinum-10"
+            [class.opacity-50]="brand.count === 0"
           >
-            <path
-              d="M16.6667 5L7.50004 14.1667L3.33337 10"
-              stroke="white"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </label>
-      </div>
-    </div>
-
-    <div class="h-px bg-platinum-20"></div>
-
-    <!-- Brands Section -->
-    <div class="space-y-6">
-      <p class="font-semibold">ბრენდი</p>
-
-      @if (facets.isLoading()) {
-      <!-- Loading skeleton -->
-      <div class="space-y-4">
-        @for (skeleton of [1, 2, 3]; track skeleton) {
-        <div class="flex items-center justify-between">
-          <div class="h-4 w-24 animate-pulse rounded bg-platinum-20"></div>
-          <div class="h-5 w-5 animate-pulse rounded bg-platinum-20"></div>
-        </div>
-        }
-      </div>
-      } @else {
-      <!-- Brand search input -->
-      <div class="relative">
-        <input
-          type="text"
-          [value]="brandSearch()"
-          (input)="brandSearch.set($any($event.target).value)"
-          placeholder="ძიება..."
-          class="w-full rounded-full bg-platinum-10 p-3 pl-10 outline-none"
-        />
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
-        >
-          <path
-            d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
-            stroke="#212121"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </div>
-
-      <!-- Brand list -->
-      <div class="space-y-4">
-        @for (brand of showAllBrands() ? filteredBrands() : filteredBrands().slice(0, 5); track
-        brand.id) {
-        <div class="flex items-center justify-between" [class.opacity-50]="brand.count === 0">
-          <div class="flex items-center gap-2">
-            <p>{{ brand.name }}</p>
-            <span class="text-xs text-platinum-50">({{ brand.count }})</span>
-          </div>
-
-          <label class="relative inline-block h-5 w-5 cursor-pointer">
-            <input
-              type="checkbox"
-              [checked]="hasValue('brand', '' + brand.id)"
-              [disabled]="brand.count === 0"
-              (change)="
-                    toggleParam(
-                      'brand',
-                      '' + brand.id,
-                      $any($event.target).checked
-                    )
-                  "
-              class="peer sr-only"
-            />
-            <span
-              class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
-            ></span>
-            <svg
-              viewBox="0 0 20 20"
-              fill="none"
-              class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
-            >
-              <path
-                d="M16.6667 5L7.50004 14.1667L3.33337 10"
-                stroke="white"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+            <span class="relative inline-block h-[18px] w-[18px] flex-shrink-0">
+              <input
+                type="checkbox"
+                [checked]="hasValue('brand', '' + brand.id)"
+                [disabled]="brand.count === 0"
+                (change)="
+                  toggleParam(
+                    'brand',
+                    '' + brand.id,
+                    $any($event.target).checked
+                  )
+                "
+                class="peer sr-only"
               />
-            </svg>
+              <span
+                class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
+              ></span>
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+              >
+                <path
+                  d="M16.6667 5L7.50004 14.1667L3.33337 10"
+                  stroke="white"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="flex-1 truncate text-sm text-platinum-70">{{ brand.name }}</span>
+            <span class="text-xs text-platinum-40">({{ brand.count }})</span>
           </label>
+          } @if (filteredBrands().length === 0) {
+          <p class="py-2 text-sm text-platinum-40">ბრენდი არ მოიძებნა</p>
+          }
         </div>
-        } @if (filteredBrands().length === 0) {
-        <p class="text-sm text-platinum-50">ბრენდი არ მოიძებნა</p>
-        }
+
+        @if (filteredBrands().length > 5) {
+        <button
+          type="button"
+          (click)="showAllBrands.set(!showAllBrands())"
+          class="mt-2 text-xs font-medium text-green-60 hover:underline"
+        >
+          {{ showAllBrands() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + filteredBrands().length + ")"
+          }}
+        </button>
+        } }
       </div>
 
-      @if (filteredBrands().length > 5) {
-      <button
-        type="button"
-        (click)="showAllBrands.set(!showAllBrands())"
-        class="text-sm font-medium text-green-70"
-      >
-        {{ showAllBrands() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + filteredBrands().length + ")"
-        }}
-      </button>
-      } }
-    </div>
+      <!-- Colors Section -->
+      <div class="py-4">
+        <p class="mb-3 text-sm font-bold text-platinum-100">ფერი</p>
 
-    <div class="h-px bg-platinum-20"></div>
-
-    <!-- Colors Section -->
-    <div class="space-y-6">
-      <p class="font-semibold">ფერი</p>
-
-      @if (facets.isLoading()) {
-      <!-- Loading skeleton -->
-      <div class="space-y-4">
-        @for (skeleton of [1, 2, 3]; track skeleton) {
-        <div class="flex items-center justify-between">
-          <div class="h-4 w-20 animate-pulse rounded bg-platinum-20"></div>
-          <div class="h-5 w-5 animate-pulse rounded bg-platinum-20"></div>
+        @if (facets.isLoading()) {
+        <div class="space-y-3">
+          @for (skeleton of [1, 2, 3]; track skeleton) {
+          <div class="flex items-center justify-between">
+            <div class="h-4 w-20 animate-pulse rounded bg-platinum-20"></div>
+            <div class="h-4 w-4 animate-pulse rounded bg-platinum-20"></div>
+          </div>
+          }
         </div>
-        }
-      </div>
-      } @else {
-      <!-- Colors list -->
-      <div class="space-y-4">
-        @for (color of showAllColors() ? facets.value().colors : facets.value().colors.slice(0, 5);
-        track color.value) {
-        <div class="flex items-center justify-between" [class.opacity-50]="color.count === 0">
-          <div class="flex items-center gap-2">
+        } @else {
+        <div class="space-y-1">
+          @for (color of showAllColors() ? facets.value().colors : facets.value().colors.slice(0,
+          5); track color.value) {
+          <label
+            class="flex cursor-pointer items-center gap-2 rounded-md px-1 py-1.5 transition-colors hover:bg-platinum-10"
+            [class.opacity-50]="color.count === 0"
+          >
+            <span class="relative inline-block h-[18px] w-[18px] flex-shrink-0">
+              <input
+                type="checkbox"
+                [checked]="hasValue('color', color.value.toLowerCase())"
+                [disabled]="color.count === 0"
+                (change)="
+                  toggleParam(
+                    'color',
+                    color.value.toLowerCase(),
+                    $any($event.target).checked
+                  )
+                "
+                class="peer sr-only"
+              />
+              <span
+                class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
+              ></span>
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+              >
+                <path
+                  d="M16.6667 5L7.50004 14.1667L3.33337 10"
+                  stroke="white"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
             <span
               class="h-4 w-4 flex-shrink-0 rounded-full border border-platinum-20"
               [style.background-color]="color.value.toLowerCase()"
             ></span>
-            <p>{{ getColorLabel(color.value) }}</p>
-            <span class="text-xs text-platinum-50">({{ color.count }})</span>
+            <span class="flex-1 truncate text-sm text-platinum-70">
+              {{ getColorLabel(color.value) }}
+            </span>
+            <span class="text-xs text-platinum-40">({{ color.count }})</span>
+          </label>
+          } @if (facets.value().colors.length === 0) {
+          <p class="py-2 text-sm text-platinum-40">მონაცემები არ მოიძებნა</p>
+          }
+        </div>
+
+        @if (facets.value().colors.length > 5) {
+        <button
+          type="button"
+          (click)="showAllColors.set(!showAllColors())"
+          class="mt-2 text-xs font-medium text-green-60 hover:underline"
+        >
+          {{ showAllColors() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + facets.value().colors.length
+          + ")" }}
+        </button>
+        } }
+      </div>
+
+      <!-- Desktop clear button -->
+      <div class="hidden border-t border-platinum-20 pt-4 md:block">
+        <button
+          type="button"
+          (click)="clearAll()"
+          class="text-xs font-medium text-platinum-50 transition-colors hover:text-green-60"
+        >
+          ფილტრის გასუფთავება
+        </button>
+      </div>
+    </aside>
+
+    <!-- PRODUCTS AREA -->
+    <div class="w-full min-w-0 flex-1">
+      <!-- Results header -->
+      <div class="mb-4 flex min-h-[42px] flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 class="text-base font-bold text-platinum-100 sm:text-lg md:text-xl">
+          პროდუქტები
+          @if (totalProducts() > 0 && !searchResponse.isLoading()) {
+          <span class="text-xs font-normal text-platinum-40 sm:text-sm">({{ totalProducts() }})</span>
+          }
+        </h1>
+
+        <div class="flex items-center gap-2">
+          <div class="flex-1 sm:w-[190px] sm:flex-none">
+            <app-dropdown
+              [selectedValue]="params()['sort_by']"
+              (selectedValueChange)="setParam('sort_by', $event)"
+              placeholder="სორტირება"
+              [items]="sortOptions"
+            />
           </div>
 
-          <label class="relative inline-block h-5 w-5 cursor-pointer">
-            <input
-              type="checkbox"
-              [checked]="hasValue('color', color.value.toLowerCase())"
-              [disabled]="color.count === 0"
-              (change)="
-                    toggleParam(
-                      'color',
-                      color.value.toLowerCase(),
-                      $any($event.target).checked
-                    )
-                  "
-              class="peer sr-only"
-            />
-            <span
-              class="block h-full w-full rounded border border-platinum-30 peer-checked:border-0 peer-checked:bg-green-60 peer-disabled:cursor-not-allowed"
-            ></span>
-            <svg
-              viewBox="0 0 20 20"
-              fill="none"
-              class="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
-            >
+          <button
+            type="button"
+            (click)="isFilterOpen.set(true)"
+            class="flex h-[42px] flex-shrink-0 items-center gap-2 rounded-xl border border-platinum-20 px-3 text-sm font-medium text-platinum-70 transition-colors hover:bg-platinum-10 md:hidden"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
-                d="M16.6667 5L7.50004 14.1667L3.33337 10"
-                stroke="white"
-                stroke-width="2.5"
+                d="M4 14H8M6 20V14M6 4V11M10 10H14M12 4V10M12 20V13M16 14H20M18 20V14M18 4V11"
+                stroke="currentColor"
+                stroke-width="1.5"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
             </svg>
-          </label>
+            ფილტრი
+          </button>
         </div>
-        } @if (facets.value().colors.length === 0) {
-        <p class="text-sm text-platinum-50">მონაცემები არ მოიძებნა</p>
-        }
       </div>
 
-      @if (facets.value().colors.length > 5) {
-      <button
-        type="button"
-        (click)="showAllColors.set(!showAllColors())"
-        class="text-sm font-medium text-green-70"
-      >
-        {{ showAllColors() ? "ნაკლების ჩვენება" : "ყველას ნახვა (" + facets.value().colors.length +
-        ")" }}
-      </button>
-      } }
-    </div>
-  </div>
-
-  <div class="w-full space-y-5">
-    <h1 class="text-2xl sm:text-4xl">პროდუქტები</h1>
-
-    <div class="h-px bg-platinum-20"></div>
-
-    <div>
-      <div class="mb-5">
-        <app-breadcrumb [items]="breadcrumbItems" />
-      </div>
-
-      <div class="flex w-full items-center justify-between">
-        <div class="w-[196px] sm:w-[224px]">
-          <app-dropdown
-            [selectedValue]="params()['sort_by']"
-            (selectedValueChange)="setParam('sort_by', $event)"
-            placeholder="სორტირება"
-            [items]="sortOptions"
-          />
-        </div>
-
-        <button
-          type="button"
-          (click)="isFilterOpen.set(true)"
-          class="flex items-center gap-2 rounded-xl border border-platinum-20 px-3 py-2.5 md:hidden"
+      <!-- Product Grid -->
+      <div class="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+        @if (searchResponse.isLoading()) { @for (skeleton of [1, 2, 3, 4, 5, 6, 7, 8]; track
+        skeleton) {
+        <app-product-card-skeleton />
+        } } @else { @if (products().length == 0) {
+        <div
+          class="col-span-full mx-auto my-10 flex max-w-[320px] flex-col items-center gap-4 text-center sm:my-16"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M4 14H8M6 20V14M6 4V11M10 10H14M12 4V10M12 20V13M16 14H20M18 20V14M18 4V11"
-              stroke="#6D6D6D"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-
-          ფილტრი
-        </button>
+          <img src="/assets/images/products/empty-search.webp" width="120" height="120" />
+          <p class="text-sm text-platinum-50">შედეგები ვერ მოიძებნა, სცადეთ სხვა ძებნის მეთოდი.</p>
+          <button
+            type="button"
+            (click)="clearAll()"
+            class="rounded-full bg-green-60 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70"
+          >
+            ფილტრის გასუფთავება
+          </button>
+        </div>
+        } @else { @for (product of products(); track product.data.id) {
+        <app-product-card [product]="product" />
+        } } }
       </div>
-    </div>
 
-    <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-6">
-      @if (searchResponse.isLoading()) { @for (skeleton of [1, 2, 3, 4, 5, 6]; track skeleton) {
-      <app-product-card-skeleton />
-      } } @else { @if (products().length == 0) {
-      <div
-        class="col-span-full mx-auto my-10 flex max-w-[320px] flex-col items-center gap-6 text-center sm:my-32"
-      >
-        <img src="/assets/images/products/empty-search.webp" width="120" height="120" />
-        <p class="text-sm text-platinum-50">შედეგები ვერ მოიძებნა, სცადეთ სხვა ძებნის მეთოდი.</p>
+      <!-- Pagination -->
+      @if (totalProducts() > 0) {
+      <div class="mt-6 sm:mt-8">
+        <app-pagination
+          [currentPage]="currentPage()"
+          [totalPages]="totalPages()"
+          [totalItems]="totalProducts()"
+          [showingFrom]="showingFrom()"
+          [showingTo]="showingTo()"
+          [limit]="limit()"
+          (pageChange)="onPageChange($event)"
+          (limitChange)="onLimitChangeValue($event)"
+        />
       </div>
-      } @else { @for (product of products(); track product.data.id) {
-      <app-product-card [product]="product" />
-      } } }
+      }
     </div>
-
-    @if (totalProducts() > 0) {
-    <div class="pt-6">
-      <app-pagination
-        [currentPage]="currentPage()"
-        [totalPages]="totalPages()"
-        [totalItems]="totalProducts()"
-        [showingFrom]="showingFrom()"
-        [showingTo]="showingTo()"
-        [limit]="limit()"
-        (pageChange)="onPageChange($event)"
-        (limitChange)="onLimitChangeValue($event)"
-      />
-    </div>
-    }
   </div>
 </div>

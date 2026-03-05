@@ -12,10 +12,6 @@ import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ProductsService } from '@core/services/products/products.service';
 import { CategoriesService } from '@core/services/categories/categories.service';
 import { CategoryTreeNode } from '@core/interfaces/categories.interface';
-import {
-  BreadcrumbComponent,
-  BreadcrumbItem,
-} from '@shared/components/ui/breadcrumb/breadcrumb.component';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
@@ -32,7 +28,6 @@ import { map } from 'rxjs';
     SharedModule,
     DragScrollDirective,
     DropdownComponent,
-    BreadcrumbComponent,
     ProductCardComponent,
     ProductCardSkeletonComponent,
     PaginationComponent,
@@ -60,11 +55,6 @@ export class SearchComponent {
   readonly showAllBrands = signal(false);
   readonly showAllColors = signal(false);
   readonly showAllCategories = signal(false);
-
-  readonly breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'მთავარი', route: '/' },
-    { label: 'პროდუქტები' },
-  ];
 
   readonly sortOptions: ComboboxItems[] = [
     { label: 'ფასი: კლებადობით', value: 'price_desc' },
