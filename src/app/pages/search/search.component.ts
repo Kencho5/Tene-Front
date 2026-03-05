@@ -34,6 +34,52 @@ import { map } from 'rxjs';
   ],
   templateUrl: './search.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: `
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fade-out {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    @keyframes slide-up-fade {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slide-down-enter {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slide-up-leave {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-8px); }
+    }
+
+    @keyframes slide-left-enter {
+      from { opacity: 0; transform: translateX(16px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes mobile-sheet-enter {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    @keyframes mobile-sheet-leave {
+      from { transform: translateY(0); }
+      to { transform: translateY(100%); }
+    }
+
+    @keyframes scale-fade-in {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  `,
 })
 export class SearchComponent {
   private readonly route = inject(ActivatedRoute);
