@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  linkedSignal,
+  signal,
+} from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
@@ -86,6 +93,8 @@ export class SearchComponent {
       urlParams.delete('sort_by');
       urlParams.delete('offset');
       urlParams.delete('limit');
+      urlParams.delete('category_id');
+      urlParams.delete('brand');
       return urlParams.toString();
     },
     stream: ({ params }) => this.productsService.getFacets(params),
@@ -93,9 +102,7 @@ export class SearchComponent {
 
   readonly categoryTree = rxResource({
     defaultValue: [] as CategoryTreeNode[],
-    stream: () => this.categoriesService.getCategoryTree().pipe(
-      map((res) => res.categories),
-    ),
+    stream: () => this.categoriesService.getCategoryTree().pipe(map((res) => res.categories)),
   });
 
   readonly parentCategories = computed(() => this.categoryTree.value());
@@ -116,9 +123,7 @@ export class SearchComponent {
       return firstId;
     }
 
-    const parent = parents.find((p) =>
-      p.children.some((c) => '' + c.id === firstId),
-    );
+    const parent = parents.find((p) => p.children.some((c) => '' + c.id === firstId));
     return parent ? '' + parent.id : null;
   });
 
@@ -137,16 +142,7 @@ export class SearchComponent {
 
   readonly filteredCategories = computed(() => {
     const search = this.categorySearch().toLowerCase();
-    const parentId = this.selectedParentId();
-    let categories = this.facets.value().categories;
-
-    if (parentId) {
-      const parent = this.parentCategories().find((p) => '' + p.id === parentId);
-      if (parent && parent.children.length > 0) {
-        const childIds = new Set(parent.children.map((c) => c.id));
-        categories = categories.filter((cat) => childIds.has(cat.id));
-      }
-    }
+    const categories = this.facets.value().categories;
 
     if (!search) {
       return categories;
