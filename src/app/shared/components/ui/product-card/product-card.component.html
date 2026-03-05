@@ -1,6 +1,6 @@
 <a
   [routerLink]="['/products', productSlug(), product().data.id]"
-  class="group relative flex h-[310px] w-full min-w-0 flex-col rounded-2xl bg-white shadow-low transition-shadow duration-300 hover:shadow-md sm:h-[330px]"
+  class="group relative flex h-[310px] w-full min-w-0 flex-col rounded-2xl bg-white shadow-low transition-shadow duration-200 hover:shadow-md sm:h-[330px]"
 >
   <!-- Image Section -->
   <div class="relative overflow-hidden rounded-t-2xl">
@@ -34,7 +34,7 @@
           [width]="272"
           [height]="190"
           loading="lazy"
-          class="h-full w-full object-contain object-bottom transition-transform duration-300 group-hover:scale-105"
+          class="h-full w-full object-contain object-bottom"
         />
       } @else {
         <svg

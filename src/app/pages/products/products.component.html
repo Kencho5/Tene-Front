@@ -147,7 +147,7 @@
           class="group flex w-[130px] shrink-0 flex-col items-center gap-3 sm:w-[150px]"
         >
           <div
-            class="relative h-[100px] w-[100px] overflow-hidden rounded-full bg-green-10 transition-all group-hover:shadow-low sm:h-[120px] sm:w-[120px]"
+            class="relative h-[100px] w-[100px] overflow-hidden rounded-2xl border border-platinum-20/60 bg-white shadow-[0_1px_4px_rgba(0,0,0,0.04)] transition-all group-hover:border-green-40 group-hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] sm:h-[120px] sm:w-[120px]"
           >
             @if (category.image_url) {
             <img
@@ -155,10 +155,10 @@
               [alt]="category.name"
               width="120"
               height="120"
-              class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+              class="h-full w-full object-cover"
             />
             } @else {
-            <div class="flex h-full w-full items-center justify-center">
+            <div class="flex h-full w-full items-center justify-center bg-green-10">
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none" class="text-green-60/40">
                 <path
                   d="M3 7C3 5.11438 3 4.17157 3.58579 3.58579C4.17157 3 5.11438 3 7 3H17C18.8856 3 19.8284 3 20.4142 3.58579C21 4.17157 21 5.11438 21 7V17C21 18.8856 21 19.8284 20.4142 20.4142C19.8284 21 18.8856 21 17 21H7C5.11438 21 4.17157 21 3.58579 20.4142C3 19.8284 3 18.8856 3 17V7Z"
@@ -177,7 +177,7 @@
           </div>
 
           <p
-            class="text-center text-[13px] font-medium leading-tight text-platinum-90 transition-colors group-hover:text-green-70 sm:text-sm"
+            class="text-center text-[13px] font-medium leading-tight text-platinum-80 transition-colors group-hover:text-green-70 sm:text-sm"
           >
             {{ category.name }}
           </p>
@@ -189,12 +189,12 @@
       <button
         type="button"
         (click)="scrollLeft(scrollContainer)"
-        class="absolute left-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-green-10 p-3 shadow-low transition-all hover:bg-green-20 lg:flex"
+        class="absolute left-0 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-platinum-20 bg-white shadow-low transition-all hover:bg-platinum-10 lg:flex"
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="rotate-180">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="rotate-180">
           <path
             d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4"
-            stroke="#068C0B"
+            stroke="#10883c"
             stroke-width="1.5"
             stroke-linecap="round"
           />
@@ -205,12 +205,12 @@
       <button
         type="button"
         (click)="scrollRight(scrollContainer)"
-        class="absolute right-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-green-10 p-3 shadow-low transition-all hover:bg-green-20 lg:flex"
+        class="absolute right-0 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-platinum-20 bg-white shadow-low transition-all hover:bg-platinum-10 lg:flex"
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path
             d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4"
-            stroke="#068C0B"
+            stroke="#10883c"
             stroke-width="1.5"
             stroke-linecap="round"
           />
