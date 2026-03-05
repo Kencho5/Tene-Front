@@ -1,7 +1,7 @@
 <!-- Parent Categories Bar -->
 @if (parentCategories().length > 0) {
 <div class="border-platinum-20 border-b bg-white">
-  <div class="container px-4 xl:px-0">
+  <div class="container px-4 xl:px-8">
     <div class="relative">
       <div
         class="pointer-events-none absolute top-0 right-4 z-10 h-full w-12 bg-linear-to-l from-white to-transparent"
@@ -249,7 +249,7 @@
 }
 
 <!-- Main Content -->
-<div class="container px-4 pt-8 pb-10 sm:pt-10 xl:px-0">
+<div class="container px-4 pt-8 pb-10 sm:pt-10 xl:px-8">
   <!-- Two-column layout: Sidebar + Products -->
   <div class="flex items-start gap-6 lg:gap-8">
     <!-- FILTERS SIDEBAR (Walmart-style collapsible sections) -->
@@ -708,16 +708,22 @@
           [class.pr-4]="!params()['query']"
         />
         @if (params()['query']) {
-          <button
-            type="button"
-            (click)="setParam('query', undefined)"
-            aria-label="ძიების გასუფთავება"
-            class="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 text-platinum-40 transition-colors hover:text-platinum-70"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
+        <button
+          type="button"
+          (click)="setParam('query', undefined)"
+          aria-label="ძიების გასუფთავება"
+          class="text-platinum-40 hover:text-platinum-70 absolute top-1/2 right-3 -translate-y-1/2 p-0.5 transition-colors"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M18 6L6 18M6 6l12 12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
         }
       </div>
 
