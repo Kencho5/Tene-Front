@@ -69,6 +69,16 @@ export class SearchDropdownComponent {
 
   readonly open = model(false);
   readonly query = signal('');
+  readonly debouncedQuery = signal('');
+  private debounceTimer?: number;
+
+  updateQuery(value: string): void {
+    this.query.set(value);
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = window.setTimeout(() => {
+      this.debouncedQuery.set(value);
+    }, 350);
+  }
 
   readonly categories = rxResource({
     defaultValue: {} as CategoryTreeResponse,
@@ -82,7 +92,7 @@ export class SearchDropdownComponent {
   });
 
   readonly results = rxResource({
-    params: () => this.query(),
+    params: () => this.debouncedQuery(),
     stream: ({ params }) => {
       if (!params) {
         return of(undefined);
@@ -95,6 +105,8 @@ export class SearchDropdownComponent {
   toggle() {
     this.open.update((value) => !value);
     this.query.set('');
+    this.debouncedQuery.set('');
+    clearTimeout(this.debounceTimer);
   }
 
   close() {

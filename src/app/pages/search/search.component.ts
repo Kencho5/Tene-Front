@@ -233,7 +233,11 @@ export class SearchComponent {
   }
 
   clearAll(): void {
-    this.router.navigate([], { relativeTo: this.route });
+    const query = this.params()['query'];
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: query ? { query } : undefined,
+    });
   }
 
   onPageChange(page: number): void {
