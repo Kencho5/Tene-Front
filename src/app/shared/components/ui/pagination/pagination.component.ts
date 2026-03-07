@@ -20,8 +20,8 @@ export class PaginationComponent {
   limitChange = output<string>();
 
   readonly limitOptions: ComboboxItems[] = [
-    { label: '10', value: '10' },
-    { label: '15', value: '15' },
+    { label: '12', value: '12' },
+    { label: '20', value: '20' },
     { label: '30', value: '30' },
     { label: '45', value: '45' },
     { label: '60', value: '60' },

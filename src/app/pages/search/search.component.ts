@@ -36,48 +36,94 @@ import { map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: `
     @keyframes fade-in {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
 
     @keyframes fade-out {
-      from { opacity: 1; }
-      to { opacity: 0; }
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
     }
 
     @keyframes slide-up-fade {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @keyframes slide-down-enter {
-      from { opacity: 0; transform: translateY(-8px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @keyframes slide-up-leave {
-      from { opacity: 1; transform: translateY(0); }
-      to { opacity: 0; transform: translateY(-8px); }
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
     }
 
     @keyframes slide-left-enter {
-      from { opacity: 0; transform: translateX(16px); }
-      to { opacity: 1; transform: translateX(0); }
+      from {
+        opacity: 0;
+        transform: translateX(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
 
     @keyframes mobile-sheet-enter {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: translateY(0);
+      }
     }
 
     @keyframes mobile-sheet-leave {
-      from { transform: translateY(0); }
-      to { transform: translateY(100%); }
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(100%);
+      }
     }
 
     @keyframes scale-fade-in {
-      from { opacity: 0; transform: scale(0.97); }
-      to { opacity: 1; transform: scale(1); }
+      from {
+        opacity: 0;
+        transform: scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
   `,
 })
@@ -115,7 +161,7 @@ export class SearchComponent {
 
   readonly products = computed(() => this.searchResponse.value().products);
   readonly totalProducts = computed(() => this.searchResponse.value().total);
-  readonly limit = computed(() => Number(this.params()['limit']) || 15);
+  readonly limit = computed(() => Number(this.params()['limit']) || 12);
   readonly offset = computed(() => Number(this.params()['offset']) || 0);
   readonly currentPage = computed(() => Math.floor(this.offset() / this.limit()) + 1);
   readonly totalPages = computed(() => Math.ceil(this.totalProducts() / this.limit()));
@@ -246,7 +292,7 @@ export class SearchComponent {
   }
 
   onLimitChangeValue(value: string): void {
-    this.updateParams({ limit: value || '15', offset: 0 });
+    this.updateParams({ limit: value || '12', offset: 0 });
   }
 
   private updateParams(params: Record<string, string | number | undefined>): void {
