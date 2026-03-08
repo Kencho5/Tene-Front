@@ -268,6 +268,7 @@ export class ProductComponent {
   }
 
   selectImage(imageId: string): void {
+    if (this.selectedImageId() === imageId) return;
     this.imageLoading.set(true);
     this.selectedImageId.set(imageId);
   }
