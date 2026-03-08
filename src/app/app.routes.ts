@@ -51,6 +51,21 @@ export const routes: Routes = [
           import('./pages/search/search.component').then((m) => m.SearchComponent),
       },
       {
+        path: 'category/:slug',
+        loadComponent: () =>
+          import('./pages/category/category.component').then((m) => m.CategoryComponent),
+      },
+      {
+        path: 'brand/:slug',
+        loadComponent: () =>
+          import('./pages/brand/brand.component').then((m) => m.BrandComponent),
+      },
+      {
+        path: 'store/:city',
+        loadComponent: () =>
+          import('./pages/store/store.component').then((m) => m.StoreComponent),
+      },
+      {
         path: '404',
         loadComponent: () =>
           import('./pages/not-found/not-found.component').then((m) => m.NotFoundComponent),

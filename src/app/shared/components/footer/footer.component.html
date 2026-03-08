@@ -16,8 +16,20 @@
 
     <!-- Links sections -->
     <div
-      class="grid grid-cols-2 gap-8 sm:grid-cols-3 sm:gap-4 lg:ml-auto lg:gap-8"
+      class="grid grid-cols-2 gap-8 sm:grid-cols-3 sm:gap-4 lg:ml-auto lg:grid-cols-5 lg:gap-8"
     >
+      <!-- კატეგორიები (dynamic from API) -->
+      <div class="sm:w-[200px] lg:w-[288px]">
+        <h2 class="mb-4 sm:mb-6">კატეგორიები</h2>
+        <div class="flex flex-col gap-3 text-sm text-platinum-50 sm:gap-4">
+          @for (link of categoryLinks(); track link.route) {
+            <a [routerLink]="link.route" class="transition-colors hover:text-green-60">{{
+              link.label
+            }}</a>
+          }
+        </div>
+      </div>
+
       @for (title of titles; track $index) {
         <div class="sm:w-[200px] lg:w-[288px]">
           <h2 class="mb-4 sm:mb-6">{{ title }}</h2>

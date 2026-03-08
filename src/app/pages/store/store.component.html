@@ -1,0 +1,99 @@
+@if (cityData(); as data) {
+<div class="container px-4 py-6 xl:px-8">
+  <!-- Breadcrumbs -->
+  <app-breadcrumb [items]="breadcrumbs()" [showBackButton]="false" />
+
+  <!-- City Header -->
+  <div class="mt-4 mb-8">
+    <h1 class="text-platinum-100 text-xl font-bold sm:text-2xl md:text-3xl">
+      ტექნიკის მაღაზია {{ data.name }}ში
+    </h1>
+    <p class="text-platinum-60 mt-2 max-w-2xl text-sm leading-relaxed sm:text-base">
+      {{ data.description }}
+    </p>
+  </div>
+
+  <!-- Store Info Cards -->
+  <div class="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <!-- Delivery Info -->
+    <div class="border-platinum-20 rounded-xl border p-5">
+      <div class="mb-2 flex items-center gap-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-green-60">
+          <path
+            d="M16 16V6H2V16H16ZM16 16H22V12L19 9H16V16ZM8 18.5C8 19.8807 6.88071 21 5.5 21C4.11929 21 3 19.8807 3 18.5C3 17.1193 4.11929 16 5.5 16C6.88071 16 8 17.1193 8 18.5ZM22 18.5C22 19.8807 20.8807 21 19.5 21C18.1193 21 17 19.8807 17 18.5C17 17.1193 18.1193 16 19.5 16C20.8807 16 22 17.1193 22 18.5Z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <h3 class="text-platinum-100 text-sm font-bold">მიწოდება</h3>
+      </div>
+      <p class="text-platinum-60 text-sm">{{ data.deliveryInfo }}</p>
+    </div>
+
+    <!-- Online Shopping -->
+    <div class="border-platinum-20 rounded-xl border p-5">
+      <div class="mb-2 flex items-center gap-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-green-60">
+          <path
+            d="M6 2L3 6V20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C19.5304 22 20.0391 21.7893 20.4142 21.4142C20.7893 21.0391 21 20.5304 21 20V6L18 2H6Z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path d="M3 6H21" stroke="currentColor" stroke-width="1.5" />
+          <path
+            d="M16 10C16 11.0609 15.5786 12.0783 14.8284 12.8284C14.0783 13.5786 13.0609 14 12 14C10.9391 14 9.92172 13.5786 9.17157 12.8284C8.42143 12.0783 8 11.0609 8 10"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <h3 class="text-platinum-100 text-sm font-bold">ონლაინ შეკვეთა</h3>
+      </div>
+      <p class="text-platinum-60 text-sm">შეუკვეთეთ 24/7 და მიიღეთ მიწოდება {{ data.name }}ში</p>
+    </div>
+  </div>
+
+  <!-- Popular Products -->
+  <div class="mb-8">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-platinum-100 text-base font-bold sm:text-lg">პოპულარული პროდუქტები</h2>
+      <a
+        routerLink="/products"
+        class="text-green-60 hover:text-green-70 text-sm font-medium transition-colors"
+      >
+        ყველას ნახვა
+      </a>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4 xl:grid-cols-4">
+      @if (searchResponse.isLoading()) { @for (s of [1,2,3,4,5,6,7,8]; track s) {
+      <app-product-card-skeleton />
+      } } @else { @for (product of products(); track product.data.id) {
+      <app-product-card [product]="product" />
+      } }
+    </div>
+  </div>
+
+  <!-- Other Cities -->
+  @if (otherCities().length > 0) {
+  <div class="border-platinum-20 rounded-xl border p-6">
+    <h2 class="text-platinum-100 mb-4 text-base font-bold">სხვა ქალაქები</h2>
+    <div class="flex flex-wrap gap-2">
+      @for (otherCity of otherCities(); track otherCity.slug) {
+      <a
+        [routerLink]="['/store', otherCity.slug]"
+        class="border-platinum-20 hover:border-green-60 hover:text-green-70 rounded-full border px-4 py-2 text-sm transition-colors"
+      >
+        {{ otherCity.name }}
+      </a>
+      }
+    </div>
+  </div>
+  }
+</div>
+}
