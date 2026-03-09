@@ -141,7 +141,7 @@ export class SearchComponent {
   });
   readonly isFilterOpen = signal<boolean>(false);
   readonly isCategoryExpanded = signal(false);
-  readonly expandedParentId = linkedSignal(() => this.parentCategories()[0]?.id ?? null);
+  readonly expandedParentId = linkedSignal(() => this.categoryTree.value()[0]?.id ?? null);
   readonly brandSearch = signal<string>('');
   readonly categorySearch = signal<string>('');
   readonly showAllBrands = signal(false);
@@ -172,11 +172,11 @@ export class SearchComponent {
     defaultValue: { brands: [], colors: [], categories: [] } as ProductFacets,
     params: () => {
       const urlParams = new URLSearchParams(this.params());
+
       urlParams.delete('sort_by');
       urlParams.delete('offset');
       urlParams.delete('limit');
-      urlParams.delete('category_id');
-      urlParams.delete('brand');
+
       return urlParams.toString();
     },
     stream: ({ params }) => this.productsService.getFacets(params),
@@ -187,19 +187,13 @@ export class SearchComponent {
     stream: () => this.categoriesService.getCategoryTree().pipe(map((res) => res.categories)),
   });
 
-  readonly parentCategories = computed(() => this.categoryTree.value());
-
-  readonly selectedCategoryIds = computed(() => {
-    const ids = this.params()['category_id'];
-    return ids ? ids.split(',') : [];
-  });
-
   readonly selectedParentId = computed(() => {
-    const ids = this.selectedCategoryIds();
+    const param = this.params()['category_id'];
+    const ids = param ? param.split(',') : [];
     if (ids.length === 0) return null;
 
     const firstId = ids[0];
-    const parents = this.parentCategories();
+    const parents = this.categoryTree.value();
 
     if (parents.some((p) => '' + p.id === firstId)) {
       return firstId;
@@ -208,8 +202,6 @@ export class SearchComponent {
     const parent = parents.find((p) => p.children.some((c) => '' + c.id === firstId));
     return parent ? '' + parent.id : null;
   });
-
-  readonly selectedCategoryId = this.selectedParentId;
 
   readonly filteredBrands = computed(() => {
     const search = this.brandSearch().toLowerCase();
@@ -224,7 +216,7 @@ export class SearchComponent {
 
   readonly filteredCategories = computed(() => {
     const search = this.categorySearch().toLowerCase();
-    const categories = this.facets.value().categories;
+    const categories = this.facets.value().categories.filter((cat) => cat.parent_id);
 
     if (!search) {
       return categories;
@@ -265,7 +257,7 @@ export class SearchComponent {
     let values = current ? current.split(',') : [];
 
     if (key === 'category_id') {
-      const parentIds = new Set(this.parentCategories().map((p) => '' + p.id));
+      const parentIds = new Set(this.categoryTree.value().map((p) => '' + p.id));
       values = values.filter((v) => !parentIds.has(v));
     }
 

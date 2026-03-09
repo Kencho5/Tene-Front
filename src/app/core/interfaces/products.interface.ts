@@ -161,6 +161,7 @@ export interface BrandFacet {
 
 export interface CategoryFacet {
   id: number;
+  parent_id: number | null;
   name: string;
   count: number;
 }

@@ -1,5 +1,5 @@
 <!-- Parent Categories Bar -->
-@if (parentCategories().length > 0) {
+@if (categoryTree.value().length > 0) {
 <div class="border-platinum-20 border-b bg-white">
   <div class="container px-4 xl:px-8">
     <div class="relative">
@@ -34,12 +34,12 @@
             />
           </svg>
         </button>
-        @for (category of parentCategories(); track category.id) {
+        @for (category of categoryTree.value(); track category.id) {
         <button
           type="button"
-          (click)="setParam('category_id', selectedCategoryId() === '' + category.id ? undefined : '' + category.id)"
+          (click)="setParam('category_id', selectedParentId() === '' + category.id ? undefined : '' + category.id)"
           class="flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-medium transition-colors sm:gap-2 sm:px-4 sm:py-3 sm:text-sm"
-          [class]="selectedCategoryId() === '' + category.id
+          [class]="selectedParentId() === '' + category.id
                 ? 'border-green-60 text-green-70'
                 : 'border-transparent text-platinum-60 hover:text-green-70'"
         >
@@ -94,7 +94,7 @@
 
     <!-- Mobile: Accordion layout -->
     <div class="hide-scrollbar flex-1 space-y-1 overflow-y-auto md:hidden">
-      @for (category of parentCategories(); track category.id) {
+      @for (category of categoryTree.value(); track category.id) {
       <div>
         <button
           type="button"
@@ -141,7 +141,7 @@
             type="button"
             (click)="setParam('category_id', '' + child.id); isCategoryExpanded.set(false)"
             class="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 transition-all duration-150"
-            [class]="selectedCategoryId() === '' + child.id
+            [class]="selectedParentId() === '' + child.id
                       ? 'bg-green-10 text-green-70'
                       : 'text-platinum-60 hover:bg-platinum-10'"
           >
@@ -165,7 +165,7 @@
     <div class="hidden gap-6 md:flex">
       <!-- Parent categories list -->
       <div class="hide-scrollbar w-56 shrink-0 space-y-1 overflow-y-auto lg:w-64">
-        @for (category of parentCategories(); track category.id) {
+        @for (category of categoryTree.value(); track category.id) {
         <button
           type="button"
           (mouseenter)="expandedParentId.set(category.id)"
@@ -200,7 +200,7 @@
 
       <!-- Children grid -->
       <div class="border-platinum-20 min-h-[200px] flex-1 border-l pl-6">
-        @for (category of parentCategories(); track category.id) { @if (expandedParentId() ===
+        @for (category of categoryTree.value(); track category.id) { @if (expandedParentId() ===
         category.id && category.children.length > 0) {
         <div
           class="grid grid-cols-2 gap-2.5 lg:grid-cols-3 xl:grid-cols-4"
@@ -211,7 +211,7 @@
             type="button"
             (click)="setParam('category_id', '' + child.id); isCategoryExpanded.set(false)"
             class="flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 transition-all duration-150"
-            [class]="selectedCategoryId() === '' + child.id
+            [class]="selectedParentId() === '' + child.id
                       ? 'border-green-60 bg-green-10'
                       : 'border-transparent hover:bg-platinum-10'"
           >
@@ -226,7 +226,7 @@
           </button>
           }
         </div>
-        } } @for (category of parentCategories(); track category.id) { @if (expandedParentId() ===
+        } } @for (category of categoryTree.value(); track category.id) { @if (expandedParentId() ===
         category.id && category.children.length === 0) {
         <div class="flex h-full items-center justify-center">
           <p class="text-platinum-40 text-sm">ქვეკატეგორია არ მოიძებნა</p>
