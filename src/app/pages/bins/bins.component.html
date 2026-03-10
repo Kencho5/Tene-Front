@@ -1,11 +1,9 @@
-<div
-  class="mb-10 flex flex-col items-center gap-6 bg-linear-to-b from-[#F6F6F6] to-white sm:mb-20"
->
+<div class="mb-10 flex flex-col items-center gap-6 bg-linear-to-b from-[#F6F6F6] to-white sm:mb-20">
   <div
     class="mx-auto flex max-w-[1024px] flex-col items-center gap-4 px-4 pt-6 text-center sm:pt-20"
   >
     <h1 class="text-[28px] sm:text-[64px]">მწვანე ურნები</h1>
-    <p class="font-normal text-platinum-50 sm:max-w-[768px] sm:text-lg">
+    <p class="text-platinum-50 font-normal sm:max-w-[768px] sm:text-lg">
       საქართველოში არ მოქმედებს ნარჩენების მართვის ერთიანი გეგმა, ამიტომ მნიშვნელოვანია კერძო
       კომპანიებმა საკუთარი ინიციატივით შეაგროვონ და დაანაწევრონ ნარჩენები.
     </p>
@@ -27,16 +25,16 @@
     <div class="flex flex-col items-center gap-8 sm:flex-row">
       <!--STEP 1-->
       <div
-        class="relative flex flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,var(--color-green-30)_-4.78%,var(--color-white)_64.12%,var(--color-white)_90.79%)] px-6 py-4 shadow-low"
+        class="shadow-low relative flex flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,var(--color-green-30)_-4.78%,var(--color-white)_64.12%,var(--color-white)_90.79%)] px-6 py-4"
       >
-        <div class="absolute left-5 rounded-full bg-green-60 px-2.5 py-[5px] text-sm text-white">
+        <div class="bg-green-60 absolute left-5 rounded-full px-2.5 py-[5px] text-sm text-white">
           01
         </div>
 
         <img src="/assets/images/bins/step-1.webp" alt="Step 1" width="93" height="90" />
 
         <h2 class="text-xl">შეავსე ურნა</h2>
-        <p class="font-light text-platinum-50">
+        <p class="text-platinum-50 font-light">
           შეავსე ურნა სწორი მასალებით - პლასტმასა, ალუმინი და ქაღალდი
         </p>
       </div>
@@ -59,10 +57,10 @@
 
       <!--STEP 2-->
       <div
-        class="relative flex flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,var(--color-cream-30)_-4.78%,var(--color-white)_64.12%,var(--color-white)_90.79%)] px-6 py-4 shadow-low"
+        class="shadow-low relative flex flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,var(--color-cream-30)_-4.78%,var(--color-white)_64.12%,var(--color-white)_90.79%)] px-6 py-4"
       >
         <div
-          class="absolute left-5 rounded-full bg-cream-60 px-2.5 py-[5px] text-sm font-semibold text-white"
+          class="bg-cream-60 absolute left-5 rounded-full px-2.5 py-[5px] text-sm font-semibold text-white"
         >
           02
         </div>
@@ -70,7 +68,7 @@
         <img src="/assets/images/bins/step-2.webp" alt="Step 1" width="93" height="90" />
 
         <h2 class="text-xl">გამოიძახე</h2>
-        <p class="font-light text-platinum-50">
+        <p class="text-platinum-50 font-light">
           დაგვიკავშირდი ტელეფონით ან აპლიკაციით ურნის შევსებისას.
         </p>
       </div>
@@ -93,10 +91,10 @@
 
       <!--STEP 3-->
       <div
-        class="relative flex flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,var(--color-pear-30)_-4.78%,var(--color-white)_64.12%,var(--color-white)_90.79%)] px-6 py-4 shadow-low"
+        class="shadow-low relative flex flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,var(--color-pear-30)_-4.78%,var(--color-white)_64.12%,var(--color-white)_90.79%)] px-6 py-4"
       >
         <div
-          class="absolute left-5 rounded-full bg-pear-60 px-2.5 py-[5px] text-sm font-semibold text-white"
+          class="bg-pear-60 absolute left-5 rounded-full px-2.5 py-[5px] text-sm font-semibold text-white"
         >
           03
         </div>
@@ -104,7 +102,7 @@
         <img src="/assets/images/bins/step-3.webp" alt="Step 1" width="93" height="90" />
 
         <h2 class="text-xl">გაატანე კურიერს</h2>
-        <p class="font-light text-platinum-50">
+        <p class="text-platinum-50 font-light">
           ჩვენი კურიერი 24 საათში მოვა და წაიღებს შეგოვებულ ნარჩენებს.
         </p>
       </div>
@@ -117,18 +115,18 @@
     <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
       @for (binCard of binCards; track $index) {
       <div
-        class="relative flex h-[436px] flex-col justify-end rounded-2xl bg-white px-6 py-4 shadow-low sm:w-[302px]"
+        class="shadow-low relative flex h-[436px] flex-col justify-end rounded-2xl bg-white px-6 py-4 sm:w-[302px]"
       >
         <img
           src="/assets/images/bins/star-banner-{{ binCard.binType }}.svg"
-          class="absolute left-1/2 top-3 w-full -translate-x-1/2 px-3"
+          class="absolute top-3 left-1/2 w-full -translate-x-1/2 px-3"
         />
 
         <img
           src="/assets/images/bins/{{ binCard.binType }}-bin.webp"
           width="210"
           height="210"
-          class="absolute left-1/2 top-9 -translate-x-1/2"
+          class="absolute top-9 left-1/2 -translate-x-1/2"
         />
 
         <div class="flex flex-col gap-6">
@@ -138,8 +136,8 @@
           </div>
 
           <a
-            routerLink="/coming-soon"
-            class="rounded-full border border-green-60 px-4 py-2.5 font-semibold text-green-60"
+            routerLink="/contact"
+            class="border-green-60 text-green-60 rounded-full border px-4 py-2.5 font-semibold"
           >
             დეტალები
           </a>
@@ -159,10 +157,10 @@
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
       <div
-        class="relative flex h-[220px] flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,var(--color-green-30)_-4.78%,var(--color-white)_64.12%,var(--color-white)_90.79%)] px-6 py-4 shadow-low md:order-1"
+        class="shadow-low relative flex h-[220px] flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,var(--color-green-30)_-4.78%,var(--color-white)_64.12%,var(--color-white)_90.79%)] px-6 py-4 md:order-1"
       >
         <div
-          class="absolute left-5 rounded-full bg-green-60 px-2.5 py-[5px] text-sm font-semibold text-white"
+          class="bg-green-60 absolute left-5 rounded-full px-2.5 py-[5px] text-sm font-semibold text-white"
         >
           01
         </div>
@@ -171,17 +169,17 @@
         <h2 class="sm:text-xl">თიბისი ბანკი</h2>
         <h2 class="text-2xl sm:text-[28px]">5,420 კგ</h2>
 
-        <p class="flex items-center gap-2 text-platinum-50">
+        <p class="text-platinum-50 flex items-center gap-2">
           <img src="/assets/images/bins/recycle-icon.svg" />
           შეგროვებული ნარჩენი
         </p>
       </div>
 
       <div
-        class="relative flex h-[220px] flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,var(--color-cream-30)_-4.78%,var(--color-white)_64.12%,var(--color-white)_90.79%)] px-6 py-4 shadow-low md:order-2"
+        class="shadow-low relative flex h-[220px] flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,var(--color-cream-30)_-4.78%,var(--color-white)_64.12%,var(--color-white)_90.79%)] px-6 py-4 md:order-2"
       >
         <div
-          class="absolute left-5 rounded-full bg-cream-60 px-2.5 py-[5px] text-sm font-semibold text-white"
+          class="bg-cream-60 absolute left-5 rounded-full px-2.5 py-[5px] text-sm font-semibold text-white"
         >
           02
         </div>
@@ -190,17 +188,17 @@
         <h2 class="sm:text-xl">სილქნეტი</h2>
         <h2 class="text-2xl sm:text-[28px]">4,890 კგ</h2>
 
-        <p class="flex items-center gap-2 text-platinum-50">
+        <p class="text-platinum-50 flex items-center gap-2">
           <img src="/assets/images/bins/recycle-icon.svg" />
           შეგროვებული ნარჩენი
         </p>
       </div>
 
       <div
-        class="relative flex h-[220px] flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,var(--color-pear-30)_-4.78%,var(--color-white)_64.12%,var(--color-white)_90.79%)] px-6 py-4 shadow-low md:order-3"
+        class="shadow-low relative flex h-[220px] flex-col items-center gap-2.5 rounded-2xl bg-[linear-gradient(170.22deg,var(--color-pear-30)_-4.78%,var(--color-white)_64.12%,var(--color-white)_90.79%)] px-6 py-4 md:order-3"
       >
         <div
-          class="absolute left-5 rounded-full bg-pear-60 px-2.5 py-[5px] text-sm font-semibold text-white"
+          class="bg-pear-60 absolute left-5 rounded-full px-2.5 py-[5px] text-sm font-semibold text-white"
         >
           03
         </div>
@@ -209,16 +207,16 @@
         <h2 class="sm:text-xl">მაგთი</h2>
         <h2 class="text-2xl sm:text-[28px]">4,125 კგ</h2>
 
-        <p class="flex items-center gap-2 text-platinum-50">
+        <p class="text-platinum-50 flex items-center gap-2">
           <img src="/assets/images/bins/recycle-icon.svg" />
           შეგროვებული ნარჩენი
         </p>
       </div>
     </div>
 
-    <div class="overflow-hidden rounded-2xl shadow-low">
+    <div class="shadow-low overflow-hidden rounded-2xl">
       <table class="w-full">
-        <thead class="hidden bg-platinum-10 text-left text-platinum-50 md:table-header-group">
+        <thead class="bg-platinum-10 text-platinum-50 hidden text-left md:table-header-group">
           <tr>
             <th class="px-6 py-4 font-normal">რანკი</th>
             <th class="px-6 py-4 font-normal">კომპანია</th>
@@ -228,8 +226,8 @@
         </thead>
         <tbody class="bg-white text-left text-sm">
           <tr class="border-b">
-            <td class="py-4 pl-3 pr-1 sm:px-6 sm:py-4">
-              <span class="rounded-2xl bg-platinum-10 px-2 py-[5px] font-semibold">04</span>
+            <td class="py-4 pr-1 pl-3 sm:px-6 sm:py-4">
+              <span class="bg-platinum-10 rounded-2xl px-2 py-[5px] font-semibold">04</span>
             </td>
             <td class="p-4 pl-3 sm:px-6 sm:py-4">
               <div class="flex items-center gap-3">
@@ -237,10 +235,10 @@
                 <span class="font-semibold">გუდვილი</span>
               </div>
             </td>
-            <td class="hidden px-6 py-4 text-platinum-50 sm:table-cell">12 აპრ, 2024</td>
-            <td class="py-4 pl-1.5 pr-3 sm:px-6 sm:py-4">
+            <td class="text-platinum-50 hidden px-6 py-4 sm:table-cell">12 აპრ, 2024</td>
+            <td class="py-4 pr-3 pl-1.5 sm:px-6 sm:py-4">
               <div
-                class="inline-flex items-center gap-2 rounded-2xl bg-green-10 px-2 py-1.5 font-semibold text-green-80"
+                class="bg-green-10 text-green-80 inline-flex items-center gap-2 rounded-2xl px-2 py-1.5 font-semibold"
               >
                 <img src="/assets/images/bins/recycle-icon-green.svg" />
                 3,240 კგ
@@ -248,8 +246,8 @@
             </td>
           </tr>
           <tr class="border-b">
-            <td class="py-4 pl-3 pr-1 sm:px-6 sm:py-4">
-              <span class="rounded-2xl bg-platinum-10 px-2 py-[5px] font-semibold">05</span>
+            <td class="py-4 pr-1 pl-3 sm:px-6 sm:py-4">
+              <span class="bg-platinum-10 rounded-2xl px-2 py-[5px] font-semibold">05</span>
             </td>
             <td class="p-4 pl-3 sm:px-6 sm:py-4">
               <div class="flex items-center gap-3">
@@ -257,10 +255,10 @@
                 <span class="font-semibold">გუდვილი</span>
               </div>
             </td>
-            <td class="hidden px-6 py-4 text-platinum-50 sm:table-cell">12 აპრ, 2024</td>
-            <td class="py-4 pl-1.5 pr-3 sm:px-6 sm:py-4">
+            <td class="text-platinum-50 hidden px-6 py-4 sm:table-cell">12 აპრ, 2024</td>
+            <td class="py-4 pr-3 pl-1.5 sm:px-6 sm:py-4">
               <div
-                class="inline-flex items-center gap-2 rounded-2xl bg-green-10 px-2 py-1.5 font-semibold text-green-80"
+                class="bg-green-10 text-green-80 inline-flex items-center gap-2 rounded-2xl px-2 py-1.5 font-semibold"
               >
                 <img src="/assets/images/bins/recycle-icon-green.svg" />
                 3,240 კგ
@@ -268,8 +266,8 @@
             </td>
           </tr>
           <tr class="border-b">
-            <td class="py-4 pl-3 pr-1 sm:px-6 sm:py-4">
-              <span class="rounded-2xl bg-platinum-10 px-2 py-[5px] font-semibold">06</span>
+            <td class="py-4 pr-1 pl-3 sm:px-6 sm:py-4">
+              <span class="bg-platinum-10 rounded-2xl px-2 py-[5px] font-semibold">06</span>
             </td>
             <td class="p-4 pl-3 sm:px-6 sm:py-4">
               <div class="flex items-center gap-3">
@@ -277,10 +275,10 @@
                 <span class="font-semibold">გუდვილი</span>
               </div>
             </td>
-            <td class="hidden px-6 py-4 text-platinum-50 sm:table-cell">12 აპრ, 2024</td>
-            <td class="py-4 pl-1.5 pr-3 sm:px-6 sm:py-4">
+            <td class="text-platinum-50 hidden px-6 py-4 sm:table-cell">12 აპრ, 2024</td>
+            <td class="py-4 pr-3 pl-1.5 sm:px-6 sm:py-4">
               <div
-                class="inline-flex items-center gap-2 rounded-2xl bg-green-10 px-2 py-1.5 font-semibold text-green-80"
+                class="bg-green-10 text-green-80 inline-flex items-center gap-2 rounded-2xl px-2 py-1.5 font-semibold"
               >
                 <img src="/assets/images/bins/recycle-icon-green.svg" />
                 3,240 კგ
@@ -288,8 +286,8 @@
             </td>
           </tr>
           <tr class="border-b">
-            <td class="py-4 pl-3 pr-1 sm:px-6 sm:py-4">
-              <span class="rounded-2xl bg-platinum-10 px-2 py-[5px] font-semibold">07</span>
+            <td class="py-4 pr-1 pl-3 sm:px-6 sm:py-4">
+              <span class="bg-platinum-10 rounded-2xl px-2 py-[5px] font-semibold">07</span>
             </td>
             <td class="p-4 pl-3 sm:px-6 sm:py-4">
               <div class="flex items-center gap-3">
@@ -297,10 +295,10 @@
                 <span class="font-semibold">გუდვილი</span>
               </div>
             </td>
-            <td class="hidden px-6 py-4 text-platinum-50 sm:table-cell">12 აპრ, 2024</td>
-            <td class="py-4 pl-1.5 pr-3 sm:px-6 sm:py-4">
+            <td class="text-platinum-50 hidden px-6 py-4 sm:table-cell">12 აპრ, 2024</td>
+            <td class="py-4 pr-3 pl-1.5 sm:px-6 sm:py-4">
               <div
-                class="inline-flex items-center gap-2 rounded-2xl bg-green-10 px-2 py-1.5 font-semibold text-green-80"
+                class="bg-green-10 text-green-80 inline-flex items-center gap-2 rounded-2xl px-2 py-1.5 font-semibold"
               >
                 <img src="/assets/images/bins/recycle-icon-green.svg" />
                 3,240 კგ
@@ -308,8 +306,8 @@
             </td>
           </tr>
           <tr class="border-b">
-            <td class="py-4 pl-3 pr-1 sm:px-6 sm:py-4">
-              <span class="rounded-2xl bg-platinum-10 px-2 py-[5px] font-semibold">08</span>
+            <td class="py-4 pr-1 pl-3 sm:px-6 sm:py-4">
+              <span class="bg-platinum-10 rounded-2xl px-2 py-[5px] font-semibold">08</span>
             </td>
             <td class="p-4 pl-3 sm:px-6 sm:py-4">
               <div class="flex items-center gap-3">
@@ -317,10 +315,10 @@
                 <span class="font-semibold">გუდვილი</span>
               </div>
             </td>
-            <td class="hidden px-6 py-4 text-platinum-50 sm:table-cell">12 აპრ, 2024</td>
-            <td class="py-4 pl-1.5 pr-3 sm:px-6 sm:py-4">
+            <td class="text-platinum-50 hidden px-6 py-4 sm:table-cell">12 აპრ, 2024</td>
+            <td class="py-4 pr-3 pl-1.5 sm:px-6 sm:py-4">
               <div
-                class="inline-flex items-center gap-2 rounded-2xl bg-green-10 px-2 py-1.5 font-semibold text-green-80"
+                class="bg-green-10 text-green-80 inline-flex items-center gap-2 rounded-2xl px-2 py-1.5 font-semibold"
               >
                 <img src="/assets/images/bins/recycle-icon-green.svg" />
                 3,240 კგ
@@ -332,36 +330,36 @@
     </div>
 
     <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-      <div class="flex items-center gap-3 rounded-2xl bg-white px-6 py-5 shadow-low">
+      <div class="shadow-low flex items-center gap-3 rounded-2xl bg-white px-6 py-5">
         <img
           src="/assets/images/bins/handshake.webp"
           class="h-[87px] w-[87px] sm:h-[100px] sm:w-[100px]"
         />
         <div class="space-y-2 text-left">
           <h2 class="text-2xl sm:text-[28px]">+150</h2>
-          <p class="text-sm text-platinum-50 sm:text-base">აქტიური პარტნიორი</p>
+          <p class="text-platinum-50 text-sm sm:text-base">აქტიური პარტნიორი</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-3 rounded-2xl bg-white px-6 py-5 shadow-low">
+      <div class="shadow-low flex items-center gap-3 rounded-2xl bg-white px-6 py-5">
         <img
           src="/assets/images/bins/recycle-card.webp"
           class="h-[87px] w-[87px] sm:h-[100px] sm:w-[100px]"
         />
         <div class="space-y-2 text-left">
           <h2 class="text-2xl sm:text-[28px]">15,240 კგ</h2>
-          <p class="text-sm text-platinum-50 sm:text-base">გადამუშავებული ნარჩენი</p>
+          <p class="text-platinum-50 text-sm sm:text-base">გადამუშავებული ნარჩენი</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-3 rounded-2xl bg-white px-6 py-5 shadow-low">
+      <div class="shadow-low flex items-center gap-3 rounded-2xl bg-white px-6 py-5">
         <img
           src="/assets/images/bins/co2.webp"
           class="h-[87px] w-[87px] sm:h-[100px] sm:w-[100px]"
         />
         <div class="space-y-2 text-left">
           <h2 class="text-2xl sm:text-[28px]">3,890 კგ</h2>
-          <p class="text-sm text-platinum-50 sm:text-base">დაზოგილი CO₂</p>
+          <p class="text-platinum-50 text-sm sm:text-base">დაზოგილი CO₂</p>
         </div>
       </div>
     </div>
@@ -371,7 +369,7 @@
     >
       <div class="space-y-8 text-center sm:text-left">
         <h2 class="text-[28px] sm:text-4xl">მოითხოვე ურნა</h2>
-        <p class="max-w-[628px] text-platinum-50 sm:text-lg">
+        <p class="text-platinum-50 max-w-[628px] sm:text-lg">
           მოგვწერე თქვენი მოთხოვნა და ჩვენი წარმომადგენელი 1 სამუშაო დღეში დაგიკავშირდებათ.
         </p>
 

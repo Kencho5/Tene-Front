@@ -1,8 +1,8 @@
-<section class="bg-linear-to-b from-[#F6F6F6] to-white">
-  <div class="container mx-auto space-y-16 p-4 sm:pt-20">
+<section class="space-y-8 bg-linear-to-b from-[#F6F6F6] to-white sm:space-y-16">
+  <div class="container mx-auto space-y-8 p-4 sm:space-y-16 sm:pt-20">
     <div class="flex flex-col items-center gap-4 text-center">
-      <h1 class="text-[64px]">ჩვენს შესახებ</h1>
-      <p class="text-platinum-50 max-w-3xl text-lg">
+      <h1 class="text-3xl sm:text-[64px]">ჩვენს შესახებ</h1>
+      <p class="text-platinum-50 max-w-3xl text-sm sm:text-lg">
         TENE არის პირველი ქართული ეკომეგობრული ბრენდი, რომელიც ნარჩენების შეგროვებასა და
         გადამუშავებას რეალურ პროდუქტად აქცევს. ჩვენი მთავარი მიზანია გარემოზე ზრუნვა, პლასტმასის
         ნარჩენების შემცირება. ჩვენი წარმოება ფუნქციონირებს მზის ენერგიაზე და დასაქმებულია იძულებით
@@ -20,45 +20,170 @@
         გახდი პარტნიორი
       </button>
     </div>
-    <div class="flex justify-between gap-8">
+    <div class="flex flex-col justify-between gap-4 md:flex-row md:gap-8">
       <div
-        class="shadow-low flex w-full items-center justify-between rounded-lg px-4 py-6 pl-6"
+        class="shadow-low flex w-full items-center justify-between rounded-lg px-3 py-4 pl-4 sm:px-4 sm:py-6 sm:pl-6"
         style="
           background:
             linear-gradient(270deg, #7afb7a 0%, #ffffff 100%) right / 190px 100% no-repeat,
             #ffffff;
         "
       >
-        <div class="max-w-[400px] space-y-2">
-          <h2 class="text-xl">მისია</h2>
-          <p class="text-platinum-50">
+        <div class="space-y-1 sm:max-w-[400px] sm:space-y-2">
+          <h2 class="text-base sm:text-xl">მისია</h2>
+          <p class="text-platinum-50 text-xs sm:text-base">
             ჩვენი მისიაა პლასტმასის ნარჩენების შემცირება, გარემოს დაცვა და ეკომეგობრული პროდუქციის
             წარმოება. ჩვენ ვაერთიანებთ ბიზნესებსა და საზოგადოებას საერთო მიზნისთვის ეკოლოგიური და
             პასუხისმგებლიანი მომავლის შესაქმნელად.
           </p>
         </div>
 
-        <img src="/assets/images/about/mission.webp" width="123" height="119" />
+        <img class="h-16 w-16 sm:h-[119px] sm:w-[123px]" src="/assets/images/about/mission.webp" />
       </div>
 
       <div
-        class="shadow-low flex w-full items-center justify-between rounded-lg px-4 py-6 pl-6"
+        class="shadow-low flex w-full items-center justify-between rounded-lg px-3 py-4 pl-4 sm:px-4 sm:py-6 sm:pl-6"
         style="
           background:
             linear-gradient(270deg, #96d3fa 0%, #ffffff 100%) right / 190px 100% no-repeat,
             #ffffff;
         "
       >
-        <div class="max-w-[400px] space-y-2">
-          <h2 class="text-xl">ხედვა</h2>
-          <p class="text-platinum-50">
+        <div class="space-y-1 sm:max-w-[400px] sm:space-y-2">
+          <h2 class="text-base sm:text-xl">ხედვა</h2>
+          <p class="text-platinum-50 text-xs sm:text-base">
             ნარჩენების სწორი გადამუშავება და მათთვის მეორე სიცოცხლის მინიჭება; გარემოზე
             პასუხისმგებელი ბიზნესები და ეკოლოგიური პასუხისმგებლობა, როგორც ყოველდღიური ცხოვრების
             განუყოფელი ნაწილი.
           </p>
         </div>
 
-        <img src="/assets/images/about/vision.webp" width="123" height="119" />
+        <img class="h-16 w-16 sm:h-[119px] sm:w-[123px]" src="/assets/images/about/vision.webp" />
+      </div>
+    </div>
+  </div>
+
+  <div class="space-y-4 sm:space-y-8">
+    <h2 class="text-center text-2xl sm:text-4xl">რატომ ტენე?</h2>
+
+    <div
+      class="container mx-auto grid grid-cols-1 justify-items-center gap-4 px-4 sm:gap-8 md:grid-cols-2"
+    >
+      <div class="shadow-low max-w-[628px] space-y-4 rounded-2xl bg-white p-4 sm:space-y-6 sm:p-6">
+        <img src="/assets/images/about/easy-process.webp" />
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <h2 class="text-base sm:text-xl">მარტივი პროცესი</h2>
+            <p class="text-platinum-50 text-xs sm:text-base">
+              შეგროვება და გადამუშავება, ჩვენთვის ყოველთვის ერთი მარტივი პროცესია.
+            </p>
+          </div>
+          <div
+            class="flex items-center gap-1.5 rounded-xl px-4 py-2.5"
+            style="background: linear-gradient(90deg, #e8fee7 0%, rgba(232, 254, 231, 0.14) 100%)"
+          >
+            <svg
+              class="size-4 shrink-0 sm:size-6"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path fill="#fff" fill-opacity=".01" d="M24 0v24H0V0z" />
+              <path
+                fill="#068c0b"
+                d="M8.189 11.303a.75.75 0 1 0-.863 1.227l.431-.613zm2.397 3.442-.614.431a.75.75 0 0 0 1.272-.071zm6.016-4.999a.75.75 0 0 0-.72-1.316l.36.658zM21 12h-.75A8.25 8.25 0 0 1 12 20.25v1.5c5.385 0 9.75-4.365 9.75-9.75zm-9 9v-.75A8.25 8.25 0 0 1 3.75 12h-1.5c0 5.385 4.365 9.75 9.75 9.75zm-9-9h.75A8.25 8.25 0 0 1 12 3.75v-1.5c-5.385 0-9.75 4.365-9.75 9.75zm9-9v.75A8.25 8.25 0 0 1 20.25 12h1.5c0-5.385-4.365-9.75-9.75-9.75zm-4.243 8.917-.431.613a10.6 10.6 0 0 1 2.646 2.646l.614-.431.613-.431a12.1 12.1 0 0 0-3.01-3.01zm2.829 2.828.658.36c1.305-2.388 2.97-4.053 5.358-5.359l-.36-.658-.36-.658c-2.639 1.443-4.512 3.315-5.954 5.955z"
+              />
+            </svg>
+            <span class="text-green-60 text-xs sm:text-sm">გადამუშავება ყველასთვის მარტივია</span>
+          </div>
+        </div>
+      </div>
+      <div class="shadow-low max-w-[628px] space-y-4 rounded-2xl bg-white p-4 sm:space-y-6 sm:p-6">
+        <img src="/assets/images/about/transparency.webp" />
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <h2 class="text-base sm:text-xl">გამჭვირვალობა</h2>
+            <p class="text-platinum-50 text-xs sm:text-base">
+              ზუსტად იცი, სად მიდის შენი ნარჩენი და რა შედეგს ქმნის გადამუშავება.
+            </p>
+          </div>
+          <div
+            class="flex items-center gap-1.5 rounded-xl px-4 py-2.5"
+            style="background: linear-gradient(90deg, #e8fee7 0%, rgba(232, 254, 231, 0.14) 100%)"
+          >
+            <svg
+              class="size-4 shrink-0 sm:size-6"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path fill="#fff" fill-opacity=".01" d="M24 0v24H0V0z" />
+              <path
+                fill="#068c0b"
+                d="M8.189 11.303a.75.75 0 1 0-.863 1.227l.431-.613zm2.397 3.442-.614.431a.75.75 0 0 0 1.272-.071zm6.016-4.999a.75.75 0 0 0-.72-1.316l.36.658zM21 12h-.75A8.25 8.25 0 0 1 12 20.25v1.5c5.385 0 9.75-4.365 9.75-9.75zm-9 9v-.75A8.25 8.25 0 0 1 3.75 12h-1.5c0 5.385 4.365 9.75 9.75 9.75zm-9-9h.75A8.25 8.25 0 0 1 12 3.75v-1.5c-5.385 0-9.75 4.365-9.75 9.75zm9-9v.75A8.25 8.25 0 0 1 20.25 12h1.5c0-5.385-4.365-9.75-9.75-9.75zm-4.243 8.917-.431.613a10.6 10.6 0 0 1 2.646 2.646l.614-.431.613-.431a12.1 12.1 0 0 0-3.01-3.01zm2.829 2.828.658.36c1.305-2.388 2.97-4.053 5.358-5.359l-.36-.658-.36-.658c-2.639 1.443-4.512 3.315-5.954 5.955z"
+              />
+            </svg>
+            <span class="text-green-60 text-xs sm:text-sm">იცით სად მიდის თქვენი ნარჩენი</span>
+          </div>
+        </div>
+      </div>
+      <div class="shadow-low max-w-[628px] space-y-4 rounded-2xl bg-white p-4 sm:space-y-6 sm:p-6">
+        <img src="/assets/images/about/business-esg.webp" />
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <h2 class="text-base sm:text-xl">ბიზნესი & ESG კავშირი</h2>
+            <p class="text-platinum-50 text-xs sm:text-base">
+              ინფრასტრუქტურა, რეპორტინგი და ESG შესაბამისობა ერთ სისტემაში.
+            </p>
+          </div>
+          <div
+            class="flex items-center gap-1.5 rounded-xl px-4 py-2.5"
+            style="background: linear-gradient(90deg, #e8fee7 0%, rgba(232, 254, 231, 0.14) 100%)"
+          >
+            <svg
+              class="size-4 shrink-0 sm:size-6"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path fill="#fff" fill-opacity=".01" d="M24 0v24H0V0z" />
+              <path
+                fill="#068c0b"
+                d="M8.189 11.303a.75.75 0 1 0-.863 1.227l.431-.613zm2.397 3.442-.614.431a.75.75 0 0 0 1.272-.071zm6.016-4.999a.75.75 0 0 0-.72-1.316l.36.658zM21 12h-.75A8.25 8.25 0 0 1 12 20.25v1.5c5.385 0 9.75-4.365 9.75-9.75zm-9 9v-.75A8.25 8.25 0 0 1 3.75 12h-1.5c0 5.385 4.365 9.75 9.75 9.75zm-9-9h.75A8.25 8.25 0 0 1 12 3.75v-1.5c-5.385 0-9.75 4.365-9.75 9.75zm9-9v.75A8.25 8.25 0 0 1 20.25 12h1.5c0-5.385-4.365-9.75-9.75-9.75zm-4.243 8.917-.431.613a10.6 10.6 0 0 1 2.646 2.646l.614-.431.613-.431a12.1 12.1 0 0 0-3.01-3.01zm2.829 2.828.658.36c1.305-2.388 2.97-4.053 5.358-5.359l-.36-.658-.36-.658c-2.639 1.443-4.512 3.315-5.954 5.955z"
+              />
+            </svg>
+            <span class="text-green-60 text-xs sm:text-sm">ინფრასტრუქტურა ბიზნესისთვის</span>
+          </div>
+        </div>
+      </div>
+      <div class="shadow-low max-w-[628px] space-y-4 rounded-2xl bg-white p-4 sm:space-y-6 sm:p-6">
+        <img src="/assets/images/about/real-impact.webp" />
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <h2 class="text-base sm:text-xl">რეალური გავლენა</h2>
+            <p class="text-platinum-50 text-xs sm:text-base">
+              ნაკლები ნარჩენი, სუფთა გარემო და მდგრადი ჩვევები საქართველოში.
+            </p>
+          </div>
+          <div
+            class="flex items-center gap-1.5 rounded-xl px-4 py-2.5"
+            style="background: linear-gradient(90deg, #e8fee7 0%, rgba(232, 254, 231, 0.14) 100%)"
+          >
+            <svg
+              class="size-4 shrink-0 sm:size-6"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path fill="#fff" fill-opacity=".01" d="M24 0v24H0V0z" />
+              <path
+                fill="#068c0b"
+                d="M8.189 11.303a.75.75 0 1 0-.863 1.227l.431-.613zm2.397 3.442-.614.431a.75.75 0 0 0 1.272-.071zm6.016-4.999a.75.75 0 0 0-.72-1.316l.36.658zM21 12h-.75A8.25 8.25 0 0 1 12 20.25v1.5c5.385 0 9.75-4.365 9.75-9.75zm-9 9v-.75A8.25 8.25 0 0 1 3.75 12h-1.5c0 5.385 4.365 9.75 9.75 9.75zm-9-9h.75A8.25 8.25 0 0 1 12 3.75v-1.5c-5.385 0-9.75 4.365-9.75 9.75zm9-9v.75A8.25 8.25 0 0 1 20.25 12h1.5c0-5.385-4.365-9.75-9.75-9.75zm-4.243 8.917-.431.613a10.6 10.6 0 0 1 2.646 2.646l.614-.431.613-.431a12.1 12.1 0 0 0-3.01-3.01zm2.829 2.828.658.36c1.305-2.388 2.97-4.053 5.358-5.359l-.36-.658-.36-.658c-2.639 1.443-4.512 3.315-5.954 5.955z"
+              />
+            </svg>
+            <span class="text-green-60 text-xs sm:text-sm">რეალური შედეგები საქართველოში</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
