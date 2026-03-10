@@ -110,8 +110,11 @@ export class ProductComponent {
 
     const categoryPath = findPath(tree, []);
     if (categoryPath) {
-      for (const node of categoryPath) {
-        base.push({ label: node.name, route: '/search', queryParams: { category_id: node.id } });
+      for (let i = 0; i < categoryPath.length; i++) {
+        const node = categoryPath[i];
+        const isLast = i === categoryPath.length - 1;
+        const paramKey = isLast && categoryPath.length > 1 ? 'child_category_id' : 'parent_category_id';
+        base.push({ label: node.name, route: '/search', queryParams: { [paramKey]: node.id } });
       }
     }
 

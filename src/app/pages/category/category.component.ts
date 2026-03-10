@@ -74,7 +74,8 @@ export class CategoryComponent {
     params: () => this.categoryId(),
     stream: ({ params: categoryId }) => {
       if (!categoryId) return of({ products: [], total: 0, limit: 0, offset: 0 } as ProductSearchResponse);
-      return this.productsService.searchProduct(`category_id=${categoryId}&in_stock=true&limit=20`);
+      const paramKey = this.parentCategory() ? 'child_category_id' : 'parent_category_id';
+      return this.productsService.searchProduct(`${paramKey}=${categoryId}&in_stock=true&limit=20`);
     },
   });
 
