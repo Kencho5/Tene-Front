@@ -37,7 +37,7 @@
         @for (category of categoryTree.value(); track category.id) {
         <button
           type="button"
-          (click)="setParam('category_id', selectedParentId() === '' + category.id ? undefined : '' + category.id)"
+          (click)="setParam('parent_category_id', selectedParentId() === '' + category.id ? undefined : '' + category.id)"
           class="flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-medium transition-colors sm:gap-2 sm:px-4 sm:py-3 sm:text-sm"
           [class]="selectedParentId() === '' + category.id
                 ? 'border-green-60 text-green-70'
@@ -139,9 +139,9 @@
           @for (child of category.children; track child.id) {
           <button
             type="button"
-            (click)="setParam('category_id', '' + child.id); isCategoryExpanded.set(false)"
+            (click)="setParam('child_category_id', '' + child.id); isCategoryExpanded.set(false)"
             class="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 transition-all duration-150"
-            [class]="selectedParentId() === '' + child.id
+            [class]="hasValue('child_category_id', '' + child.id)
                       ? 'bg-green-10 text-green-70'
                       : 'text-platinum-60 hover:bg-platinum-10'"
           >
@@ -169,7 +169,7 @@
         <button
           type="button"
           (mouseenter)="expandedParentId.set(category.id)"
-          (click)="setParam('category_id', '' + category.id); isCategoryExpanded.set(false)"
+          (click)="setParam('parent_category_id', '' + category.id); isCategoryExpanded.set(false)"
           class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-150"
           [class]="expandedParentId() === category.id
                 ? 'bg-platinum-10 text-platinum-100'
@@ -209,9 +209,9 @@
           @for (child of category.children; track child.id) {
           <button
             type="button"
-            (click)="setParam('category_id', '' + child.id); isCategoryExpanded.set(false)"
+            (click)="setParam('child_category_id', '' + child.id); isCategoryExpanded.set(false)"
             class="flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 transition-all duration-150"
-            [class]="selectedParentId() === '' + child.id
+            [class]="hasValue('child_category_id', '' + child.id)
                       ? 'border-green-60 bg-green-10'
                       : 'border-transparent hover:bg-platinum-10'"
           >
@@ -375,11 +375,11 @@
             <span class="relative inline-block h-[18px] w-[18px] shrink-0">
               <input
                 type="checkbox"
-                [checked]="hasValue('category_id', '' + category.id)"
+                [checked]="hasValue('child_category_id', '' + category.id)"
                 [disabled]="category.count === 0"
                 (change)="
                   toggleParam(
-                    'category_id',
+                    'child_category_id',
                     '' + category.id,
                     $any($event.target).checked
                   )

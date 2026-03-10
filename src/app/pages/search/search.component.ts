@@ -155,7 +155,13 @@ export class SearchComponent {
 
   readonly searchResponse = rxResource({
     defaultValue: { products: [], total: 0, limit: 0, offset: 0 } as ProductSearchResponse,
-    params: () => new URLSearchParams(this.params()).toString(),
+    params: () => {
+      const urlParams = new URLSearchParams(this.params());
+      if (urlParams.has('child_category_id')) {
+        urlParams.delete('parent_category_id');
+      }
+      return urlParams.toString();
+    },
     stream: ({ params }) => this.productsService.searchProduct(params),
   });
 
@@ -188,18 +194,15 @@ export class SearchComponent {
   });
 
   readonly selectedParentId = computed(() => {
-    const param = this.params()['category_id'];
-    const ids = param ? param.split(',') : [];
-    if (ids.length === 0) return null;
+    const parentParam = this.params()['parent_category_id'];
+    if (parentParam) return parentParam;
 
-    const firstId = ids[0];
+    const childParam = this.params()['child_category_id'];
+    if (!childParam) return null;
+
+    const firstChildId = childParam.split(',')[0];
     const parents = this.categoryTree.value();
-
-    if (parents.some((p) => '' + p.id === firstId)) {
-      return firstId;
-    }
-
-    const parent = parents.find((p) => p.children.some((c) => '' + c.id === firstId));
+    const parent = parents.find((p) => p.children.some((c) => '' + c.id === firstChildId));
     return parent ? '' + parent.id : null;
   });
 
@@ -245,6 +248,10 @@ export class SearchComponent {
       queryParams['offset'] = undefined;
     }
 
+    if (key === 'parent_category_id') {
+      queryParams['child_category_id'] = undefined;
+    }
+
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams,
@@ -254,12 +261,7 @@ export class SearchComponent {
 
   toggleParam(key: string, value: string, checked: boolean): void {
     const current = this.params()[key] as string | undefined;
-    let values = current ? current.split(',') : [];
-
-    if (key === 'category_id') {
-      const parentIds = new Set(this.categoryTree.value().map((p) => '' + p.id));
-      values = values.filter((v) => !parentIds.has(v));
-    }
+    const values = current ? current.split(',') : [];
 
     const updated = checked ? [...values, value] : values.filter((v: string) => v !== value);
     this.setParam(key, updated.length ? updated.join(',') : undefined);

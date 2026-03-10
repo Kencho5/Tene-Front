@@ -9,6 +9,7 @@ import { FooterComponent } from '@shared/components/footer/footer.component';
   selector: 'app-main-layout',
   imports: [SharedModule, NavbarComponent, SpinnerComponent, FooterComponent],
   templateUrl: './main-layout.component.html',
+  host: { class: 'block overflow-x-hidden' },
 })
 export class MainLayoutComponent {
   public loadingService = inject(LoadingService);
