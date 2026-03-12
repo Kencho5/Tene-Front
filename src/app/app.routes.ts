@@ -57,13 +57,11 @@ export const routes: Routes = [
       },
       {
         path: 'brand/:slug',
-        loadComponent: () =>
-          import('./pages/brand/brand.component').then((m) => m.BrandComponent),
+        loadComponent: () => import('./pages/brand/brand.component').then((m) => m.BrandComponent),
       },
       {
         path: 'store/:city',
-        loadComponent: () =>
-          import('./pages/store/store.component').then((m) => m.StoreComponent),
+        loadComponent: () => import('./pages/store/store.component').then((m) => m.StoreComponent),
       },
       {
         path: '404',
@@ -123,6 +121,13 @@ export const routes: Routes = [
         path: 'orders',
         loadComponent: () =>
           import('./pages/profile/orders/orders.component').then((m) => m.OrdersComponent),
+      },
+      {
+        path: 'orders/:id',
+        loadComponent: () =>
+          import('./pages/profile/order-detail/order-detail.component').then(
+            (m) => m.OrderDetailComponent,
+          ),
       },
       {
         path: 'addresses',

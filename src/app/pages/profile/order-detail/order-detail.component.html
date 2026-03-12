@@ -1,0 +1,274 @@
+<div class="w-full space-y-6">
+  <!-- Back + title -->
+  <div class="flex items-center gap-3">
+    <a
+      routerLink="/profile/orders"
+      class="border-platinum-20 text-platinum-60 hover:bg-platinum-10 hover:text-platinum-100 flex items-center justify-center rounded-lg border bg-white p-2 transition-colors"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path
+          d="M10 12L6 8L10 4"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </a>
+    <h1 class="text-platinum-100 text-2xl font-semibold">შეკვეთის დეტალები</h1>
+  </div>
+
+  @if (order.isLoading()) {
+  <!-- Skeleton -->
+  <div class="space-y-4">
+    <div class="border-platinum-20 space-y-4 rounded-xl border bg-white p-6">
+      <div class="bg-platinum-20 h-5 w-40 animate-pulse rounded-sm"></div>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        @for (s of [1,2,3,4,5,6]; track s) {
+        <div class="space-y-1.5">
+          <div class="bg-platinum-20 h-3 w-20 animate-pulse rounded-sm"></div>
+          <div class="bg-platinum-20 h-4 w-32 animate-pulse rounded-sm"></div>
+        </div>
+        }
+      </div>
+    </div>
+    <div class="border-platinum-20 space-y-4 rounded-xl border bg-white p-6">
+      <div class="bg-platinum-20 h-5 w-32 animate-pulse rounded-sm"></div>
+      @for (s of [1,2,3]; track s) {
+      <div class="border-platinum-10 flex items-center gap-4 border-b py-3 last:border-0">
+        <div class="bg-platinum-20 h-16 w-16 shrink-0 animate-pulse rounded-xl"></div>
+        <div class="flex-1 space-y-2">
+          <div class="bg-platinum-20 h-4 w-40 animate-pulse rounded-sm"></div>
+          <div class="bg-platinum-20 h-3 w-24 animate-pulse rounded-sm"></div>
+        </div>
+        <div class="bg-platinum-20 h-4 w-16 animate-pulse rounded-sm"></div>
+      </div>
+      }
+    </div>
+  </div>
+
+  } @else if (order.error()) {
+  <div class="border-platinum-20 rounded-xl border bg-white px-4 py-16 text-center">
+    <div class="flex flex-col items-center gap-3">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" class="text-valencia-40">
+        <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2" />
+        <path
+          d="M24 14V26M24 32V34"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+      <div>
+        <p class="text-platinum-100 text-sm font-medium">შეკვეთა ვერ მოიძებნა</p>
+        <p class="text-platinum-50 mt-1 text-sm">
+          მოითხოვეთ შეკვეთა არ არსებობს ან წვდომა არ გაქვთ
+        </p>
+      </div>
+      <a
+        routerLink="/profile/orders"
+        class="text-green-70 mt-2 text-sm font-medium hover:underline"
+      >
+        დაბრუნება შეკვეთებზე
+      </a>
+    </div>
+  </div>
+
+  } @else if (order.value(); as o) {
+
+  <!-- Status banner -->
+  <div
+    class="border-platinum-20 flex items-center justify-between space-y-1 rounded-xl border bg-white px-5 py-4"
+  >
+    @switch (o.status) { @case ("approved") {
+    <span
+      class="bg-green-10 text-green-70 inline-flex items-center rounded-md px-3 py-1 text-sm font-medium"
+    >
+      {{ statusLabel(o.status) }}
+    </span>
+    } @case ("declined") {
+    <span
+      class="bg-valencia-10 text-valencia-60 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
+    >
+      {{ statusLabel(o.status) }}
+    </span>
+    } @case ("expired") {
+    <span
+      class="bg-valencia-10 text-valencia-60 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
+    >
+      {{ statusLabel(o.status) }}
+    </span>
+    } @default {
+    <span
+      class="bg-platinum-10 text-platinum-70 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
+    >
+      {{ statusLabel(o.status) }}
+    </span>
+    } }
+
+    <div class="flex items-center gap-2">
+      <p class="text-platinum-50 text-xs font-medium tracking-wide uppercase">სულ</p>
+      <p class="text-platinum-100 text-xl font-bold">
+        {{ formatAmount(o.amount) }} {{ o.currency }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Order info grid -->
+  <div class="border-platinum-20 space-y-4 rounded-xl border bg-white p-5">
+    <h2 class="text-platinum-50 text-sm font-semibold tracking-wide uppercase">
+      შეკვეთის ინფორმაცია
+    </h2>
+    <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+      <div>
+        <p class="text-platinum-50 text-xs">შეკვეთის ID</p>
+        <p class="text-platinum-100 mt-0.5 text-sm font-medium">{{ o.order_id }}</p>
+      </div>
+
+      <div>
+        <p class="text-platinum-50 text-xs">თარიღი</p>
+        <p class="text-platinum-100 mt-0.5 text-sm font-medium">{{ formatDate(o.created_at) }}</p>
+      </div>
+
+      <div>
+        <p class="text-platinum-50 text-xs">მომხმარებლის ტიპი</p>
+        <p class="text-platinum-100 mt-0.5 text-sm font-medium">
+          {{ customerLabel(o.customer_type) }}
+        </p>
+      </div>
+
+      @if (o.customer_type !== 'company') {
+      <div>
+        <p class="text-platinum-50 text-xs">სახელი / გვარი</p>
+        <p class="text-platinum-100 mt-0.5 text-sm font-medium">
+          {{ o.customer_name }} {{ o.customer_surname }}
+        </p>
+      </div>
+      } @else {
+      <div>
+        <p class="text-platinum-50 text-xs">ორგანიზაცია</p>
+        <p class="text-platinum-100 mt-0.5 text-sm font-medium">{{ o.organization_name }}</p>
+      </div>
+      @if (o.organization_code) {
+      <div>
+        <p class="text-platinum-50 text-xs">საიდენტიფიკაციო კოდი</p>
+        <p class="text-platinum-100 mt-0.5 text-sm font-medium">{{ o.organization_code }}</p>
+      </div>
+      } }
+
+      <div>
+        <p class="text-platinum-50 text-xs">ელ-ფოსტა</p>
+        <p class="text-platinum-100 mt-0.5 text-sm font-medium">{{ o.email }}</p>
+      </div>
+
+      <div>
+        <p class="text-platinum-50 text-xs">ტელეფონი</p>
+        <p class="text-platinum-100 mt-0.5 text-sm font-medium">{{ o.phone_number }}</p>
+      </div>
+
+      <div>
+        <p class="text-platinum-50 text-xs">მიწოდების ტიპი</p>
+        <p class="text-platinum-100 mt-0.5 text-sm font-medium">
+          {{ deliveryTypeLabel(o.delivery_type) }}
+        </p>
+      </div>
+
+      @if (o.delivery_time) {
+      <div>
+        <p class="text-platinum-50 text-xs">მიწოდების დრო</p>
+        <p class="text-platinum-100 mt-0.5 text-sm font-medium">
+          {{ deliveryTimeLabel(o.delivery_time) }}
+        </p>
+      </div>
+      } @if (o.address) {
+      <div class="sm:col-span-2">
+        <p class="text-platinum-50 text-xs">მისამართი</p>
+        <p class="text-platinum-100 mt-0.5 text-sm font-medium">{{ o.address }}</p>
+      </div>
+      } @if (o.checkout_url && o.status === 'pending') {
+      <div class="sm:col-span-2">
+        <a
+          [href]="o.checkout_url"
+          target="_blank"
+          rel="noopener"
+          class="bg-green-70 hover:bg-green-80 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
+        >
+          გადახდის გვერდი
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path
+              d="M2 7H12M8 3L12 7L8 11"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Items -->
+  <div class="border-platinum-20 space-y-1 rounded-xl border bg-white p-5">
+    <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wide uppercase">
+      პროდუქტები ({{ o.items.length }})
+    </h2>
+
+    @for (item of o.items; track item.id) {
+    <div class="border-platinum-10 flex items-center gap-4 border-b py-3 last:border-0">
+      @if (getItemImageUrl(item); as imgUrl) {
+      <a [routerLink]="getProductRoute(item)" class="shrink-0">
+        <div class="border-platinum-20 h-16 w-16 overflow-hidden rounded-xl border">
+          <img [src]="imgUrl" [alt]="item.product_name" class="h-full w-full object-cover" />
+        </div>
+      </a>
+      } @else {
+      <div
+        class="border-platinum-20 bg-platinum-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-platinum-40">
+          <path
+            d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+      }
+
+      <div class="min-w-0 flex-1">
+        <a
+          [routerLink]="getProductRoute(item)"
+          class="text-platinum-100 hover:text-green-70 block max-w-[14rem] truncate text-sm font-medium hover:underline"
+        >
+          {{ item.product_name }}
+        </a>
+        <p class="text-platinum-50 mt-0.5 text-xs">რაოდენობა: {{ item.quantity }}</p>
+      </div>
+
+      <div class="shrink-0 text-right">
+        <p class="text-platinum-100 text-sm font-semibold">
+          {{ formatItemAmount(item.price_at_purchase * item.quantity) }} {{ o.currency }}
+        </p>
+        @if (item.quantity > 1) {
+        <p class="text-platinum-50 text-xs">
+          {{ formatItemAmount(item.price_at_purchase) }} × {{ item.quantity }}
+        </p>
+        }
+      </div>
+    </div>
+    }
+
+    <!-- Total row -->
+    <div class="flex justify-end pt-3">
+      <p class="text-platinum-100 text-base font-bold">
+        სულ: {{ formatAmount(o.amount) }} {{ o.currency }}
+      </p>
+    </div>
+  </div>
+
+  }
+</div>

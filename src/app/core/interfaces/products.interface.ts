@@ -64,7 +64,7 @@ export interface CheckoutFields {
     organization_code: string;
   };
   email: string;
-  phone_number: number | null;
+  phone_number: string;
   address: string;
   delivery_type: string;
   delivery_time: string;
@@ -86,7 +86,7 @@ export interface CheckoutRequest {
   organization_name?: string;
   organization_code?: string;
   email: string;
-  phone_number: number;
+  phone_number: string;
   address: string;
   delivery_type: string;
   delivery_time: string;

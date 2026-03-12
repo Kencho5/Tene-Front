@@ -8,11 +8,12 @@ import {
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
-import { OrderItem } from '@core/interfaces/products.interface';
+import { Order, OrderItem } from '@core/interfaces/products.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
 import { getProductImageUrl } from '@utils/product-image-url';
+import { generateProductSlug } from '@utils/slug';
 import { AdminService } from '@core/services/admin/admin.service';
 
 @Component({
@@ -28,6 +29,7 @@ export class AdminOrdersComponent {
   private debounceTimer?: number;
 
   readonly searchQuery = signal('');
+  readonly expandedOrderId = signal<number | null>(null);
 
   readonly statusOptions: ComboboxItems[] = [
     { label: 'ყველა', value: 'all' },
@@ -146,6 +148,50 @@ export class AdminOrdersComponent {
 
   onLimitChangeValue(value: string): void {
     this.updateQueryParams({ limit: value || '10', offset: 0 });
+  }
+
+  toggleExpand(order: Order): void {
+    this.expandedOrderId.set(
+      this.expandedOrderId() === order.id ? null : order.id,
+    );
+  }
+
+  isExpanded(order: Order): boolean {
+    return this.expandedOrderId() === order.id;
+  }
+
+  formatItemAmount(amount: number): string {
+    return amount.toFixed(2);
+  }
+
+  getProductRoute(item: OrderItem): string {
+    return `/products/${generateProductSlug(item.product_name)}/${item.product_id}`;
+  }
+
+  customerLabel(type: string): string {
+    return type === 'company' ? 'იურიდიული პირი' : 'ფიზიკური პირი';
+  }
+
+  deliveryTypeLabel(type: string): string {
+    switch (type) {
+      case 'delivery':
+        return 'მიტანა';
+      case 'pickup':
+        return 'გატანა';
+      default:
+        return type;
+    }
+  }
+
+  deliveryTimeLabel(time: string): string {
+    switch (time) {
+      case 'same_day':
+        return 'იმავე დღეს';
+      case 'next_day':
+        return 'მეორე დღეს';
+      default:
+        return time;
+    }
   }
 
   private updateQueryParams(
