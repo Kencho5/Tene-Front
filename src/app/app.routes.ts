@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from '@core/guards/admin.guard';
+import { adminOnlyGuard } from '@core/guards/operator.guard';
 import { MainLayoutComponent } from '@shared/layouts/main-layout/main-layout.component';
 import { productResolver } from '@core/resolvers/product.resolver';
 import { authGuard } from '@core/guards/auth.guard';
@@ -147,11 +148,12 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'products',
+        redirectTo: 'orders',
         pathMatch: 'full',
       },
       {
         path: 'products',
+        canActivate: [adminOnlyGuard],
         loadComponent: () =>
           import('./pages/admin/products/admin-products.component').then(
             (m) => m.AdminProductsComponent,
@@ -159,6 +161,7 @@ export const routes: Routes = [
       },
       {
         path: 'products/new',
+        canActivate: [adminOnlyGuard],
         loadComponent: () =>
           import('./pages/admin/product-form/admin-product-form.component').then(
             (m) => m.AdminProductFormComponent,
@@ -166,6 +169,7 @@ export const routes: Routes = [
       },
       {
         path: 'products/:id/edit',
+        canActivate: [adminOnlyGuard],
         loadComponent: () =>
           import('./pages/admin/product-form/admin-product-form.component').then(
             (m) => m.AdminProductFormComponent,
@@ -173,11 +177,13 @@ export const routes: Routes = [
       },
       {
         path: 'users',
+        canActivate: [adminOnlyGuard],
         loadComponent: () =>
           import('./pages/admin/users/admin-users.component').then((m) => m.AdminUsersComponent),
       },
       {
         path: 'users/:id/edit',
+        canActivate: [adminOnlyGuard],
         loadComponent: () =>
           import('./pages/admin/user-form/admin-user-form.component').then(
             (m) => m.AdminUserFormComponent,
@@ -190,11 +196,13 @@ export const routes: Routes = [
       },
       {
         path: 'brands',
+        canActivate: [adminOnlyGuard],
         loadComponent: () =>
           import('./pages/admin/brands/admin-brands.component').then((m) => m.AdminBrandsComponent),
       },
       {
         path: 'brands/new',
+        canActivate: [adminOnlyGuard],
         loadComponent: () =>
           import('./pages/admin/brand-form/admin-brand-form.component').then(
             (m) => m.AdminBrandFormComponent,
@@ -202,6 +210,7 @@ export const routes: Routes = [
       },
       {
         path: 'brands/:id/edit',
+        canActivate: [adminOnlyGuard],
         loadComponent: () =>
           import('./pages/admin/brand-form/admin-brand-form.component').then(
             (m) => m.AdminBrandFormComponent,
@@ -209,6 +218,7 @@ export const routes: Routes = [
       },
       {
         path: 'categories',
+        canActivate: [adminOnlyGuard],
         loadComponent: () =>
           import('./pages/admin/categories/admin-categories.component').then(
             (m) => m.AdminCategoriesComponent,
@@ -216,6 +226,7 @@ export const routes: Routes = [
       },
       {
         path: 'categories/new',
+        canActivate: [adminOnlyGuard],
         loadComponent: () =>
           import('./pages/admin/category-form/admin-category-form.component').then(
             (m) => m.AdminCategoryFormComponent,
@@ -223,13 +234,7 @@ export const routes: Routes = [
       },
       {
         path: 'categories/:id/edit',
-        loadComponent: () =>
-          import('./pages/admin/category-form/admin-category-form.component').then(
-            (m) => m.AdminCategoryFormComponent,
-          ),
-      },
-      {
-        path: 'categories/new',
+        canActivate: [adminOnlyGuard],
         loadComponent: () =>
           import('./pages/admin/category-form/admin-category-form.component').then(
             (m) => m.AdminCategoryFormComponent,

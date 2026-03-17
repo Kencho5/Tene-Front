@@ -351,7 +351,7 @@
         @for (topCategoryCard of productTopCategoryCards; track $index) {
         <a
           [routerLink]="['/search']"
-          [queryParams]="topCategoryCard.categoryId ? { parent_category_id: topCategoryCard.categoryId } : {}"
+          [queryParams]="topCategoryCard.categoryId ? { child_category_id: topCategoryCard.categoryId } : {}"
           class="shadow-low relative flex h-[187px] flex-col items-center justify-between rounded-2xl bg-white p-2 sm:h-[320px] sm:p-3"
         >
           <img

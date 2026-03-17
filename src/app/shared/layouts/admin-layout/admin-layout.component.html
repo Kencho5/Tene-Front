@@ -68,7 +68,7 @@
       [class.px-2]="!isSidebarOpen()"
     >
       <div class="space-y-0.5 py-3">
-        @for (item of navItems; track item.route) {
+        @for (item of navItems(); track item.route) {
         <a
           [routerLink]="item.route"
           routerLinkActive

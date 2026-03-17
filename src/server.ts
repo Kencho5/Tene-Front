@@ -20,6 +20,10 @@ const angularApp = new AngularNodeAppEngine({
   ],
 });
 
+app.get(/\.php$/, (req, res) => {
+  res.status(410).send('Gone');
+});
+
 /**
  * Serve sitemap and robots.txt with short cache
  */

@@ -10,7 +10,7 @@ export const adminGuard: CanActivateChildFn = () => {
     return router.createUrlTree(['/auth/login']);
   }
 
-  if (!authService.isAdmin()) {
+  if (!authService.hasAdminAccess()) {
     return router.createUrlTree(['/']);
   }
 

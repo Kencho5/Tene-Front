@@ -32,6 +32,11 @@ export class AuthService {
     const user = this.userSignal();
     return user?.role === 'admin' && this.isAuthenticated();
   });
+  readonly isOperator = computed(() => {
+    const user = this.userSignal();
+    return user?.role === 'operator' && this.isAuthenticated();
+  });
+  readonly hasAdminAccess = computed(() => this.isAdmin() || this.isOperator());
 
   constructor() {
     this.initializeAuth();
@@ -69,7 +74,7 @@ export class AuthService {
 
     this.posthog.identify(String(user.user_id), { email: user.email, name: user.name });
 
-    if (user.role === 'admin') {
+    if (user.role === 'admin' || user.role === 'operator') {
       this.router.navigate(['/admin']);
     } else {
       this.router.navigate(['/profile']);

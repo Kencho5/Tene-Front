@@ -18,6 +18,6 @@ export interface User {
   user_id: number;
   email: string;
   name: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'operator';
   exp: number;
 }

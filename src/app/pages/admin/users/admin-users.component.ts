@@ -42,6 +42,7 @@ export class AdminUsersComponent {
 
   readonly roleOptions: ComboboxItems[] = [
     { label: 'მომხმარებელი', value: 'user' },
+    { label: 'ოპერატორი', value: 'operator' },
     { label: 'ადმინი', value: 'admin' },
   ];
 
@@ -196,7 +197,9 @@ export class AdminUsersComponent {
   }
 
   getRoleLabel(role: UserRole): string {
-    return role === 'admin' ? 'ადმინისტრატორი' : 'მომხმარებელი';
+    if (role === 'admin') return 'ადმინისტრატორი';
+    if (role === 'operator') return 'ოპერატორი';
+    return 'მომხმარებელი';
   }
 
   formatDate(dateString: string): string {

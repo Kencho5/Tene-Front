@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { LoadingService } from '@core/services/loading.service';
@@ -26,13 +26,20 @@ export class AdminLayoutComponent {
   readonly isSidebarOpen = signal(true);
   readonly isMobileSidebarOpen = signal(false);
 
-  readonly navItems: NavItem[] = [
+  private readonly allNavItems: NavItem[] = [
     { label: 'პროდუქტები', route: '/admin/products', icon: 'products' },
     { label: 'ბრენდები', route: '/admin/brands', icon: 'brands' },
     { label: 'კატეგორიები', route: '/admin/categories', icon: 'categories' },
     { label: 'შეკვეთები', route: '/admin/orders', icon: 'orders' },
     { label: 'მომხმარებლები', route: '/admin/users', icon: 'users' },
   ];
+
+  readonly navItems = computed(() => {
+    if (this.authService.isAdmin()) {
+      return this.allNavItems;
+    }
+    return this.allNavItems.filter((item) => item.route === '/admin/orders');
+  });
 
   toggleSidebar(): void {
     this.isSidebarOpen.update((value) => !value);
