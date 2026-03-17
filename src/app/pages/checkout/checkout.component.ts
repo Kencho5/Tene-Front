@@ -45,6 +45,11 @@ export class CheckoutComponent {
   readonly toastService = inject(ToastService);
   readonly addressService = inject(AddressService);
 
+  readonly sameDayAvailable = (() => {
+    const now = new Date();
+    return now.getHours() < 17 || (now.getHours() === 17 && now.getMinutes() < 30);
+  })();
+
   readonly checkoutLoading = signal(false);
 
   readonly breadcrumbs = computed<BreadcrumbItem[]>(() => [
@@ -84,7 +89,7 @@ export class CheckoutComponent {
     phone_number: '',
     address: '',
     delivery_type: 'delivery',
-    delivery_time: 'same_day',
+    delivery_time: this.sameDayAvailable ? 'same_day' : 'next_day',
   });
 
   readonly checkoutForm = form(this.checkoutModel, (fieldPath) => {

@@ -1,26 +1,24 @@
 <div class="px-4 lg:px-0">
-  <div class="container mb-10 mt-24 md:mt-36">
+  <div class="container mt-24 mb-10 md:mt-36">
     <h1 class="text-2xl md:text-4xl">შეკვეთის გაფორმება</h1>
 
-    <div class="my-6 h-px bg-platinum-20"></div>
+    <div class="bg-platinum-20 my-6 h-px"></div>
 
     <app-breadcrumb [items]="breadcrumbs()" />
 
-    <div
-      class="container mt-10 flex flex-col justify-between gap-6 xl:flex-row"
-    >
+    <div class="container mt-10 flex flex-col justify-between gap-6 xl:flex-row">
       <div class="space-y-6">
-        <div class="w-full rounded-2xl bg-white p-4 shadow-low sm:p-6">
+        <div class="shadow-low w-full rounded-2xl bg-white p-4 sm:p-6">
           <div class="mb-6">
             <h1 class="text-xl">ჩემი ნივთები</h1>
-            <p class="text-sm text-platinum-50">
+            <p class="text-platinum-50 text-sm">
               დამატებული ნივთები: {{ cartService.itemCount() }}
             </p>
           </div>
 
           <div class="flex flex-col gap-6">
             @for (item of cartService.items(); track $index) {
-              <app-cart-item [item]="item" />
+            <app-cart-item [item]="item" />
             }
           </div>
         </div>
@@ -28,7 +26,7 @@
         <form
           (submit)="handleCheckout($event)"
           novalidate
-          class="w-full rounded-2xl bg-white p-4 shadow-low sm:p-6"
+          class="shadow-low w-full rounded-2xl bg-white p-4 sm:p-6"
         >
           <button
             type="button"
@@ -37,139 +35,133 @@
           >
             <h1 class="text-xl">1. საკონტაქტო დეტალები</h1>
             <svg
-              class="h-6 w-6 shrink-0 text-platinum-70 transition-transform duration-200"
+              class="text-platinum-70 h-6 w-6 shrink-0 transition-transform duration-200"
               [class.rotate-180]="!sectionStates().contactDetails"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
               stroke-width="2"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
 
           @if (sectionStates().contactDetails) {
-            <div class="mt-4 flex flex-col gap-4">
-              <div class="flex gap-3">
-                <button
-                  type="button"
-                  (click)="checkoutForm.customer_type().value.set('individual')"
-                  [ngClass]="{
+          <div class="mt-4 flex flex-col gap-4">
+            <div class="flex gap-3">
+              <button
+                type="button"
+                (click)="checkoutForm.customer_type().value.set('individual')"
+                [ngClass]="{
                     'bg-green-60 text-white':
                       checkoutForm.customer_type().value() === 'individual',
                     'bg-green-10 text-green-70':
                       checkoutForm.customer_type().value() !== 'individual',
                   }"
-                  class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
-                >
-                  ფიზიკური
-                </button>
-                <button
-                  type="button"
-                  (click)="checkoutForm.customer_type().value.set('company')"
-                  [ngClass]="{
+                class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
+              >
+                ფიზიკური
+              </button>
+              <button
+                type="button"
+                (click)="checkoutForm.customer_type().value.set('company')"
+                [ngClass]="{
                     'bg-green-60 text-white':
                       checkoutForm.customer_type().value() === 'company',
                     'bg-green-10 text-green-70':
                       checkoutForm.customer_type().value() !== 'company',
                   }"
-                  class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
-                >
-                  იურიდიული
-                </button>
-              </div>
+                class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
+              >
+                იურიდიული
+              </button>
+            </div>
 
-              @if (checkoutForm.customer_type().value() === "individual") {
-                <div class="flex w-full gap-4">
-                  <div class="flex-1">
-                    <app-input
-                      [formField]="checkoutForm.individual.name"
-                      [error]="
+            @if (checkoutForm.customer_type().value() === "individual") {
+            <div class="flex w-full gap-4">
+              <div class="flex-1">
+                <app-input
+                  [formField]="checkoutForm.individual.name"
+                  [error]="
                         submitted() && checkoutForm.individual.name().invalid()
                       "
-                      type="text"
-                      placeholder="სახელი"
-                    />
-                  </div>
+                  type="text"
+                  placeholder="სახელი"
+                />
+              </div>
 
-                  <div class="flex-1">
-                    <app-input
-                      [formField]="checkoutForm.individual.surname"
-                      [error]="
+              <div class="flex-1">
+                <app-input
+                  [formField]="checkoutForm.individual.surname"
+                  [error]="
                         submitted() &&
                         checkoutForm.individual.surname().invalid()
                       "
-                      type="text"
-                      placeholder="გვარი"
-                    />
-                  </div>
-                </div>
-              }
-
-              @if (checkoutForm.customer_type().value() === "company") {
-                <div class="flex w-full flex-col gap-4 md:flex-row">
-                  <div class="w-full md:w-32">
-                    <app-combobox
-                      [(selectedValue)]="
+                  type="text"
+                  placeholder="გვარი"
+                />
+              </div>
+            </div>
+            } @if (checkoutForm.customer_type().value() === "company") {
+            <div class="flex w-full flex-col gap-4 md:flex-row">
+              <div class="w-full md:w-32">
+                <app-combobox
+                  [(selectedValue)]="
                         checkoutForm.company.organization_type().value
                       "
-                      [items]="organizationTypes"
-                      [error]="
+                  [items]="organizationTypes"
+                  [error]="
                         submitted() &&
                         checkoutForm.company.organization_type().invalid()
                       "
-                      placeholder="ტიპი"
-                      searchPlaceholder="ძებნა..."
-                      notFoundText="ვერ მოიძებნა"
-                    />
-                  </div>
+                  placeholder="ტიპი"
+                  searchPlaceholder="ძებნა..."
+                  notFoundText="ვერ მოიძებნა"
+                />
+              </div>
 
-                  <div class="w-full md:flex-1">
-                    <app-input
-                      [formField]="checkoutForm.company.organization_name"
-                      [error]="
+              <div class="w-full md:flex-1">
+                <app-input
+                  [formField]="checkoutForm.company.organization_name"
+                  [error]="
                         submitted() &&
                         checkoutForm.company.organization_name().invalid()
                       "
-                      type="text"
-                      placeholder="ორგანიზაციის დასახელება"
-                    />
-                  </div>
-                </div>
+                  type="text"
+                  placeholder="ორგანიზაციის დასახელება"
+                />
+              </div>
+            </div>
 
-                <app-input
-                  [formField]="checkoutForm.company.organization_code"
-                  [error]="
+            <app-input
+              [formField]="checkoutForm.company.organization_code"
+              [error]="
                     submitted() &&
                     checkoutForm.company.organization_code().invalid()
                   "
-                  type="text"
-                  placeholder="საიდენტიფიკაციო კოდი"
-                />
-              }
+              type="text"
+              placeholder="საიდენტიფიკაციო კოდი"
+            />
+            }
 
-              <app-input
-                [formField]="checkoutForm.email"
-                [error]="submitted() && checkoutForm.email().invalid()"
-                type="email"
-                placeholder="ელ. ფოსტა"
-              />
+            <app-input
+              [formField]="checkoutForm.email"
+              [error]="submitted() && checkoutForm.email().invalid()"
+              type="email"
+              placeholder="ელ. ფოსტა"
+            />
 
-              <app-input
-                [formField]="checkoutForm.phone_number"
-                [error]="submitted() && checkoutForm.phone_number().invalid()"
-                type="text"
-                placeholder="ტელეფონის ნომერი"
-              />
-            </div>
+            <app-input
+              [formField]="checkoutForm.phone_number"
+              [error]="submitted() && checkoutForm.phone_number().invalid()"
+              type="text"
+              placeholder="ტელეფონის ნომერი"
+            />
+          </div>
           }
         </form>
 
-        <div class="w-full rounded-2xl bg-white p-4 shadow-low sm:p-6">
+        <div class="shadow-low w-full rounded-2xl bg-white p-4 sm:p-6">
           <button
             type="button"
             (click)="toggleSection('deliveryDetails')"
@@ -177,282 +169,116 @@
           >
             <h1 class="text-xl">2. მიწოდება</h1>
             <svg
-              class="h-6 w-6 shrink-0 text-platinum-70 transition-transform duration-200"
+              class="text-platinum-70 h-6 w-6 shrink-0 transition-transform duration-200"
               [class.rotate-180]="!sectionStates().deliveryDetails"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
               stroke-width="2"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
 
           @if (sectionStates().deliveryDetails) {
-            <div class="mt-4 flex flex-col gap-4">
-              <div class="flex gap-3">
-                <button
-                  type="button"
-                  (click)="checkoutForm.delivery_type().value.set('delivery')"
-                  [ngClass]="{
+          <div class="mt-4 flex flex-col gap-4">
+            <div class="flex gap-3">
+              <button
+                type="button"
+                (click)="checkoutForm.delivery_type().value.set('delivery')"
+                [ngClass]="{
                     'bg-green-60 text-white':
                       checkoutForm.delivery_type().value() === 'delivery',
                     'bg-green-10 text-green-70':
                       checkoutForm.delivery_type().value() !== 'delivery',
                   }"
-                  class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
-                >
-                  ადგილზე
-                </button>
-                <button
-                  type="button"
-                  (click)="checkoutForm.delivery_type().value.set('pickup')"
-                  [ngClass]="{
+                class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
+              >
+                ადგილზე
+              </button>
+              <button
+                type="button"
+                (click)="checkoutForm.delivery_type().value.set('pickup')"
+                [ngClass]="{
                     'bg-green-60 text-white':
                       checkoutForm.delivery_type().value() === 'pickup',
                     'bg-green-10 text-green-70':
                       checkoutForm.delivery_type().value() !== 'pickup',
                   }"
-                  class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
-                >
-                  ჩემით წავიღებ
-                </button>
+                class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
+              >
+                ჩემით წავიღებ
+              </button>
+            </div>
+
+            @if (checkoutForm.delivery_type().value() === 'delivery') { @if (loading().addresses) {
+            <div class="flex items-center justify-center py-8">
+              <span class="text-platinum-50">იტვირთება...</span>
+            </div>
+            } @else if (addresses().length === 0) {
+            <div class="mx-auto my-4 max-w-[320px] space-y-6 text-center">
+              <img
+                src="/assets/images/checkout/map-waypoint.webp"
+                width="120"
+                height="120"
+                class="mx-auto"
+              />
+              <div>
+                <h2 class="text-lg">დაამატე მისამართი</h2>
+                <p class="text-platinum-50 text-sm">
+                  დაამატეთ სასურველი მისაამრთი სადაც გსურთ თქვენი შეკვეთის მოწოდება.
+                </p>
               </div>
 
-              @if (checkoutForm.delivery_type().value() === 'delivery') {
-                @if (loading().addresses) {
-                  <div class="flex items-center justify-center py-8">
-                    <span class="text-platinum-50">იტვირთება...</span>
-                  </div>
-                } @else if (addresses().length === 0) {
-                  <div class="mx-auto my-4 max-w-[320px] space-y-6 text-center">
-                    <img
-                      src="/assets/images/checkout/map-waypoint.webp"
-                      width="120"
-                      height="120"
-                      class="mx-auto"
-                    />
-                    <div>
-                      <h2 class="text-lg">დაამატე მისამართი</h2>
-                      <p class="text-sm text-platinum-50">
-                        დაამატეთ სასურველი მისაამრთი სადაც გსურთ თქვენი შეკვეთის
-                        მოწოდება.
-                      </p>
-                    </div>
-
-                    <button
-                      type="button"
-                      (click)="addressModal.openForCreate()"
-                      class="inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all hover:brightness-95"
-                      style="
-                        background: linear-gradient(
-                          90deg,
-                          #0ad810 0%,
-                          #0bb705 35%,
-                          #0bb705 65%,
-                          #0ad810 100%
-                        );
-                        box-shadow: 0px 20px 16px -8px #0ad10426;
-                      "
-                    >
-                      მისამართის დამატება
-                    </button>
-                  </div>
-                } @else {
-                  <div class="flex flex-col gap-4">
-                    @for (address of addresses(); track address.id) {
-                      <button
-                        type="button"
-                        (click)="
+              <button
+                type="button"
+                (click)="addressModal.openForCreate()"
+                class="inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all hover:brightness-95"
+                style="
+                  background: linear-gradient(
+                    90deg,
+                    #0ad810 0%,
+                    #0bb705 35%,
+                    #0bb705 65%,
+                    #0ad810 100%
+                  );
+                  box-shadow: 0px 20px 16px -8px #0ad10426;
+                "
+              >
+                მისამართის დამატება
+              </button>
+            </div>
+            } @else {
+            <div class="flex flex-col gap-4">
+              @for (address of addresses(); track address.id) {
+              <button
+                type="button"
+                (click)="
                           checkoutForm.address().value.set(address.address)
                         "
-                        [class.border-green-60]="
+                [class.border-green-60]="
                           checkoutForm.address().value() === address.address
                         "
-                        [class.border-platinum-20]="
+                [class.border-platinum-20]="
                           checkoutForm.address().value() !== address.address
                         "
-                        class="flex w-full flex-col rounded-xl border-[1.5px] px-4 py-1 transition-all"
-                      >
-                        <div class="flex items-center justify-between gap-4 py-4">
-                          <div class="flex items-center gap-3">
-                            <div
-                              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-platinum-10"
-                            >
-                              <svg
-                                width="20"
-                                height="20"
-                                viewBox="0 0 20 20"
-                                fill="none"
-                              >
-                                <path
-                                  d="M10 10.625C11.3807 10.625 12.5 9.50571 12.5 8.125C12.5 6.74429 11.3807 5.625 10 5.625C8.61929 5.625 7.5 6.74429 7.5 8.125C7.5 9.50571 8.61929 10.625 10 10.625Z"
-                                  stroke="#212121"
-                                  stroke-width="1.5"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                />
-                                <path
-                                  d="M16.25 8.125C16.25 13.75 10 18.125 10 18.125C10 18.125 3.75 13.75 3.75 8.125C3.75 6.4674 4.40848 4.87769 5.58058 3.70558C6.75269 2.53348 8.3424 1.875 10 1.875C11.6576 1.875 13.2473 2.53348 14.4194 3.70558C15.5915 4.87769 16.25 6.4674 16.25 8.125Z"
-                                  stroke="#212121"
-                                  stroke-width="1.5"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                />
-                              </svg>
-                            </div>
-                            <div class="flex flex-col items-start text-left">
-                              <span class="font-normal">{{
-                                address.address
-                              }}</span>
-                              <span class="text-sm text-platinum-50">{{
-                                address.city
-                              }}</span>
-                            </div>
-                          </div>
-                          <div
-                            [class.bg-green-60]="
-                              checkoutForm.address().value() === address.address
-                            "
-                            [class.bg-platinum-20]="
-                              checkoutForm.address().value() !== address.address
-                            "
-                            class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
-                          >
-                            <div class="h-2 w-2 rounded-full bg-white"></div>
-                          </div>
-                        </div>
-
-                        @if (address.details) {
-                          <div class="h-px bg-platinum-20"></div>
-                          <div class="flex items-center justify-between">
-                            <div class="py-4 text-left text-sm text-platinum-50">
-                              {{ address.details }}
-                            </div>
-
-                            <button
-                              type="button"
-                              (click)="addressModal.openForEdit(address)"
-                            >
-                              <svg
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                              >
-                                <path
-                                  d="M24 0V24H0V0H24Z"
-                                  fill="white"
-                                  fill-opacity="0.01"
-                                />
-                                <path
-                                  d="M11.9946 5.99512L18.0042 12.0047M5.64457 20.3532L6.33892 20.3534C7.97462 20.3539 8.79247 20.3542 9.5279 20.0497C10.2633 19.7452 10.8416 19.1669 11.9982 18.0103L18.4952 11.5133C19.3175 10.691 19.7287 10.2798 19.9477 9.83586C20.3605 8.99914 20.3605 8.01799 19.9477 7.18127C19.7287 6.7373 19.3175 6.32614 18.4952 5.5038C17.6729 4.68146 17.2617 4.27029 16.8177 4.05126C15.981 3.63847 14.9998 3.63847 14.1631 4.05126C13.7192 4.27029 13.308 4.68146 12.4856 5.50379L5.98822 12.0012C4.83184 13.1576 4.25365 13.7358 3.94916 14.4711C3.64467 15.2063 3.64481 16.024 3.64508 17.6594L3.64519 18.3536C3.64535 19.296 3.64542 19.7672 3.9382 20.06C4.23097 20.3528 4.70217 20.3529 5.64457 20.3532Z"
-                                  stroke="#888888"
-                                  stroke-width="2"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                />
-                              </svg>
-                            </button>
-                          </div>
-                        }
-                      </button>
-                    }
-                  </div>
-                }
-
-                <button
-                  type="button"
-                  class="flex items-center gap-2 text-sm font-semibold text-green-70"
-                  (click)="addressModal.openForCreate()"
-                >
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path
-                      d="M10.0007 7.33331V9.99998M10.0007 9.99998V12.6666M10.0007 9.99998L12.6673 9.99998M10.0007 9.99998L7.33398 9.99998M16.6673 9.99998C16.6673 13.6819 13.6825 16.6666 10.0007 16.6666C6.31875 16.6666 3.33398 13.6819 3.33398 9.99998C3.33398 6.31808 6.31875 3.33331 10.0007 3.33331C13.6825 3.33331 16.6673 6.31808 16.6673 9.99998Z"
-                      stroke="#068C0B"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-
-                  ახალი მისამართის დამატება
-                </button>
-
-                <div class="my-4 h-px bg-platinum-20"></div>
-              }
-
-              <div class="flex w-full flex-col gap-4 md:flex-row">
-                <button
-                  type="button"
-                  (click)="checkoutForm.delivery_time().value.set('same_day')"
-                  [ngClass]="{
-                    'border-green-60':
-                      checkoutForm.delivery_time().value() === 'same_day',
-                    'border-platinum-20':
-                      checkoutForm.delivery_time().value() !== 'same_day',
-                  }"
-                  class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"
-                >
+                class="flex w-full flex-col rounded-xl border-[1.5px] px-4 py-1 transition-all"
+              >
+                <div class="flex items-center justify-between gap-4 py-4">
                   <div class="flex items-center gap-3">
                     <div
-                      class="flex h-10 w-10 items-center justify-center rounded-full bg-platinum-10"
+                      class="bg-platinum-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
                     >
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                      >
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                         <path
-                          d="M5.00065 5H8.75065C10.5867 5 12.3157 5.86447 13.4173 7.33333L14.0111 8.12508C14.1128 8.26069 14.2535 8.36205 14.4143 8.41565L15.5277 8.78679C16.2083 9.01365 16.6673 9.65055 16.6673 10.3679V11.6667C16.6673 12.5871 15.9211 13.3333 15.0007 13.3333M15.0007 13.3333C15.0007 14.2538 14.2545 15 13.334 15C12.4135 15 11.6673 14.2538 11.6673 13.3333M15.0007 13.3333C15.0007 12.4129 14.2545 11.6667 13.334 11.6667C12.4135 11.6667 11.6673 12.4129 11.6673 13.3333M8.33398 13.3333C8.33398 14.2538 7.58779 15 6.66732 15C5.74684 15 5.00065 14.2538 5.00065 13.3333M8.33398 13.3333C8.33398 12.4129 7.58779 11.6667 6.66732 11.6667C5.74684 11.6667 5.00065 12.4129 5.00065 13.3333M8.33398 13.3333H11.6673M5.00065 13.3333H3.33398M3.33398 10L5.83398 10M4.16732 7.5L7.50065 7.5M10.0007 8.33333L14.1673 8.33333"
+                          d="M10 10.625C11.3807 10.625 12.5 9.50571 12.5 8.125C12.5 6.74429 11.3807 5.625 10 5.625C8.61929 5.625 7.5 6.74429 7.5 8.125C7.5 9.50571 8.61929 10.625 10 10.625Z"
                           stroke="#212121"
                           stroke-width="1.5"
                           stroke-linecap="round"
+                          stroke-linejoin="round"
                         />
-                      </svg>
-                    </div>
-                    <span class="font-normal">იმავე დღეს</span>
-                  </div>
-                  <div
-                    [ngClass]="{
-                      'bg-green-60':
-                        checkoutForm.delivery_time().value() === 'same_day',
-                      'bg-platinum-20':
-                        checkoutForm.delivery_time().value() !== 'same_day',
-                    }"
-                    class="flex h-6 w-6 items-center justify-center rounded-full"
-                  >
-                    <div class="h-2 w-2 rounded-full bg-white"></div>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  (click)="checkoutForm.delivery_time().value.set('next_day')"
-                  [ngClass]="{
-                    'border-green-60':
-                      checkoutForm.delivery_time().value() === 'next_day',
-                    'border-platinum-20':
-                      checkoutForm.delivery_time().value() !== 'next_day',
-                  }"
-                  class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"
-                >
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="flex h-10 w-10 items-center justify-center rounded-full bg-platinum-10"
-                    >
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                      >
                         <path
-                          d="M10.0007 6.66665V9.99998L12.084 10.8333M16.6673 9.99998C16.6673 13.6819 13.6825 16.6666 10.0007 16.6666C6.31875 16.6666 3.33398 13.6819 3.33398 9.99998C3.33398 6.31808 6.31875 3.33331 10.0007 3.33331C13.6825 3.33331 16.6673 6.31808 16.6673 9.99998Z"
+                          d="M16.25 8.125C16.25 13.75 10 18.125 10 18.125C10 18.125 3.75 13.75 3.75 8.125C3.75 6.4674 4.40848 4.87769 5.58058 3.70558C6.75269 2.53348 8.3424 1.875 10 1.875C11.6576 1.875 13.2473 2.53348 14.4194 3.70558C15.5915 4.87769 16.25 6.4674 16.25 8.125Z"
                           stroke="#212121"
                           stroke-width="1.5"
                           stroke-linecap="round"
@@ -460,26 +286,212 @@
                         />
                       </svg>
                     </div>
-                    <span class="font-normal">2 - 3 სამუშაო დღეში</span>
+                    <div class="flex flex-col items-start text-left">
+                      <span class="font-normal">{{ address.address }}</span>
+                      <span class="text-platinum-50 text-sm">{{ address.city }}</span>
+                    </div>
                   </div>
                   <div
-                    [ngClass]="{
+                    [class.bg-green-60]="
+                              checkoutForm.address().value() === address.address
+                            "
+                    [class.bg-platinum-20]="
+                              checkoutForm.address().value() !== address.address
+                            "
+                    class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+                  >
+                    <div class="h-2 w-2 rounded-full bg-white"></div>
+                  </div>
+                </div>
+
+                @if (address.details) {
+                <div class="bg-platinum-20 h-px"></div>
+                <div class="flex items-center justify-between">
+                  <div class="text-platinum-50 py-4 text-left text-sm">{{ address.details }}</div>
+
+                  <button type="button" (click)="addressModal.openForEdit(address)">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M24 0V24H0V0H24Z" fill="white" fill-opacity="0.01" />
+                      <path
+                        d="M11.9946 5.99512L18.0042 12.0047M5.64457 20.3532L6.33892 20.3534C7.97462 20.3539 8.79247 20.3542 9.5279 20.0497C10.2633 19.7452 10.8416 19.1669 11.9982 18.0103L18.4952 11.5133C19.3175 10.691 19.7287 10.2798 19.9477 9.83586C20.3605 8.99914 20.3605 8.01799 19.9477 7.18127C19.7287 6.7373 19.3175 6.32614 18.4952 5.5038C17.6729 4.68146 17.2617 4.27029 16.8177 4.05126C15.981 3.63847 14.9998 3.63847 14.1631 4.05126C13.7192 4.27029 13.308 4.68146 12.4856 5.50379L5.98822 12.0012C4.83184 13.1576 4.25365 13.7358 3.94916 14.4711C3.64467 15.2063 3.64481 16.024 3.64508 17.6594L3.64519 18.3536C3.64535 19.296 3.64542 19.7672 3.9382 20.06C4.23097 20.3528 4.70217 20.3529 5.64457 20.3532Z"
+                        stroke="#888888"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                }
+              </button>
+              }
+            </div>
+            }
+
+            <button
+              type="button"
+              class="text-green-70 flex items-center gap-2 text-sm font-semibold"
+              (click)="addressModal.openForCreate()"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M10.0007 7.33331V9.99998M10.0007 9.99998V12.6666M10.0007 9.99998L12.6673 9.99998M10.0007 9.99998L7.33398 9.99998M16.6673 9.99998C16.6673 13.6819 13.6825 16.6666 10.0007 16.6666C6.31875 16.6666 3.33398 13.6819 3.33398 9.99998C3.33398 6.31808 6.31875 3.33331 10.0007 3.33331C13.6825 3.33331 16.6673 6.31808 16.6673 9.99998Z"
+                  stroke="#068C0B"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
+              ახალი მისამართის დამატება
+            </button>
+
+            <div class="bg-platinum-20 my-4 h-px"></div>
+
+            <div class="flex w-full flex-col gap-4 md:flex-row">
+              <button
+                type="button"
+                (click)="sameDayAvailable && checkoutForm.delivery_time().value.set('same_day')"
+                [disabled]="!sameDayAvailable"
+                [ngClass]="{
+                    'border-green-60':
+                      checkoutForm.delivery_time().value() === 'same_day',
+                    'border-platinum-20':
+                      checkoutForm.delivery_time().value() !== 'same_day',
+                    'opacity-50 cursor-not-allowed': !sameDayAvailable,
+                  }"
+                class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"
+              >
+                <div class="flex items-center gap-3">
+                  <div
+                    class="bg-platinum-10 flex h-10 w-10 items-center justify-center rounded-full"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path
+                        d="M5.00065 5H8.75065C10.5867 5 12.3157 5.86447 13.4173 7.33333L14.0111 8.12508C14.1128 8.26069 14.2535 8.36205 14.4143 8.41565L15.5277 8.78679C16.2083 9.01365 16.6673 9.65055 16.6673 10.3679V11.6667C16.6673 12.5871 15.9211 13.3333 15.0007 13.3333M15.0007 13.3333C15.0007 14.2538 14.2545 15 13.334 15C12.4135 15 11.6673 14.2538 11.6673 13.3333M15.0007 13.3333C15.0007 12.4129 14.2545 11.6667 13.334 11.6667C12.4135 11.6667 11.6673 12.4129 11.6673 13.3333M8.33398 13.3333C8.33398 14.2538 7.58779 15 6.66732 15C5.74684 15 5.00065 14.2538 5.00065 13.3333M8.33398 13.3333C8.33398 12.4129 7.58779 11.6667 6.66732 11.6667C5.74684 11.6667 5.00065 12.4129 5.00065 13.3333M8.33398 13.3333H11.6673M5.00065 13.3333H3.33398M3.33398 10L5.83398 10M4.16732 7.5L7.50065 7.5M10.0007 8.33333L14.1673 8.33333"
+                        stroke="#212121"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </div>
+                  <div class="flex flex-col items-start">
+                    <span class="font-normal">იმავე დღეს</span>
+                    @if (!sameDayAvailable) {
+                    <span class="text-platinum-50 text-xs">ხელმისაწვდომია 17:30-მდე</span>
+                    }
+                  </div>
+                </div>
+                <div
+                  [ngClass]="{
+                      'bg-green-60':
+                        checkoutForm.delivery_time().value() === 'same_day',
+                      'bg-platinum-20':
+                        checkoutForm.delivery_time().value() !== 'same_day',
+                    }"
+                  class="flex h-6 w-6 items-center justify-center rounded-full"
+                >
+                  <div class="h-2 w-2 rounded-full bg-white"></div>
+                </div>
+              </button>
+              <button
+                type="button"
+                (click)="checkoutForm.delivery_time().value.set('next_day')"
+                [ngClass]="{
+                    'border-green-60':
+                      checkoutForm.delivery_time().value() === 'next_day',
+                    'border-platinum-20':
+                      checkoutForm.delivery_time().value() !== 'next_day',
+                  }"
+                class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"
+              >
+                <div class="flex items-center gap-3">
+                  <div
+                    class="bg-platinum-10 flex h-10 w-10 items-center justify-center rounded-full"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path
+                        d="M10.0007 6.66665V9.99998L12.084 10.8333M16.6673 9.99998C16.6673 13.6819 13.6825 16.6666 10.0007 16.6666C6.31875 16.6666 3.33398 13.6819 3.33398 9.99998C3.33398 6.31808 6.31875 3.33331 10.0007 3.33331C13.6825 3.33331 16.6673 6.31808 16.6673 9.99998Z"
+                        stroke="#212121"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  <span class="font-normal">2 - 3 სამუშაო დღეში</span>
+                </div>
+                <div
+                  [ngClass]="{
                       'bg-green-60':
                         checkoutForm.delivery_time().value() === 'next_day',
                       'bg-platinum-20':
                         checkoutForm.delivery_time().value() !== 'next_day',
                     }"
-                    class="flex h-6 w-6 items-center justify-center rounded-full"
-                  >
-                    <div class="h-2 w-2 rounded-full bg-white"></div>
-                  </div>
-                </button>
+                  class="flex h-6 w-6 items-center justify-center rounded-full"
+                >
+                  <div class="h-2 w-2 rounded-full bg-white"></div>
+                </div>
+              </button>
+            </div>
+            } @else {
+            <div class="border-platinum-20 flex flex-col gap-3 rounded-xl border-[1.5px] p-4">
+              <div class="flex items-center gap-3">
+                <div class="bg-platinum-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M10 10.625C11.3807 10.625 12.5 9.50571 12.5 8.125C12.5 6.74429 11.3807 5.625 10 5.625C8.61929 5.625 7.5 6.74429 7.5 8.125C7.5 9.50571 8.61929 10.625 10 10.625Z"
+                      stroke="#212121"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M16.25 8.125C16.25 13.75 10 18.125 10 18.125C10 18.125 3.75 13.75 3.75 8.125C3.75 6.4674 4.40848 4.87769 5.58058 3.70558C6.75269 2.53348 8.3424 1.875 10 1.875C11.6576 1.875 13.2473 2.53348 14.4194 3.70558C15.5915 4.87769 16.25 6.4674 16.25 8.125Z"
+                      stroke="#212121"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+                <div class="flex flex-col">
+                  <span class="font-medium">თბილისი, სოხუმის ქუჩა 4/6ა</span>
+                </div>
+              </div>
+              <div class="bg-platinum-20 h-px"></div>
+              <div class="text-platinum-60 flex flex-col gap-1 text-sm">
+                <div class="flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M10.0007 6.66665V9.99998L12.084 10.8333M16.6673 9.99998C16.6673 13.6819 13.6825 16.6666 10.0007 16.6666C6.31875 16.6666 3.33398 13.6819 3.33398 9.99998C3.33398 6.31808 6.31875 3.33331 10.0007 3.33331C13.6825 3.33331 16.6673 6.31808 16.6673 9.99998Z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <span>ორშ-შაბ: 09:00 - 18:00</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M18.3083 15.275C18.3083 15.575 18.2417 15.8833 18.1 16.1833C17.9583 16.4833 17.775 16.7667 17.5333 17.0333C17.125 17.4833 16.675 17.8083 16.1667 18.0167C15.6667 18.225 15.125 18.3333 14.5417 18.3333C13.6917 18.3333 12.7833 18.1333 11.825 17.725C10.8667 17.3167 9.90833 16.7667 8.95833 16.075C8 15.375 7.09167 14.6 6.225 13.7417C5.36667 12.875 4.59167 11.9667 3.9 11.0167C3.21667 10.0667 2.66667 9.11667 2.26667 8.175C1.86667 7.225 1.66667 6.31667 1.66667 5.45C1.66667 4.88333 1.76667 4.34167 1.96667 3.84167C2.16667 3.33333 2.48333 2.86667 2.925 2.45C3.45833 1.925 4.04167 1.66667 4.65833 1.66667C4.89167 1.66667 5.125 1.71667 5.33333 1.81667C5.55 1.91667 5.74167 2.06667 5.89167 2.28333L7.825 5.00833C7.975 5.21667 8.08333 5.40833 8.15833 5.59167C8.23333 5.76667 8.275 5.94167 8.275 6.1C8.275 6.3 8.21667 6.5 8.1 6.69167C7.99167 6.88333 7.83333 7.08333 7.63333 7.28333L7 7.94167C6.90833 8.03333 6.86667 8.14167 6.86667 8.275C6.86667 8.34167 6.875 8.4 6.89167 8.46667C6.91667 8.53333 6.94167 8.58333 6.95833 8.63333C7.10833 8.90833 7.36667 9.26667 7.73333 9.7C8.10833 10.1333 8.50833 10.575 8.94167 11.0167C9.39167 11.4583 9.825 11.8667 10.2667 12.2417C10.7 12.6083 11.0583 12.8583 11.3417 13.0083C11.3833 13.025 11.4333 13.05 11.4917 13.075C11.5583 13.1 11.625 13.1083 11.7 13.1083C11.8417 13.1083 11.95 13.0583 12.0417 12.9667L12.675 12.3417C12.8833 12.1333 13.0833 11.975 13.275 11.875C13.4667 11.7583 13.6583 11.7 13.8667 11.7C14.025 11.7 14.1917 11.7333 14.375 11.8083C14.5583 11.8833 14.75 11.9917 14.9583 12.1333L17.7167 14.0917C17.9333 14.2417 18.0833 14.4167 18.175 14.625C18.2583 14.8333 18.3083 15.0417 18.3083 15.275Z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-miterlimit="10"
+                    />
+                  </svg>
+                  <span>032 212 12 02</span>
+                </div>
               </div>
             </div>
+            }
+          </div>
           }
         </div>
 
-        <div class="w-full rounded-2xl bg-white p-4 shadow-low sm:p-6">
+        <div class="shadow-low w-full rounded-2xl bg-white p-4 sm:p-6">
           <button
             type="button"
             (click)="toggleSection('paymentMethod')"
@@ -487,69 +499,51 @@
           >
             <h1 class="text-xl">3. გადახდის მეთოდი</h1>
             <svg
-              class="h-6 w-6 shrink-0 text-platinum-70 transition-transform duration-200"
+              class="text-platinum-70 h-6 w-6 shrink-0 transition-transform duration-200"
               [class.rotate-180]="!sectionStates().paymentMethod"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
               stroke-width="2"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
 
           @if (sectionStates().paymentMethod) {
-            <div class="mt-4 flex flex-col gap-4">
-              <button
-                type="button"
-                class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] border-green-60 px-4 transition-all"
-              >
-                <div class="flex items-center gap-3">
+          <div class="mt-4 flex flex-col gap-4">
+            <button
+              type="button"
+              class="border-green-60 flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all"
+            >
+              <div class="flex items-center gap-3">
+                <div class="bg-platinum-10 flex h-10 w-10 items-center justify-center rounded-full">
                   <div
-                    class="flex h-10 w-10 items-center justify-center rounded-full bg-platinum-10"
+                    class="bg-platinum-10 flex h-10 w-10 items-center justify-center rounded-full"
                   >
-                    <div
-                      class="flex h-10 w-10 items-center justify-center rounded-full bg-platinum-10"
-                    >
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                      >
-                        <path
-                          d="M11.4792 11.489C11.065 11.489 10.7292 11.8247 10.7292 12.239C10.7292 12.6532 11.065 12.989 11.4792 12.989V12.239V11.489ZM13.5561 12.989C13.9703 12.989 14.3061 12.6532 14.3061 12.239C14.3061 11.8247 13.9703 11.489 13.5561 11.489V12.239V12.989ZM3.33399 12.5L4.08399 12.5L4.08399 12.5L3.33399 12.5ZM3.33399 7.5L4.08399 7.5V7.5H3.33399ZM3.33398 8.33333V9.08333H16.6673V8.33333V7.58333H3.33398V8.33333ZM11.4792 12.239V12.989H13.5561V12.239V11.489H11.4792V12.239ZM3.33399 12.5L2.58399 12.5C2.58399 14.2949 4.03906 15.75 5.83399 15.75V15V14.25C4.86749 14.25 4.08399 13.4665 4.08399 12.5L3.33399 12.5ZM16.6673 12.5H15.9173C15.9173 13.4665 15.1338 14.25 14.1673 14.25V15V15.75C15.9623 15.75 17.4173 14.2949 17.4173 12.5H16.6673ZM16.6673 7.5H17.4173C17.4173 5.70507 15.9623 4.25 14.1673 4.25V5V5.75C15.1338 5.75 15.9173 6.5335 15.9173 7.5H16.6673ZM3.33399 7.5H4.08399C4.08399 6.5335 4.8675 5.75 5.83399 5.75V5V4.25C4.03907 4.25 2.58399 5.70507 2.58399 7.5H3.33399ZM16.6673 7.5H15.9173V12.5H16.6673H17.4173V7.5H16.6673ZM3.33399 12.5L4.08399 12.5L4.08399 7.5L3.33399 7.5L2.58399 7.5L2.58399 12.5L3.33399 12.5ZM5.83399 5V5.75H14.1673V5V4.25H5.83399V5ZM14.1673 15V14.25H5.83399V15V15.75H14.1673V15Z"
-                          fill="#212121"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  <div class="flex flex-col items-start">
-                    <span class="font-normal">ყველა ბანკის ბარათი</span>
-                    <span class="text-sm text-platinum-50"
-                      >Visa / Mastercard</span
-                    >
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path
+                        d="M11.4792 11.489C11.065 11.489 10.7292 11.8247 10.7292 12.239C10.7292 12.6532 11.065 12.989 11.4792 12.989V12.239V11.489ZM13.5561 12.989C13.9703 12.989 14.3061 12.6532 14.3061 12.239C14.3061 11.8247 13.9703 11.489 13.5561 11.489V12.239V12.989ZM3.33399 12.5L4.08399 12.5L4.08399 12.5L3.33399 12.5ZM3.33399 7.5L4.08399 7.5V7.5H3.33399ZM3.33398 8.33333V9.08333H16.6673V8.33333V7.58333H3.33398V8.33333ZM11.4792 12.239V12.989H13.5561V12.239V11.489H11.4792V12.239ZM3.33399 12.5L2.58399 12.5C2.58399 14.2949 4.03906 15.75 5.83399 15.75V15V14.25C4.86749 14.25 4.08399 13.4665 4.08399 12.5L3.33399 12.5ZM16.6673 12.5H15.9173C15.9173 13.4665 15.1338 14.25 14.1673 14.25V15V15.75C15.9623 15.75 17.4173 14.2949 17.4173 12.5H16.6673ZM16.6673 7.5H17.4173C17.4173 5.70507 15.9623 4.25 14.1673 4.25V5V5.75C15.1338 5.75 15.9173 6.5335 15.9173 7.5H16.6673ZM3.33399 7.5H4.08399C4.08399 6.5335 4.8675 5.75 5.83399 5.75V5V4.25C4.03907 4.25 2.58399 5.70507 2.58399 7.5H3.33399ZM16.6673 7.5H15.9173V12.5H16.6673H17.4173V7.5H16.6673ZM3.33399 12.5L4.08399 12.5L4.08399 7.5L3.33399 7.5L2.58399 7.5L2.58399 12.5L3.33399 12.5ZM5.83399 5V5.75H14.1673V5V4.25H5.83399V5ZM14.1673 15V14.25H5.83399V15V15.75H14.1673V15Z"
+                        fill="#212121"
+                      />
+                    </svg>
                   </div>
                 </div>
-                <div
-                  class="flex h-6 w-6 items-center justify-center rounded-full bg-green-60"
-                >
-                  <div class="h-2 w-2 rounded-full bg-white"></div>
+                <div class="flex flex-col items-start">
+                  <span class="font-normal">ყველა ბანკის ბარათი</span>
+                  <span class="text-platinum-50 text-sm">Visa / Mastercard</span>
                 </div>
-              </button>
-            </div>
+              </div>
+              <div class="bg-green-60 flex h-6 w-6 items-center justify-center rounded-full">
+                <div class="h-2 w-2 rounded-full bg-white"></div>
+              </div>
+            </button>
+          </div>
           }
         </div>
       </div>
 
-      <app-price-summary
-        [checkoutLoading]="checkoutLoading()"
-        (checkout)="handleCheckout()"
-      />
+      <app-price-summary [checkoutLoading]="checkoutLoading()" [deliveryPrice]="checkoutForm.delivery_type().value() === 'pickup' ? 0 : 12" (checkout)="handleCheckout()" />
     </div>
   </div>
 </div>
@@ -566,7 +560,4 @@
   (cancel)="cartService.closeDeleteModal()"
 />
 
-<app-address-form-modal
-  #addressModal
-  (addressSaved)="onAddressSaved($event)"
-/>
+<app-address-form-modal #addressModal (addressSaved)="onAddressSaved($event)" />
