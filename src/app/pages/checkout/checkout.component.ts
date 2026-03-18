@@ -49,6 +49,13 @@ export class CheckoutComponent {
     const now = new Date();
     return now.getHours() < 17 || (now.getHours() === 17 && now.getMinutes() < 30);
   })();
+  readonly deliveryPrice = computed(() => {
+    const deliveryTime = this.checkoutForm.delivery_time().value();
+    const deliveryType = this.checkoutForm.delivery_type().value();
+
+    if (deliveryTime == 'same_day' && deliveryType != 'pickup') return 12;
+    else return 0;
+  });
 
   readonly checkoutLoading = signal(false);
 

@@ -437,7 +437,9 @@
             } @else {
             <div class="border-platinum-20 flex flex-col gap-3 rounded-xl border-[1.5px] p-4">
               <div class="flex items-center gap-3">
-                <div class="bg-platinum-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
+                <div
+                  class="bg-platinum-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                >
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <path
                       d="M10 10.625C11.3807 10.625 12.5 9.50571 12.5 8.125C12.5 6.74429 11.3807 5.625 10 5.625C8.61929 5.625 7.5 6.74429 7.5 8.125C7.5 9.50571 8.61929 10.625 10 10.625Z"
@@ -543,7 +545,11 @@
         </div>
       </div>
 
-      <app-price-summary [checkoutLoading]="checkoutLoading()" [deliveryPrice]="checkoutForm.delivery_type().value() === 'pickup' ? 0 : 12" (checkout)="handleCheckout()" />
+      <app-price-summary
+        [checkoutLoading]="checkoutLoading()"
+        [deliveryPrice]="deliveryPrice()"
+        (checkout)="handleCheckout()"
+      />
     </div>
   </div>
 </div>
