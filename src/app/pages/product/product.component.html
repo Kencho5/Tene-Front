@@ -154,7 +154,7 @@
 
           <!-- ─── Price ─── -->
           <div class="border-platinum-20/40 mt-5 border-t pt-5">
-            @if (product.data.discount === 0) {
+            @if (+product.data.discount === 0) {
             <p class="text-platinum-100 text-[26px] font-bold leading-none">{{ product.data.price }}₾</p>
             } @else {
             <div class="flex items-baseline gap-2">
