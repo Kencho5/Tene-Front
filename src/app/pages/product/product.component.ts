@@ -27,12 +27,15 @@ import { SchemaService } from '@core/services/seo/schema.service';
 import { getProductImageBaseUrl, getProductImageUrl } from '@utils/product-image-url';
 import { CategoriesService } from '@core/services/categories/categories.service';
 import { CategoryTreeNode } from '@core/interfaces/categories.interface';
+import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
+import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
+import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 
 type TabName = 'specifications' | 'description';
 
 @Component({
   selector: 'app-product',
-  imports: [SharedModule, ImageComponent, BreadcrumbComponent],
+  imports: [SharedModule, ImageComponent, BreadcrumbComponent, ProductCardComponent, ProductCardSkeletonComponent, DragScrollDirective],
   templateUrl: './product.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -66,6 +69,17 @@ export class ProductComponent {
   readonly selectedImageId = signal<string | null>(null);
   readonly quantity = signal(1);
   readonly activeTab = signal<TabName>('specifications');
+
+  readonly relatedProducts = rxResource({
+    defaultValue: [] as ProductResponse[],
+    params: () => this.product()?.data.id,
+    stream: ({ params: productId }) => {
+      if (!productId) return of([] as ProductResponse[]);
+      return this.productsService.getRelatedProducts(productId).pipe(
+        catchError(() => of([] as ProductResponse[])),
+      );
+    },
+  });
 
   readonly selectedImageQuantity = computed(() => {
     return this.displayImage()?.quantity ?? 0;
@@ -302,6 +316,15 @@ export class ProductComponent {
 
   selectTab(tab: TabName): void {
     this.activeTab.set(tab);
+  }
+
+  decodeHtml(text: string): string {
+    return text
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>');
   }
 
   addToCart(): void {

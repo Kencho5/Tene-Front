@@ -21,6 +21,10 @@ export class ProductsService {
     return this.http.get<ProductResponse>(`/products/${product_id}`);
   }
 
+  getRelatedProducts(productId: string): Observable<ProductResponse[]> {
+    return this.http.get<ProductResponse[]>(`/products/${productId}/related`);
+  }
+
   getFacets(params: string): Observable<ProductFacets> {
     return this.http.get<ProductFacets>(`/products/facets?${params}`);
   }
