@@ -166,16 +166,14 @@
               {{ product.data.price }}₾
             </p>
             } @else {
-            <div class="flex items-baseline gap-2">
+            <div class="flex items-baseline gap-3">
+              <p class="text-valencia-60 text-[26px] leading-none font-bold">
+                -{{ product.data.discount | number }}%
+              </p>
               <p class="text-platinum-100 text-[26px] leading-none font-bold">
                 {{ finalPrice() }}₾
               </p>
-              <p class="text-platinum-40 line-through">{{ product.data.price }}₾</p>
-              <span
-                class="bg-valencia-10 text-valencia-60 ml-0.5 rounded px-1.5 py-1 leading-none font-bold"
-              >
-                -{{ product.data.discount | number }}%
-              </span>
+              <p class="text-platinum-40 text-sm line-through">{{ product.data.price }}₾</p>
             </div>
             }
           </div>
