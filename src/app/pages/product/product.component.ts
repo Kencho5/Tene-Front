@@ -328,7 +328,8 @@ export class ProductComponent {
 
   private updateSEO(product: ProductResponse, slug: string): void {
     const price = this.finalPrice();
-    const image = product.images[0];
+    const image = product.images?.[0];
+    if (!image) return;
     const imageUrl = getProductImageUrl(product.data.id, image.image_uuid, image.extension);
 
     const productDescription = product.data.description || product.data.name;
