@@ -83,7 +83,7 @@ export class CartService {
     });
   }
 
-  removeItem(productId: number, color: string, imageId: string): void {
+  removeItem(productId: string, color: string, imageId: string): void {
     this.items.update((currentItems) =>
       currentItems.filter(
         (item) =>
@@ -97,7 +97,7 @@ export class CartService {
   }
 
   updateQuantity(
-    productId: number,
+    productId: string,
     color: string,
     imageId: string,
     quantity: number,

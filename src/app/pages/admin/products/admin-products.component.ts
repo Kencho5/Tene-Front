@@ -27,8 +27,9 @@ export class AdminProductsComponent {
   private debounceTimer?: number;
 
   readonly searchQuery = signal<string>('');
+  readonly searchType = signal<'query' | 'id'>('query');
   readonly isDeleteModalOpen = signal<boolean>(false);
-  readonly productToDelete = signal<number | null>(null);
+  readonly productToDelete = signal<string | null>(null);
 
   readonly sortOptions: ComboboxItems[] = [
     { label: 'ფასი: კლებადობით', value: 'price_desc' },
@@ -93,12 +94,25 @@ export class AdminProductsComponent {
 
     clearTimeout(this.debounceTimer);
     this.debounceTimer = window.setTimeout(() => {
-      const isNumeric = /^\d+$/.test(value);
+      const isId = this.searchType() === 'id';
       this.updateQueryParams({
-        query: isNumeric ? undefined : value || undefined,
-        id: isNumeric ? value : undefined,
+        query: isId ? undefined : value || undefined,
+        id: isId ? value || undefined : undefined,
+        offset: 0,
       });
     }, 400);
+  }
+
+  onSearchTypeChange(type: 'query' | 'id'): void {
+    this.searchType.set(type);
+    const value = this.searchQuery();
+    if (value) {
+      const isId = type === 'id';
+      this.updateQueryParams({
+        query: isId ? undefined : value,
+        id: isId ? value : undefined,
+      });
+    }
   }
 
   onSortChange(value: string | undefined): void {
@@ -128,7 +142,7 @@ export class AdminProductsComponent {
     });
   }
 
-  openDeleteModal(productId: number): void {
+  openDeleteModal(productId: string): void {
     this.productToDelete.set(productId);
     this.isDeleteModalOpen.set(true);
   }
@@ -174,7 +188,7 @@ export class AdminProductsComponent {
     this.updateQueryParams({ limit: value || '10', offset: 0 });
   }
 
-  toggleProductStatus(productId: number, currentStatus: boolean): void {
+  toggleProductStatus(productId: string, currentStatus: boolean): void {
     let toastParams: [string, string, number, 'success' | 'error'] | null = null;
 
     this.adminService

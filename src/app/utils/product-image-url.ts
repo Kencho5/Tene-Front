@@ -1,7 +1,7 @@
 import { environment } from '@environments/environment';
 
 export function getProductImageUrl(
-  productId: number,
+  productId: string,
   imageUuid: string,
   extension: string,
 ): string {

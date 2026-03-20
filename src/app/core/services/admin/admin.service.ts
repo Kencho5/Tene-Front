@@ -40,7 +40,7 @@ export class AdminService {
   }
 
   updateProduct(
-    productId: number,
+    productId: string,
     payload: CreateProductPayload,
   ): Observable<ProductResponse> {
     return this.http.put<ProductResponse>(
@@ -50,7 +50,7 @@ export class AdminService {
   }
 
   getPresignedUrls(
-    productId: number,
+    productId: string,
     images: ImageUploadRequest[],
   ): Observable<PresignedUrlResponse> {
     return this.http.put<PresignedUrlResponse>(
@@ -65,12 +65,12 @@ export class AdminService {
     return this.http.put(url, file, { headers });
   }
 
-  deleteProduct(id: number): Observable<HttpStatusCode> {
+  deleteProduct(id: string): Observable<HttpStatusCode> {
     return this.http.delete<HttpStatusCode>(`/admin/products/${id}`);
   }
 
   deleteProductImage(
-    productId: number,
+    productId: string,
     imageUuid: string,
   ): Observable<HttpStatusCode> {
     return this.http.delete<HttpStatusCode>(
@@ -79,7 +79,7 @@ export class AdminService {
   }
 
   updateProductImage(
-    productId: number,
+    productId: string,
     imageUuid: string,
     payload: { color?: string; is_primary?: boolean; quantity?: number },
   ): Observable<any> {
@@ -151,7 +151,7 @@ export class AdminService {
   }
 
   assignProductCategories(
-    productId: number,
+    productId: string,
     categoryIds: number[],
   ): Observable<any> {
     return this.http.put(`/admin/products/${productId}/categories`, {

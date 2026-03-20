@@ -113,11 +113,11 @@ export class SearchDropdownComponent {
     this.open.set(false);
   }
 
-  getImageSrc(productId: number, image: ProductImage): string {
+  getImageSrc(productId: string, image: ProductImage): string {
     return getProductImageUrl(productId, image.image_uuid, image.extension);
   }
 
-  openProduct(id: number, name: string): void {
+  openProduct(id: string, name: string): void {
     this.router.navigate(['/products', generateSlug(name), id]);
   }
 }

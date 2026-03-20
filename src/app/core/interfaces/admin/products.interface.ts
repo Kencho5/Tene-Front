@@ -1,5 +1,5 @@
 export interface ProductFormData {
-  id: number;
+  id: string;
   name: string;
   description: string;
   price: number;
@@ -9,7 +9,7 @@ export interface ProductFormData {
 }
 
 export interface CreateProductPayload {
-  id: number;
+  id: string;
   name: string;
   description: string;
   price: number;

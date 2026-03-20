@@ -25,45 +25,74 @@
   <!-- Filters -->
   <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
     <!-- Search -->
-    <div class="relative flex-1">
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 20 20"
-        fill="none"
-        class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-platinum-40"
-      >
-        <path
-          d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-      <input
-        type="text"
-        [value]="searchQuery()"
-        (input)="onSearchInput($event)"
-        placeholder="ძიება პროდუქტის სახელით ან ID-ით..."
-        class="h-10 w-full rounded-lg border border-platinum-20 bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
-      />
-      @if (searchQuery()) {
-      <button
-        type="button"
-        (click)="clearSearch()"
-        class="absolute right-3 top-1/2 -translate-y-1/2 text-platinum-40 transition-colors hover:text-platinum-70"
-      >
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+    <div class="flex flex-1 gap-2">
+      <div class="flex h-10 shrink-0 items-center gap-0.5 rounded-lg bg-platinum-10 p-1 text-xs font-medium">
+        <button
+          type="button"
+          (click)="onSearchTypeChange('query')"
+          class="rounded-md px-2.5 py-1.5 transition-all"
+          [class.bg-white]="searchType() === 'query'"
+          [class.text-platinum-90]="searchType() === 'query'"
+          [class.shadow-sm]="searchType() === 'query'"
+          [class.text-platinum-40]="searchType() !== 'query'"
+          [class.hover:text-platinum-60]="searchType() !== 'query'"
+        >
+          სახელი
+        </button>
+        <button
+          type="button"
+          (click)="onSearchTypeChange('id')"
+          class="rounded-md px-2.5 py-1.5 transition-all"
+          [class.bg-white]="searchType() === 'id'"
+          [class.text-platinum-90]="searchType() === 'id'"
+          [class.shadow-sm]="searchType() === 'id'"
+          [class.text-platinum-40]="searchType() !== 'id'"
+          [class.hover:text-platinum-60]="searchType() !== 'id'"
+        >
+          ID
+        </button>
+      </div>
+
+      <div class="relative flex-1">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 20 20"
+          fill="none"
+          class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-platinum-40"
+        >
           <path
-            d="M12 4L4 12M4 4L12 12"
+            d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
             stroke="currentColor"
             stroke-width="1.5"
             stroke-linecap="round"
+            stroke-linejoin="round"
           />
         </svg>
-      </button>
-      }
+        <input
+          type="text"
+          [value]="searchQuery()"
+          (input)="onSearchInput($event)"
+          [placeholder]="searchType() === 'id' ? 'ძიება ID-ით (მაგ: GIN-100047)...' : 'ძიება პროდუქტის სახელით...'"
+          class="h-10 w-full rounded-lg border border-platinum-20 bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
+        />
+        @if (searchQuery()) {
+        <button
+          type="button"
+          (click)="clearSearch()"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-platinum-40 transition-colors hover:text-platinum-70"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M12 4L4 12M4 4L12 12"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        }
+      </div>
     </div>
 
     <!-- Sort Dropdown -->

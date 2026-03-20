@@ -5,7 +5,7 @@ export interface ProductCategory {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   description: string | null;
   price: number;
@@ -22,7 +22,7 @@ export interface Product {
 }
 
 export interface ProductImage {
-  product_id: number;
+  product_id: string;
   image_uuid: string;
   color: string;
   is_primary: boolean;
@@ -90,7 +90,7 @@ export interface CheckoutRequest {
   address: string;
   delivery_type: string;
   delivery_time: string;
-  items: { product_id: number; quantity: number; color: string }[];
+  items: { product_id: string; quantity: number; color: string }[];
 }
 
 export interface CheckoutResponse {
@@ -126,7 +126,7 @@ export interface Order {
 export interface OrderItem {
   id: number;
   order_id: number;
-  product_id: number;
+  product_id: string;
   quantity: number;
   price_at_purchase: number;
   product_name: string;

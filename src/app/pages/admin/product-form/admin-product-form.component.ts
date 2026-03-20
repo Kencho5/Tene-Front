@@ -71,8 +71,7 @@ export class AdminProductFormComponent {
   readonly brandOptions = signal<ComboboxItems[]>([]);
 
   readonly productId = computed(() => {
-    const id = this.route.snapshot.paramMap.get('id');
-    return id ? Number(id) : null;
+    return this.route.snapshot.paramMap.get('id') ?? null;
   });
 
   readonly isEditMode = computed(() => this.productId() !== null);
@@ -358,7 +357,7 @@ export class AdminProductFormComponent {
       );
 
     return {
-      id: Number(productData.id) || 0,
+      id: productData.id,
       name: productData.name,
       description: productData.description,
       price: Number(productData.price) || 0,
@@ -369,7 +368,7 @@ export class AdminProductFormComponent {
     };
   }
 
-  private handleImageOperations(productId: number): Observable<unknown> {
+  private handleImageOperations(productId: string): Observable<unknown> {
     const images = this.images();
     const existingImages = images.filter((img) => img.isExisting);
     const newImages = images.filter((img) => !img.isExisting);
@@ -420,7 +419,7 @@ export class AdminProductFormComponent {
       .map((img) => img.image_uuid);
   }
 
-  private uploadNewImages(productId: number, newImages: ImageWithMetadata[]): Observable<unknown> {
+  private uploadNewImages(productId: string, newImages: ImageWithMetadata[]): Observable<unknown> {
     const imageRequests: ImageUploadRequest[] = newImages.map((img) => ({
       color: img.color,
       is_primary: img.isPrimary,
@@ -459,7 +458,7 @@ export class AdminProductFormComponent {
     console.error(message, error);
   }
 
-  private assignCategories(productId: number): Observable<unknown> {
+  private assignCategories(productId: string): Observable<unknown> {
     const categoryIds = this.selectedCategoryIds();
     if (categoryIds.length === 0) {
       return of(null);

@@ -31,7 +31,7 @@ export class CartItemComponent {
 
   getImageSrc(
     imageId: string,
-    productId: number,
+    productId: string,
     extension: string,
   ): string {
     return getProductImageUrl(productId, imageId, extension);
