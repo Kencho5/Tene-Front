@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -46,7 +47,12 @@ export class AdminOrdersComponent {
 
   readonly searchResponse = rxResource({
     defaultValue: { orders: [], total: 0, limit: 0, offset: 0 },
-    params: () => new URLSearchParams(this.params()).toString(),
+    params: () => {
+      const p = { ...this.params() };
+      if (!p['status']) p['status'] = 'approved';
+      if (p['status'] === 'all') delete p['status'];
+      return new URLSearchParams(p).toString();
+    },
     stream: ({ params }) => this.adminService.searchOrders(params),
   });
 
@@ -129,11 +135,7 @@ export class AdminOrdersComponent {
   }
 
   onStatusChange(value: string | undefined): void {
-    if (value === 'all' || !value) {
-      this.updateQueryParams({ status: undefined, offset: 0 });
-    } else {
-      this.updateQueryParams({ status: value, offset: 0 });
-    }
+    this.updateQueryParams({ status: value ?? 'approved', offset: 0 });
   }
 
   clearSearch(): void {

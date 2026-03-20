@@ -54,7 +54,7 @@
     <!-- Status Filter -->
     <div class="w-full sm:w-[190px]">
       <app-dropdown
-        [selectedValue]="params()['status'] ?? 'all'"
+        [selectedValue]="params()['status'] ?? 'approved'"
         (selectedValueChange)="onStatusChange($event)"
         placeholder="სტატუსი"
         [items]="statusOptions"
