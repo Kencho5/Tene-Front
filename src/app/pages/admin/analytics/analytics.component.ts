@@ -16,6 +16,20 @@ import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
 
+const TOOLTIP_CONFIG = {
+  backgroundColor: '#212121',
+  titleFont: { size: 12, weight: 'bold' as const },
+  bodyFont: { size: 12 },
+  padding: { top: 8, bottom: 8, left: 12, right: 12 },
+  cornerRadius: 8,
+  displayColors: false,
+  boxPadding: 4,
+};
+
+const GRID_COLOR = 'rgba(0, 0, 0, 0.04)';
+const TICK_COLOR = '#888888';
+const LABEL_COLOR = '#505050';
+
 @Component({
   selector: 'app-analytics',
   imports: [SharedModule],
@@ -28,10 +42,12 @@ export class AnalyticsComponent implements OnDestroy {
   private viewsByHourCanvas = viewChild<ElementRef<HTMLCanvasElement>>('viewsByHourCanvas');
   private mostViewedCanvas = viewChild<ElementRef<HTMLCanvasElement>>('mostViewedCanvas');
   private conversionCanvas = viewChild<ElementRef<HTMLCanvasElement>>('conversionCanvas');
+  private trendingCanvas = viewChild<ElementRef<HTMLCanvasElement>>('trendingCanvas');
 
   private viewsByHourChart: Chart | null = null;
   private mostViewedChart: Chart | null = null;
   private conversionChart: Chart | null = null;
+  private trendingChart: Chart | null = null;
 
   readonly analyticsResource = rxResource({
     defaultValue: {
@@ -48,7 +64,7 @@ export class AnalyticsComponent implements OnDestroy {
   readonly data = computed(() => this.analyticsResource.value());
 
   readonly totalViews = computed(() =>
-    this.data().most_viewed.reduce((sum, p) => sum + p.views, 0),
+    this.data().views_by_hour.reduce((sum, h) => sum + h.views, 0),
   );
 
   readonly totalLoggedInViewers = computed(() =>
@@ -58,7 +74,7 @@ export class AnalyticsComponent implements OnDestroy {
   readonly avgConversion = computed(() => {
     const rates = this.data().conversion_rates;
     if (rates.length === 0) return 0;
-    const total = rates.reduce((sum, r) => sum + r.conversion_pct, 0);
+    const total = rates.reduce((sum, r) => sum + Number(r.conversion_pct), 0);
     return total / rates.length;
   });
 
@@ -74,6 +90,7 @@ export class AnalyticsComponent implements OnDestroy {
       const vCanvas = this.viewsByHourCanvas();
       const mCanvas = this.mostViewedCanvas();
       const cCanvas = this.conversionCanvas();
+      const tCanvas = this.trendingCanvas();
 
       if (!analytics || this.analyticsResource.isLoading()) return;
 
@@ -86,6 +103,9 @@ export class AnalyticsComponent implements OnDestroy {
       if (cCanvas && analytics.conversion_rates.length > 0) {
         this.createConversionChart(cCanvas.nativeElement, analytics);
       }
+      if (tCanvas && analytics.trending_this_week.length > 0) {
+        this.createTrendingChart(tCanvas.nativeElement, analytics);
+      }
     });
   }
 
@@ -93,6 +113,7 @@ export class AnalyticsComponent implements OnDestroy {
     this.viewsByHourChart?.destroy();
     this.mostViewedChart?.destroy();
     this.conversionChart?.destroy();
+    this.trendingChart?.destroy();
   }
 
   formatHour(hour: number): string {
@@ -114,15 +135,21 @@ export class AnalyticsComponent implements OnDestroy {
             label: 'ნახვები',
             data: sorted.map((h) => h.views),
             borderColor: '#1aa44a',
-            backgroundColor: 'rgba(26, 164, 74, 0.08)',
-            borderWidth: 2,
+            backgroundColor: (context) => {
+              const ctx = context.chart.ctx;
+              const gradient = ctx.createLinearGradient(0, 0, 0, context.chart.height);
+              gradient.addColorStop(0, 'rgba(26, 164, 74, 0.12)');
+              gradient.addColorStop(1, 'rgba(26, 164, 74, 0.01)');
+              return gradient;
+            },
+            borderWidth: 2.5,
             fill: true,
-            tension: 0.35,
-            pointRadius: 3,
-            pointBackgroundColor: '#1aa44a',
-            pointBorderColor: '#fff',
-            pointBorderWidth: 2,
-            pointHoverRadius: 5,
+            tension: 0.4,
+            pointRadius: 0,
+            pointHoverRadius: 6,
+            pointHoverBackgroundColor: '#1aa44a',
+            pointHoverBorderColor: '#fff',
+            pointHoverBorderWidth: 2.5,
           },
         ],
       },
@@ -133,23 +160,21 @@ export class AnalyticsComponent implements OnDestroy {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#212121',
-            titleFont: { size: 12 },
-            bodyFont: { size: 12 },
-            padding: 10,
-            cornerRadius: 8,
-            displayColors: false,
+            ...TOOLTIP_CONFIG,
+            callbacks: {
+              label: (item) => `${item.raw} ნახვა`,
+            },
           },
         },
         scales: {
           x: {
             grid: { display: false },
-            ticks: { color: '#888888', font: { size: 11 }, maxRotation: 0 },
+            ticks: { color: TICK_COLOR, font: { size: 11 }, maxRotation: 0, autoSkipPadding: 16 },
             border: { display: false },
           },
           y: {
-            grid: { color: 'rgba(0,0,0,0.04)' },
-            ticks: { color: '#888888', font: { size: 11 }, precision: 0 },
+            grid: { color: GRID_COLOR, drawTicks: false },
+            ticks: { color: TICK_COLOR, font: { size: 11 }, precision: 0, padding: 8 },
             border: { display: false },
             beginAtZero: true,
           },
@@ -162,18 +187,24 @@ export class AnalyticsComponent implements OnDestroy {
     this.mostViewedChart?.destroy();
 
     const items = data.most_viewed.slice(0, 8);
+    const maxViews = Math.max(...items.map((p) => p.views));
 
     this.mostViewedChart = new Chart(canvas, {
       type: 'bar',
       data: {
-        labels: items.map((p) => this.truncateLabel(p.product_name, 18)),
+        labels: items.map((p) => this.truncateLabel(p.product_name, 20)),
         datasets: [
           {
             label: 'ნახვები',
             data: items.map((p) => p.views),
-            backgroundColor: '#1aa44a',
-            borderRadius: 6,
-            barPercentage: 0.6,
+            backgroundColor: items.map((p) => {
+              const ratio = p.views / maxViews;
+              const alpha = 0.35 + ratio * 0.65;
+              return `rgba(26, 164, 74, ${alpha})`;
+            }),
+            borderRadius: 4,
+            barPercentage: 0.65,
+            categoryPercentage: 0.85,
           },
         ],
       },
@@ -184,27 +215,23 @@ export class AnalyticsComponent implements OnDestroy {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#212121',
-            titleFont: { size: 12 },
-            bodyFont: { size: 12 },
-            padding: 10,
-            cornerRadius: 8,
-            displayColors: false,
+            ...TOOLTIP_CONFIG,
             callbacks: {
               title: (items) => data.most_viewed[items[0].dataIndex]?.product_name ?? '',
+              label: (item) => `${item.raw} ნახვა`,
             },
           },
         },
         scales: {
           x: {
-            grid: { color: 'rgba(0,0,0,0.04)' },
-            ticks: { color: '#888888', font: { size: 11 }, precision: 0 },
+            grid: { color: GRID_COLOR, drawTicks: false },
+            ticks: { color: TICK_COLOR, font: { size: 11 }, precision: 0, padding: 8 },
             border: { display: false },
             beginAtZero: true,
           },
           y: {
             grid: { display: false },
-            ticks: { color: '#505050', font: { size: 11 } },
+            ticks: { color: LABEL_COLOR, font: { size: 11 }, padding: 4 },
             border: { display: false },
           },
         },
@@ -220,16 +247,18 @@ export class AnalyticsComponent implements OnDestroy {
     this.conversionChart = new Chart(canvas, {
       type: 'bar',
       data: {
-        labels: items.map((p) => this.truncateLabel(p.product_name, 18)),
+        labels: items.map((p) => this.truncateLabel(p.product_name, 20)),
         datasets: [
           {
             label: 'კონვერსია %',
-            data: items.map((p) => p.conversion_pct),
-            backgroundColor: items.map((p) =>
-              p.conversion_pct >= 5 ? '#1aa44a' : p.conversion_pct >= 2 ? '#f5a623' : '#ff1e07',
-            ),
-            borderRadius: 6,
-            barPercentage: 0.6,
+            data: items.map((p) => Number(p.conversion_pct)),
+            backgroundColor: items.map((p) => {
+              const pct = Number(p.conversion_pct);
+              return pct >= 5 ? 'rgba(26, 164, 74, 0.8)' : pct >= 2 ? 'rgba(245, 166, 35, 0.8)' : 'rgba(255, 30, 7, 0.65)';
+            }),
+            borderRadius: 4,
+            barPercentage: 0.65,
+            categoryPercentage: 0.85,
           },
         ],
       },
@@ -240,32 +269,84 @@ export class AnalyticsComponent implements OnDestroy {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#212121',
-            titleFont: { size: 12 },
-            bodyFont: { size: 12 },
-            padding: 10,
-            cornerRadius: 8,
-            displayColors: false,
+            ...TOOLTIP_CONFIG,
             callbacks: {
               title: (items) => data.conversion_rates[items[0].dataIndex]?.product_name ?? '',
-              label: (item) => `${Number(item.raw).toFixed(2)}%`,
+              label: (item) => `კონვერსია: ${Number(item.raw).toFixed(2)}%`,
             },
           },
         },
         scales: {
           x: {
-            grid: { color: 'rgba(0,0,0,0.04)' },
+            grid: { color: GRID_COLOR, drawTicks: false },
             ticks: {
-              color: '#888888',
+              color: TICK_COLOR,
               font: { size: 11 },
               callback: (value) => `${value}%`,
+              padding: 8,
             },
             border: { display: false },
             beginAtZero: true,
           },
           y: {
             grid: { display: false },
-            ticks: { color: '#505050', font: { size: 11 } },
+            ticks: { color: LABEL_COLOR, font: { size: 11 }, padding: 4 },
+            border: { display: false },
+          },
+        },
+      },
+    });
+  }
+
+  private createTrendingChart(canvas: HTMLCanvasElement, data: AnalyticsResponse): void {
+    this.trendingChart?.destroy();
+
+    const items = data.trending_this_week.slice(0, 8);
+    const maxViews = Math.max(...items.map((p) => p.views));
+
+    this.trendingChart = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: items.map((p) => this.truncateLabel(p.product_name, 20)),
+        datasets: [
+          {
+            label: 'ნახვები',
+            data: items.map((p) => p.views),
+            backgroundColor: items.map((p) => {
+              const ratio = p.views / maxViews;
+              const alpha = 0.35 + ratio * 0.65;
+              return `rgba(245, 166, 35, ${alpha})`;
+            }),
+            borderRadius: 4,
+            barPercentage: 0.65,
+            categoryPercentage: 0.85,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            ...TOOLTIP_CONFIG,
+            callbacks: {
+              title: (items) => data.trending_this_week[items[0].dataIndex]?.product_name ?? '',
+              label: (item) => `${item.raw} ნახვა`,
+            },
+          },
+        },
+        scales: {
+          x: {
+            grid: { color: GRID_COLOR, drawTicks: false },
+            ticks: { color: TICK_COLOR, font: { size: 11 }, precision: 0, padding: 8 },
+            border: { display: false },
+            beginAtZero: true,
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: LABEL_COLOR, font: { size: 11 }, padding: 4 },
             border: { display: false },
           },
         },
