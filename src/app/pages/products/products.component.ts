@@ -55,7 +55,7 @@ export class ProductsComponent implements OnInit {
 
   readonly searchResponse = rxResource({
     defaultValue: { products: [], total: 0, limit: 0, offset: 0 } as ProductSearchResponse,
-    stream: () => this.productsService.searchProduct('in_stock=true'),
+    stream: () => this.productsService.searchProduct('in_stock=true&sort_by=views_desc'),
   });
 
   readonly products = computed(() => this.searchResponse.value().products);

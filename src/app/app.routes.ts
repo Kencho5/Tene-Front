@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { adminGuard } from '@core/guards/admin.guard';
 import { adminOnlyGuard } from '@core/guards/operator.guard';
 import { MainLayoutComponent } from '@shared/layouts/main-layout/main-layout.component';
-import { productResolver } from '@core/resolvers/product.resolver';
 import { authGuard } from '@core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -44,7 +43,6 @@ export const routes: Routes = [
         path: 'products/:slug/:product_id',
         loadComponent: () =>
           import('./pages/product/product.component').then((m) => m.ProductComponent),
-        resolve: { product: productResolver },
       },
       {
         path: 'search',

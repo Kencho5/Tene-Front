@@ -10,10 +10,8 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { SharedModule } from '@shared/shared.module';
-import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsService } from '@core/services/products/products.service';
-import { ProductResolverData } from '@core/resolvers/product.resolver';
-import { catchError, of, finalize, map } from 'rxjs';
+import { catchError, of, map } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { ProductResponse, ProductImage } from '@core/interfaces/products.interface';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
@@ -30,21 +28,28 @@ import { CategoryTreeNode } from '@core/interfaces/categories.interface';
 import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
+import { AuthService } from '@core/services/auth/auth-service.service';
 
 type TabName = 'specifications' | 'description';
 
 @Component({
   selector: 'app-product',
-  imports: [SharedModule, ImageComponent, BreadcrumbComponent, ProductCardComponent, ProductCardSkeletonComponent, DragScrollDirective],
+  imports: [
+    SharedModule,
+    ImageComponent,
+    BreadcrumbComponent,
+    ProductCardComponent,
+    ProductCardSkeletonComponent,
+    DragScrollDirective,
+  ],
   templateUrl: './product.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductComponent {
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly productsService = inject(ProductsService);
   private readonly categoriesService = inject(CategoriesService);
   private readonly cartService = inject(CartService);
+  private readonly authService = inject(AuthService);
 
   readonly categoryTree = rxResource({
     defaultValue: [] as CategoryTreeNode[],
@@ -60,10 +65,23 @@ export class ProductComponent {
 
   readonly product_id = input.required<string>();
   readonly slug = input.required<string>();
-  readonly product = signal<ProductResponse | null>(null);
-  readonly expectedSlug = signal<string>('');
 
-  readonly isLoading = signal(true);
+  readonly productResource = rxResource({
+    defaultValue: null as ProductResponse | null,
+    params: () => this.product_id(),
+    stream: ({ params: productId }) => {
+      if (!productId) return of(null as ProductResponse | null);
+      return this.productsService.getProduct(productId).pipe(
+        catchError((error) => {
+          console.error('Failed to load product:', error);
+          return of(null as ProductResponse | null);
+        }),
+      );
+    },
+  });
+
+  readonly product = computed(() => this.productResource.value());
+
   readonly imageLoading = signal(true);
   readonly selectedColor = signal<string | null>(null);
   readonly selectedImageId = signal<string | null>(null);
@@ -75,9 +93,9 @@ export class ProductComponent {
     params: () => this.product()?.data.id,
     stream: ({ params: productId }) => {
       if (!productId) return of([] as ProductResponse[]);
-      return this.productsService.getRelatedProducts(productId).pipe(
-        catchError(() => of([] as ProductResponse[])),
-      );
+      return this.productsService
+        .getRelatedProducts(productId)
+        .pipe(catchError(() => of([] as ProductResponse[])));
     },
   });
 
@@ -127,7 +145,8 @@ export class ProductComponent {
       for (let i = 0; i < categoryPath.length; i++) {
         const node = categoryPath[i];
         const isLast = i === categoryPath.length - 1;
-        const paramKey = isLast && categoryPath.length > 1 ? 'child_category_id' : 'parent_category_id';
+        const paramKey =
+          isLast && categoryPath.length > 1 ? 'child_category_id' : 'parent_category_id';
         base.push({ label: node.name, route: '/search', queryParams: { [paramKey]: node.id } });
       }
     }
@@ -194,42 +213,22 @@ export class ProductComponent {
   });
 
   constructor() {
-    const resolvedData = this.route.snapshot.data['product'] as ProductResolverData;
-
-    if (resolvedData) {
-      const { product, expectedSlug, slugMismatch } = resolvedData;
-
-      this.product.set(product);
-      this.expectedSlug.set(expectedSlug);
-
-      if (slugMismatch && isPlatformBrowser(this.platformId)) {
-        this.router.navigate(['/products', expectedSlug, product.data.id], {
-          replaceUrl: true,
-        });
-      }
+    // Initialize image selection when product loads
+    effect(() => {
+      const product = this.product();
+      if (!product) return;
 
       if (product.images.length) {
         this.initializeImageSelection(product.images);
-      }
-      this.isLoading.set(false);
-    }
-
-    effect(() => {
-      const productId = this.product_id();
-      const currentProduct = this.product();
-
-      if (!currentProduct && productId) {
-        this.fetchProduct(productId);
       }
     });
 
     effect(() => {
       const product = this.product();
-      const slug = this.expectedSlug();
+      if (!product) return;
+      const slug = this.slug();
       this.categoryTree.value(); // re-run when tree loads for accurate breadcrumb schema
-      if (product && slug) {
-        this.updateSEO(product, slug);
-      }
+      this.updateSEO(product, slug);
     });
 
     effect(() => {
@@ -237,27 +236,6 @@ export class ProductComponent {
         this.activeTab.set('description');
       }
     });
-  }
-
-  private fetchProduct(productId: string): void {
-    this.isLoading.set(true);
-
-    this.productsService
-      .getProduct(productId)
-      .pipe(
-        catchError((error) => {
-          console.error('Failed to load product:', error);
-          return of(null);
-        }),
-        finalize(() => this.isLoading.set(false)),
-      )
-      .subscribe((productResponse) => {
-        this.product.set(productResponse);
-
-        if (productResponse?.images.length) {
-          this.initializeImageSelection(productResponse.images);
-        }
-      });
   }
 
   private initializeImageSelection(images: ProductImage[]): void {
