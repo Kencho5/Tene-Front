@@ -83,13 +83,13 @@
           />
         </svg>
         <span class="text-platinum-50 text-xs font-medium tracking-wider uppercase">
-          უნიკ. მნახველები
+          ავტორიზებული
         </span>
       </div>
       <p class="text-platinum-100 mt-2 text-2xl font-semibold">
-        {{ totalUniqueViewers() | number }}
+        {{ totalLoggedInViewers() | number }}
       </p>
-      <p class="text-platinum-50 mt-1 text-xs">უნიკალური ვიზიტორები</p>
+      <p class="text-platinum-50 mt-1 text-xs">ავტორიზებული მნახველები</p>
     </div>
 
     <!-- Avg Conversion -->
@@ -326,7 +326,12 @@
               <th
                 class="text-platinum-50 px-5 py-2.5 text-right text-xs font-medium tracking-wider uppercase"
               >
-                უნიკალური
+                ავტორიზებული
+              </th>
+              <th
+                class="text-platinum-50 px-5 py-2.5 text-right text-xs font-medium tracking-wider uppercase"
+              >
+                ანონიმური
               </th>
               <th
                 class="text-platinum-50 px-5 py-2.5 text-right text-xs font-medium tracking-wider uppercase"
@@ -343,8 +348,11 @@
               </td>
               <td class="px-5 py-3 text-right">
                 <span class="text-platinum-100 text-sm font-medium">
-                  {{ product.unique_viewers | number }}
+                  {{ product.logged_in_viewers | number }}
                 </span>
+              </td>
+              <td class="px-5 py-3 text-right">
+                <span class="text-platinum-50 text-sm">{{ product.anonymous_views | number }}</span>
               </td>
               <td class="px-5 py-3 text-right">
                 <span class="text-platinum-50 text-sm">{{ product.total_views | number }}</span>

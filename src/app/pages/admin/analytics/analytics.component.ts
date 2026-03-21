@@ -51,8 +51,8 @@ export class AnalyticsComponent implements OnDestroy {
     this.data().most_viewed.reduce((sum, p) => sum + p.views, 0),
   );
 
-  readonly totalUniqueViewers = computed(() =>
-    this.data().unique_viewers.reduce((sum, p) => sum + p.unique_viewers, 0),
+  readonly totalLoggedInViewers = computed(() =>
+    this.data().unique_viewers.reduce((sum, p) => sum + p.logged_in_viewers, 0),
   );
 
   readonly avgConversion = computed(() => {

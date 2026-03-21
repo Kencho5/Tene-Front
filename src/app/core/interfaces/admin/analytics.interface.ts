@@ -13,7 +13,8 @@ export interface TrendingProduct {
 export interface UniqueViewersProduct {
   product_id: string;
   product_name: string;
-  unique_viewers: number;
+  logged_in_viewers: number;
+  anonymous_views: number;
   total_views: number;
 }
 
