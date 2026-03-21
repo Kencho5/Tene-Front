@@ -238,6 +238,12 @@ export const routes: Routes = [
             (m) => m.AdminCategoryFormComponent,
           ),
       },
+      {
+        path: 'analytics',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/analytics/analytics.component').then((m) => m.AnalyticsComponent),
+      },
     ],
   },
 

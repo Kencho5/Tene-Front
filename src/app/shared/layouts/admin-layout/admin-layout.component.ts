@@ -32,6 +32,7 @@ export class AdminLayoutComponent {
     { label: 'კატეგორიები', route: '/admin/categories', icon: 'categories' },
     { label: 'შეკვეთები', route: '/admin/orders', icon: 'orders' },
     { label: 'მომხმარებლები', route: '/admin/users', icon: 'users' },
+    { label: 'ანალიტიკა', route: '/admin/analytics', icon: 'analytics' },
   ];
 
   readonly navItems = computed(() => {

@@ -24,6 +24,7 @@ import {
 } from '@core/interfaces/admin/categories.interface';
 import { CategoryTreeResponse } from '@core/interfaces/categories.interface';
 import { Brand, BrandRequest } from '@core/interfaces/admin/brands.interface';
+import { AnalyticsResponse } from '@core/interfaces/admin/analytics.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -39,24 +40,15 @@ export class AdminService {
     return this.http.post<ProductResponse>('/admin/products', payload);
   }
 
-  updateProduct(
-    productId: string,
-    payload: CreateProductPayload,
-  ): Observable<ProductResponse> {
-    return this.http.put<ProductResponse>(
-      `/admin/products/${productId}`,
-      payload,
-    );
+  updateProduct(productId: string, payload: CreateProductPayload): Observable<ProductResponse> {
+    return this.http.put<ProductResponse>(`/admin/products/${productId}`, payload);
   }
 
   getPresignedUrls(
     productId: string,
     images: ImageUploadRequest[],
   ): Observable<PresignedUrlResponse> {
-    return this.http.put<PresignedUrlResponse>(
-      `/admin/products/${productId}/images`,
-      { images },
-    );
+    return this.http.put<PresignedUrlResponse>(`/admin/products/${productId}/images`, { images });
   }
 
   uploadToS3(url: string, file: File): Observable<any> {
@@ -69,13 +61,8 @@ export class AdminService {
     return this.http.delete<HttpStatusCode>(`/admin/products/${id}`);
   }
 
-  deleteProductImage(
-    productId: string,
-    imageUuid: string,
-  ): Observable<HttpStatusCode> {
-    return this.http.delete<HttpStatusCode>(
-      `/admin/products/${productId}/images/${imageUuid}`,
-    );
+  deleteProductImage(productId: string, imageUuid: string): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/products/${productId}/images/${imageUuid}`);
   }
 
   updateProductImage(
@@ -83,10 +70,7 @@ export class AdminService {
     imageUuid: string,
     payload: { color?: string; is_primary?: boolean; quantity?: number },
   ): Observable<any> {
-    return this.http.patch(
-      `/admin/products/${productId}/images/${imageUuid}`,
-      payload,
-    );
+    return this.http.patch(`/admin/products/${productId}/images/${imageUuid}`, payload);
   }
 
   // Order Management
@@ -116,14 +100,8 @@ export class AdminService {
     return this.http.post<CategoryResponse>('/admin/categories', payload);
   }
 
-  updateCategory(
-    categoryId: number,
-    payload: CategoryRequest,
-  ): Observable<CategoryResponse> {
-    return this.http.put<CategoryResponse>(
-      `/admin/categories/${categoryId}`,
-      payload,
-    );
+  updateCategory(categoryId: number, payload: CategoryRequest): Observable<CategoryResponse> {
+    return this.http.put<CategoryResponse>(`/admin/categories/${categoryId}`, payload);
   }
 
   deleteCategory(categoryId: number): Observable<HttpStatusCode> {
@@ -141,25 +119,16 @@ export class AdminService {
     );
   }
 
-  deleteCategoryImage(
-    categoryId: number,
-    imageUuid: string,
-  ): Observable<HttpStatusCode> {
-    return this.http.delete<HttpStatusCode>(
-      `/admin/categories/${categoryId}/image/${imageUuid}`,
-    );
+  deleteCategoryImage(categoryId: number, imageUuid: string): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/categories/${categoryId}/image/${imageUuid}`);
   }
 
-  assignProductCategories(
-    productId: string,
-    categoryIds: number[],
-  ): Observable<any> {
+  assignProductCategories(productId: string, categoryIds: number[]): Observable<any> {
     return this.http.put(`/admin/products/${productId}/categories`, {
       category_ids: categoryIds,
     });
   }
 
-  // Brand Management
   getBrands(): Observable<Brand[]> {
     return this.http.get<Brand[]>('/admin/brands');
   }
@@ -174,5 +143,9 @@ export class AdminService {
 
   deleteBrand(brandId: number): Observable<HttpStatusCode> {
     return this.http.delete<HttpStatusCode>(`/admin/brands/${brandId}`);
+  }
+
+  getAnalytics(): Observable<AnalyticsResponse> {
+    return this.http.get<AnalyticsResponse>('/admin/analytics');
   }
 }
