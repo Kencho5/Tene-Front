@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, model, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  model,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 import { OutsideClickDirective } from '@core/directives/outside-click.directive';
@@ -67,10 +76,20 @@ export class SearchDropdownComponent {
   private readonly productsService = inject(ProductsService);
   private readonly router = inject(Router);
 
+  readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+
   readonly open = model(false);
   readonly query = signal('');
   readonly debouncedQuery = signal('');
   private debounceTimer?: number;
+
+  constructor() {
+    effect(() => {
+      if (this.open()) {
+        setTimeout(() => this.searchInput()?.nativeElement.focus());
+      }
+    });
+  }
 
   updateQuery(value: string): void {
     this.query.set(value);
@@ -118,6 +137,7 @@ export class SearchDropdownComponent {
   }
 
   openProduct(id: string, name: string): void {
+    this.close();
     this.router.navigate(['/products', generateSlug(name), id]);
   }
 }

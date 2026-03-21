@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpStatusCode } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
   ProductFacets,
@@ -27,5 +27,9 @@ export class ProductsService {
 
   getFacets(params: string): Observable<ProductFacets> {
     return this.http.get<ProductFacets>(`/products/facets?${params}`);
+  }
+
+  addProductViews(product_id: string, user_id: number | null): Observable<HttpStatusCode> {
+    return this.http.post<HttpStatusCode>(`/products/${product_id}/views`, { user_id });
   }
 }

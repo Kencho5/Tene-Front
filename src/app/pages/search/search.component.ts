@@ -149,6 +149,7 @@ export class SearchComponent {
   readonly showAllCategories = signal(false);
 
   readonly sortOptions: ComboboxItems[] = [
+    { label: 'პოპულარული', value: 'views_desc' },
     { label: 'ფასი: კლებადობით', value: 'price_desc' },
     { label: 'ფასი: ზრდადობით', value: 'price_asc' },
   ];

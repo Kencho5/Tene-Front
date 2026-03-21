@@ -236,6 +236,13 @@ export class ProductComponent {
         this.activeTab.set('description');
       }
     });
+
+    effect(() => {
+      const product = this.product();
+      if (!product || !isPlatformBrowser(this.platformId)) return;
+      const userId = this.authService.user()?.user_id ?? null;
+      this.productsService.addProductViews(product.data.id, userId).subscribe();
+    });
   }
 
   private initializeImageSelection(images: ProductImage[]): void {
