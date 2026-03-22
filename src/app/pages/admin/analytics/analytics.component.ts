@@ -42,12 +42,9 @@ export class AnalyticsComponent implements OnDestroy {
   private viewsByHourCanvas = viewChild<ElementRef<HTMLCanvasElement>>('viewsByHourCanvas');
   private mostViewedCanvas = viewChild<ElementRef<HTMLCanvasElement>>('mostViewedCanvas');
   private conversionCanvas = viewChild<ElementRef<HTMLCanvasElement>>('conversionCanvas');
-  private trendingCanvas = viewChild<ElementRef<HTMLCanvasElement>>('trendingCanvas');
-
   private viewsByHourChart: Chart | null = null;
   private mostViewedChart: Chart | null = null;
   private conversionChart: Chart | null = null;
-  private trendingChart: Chart | null = null;
 
   readonly analyticsResource = rxResource({
     defaultValue: {
@@ -90,8 +87,6 @@ export class AnalyticsComponent implements OnDestroy {
       const vCanvas = this.viewsByHourCanvas();
       const mCanvas = this.mostViewedCanvas();
       const cCanvas = this.conversionCanvas();
-      const tCanvas = this.trendingCanvas();
-
       if (!analytics || this.analyticsResource.isLoading()) return;
 
       if (vCanvas && analytics.views_by_hour.length > 0) {
@@ -103,9 +98,6 @@ export class AnalyticsComponent implements OnDestroy {
       if (cCanvas && analytics.conversion_rates.length > 0) {
         this.createConversionChart(cCanvas.nativeElement, analytics);
       }
-      if (tCanvas && analytics.trending_this_week.length > 0) {
-        this.createTrendingChart(tCanvas.nativeElement, analytics);
-      }
     });
   }
 
@@ -113,7 +105,6 @@ export class AnalyticsComponent implements OnDestroy {
     this.viewsByHourChart?.destroy();
     this.mostViewedChart?.destroy();
     this.conversionChart?.destroy();
-    this.trendingChart?.destroy();
   }
 
   formatHour(hour: number): string {
@@ -285,62 +276,6 @@ export class AnalyticsComponent implements OnDestroy {
               callback: (value) => `${value}%`,
               padding: 8,
             },
-            border: { display: false },
-            beginAtZero: true,
-          },
-          y: {
-            grid: { display: false },
-            ticks: { color: LABEL_COLOR, font: { size: 11 }, padding: 4 },
-            border: { display: false },
-          },
-        },
-      },
-    });
-  }
-
-  private createTrendingChart(canvas: HTMLCanvasElement, data: AnalyticsResponse): void {
-    this.trendingChart?.destroy();
-
-    const items = data.trending_this_week.slice(0, 8);
-    const maxViews = Math.max(...items.map((p) => p.views));
-
-    this.trendingChart = new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels: items.map((p) => this.truncateLabel(p.product_name, 20)),
-        datasets: [
-          {
-            label: 'ნახვები',
-            data: items.map((p) => p.views),
-            backgroundColor: items.map((p) => {
-              const ratio = p.views / maxViews;
-              const alpha = 0.35 + ratio * 0.65;
-              return `rgba(245, 166, 35, ${alpha})`;
-            }),
-            borderRadius: 4,
-            barPercentage: 0.65,
-            categoryPercentage: 0.85,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        indexAxis: 'y',
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            ...TOOLTIP_CONFIG,
-            callbacks: {
-              title: (items) => data.trending_this_week[items[0].dataIndex]?.product_name ?? '',
-              label: (item) => `${item.raw} ნახვა`,
-            },
-          },
-        },
-        scales: {
-          x: {
-            grid: { color: GRID_COLOR, drawTicks: false },
-            ticks: { color: TICK_COLOR, font: { size: 11 }, precision: 0, padding: 8 },
             border: { display: false },
             beginAtZero: true,
           },

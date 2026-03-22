@@ -162,13 +162,32 @@
         <h2 class="text-platinum-100 text-sm font-semibold">ტრენდული ამ კვირაში</h2>
         <p class="text-platinum-40 mt-0.5 text-xs">ამ კვირის პოპულარული პროდუქტები</p>
       </div>
-      <div class="border-platinum-20 border-t px-6 pt-5 pb-6">
+      <div class="overflow-x-auto">
         @if (data().trending_this_week.length > 0) {
-        <div class="h-[280px]">
-          <canvas #trendingCanvas aria-label="ტრენდული ამ კვირაში" role="img"></canvas>
-        </div>
+        <table class="w-full">
+          <thead>
+            <tr class="border-platinum-20 border-y bg-platinum-10/40">
+              <th class="text-platinum-50 px-6 py-2.5 text-left text-[11px] font-semibold tracking-wider uppercase">პროდუქტი</th>
+              <th class="text-platinum-50 px-6 py-2.5 text-right text-[11px] font-semibold tracking-wider uppercase">ნახვები</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (product of data().trending_this_week; track product.product_id) {
+            <tr class="border-platinum-20 border-b transition-colors last:border-b-0 hover:bg-platinum-10/30">
+              <td class="px-6 py-3">
+                <span class="text-platinum-90 text-sm">{{ product.product_name }}</span>
+              </td>
+              <td class="px-6 py-3 text-right">
+                <span class="bg-green-10 text-green-70 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold tabular-nums">
+                  {{ product.views | number }}
+                </span>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
         } @else {
-        <div class="flex h-[280px] items-center justify-center">
+        <div class="flex h-40 items-center justify-center">
           <p class="text-platinum-40 text-sm">მონაცემები არ არის</p>
         </div>
         }
