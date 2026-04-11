@@ -226,6 +226,8 @@ export class ProductComponent {
     });
 
     effect(() => {
+      const product = this.product();
+      if (!product) return;
       if (!this.hasSpecifications()) {
         this.activeTab.set('description');
       }
