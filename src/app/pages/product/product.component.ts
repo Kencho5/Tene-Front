@@ -87,6 +87,11 @@ export class ProductComponent {
   readonly selectedImageId = signal<string | null>(null);
   readonly quantity = signal(1);
   readonly activeTab = signal<TabName>('specifications');
+  readonly swipeOffset = signal(0);
+
+  private touchStartX = 0;
+  private touchStartY = 0;
+  private isSwiping = false;
 
   readonly relatedProducts = rxResource({
     defaultValue: [] as ProductResponse[],
@@ -306,6 +311,49 @@ export class ProductComponent {
       .replace(/&#39;/g, "'")
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>');
+  }
+
+  onTouchStart(event: TouchEvent): void {
+    this.touchStartX = event.touches[0].clientX;
+    this.touchStartY = event.touches[0].clientY;
+    this.isSwiping = false;
+  }
+
+  onTouchMove(event: TouchEvent): void {
+    const deltaX = event.touches[0].clientX - this.touchStartX;
+    const deltaY = event.touches[0].clientY - this.touchStartY;
+
+    // Only start swiping if horizontal movement exceeds vertical
+    if (!this.isSwiping && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+      this.isSwiping = true;
+    }
+
+    if (this.isSwiping) {
+      event.preventDefault();
+      this.swipeOffset.set(deltaX);
+    }
+  }
+
+  onTouchEnd(): void {
+    const offset = this.swipeOffset();
+    const threshold = 50;
+
+    if (Math.abs(offset) > threshold) {
+      const images = this.colorImages();
+      const currentId = this.selectedImageId();
+      const currentIndex = images.findIndex((img) => img.image_uuid === currentId);
+
+      if (offset < -threshold && currentIndex < images.length - 1) {
+        // Swipe left → next image
+        this.selectImage(images[currentIndex + 1].image_uuid);
+      } else if (offset > threshold && currentIndex > 0) {
+        // Swipe right → previous image
+        this.selectImage(images[currentIndex - 1].image_uuid);
+      }
+    }
+
+    this.swipeOffset.set(0);
+    this.isSwiping = false;
   }
 
   addToCart(): void {

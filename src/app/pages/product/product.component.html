@@ -89,8 +89,13 @@
               }
             </div>
 
-            <!-- Main image -->
-            <div class="relative aspect-square w-full overflow-hidden rounded-xl">
+            <!-- Main image (swipeable on mobile) -->
+            <div
+              class="relative aspect-square w-full overflow-hidden rounded-xl"
+              (touchstart)="onTouchStart($event)"
+              (touchmove)="onTouchMove($event)"
+              (touchend)="onTouchEnd()"
+            >
               @if (imageLoading()) {
               <div class="absolute inset-0 z-10 flex items-center justify-center">
                 <div
@@ -104,9 +109,22 @@
                 [width]="700"
                 [height]="700"
                 loading="eager"
-                class="h-full w-full object-contain"
+                class="h-full w-full object-contain transition-transform duration-200"
+                [style.transform]="'translateX(' + swipeOffset() + 'px)'"
                 (imageLoad)="onMainImageLoad()"
               />
+              }
+
+              <!-- Dot indicators (mobile only) -->
+              @if (colorImages().length > 1) {
+              <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 sm:hidden">
+                @for (image of colorImages(); track image.image_uuid) {
+                <span
+                  class="h-1.5 w-1.5 rounded-full transition-colors duration-200"
+                  [ngClass]="selectedImageId() === image.image_uuid ? 'bg-green-60' : 'bg-platinum-40/50'"
+                ></span>
+                }
+              </div>
               }
             </div>
           </div>
