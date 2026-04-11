@@ -107,13 +107,7 @@ export class ProductComponent {
     const product = this.product();
     if (!product) return false;
     const specs = product.data.specifications;
-    if (!specs || specs === '{}' || specs === '[]') return false;
-    try {
-      const parsed = typeof specs === 'string' ? JSON.parse(specs) : specs;
-      return parsed && typeof parsed === 'object' && Object.keys(parsed).length > 0;
-    } catch {
-      return false;
-    }
+    return specs && typeof specs === 'object' && Object.keys(specs).length > 0;
   });
 
   readonly imageBaseUrl = getProductImageBaseUrl();

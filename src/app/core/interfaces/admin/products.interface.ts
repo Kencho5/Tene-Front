@@ -14,7 +14,7 @@ export interface CreateProductPayload {
   description: string;
   price: number;
   discount: number;
-  specifications: Record<string, string>;
+  specifications: Record<string, Array<{ name: string; value: string }>>;
   brand_id: number | null;
   warranty: string;
 }

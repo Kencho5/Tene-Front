@@ -29,6 +29,7 @@ import { colorLabels } from '@utils/colors';
 import { Brand } from '@core/interfaces/admin/brands.interface';
 
 interface SpecificationEntry {
+  group: string;
   key: string;
   value: string;
 }
@@ -187,10 +188,12 @@ export class AdminProductFormComponent {
     }
 
     if (product.specifications) {
-      const specs = Object.entries(product.specifications).map(([key, value]) => ({
-        key,
-        value: String(value),
-      }));
+      const specs: SpecificationEntry[] = [];
+      for (const [group, items] of Object.entries(product.specifications)) {
+        for (const item of items) {
+          specs.push({ group, key: item.name, value: item.value });
+        }
+      }
       this.specifications.set(specs);
     }
 
@@ -264,11 +267,17 @@ export class AdminProductFormComponent {
   }
 
   addSpecification(): void {
-    this.specifications.update((specs) => [...specs, { key: '', value: '' }]);
+    this.specifications.update((specs) => [...specs, { group: '', key: '', value: '' }]);
   }
 
   removeSpecification(index: number): void {
     this.specifications.update((specs) => specs.filter((_, i) => i !== index));
+  }
+
+  updateSpecificationGroup(index: number, group: string): void {
+    this.specifications.update((specs) =>
+      specs.map((spec, i) => (i === index ? { ...spec, group } : spec)),
+    );
   }
 
   updateSpecificationKey(index: number, key: string): void {
@@ -347,13 +356,16 @@ export class AdminProductFormComponent {
   private buildProductPayload(): CreateProductPayload {
     const productData = this.productForm().value();
     const specifications = this.specifications()
-      .filter((spec) => spec.key && spec.value)
+      .filter((spec) => spec.group && spec.key && spec.value)
       .reduce(
         (acc, spec) => {
-          acc[spec.key] = spec.value;
+          if (!acc[spec.group]) {
+            acc[spec.group] = [];
+          }
+          acc[spec.group].push({ name: spec.key, value: spec.value });
           return acc;
         },
-        {} as Record<string, string>,
+        {} as Record<string, Array<{ name: string; value: string }>>,
       );
 
     return {

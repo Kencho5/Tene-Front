@@ -2,15 +2,10 @@
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-xl font-semibold text-platinum-100">
-        {{ pageTitle() }}
-      </h1>
-      <p class="mt-0.5 text-sm text-platinum-50">
-        @if (isEditMode()) {
-          პროდუქტის ID: {{ productId() }}
-        } @else {
-          შეავსეთ ყველა სავალდებულო ველი
-        }
+      <h1 class="text-platinum-100 text-xl font-semibold">{{ pageTitle() }}</h1>
+      <p class="text-platinum-50 mt-0.5 text-sm">
+        @if (isEditMode()) { პროდუქტის ID: {{ productId() }} } @else { შეავსეთ ყველა სავალდებულო
+        ველი }
       </p>
     </div>
   </div>
@@ -18,8 +13,8 @@
   <!-- Form -->
   <form (submit)="onSubmit($event)" novalidate class="space-y-5">
     <!-- Basic Information Card -->
-    <div class="rounded-lg border border-platinum-20 bg-white p-5">
-      <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-platinum-50">
+    <div class="border-platinum-20 rounded-lg border bg-white p-5">
+      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
         ძირითადი ინფორმაცია
       </h2>
 
@@ -28,7 +23,7 @@
         <app-input
           [formField]="productForm.id"
           [error]="submitted() && productForm.id().invalid()"
-          type="number"
+          type="text"
           placeholder="პროდუქტის ID *"
         />
 
@@ -52,14 +47,12 @@
               submitted() && productForm.description().invalid()
             ),
           }"
-          class="w-full resize-none rounded-lg border border-platinum-20 bg-white px-3.5 py-2.5 text-sm text-platinum-100 placeholder:text-platinum-40 focus:outline-hidden"
+          class="border-platinum-20 text-platinum-100 placeholder:text-platinum-40 w-full resize-none rounded-lg border bg-white px-3.5 py-2.5 text-sm focus:outline-hidden"
         ></textarea>
 
         <!-- Category -->
         <div>
-          <label class="mb-1.5 block text-sm font-medium text-platinum-70">
-            კატეგორია
-          </label>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">კატეგორია</label>
           <app-combobox
             [selectedValue]="getSelectedCategoryValue()"
             (selectedValueChange)="onCategoryChange($event)"
@@ -72,9 +65,7 @@
 
         <!-- Brand -->
         <div>
-          <label class="mb-1.5 block text-sm font-medium text-platinum-70">
-            ბრენდი
-          </label>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">ბრენდი</label>
           <app-combobox
             [selectedValue]="getSelectedBrandValue()"
             (selectedValueChange)="onBrandChange($event)"
@@ -96,8 +87,8 @@
     </div>
 
     <!-- Pricing & Inventory Card -->
-    <div class="rounded-lg border border-platinum-20 bg-white p-5">
-      <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-platinum-50">
+    <div class="border-platinum-20 rounded-lg border bg-white p-5">
+      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
         ფასი და მარაგი
       </h2>
 
@@ -123,13 +114,15 @@
     </div>
 
     <!-- Specifications Card -->
-    <div class="rounded-lg border border-platinum-20 bg-white p-5">
+    <div class="border-platinum-20 rounded-lg border bg-white p-5">
       <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-platinum-50">სპეციფიკაცია</h2>
+        <h2 class="text-platinum-50 text-sm font-semibold tracking-wider uppercase">
+          სპეციფიკაცია
+        </h2>
         <button
           type="button"
           (click)="addSpecification()"
-          class="inline-flex items-center gap-1.5 rounded-lg bg-green-60 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-green-70"
+          class="bg-green-60 hover:bg-green-70 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
             <path
@@ -144,58 +137,64 @@
       </div>
 
       @if (specifications().length === 0) {
-        <p class="py-4 text-center text-sm text-platinum-40">
-          სპეციფიკაციები არ არის დამატებული
-        </p>
+      <p class="text-platinum-40 py-4 text-center text-sm">სპეციფიკაციები არ არის დამატებული</p>
       } @else {
-        <div class="space-y-3">
-          @for (spec of specifications(); track $index) {
-            <div class="flex items-center gap-3">
-              <input
-                type="text"
-                [value]="spec.key"
-                (input)="
+      <div class="space-y-3">
+        @for (spec of specifications(); track $index) {
+        <div class="flex items-center gap-3">
+          <input
+            type="text"
+            [value]="spec.group"
+            (input)="
+                  updateSpecificationGroup($index, $any($event.target).value)
+                "
+            placeholder="ჯგუფი (მაგ: ეკრანი)"
+            class="border-platinum-20 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-40 w-1/4 rounded-lg border px-3.5 py-2 text-sm outline-hidden transition-colors"
+          />
+          <input
+            type="text"
+            [value]="spec.key"
+            (input)="
                   updateSpecificationKey($index, $any($event.target).value)
                 "
-                placeholder="პარამეტრი (მაგ: ზომა)"
-                class="flex-1 rounded-lg border border-platinum-20 px-3.5 py-2 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
-              />
-              <input
-                type="text"
-                [value]="spec.value"
-                (input)="
+            placeholder="პარამეტრი (მაგ: ზომა)"
+            class="border-platinum-20 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-40 flex-1 rounded-lg border px-3.5 py-2 text-sm outline-hidden transition-colors"
+          />
+          <input
+            type="text"
+            [value]="spec.value"
+            (input)="
                   updateSpecificationValue($index, $any($event.target).value)
                 "
-                placeholder="მნიშვნელობა (მაგ: 10x10x10 სმ)"
-                class="flex-1 rounded-lg border border-platinum-20 px-3.5 py-2 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
+            placeholder="მნიშვნელობა (მაგ: 10x10x10 სმ)"
+            class="border-platinum-20 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-40 flex-1 rounded-lg border px-3.5 py-2 text-sm outline-hidden transition-colors"
+          />
+          <button
+            type="button"
+            (click)="removeSpecification($index)"
+            class="text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors"
+            [attr.aria-label]="'წაშლა'"
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M12 4L4 12M4 4L12 12"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
               />
-              <button
-                type="button"
-                (click)="removeSpecification($index)"
-                class="flex h-9 w-9 items-center justify-center rounded-lg text-platinum-40 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
-                [attr.aria-label]="'წაშლა'"
-              >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M12 4L4 12M4 4L12 12"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </button>
-            </div>
-          }
+            </svg>
+          </button>
         </div>
+        }
+      </div>
       }
     </div>
 
     <!-- Images Upload Card -->
-    <div class="rounded-lg border border-platinum-20 bg-white p-5">
-      <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-platinum-50">
-        სურათები
-        @if (!isEditMode()) {
-          <span class="text-valencia-60">*</span>
+    <div class="border-platinum-20 rounded-lg border bg-white p-5">
+      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
+        სურათები @if (!isEditMode()) {
+        <span class="text-valencia-60">*</span>
         }
       </h2>
 
@@ -203,15 +202,9 @@
       <div class="mb-4">
         <label
           for="images"
-          class="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-platinum-20 bg-platinum-10 px-6 py-8 transition-colors hover:border-green-60 hover:bg-green-10"
+          class="border-platinum-20 bg-platinum-10 hover:border-green-60 hover:bg-green-10 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-8 transition-colors"
         >
-          <svg
-            width="40"
-            height="40"
-            viewBox="0 0 48 48"
-            fill="none"
-            class="mb-3 text-platinum-40"
-          >
+          <svg width="40" height="40" viewBox="0 0 48 48" fill="none" class="text-platinum-40 mb-3">
             <path
               d="M24 32V16M16 24H32M42 24C42 33.9411 33.9411 42 24 42C14.0589 42 6 33.9411 6 24C6 14.0589 14.0589 6 24 6C33.9411 6 42 14.0589 42 24Z"
               stroke="currentColor"
@@ -219,10 +212,8 @@
               stroke-linecap="round"
             />
           </svg>
-          <p class="mb-1 text-sm font-medium text-platinum-70">
-            დააჭირეთ ან ჩააგდეთ სურათები
-          </p>
-          <p class="text-xs text-platinum-50">PNG, JPG, WEBP (მაქს. 5MB)</p>
+          <p class="text-platinum-70 mb-1 text-sm font-medium">დააჭირეთ ან ჩააგდეთ სურათები</p>
+          <p class="text-platinum-50 text-xs">PNG, JPG, WEBP (მაქს. 5MB)</p>
         </label>
         <input
           id="images"
@@ -236,115 +227,107 @@
 
       <!-- Image Preview Grid -->
       @if (imagePreviewUrls().length > 0) {
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          @for (url of imagePreviewUrls(); track $index) {
-            <div
-              class="group relative rounded-lg border border-platinum-20 bg-white"
-              style="overflow: visible;"
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @for (url of imagePreviewUrls(); track $index) {
+        <div
+          class="group border-platinum-20 relative rounded-lg border bg-white"
+          style="overflow: visible"
+        >
+          <!-- Image -->
+          <div class="relative aspect-square overflow-hidden rounded-t-lg">
+            <img [src]="url" [alt]="'Preview ' + ($index + 1)" class="h-full w-full object-cover" />
+            <!-- Remove Button -->
+            <button
+              type="button"
+              (click)="removeImage($index)"
+              class="bg-valencia-60 absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full text-white opacity-0 transition-opacity group-hover:opacity-100"
+              [attr.aria-label]="'Remove image ' + ($index + 1)"
             >
-              <!-- Image -->
-              <div class="relative aspect-square overflow-hidden rounded-t-lg">
-                <img
-                  [src]="url"
-                  [alt]="'Preview ' + ($index + 1)"
-                  class="h-full w-full object-cover"
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M12 4L4 12M4 4L12 12"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
                 />
-                <!-- Remove Button -->
-                <button
-                  type="button"
-                  (click)="removeImage($index)"
-                  class="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-valencia-60 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                  [attr.aria-label]="'Remove image ' + ($index + 1)"
+              </svg>
+            </button>
+            <!-- Primary Badge -->
+            @if (imageMetadata()[$index]?.is_primary) {
+            <div
+              class="bg-green-60 absolute top-2 left-2 rounded-md px-2 py-0.5 text-xs font-medium text-white"
+            >
+              მთავარი
+            </div>
+            }
+          </div>
+
+          <!-- Controls -->
+          <div class="flex flex-col gap-3 p-3">
+            <!-- Primary Radio -->
+            <label
+              class="border-platinum-20 hover:border-green-60 flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 transition-all"
+              [class.border-green-60]="imageMetadata()[$index]?.is_primary"
+              [class.bg-green-10]="imageMetadata()[$index]?.is_primary"
+            >
+              <div class="flex items-center">
+                <input
+                  type="radio"
+                  [checked]="imageMetadata()[$index]?.is_primary"
+                  (change)="setPrimaryImage($index)"
+                  name="primary_image"
+                  class="peer sr-only"
+                />
+                <div
+                  class="border-platinum-30 peer-checked:border-green-60 peer-checked:bg-green-60 flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 transition-all"
                 >
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  @if (imageMetadata()[$index]?.is_primary) {
+                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
                     <path
-                      d="M12 4L4 12M4 4L12 12"
-                      stroke="currentColor"
-                      stroke-width="1.5"
+                      d="M10 3L4.5 8.5L2 6"
+                      stroke="white"
+                      stroke-width="2"
                       stroke-linecap="round"
+                      stroke-linejoin="round"
                     />
                   </svg>
-                </button>
-                <!-- Primary Badge -->
-                @if (imageMetadata()[$index]?.is_primary) {
-                  <div
-                    class="absolute left-2 top-2 rounded-md bg-green-60 px-2 py-0.5 text-xs font-medium text-white"
-                  >
-                    მთავარი
-                  </div>
-                }
+                  }
+                </div>
               </div>
-
-              <!-- Controls -->
-              <div class="flex flex-col gap-3 p-3">
-                <!-- Primary Radio -->
-                <label
-                  class="flex cursor-pointer items-center gap-2 rounded-lg border border-platinum-20 px-3 py-2 transition-all hover:border-green-60"
-                  [class.border-green-60]="imageMetadata()[$index]?.is_primary"
-                  [class.bg-green-10]="imageMetadata()[$index]?.is_primary"
-                >
-                  <div class="flex items-center">
-                    <input
-                      type="radio"
-                      [checked]="imageMetadata()[$index]?.is_primary"
-                      (change)="setPrimaryImage($index)"
-                      name="primary_image"
-                      class="peer sr-only"
-                    />
-                    <div
-                      class="flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 border-platinum-30 transition-all peer-checked:border-green-60 peer-checked:bg-green-60"
-                    >
-                      @if (imageMetadata()[$index]?.is_primary) {
-                        <svg
-                          width="10"
-                          height="10"
-                          viewBox="0 0 12 12"
-                          fill="none"
-                        >
-                          <path
-                            d="M10 3L4.5 8.5L2 6"
-                            stroke="white"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      }
-                    </div>
-                  </div>
-                  <span
-                    class="text-sm font-medium transition-colors"
-                    [class.text-green-60]="imageMetadata()[$index]?.is_primary"
-                    [class.text-platinum-70]="
+              <span
+                class="text-sm font-medium transition-colors"
+                [class.text-green-60]="imageMetadata()[$index]?.is_primary"
+                [class.text-platinum-70]="
                       !imageMetadata()[$index]?.is_primary
                     "
-                    >დააყენე მთავარად</span
-                  >
-                </label>
+              >
+                დააყენე მთავარად
+              </span>
+            </label>
 
-                <!-- Color Combobox -->
-                <app-combobox
-                  [selectedValue]="imageMetadata()[$index]?.color"
-                  (selectedValueChange)="updateImageColor($index, $event || '')"
-                  [items]="colorOptions"
-                  placeholder="აირჩიეთ ფერი"
-                  searchPlaceholder="ძიება..."
-                  notFoundText="ფერი ვერ მოიძებნა"
-                />
+            <!-- Color Combobox -->
+            <app-combobox
+              [selectedValue]="imageMetadata()[$index]?.color"
+              (selectedValueChange)="updateImageColor($index, $event || '')"
+              [items]="colorOptions"
+              placeholder="აირჩიეთ ფერი"
+              searchPlaceholder="ძიება..."
+              notFoundText="ფერი ვერ მოიძებნა"
+            />
 
-                <!-- Quantity -->
-                <input
-                  type="number"
-                  min="0"
-                  [value]="imageMetadata()[$index]?.quantity"
-                  (input)="updateImageQuantity($index, +$any($event.target).value)"
-                  placeholder="რაოდენობა"
-                  class="w-full rounded-lg border border-platinum-20 px-3.5 py-2 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
-                />
-              </div>
-            </div>
-          }
+            <!-- Quantity -->
+            <input
+              type="number"
+              min="0"
+              [value]="imageMetadata()[$index]?.quantity"
+              (input)="updateImageQuantity($index, +$any($event.target).value)"
+              placeholder="რაოდენობა"
+              class="border-platinum-20 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-40 w-full rounded-lg border px-3.5 py-2 text-sm outline-hidden transition-colors"
+            />
+          </div>
         </div>
+        }
+      </div>
       }
     </div>
 
@@ -353,7 +336,7 @@
       <button
         type="button"
         (click)="cancel()"
-        class="rounded-lg border border-platinum-20 px-5 py-2 text-sm font-medium text-platinum-60 transition-colors hover:bg-platinum-10"
+        class="border-platinum-20 text-platinum-60 hover:bg-platinum-10 rounded-lg border px-5 py-2 text-sm font-medium transition-colors"
       >
         გაუქმება
       </button>
@@ -368,23 +351,17 @@
         "
       >
         @if (isLoading()) {
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 16 16"
-            fill="none"
-            class="animate-spin"
-          >
-            <path
-              d="M8 2V4M8 12V14M14 8H12M4 8H2M12.2426 3.75736L10.8284 5.17157M5.17157 10.8284L3.75736 12.2426M12.2426 12.2426L10.8284 10.8284M5.17157 5.17157L3.75736 3.75736"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
-          <span>მუშავდება...</span>
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="animate-spin">
+          <path
+            d="M8 2V4M8 12V14M14 8H12M4 8H2M12.2426 3.75736L10.8284 5.17157M5.17157 10.8284L3.75736 12.2426M12.2426 12.2426L10.8284 10.8284M5.17157 5.17157L3.75736 3.75736"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span>მუშავდება...</span>
         } @else {
-          <span>{{ isEditMode() ? "განახლება" : "დამატება" }}</span>
+        <span>{{ isEditMode() ? "განახლება" : "დამატება" }}</span>
         }
       </button>
     </div>

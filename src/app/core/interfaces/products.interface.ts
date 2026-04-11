@@ -11,7 +11,7 @@ export interface Product {
   price: number;
   discount: number;
   quantity: number;
-  specifications: string;
+  specifications: Record<string, Array<{ name: string; value: string }>>;
   warranty: string;
   brand_id: number;
   brand_name: string;
