@@ -142,8 +142,123 @@
     </div>
   </div>
 
-  <!-- Table -->
-  <div class="overflow-hidden rounded-lg border border-platinum-20 bg-white">
+  <!-- Mobile Card List -->
+  <div class="sm:hidden">
+    @if (searchResponse.isLoading()) {
+    <div class="space-y-3">
+      @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
+      <div class="flex gap-3 rounded-lg border border-platinum-20 bg-white p-3">
+        <div class="h-24 w-24 shrink-0 animate-pulse rounded-lg bg-platinum-10"></div>
+        <div class="min-w-0 flex-1 space-y-2">
+          <div class="h-4 w-3/4 animate-pulse rounded-sm bg-platinum-10"></div>
+          <div class="h-3 w-1/3 animate-pulse rounded-sm bg-platinum-10"></div>
+          <div class="h-3 w-1/2 animate-pulse rounded-sm bg-platinum-10"></div>
+          <div class="h-4 w-16 animate-pulse rounded-sm bg-platinum-10"></div>
+        </div>
+      </div>
+      }
+    </div>
+    } @else if (products().length === 0) {
+    <div class="rounded-lg border border-platinum-20 bg-white px-4 py-16 text-center">
+      <div class="flex flex-col items-center gap-2">
+        <svg width="44" height="44" viewBox="0 0 48 48" fill="none" class="text-platinum-30">
+          <path d="M42 30V18L24 9L6 18V30L24 39L42 30Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M6 18L24 27L42 18M24 39V27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <p class="text-sm font-medium text-platinum-70">პროდუქტები არ მოიძებნა</p>
+        <p class="text-xs text-platinum-50">სცადეთ სხვა ძებნის პარამეტრები</p>
+      </div>
+    </div>
+    } @else {
+    <div class="space-y-3">
+      @for (product of products(); track product.data.id) {
+      <div
+        class="flex gap-3 rounded-lg border border-platinum-20 bg-white p-3 transition-colors"
+        [class.opacity-45]="!product.data.enabled"
+      >
+        <div class="flex shrink-0 flex-col items-center gap-1.5">
+          <a [routerLink]="getProductLink(product)">
+            @if (getProductImage(product)) {
+            <div class="h-24 w-24 overflow-hidden rounded-lg border border-platinum-20">
+              <img
+                [src]="getProductImage(product)"
+                [alt]="product.data.name"
+                class="h-full w-full object-cover"
+              />
+            </div>
+            } @else {
+            <div class="flex h-24 w-24 items-center justify-center rounded-lg border border-platinum-20 bg-platinum-10">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" class="text-platinum-30">
+                <path d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+            }
+          </a>
+          <div class="flex w-24 gap-1">
+            <a
+              [routerLink]="['/admin/products', product.data.id, 'edit']"
+              class="flex h-8 flex-1 items-center justify-center rounded-md border border-platinum-20 text-platinum-40 transition-colors hover:bg-platinum-10 hover:text-platinum-80"
+              aria-label="რედაქტირება"
+            >
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                <path d="M11.3333 2.00004C11.5084 1.82494 11.7163 1.68605 11.9451 1.59129C12.1739 1.49653 12.419 1.44775 12.6666 1.44775C12.9143 1.44775 13.1594 1.49653 13.3882 1.59129C13.617 1.68605 13.8249 1.82494 14 2.00004C14.1751 2.17513 14.314 2.383 14.4087 2.61178C14.5035 2.84055 14.5523 3.08569 14.5523 3.33337C14.5523 3.58106 14.5035 3.8262 14.4087 4.05497C14.314 4.28375 14.1751 4.49162 14 4.66671L5.00001 13.6667L1.33334 14.6667L2.33334 11L11.3333 2.00004Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+            <button
+              type="button"
+              (click)="openDeleteModal(product.data.id)"
+              class="flex h-8 flex-1 items-center justify-center rounded-md border border-platinum-20 text-platinum-40 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
+              aria-label="წაშლა"
+            >
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                <path d="M2 4H3.33333H14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M5.33334 4.00004V2.66671C5.33334 2.31309 5.47381 1.97395 5.72386 1.7239C5.97391 1.47385 6.31305 1.33337 6.66668 1.33337H9.33334C9.68697 1.33337 10.0261 1.47385 10.2762 1.7239C10.5262 1.97395 10.6667 2.31309 10.6667 2.66671V4.00004M12.6667 4.00004V13.3334C12.6667 13.687 12.5262 14.0261 12.2762 14.2762C12.0261 14.5262 11.687 14.6667 11.3333 14.6667H4.66668C4.31305 14.6667 3.97391 14.5262 3.72386 14.2762C3.47381 14.0261 3.33334 13.687 3.33334 13.3334V4.00004H12.6667Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="min-w-0 flex-1">
+          <a
+            [routerLink]="getProductLink(product)"
+            class="block text-sm font-medium text-platinum-100 transition-colors hover:text-green-70"
+          >
+            {{ product.data.name }}
+          </a>
+          <p class="mt-0.5 text-xs text-platinum-40">ID: {{ product.data.id }}</p>
+          @if (product.categories && product.categories.length > 0) {
+          <div class="mt-1.5 flex flex-wrap gap-1">
+            @for (category of product.categories.slice(0, 2); track category.id) {
+            <span class="inline-flex rounded-md bg-platinum-10 px-1.5 py-0.5 text-[11px] font-medium text-platinum-60">
+              {{ category.name }}
+            </span>
+            }
+          </div>
+          }
+          <div class="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            @if (product.data.discount > 0) {
+            <span class="text-sm font-semibold text-platinum-100">
+              {{ product.data.price * (1 - product.data.discount / 100) | number: "1.2-2" }} ₾
+            </span>
+            <span class="text-xs text-platinum-40 line-through">{{ product.data.price }} ₾</span>
+            } @else {
+            <span class="text-sm font-semibold text-platinum-100">{{ product.data.price }} ₾</span>
+            }
+            <span class="text-xs text-platinum-40">·</span>
+            @if (product.data.quantity > 0) {
+            <span class="text-xs text-platinum-50">{{ product.data.quantity }} მარაგი</span>
+            } @else {
+            <span class="text-xs font-medium text-valencia-60">0 მარაგი</span>
+            }
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- Table (sm+) -->
+  <div class="hidden overflow-hidden rounded-lg border border-platinum-20 bg-white sm:block">
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
