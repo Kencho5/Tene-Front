@@ -97,9 +97,9 @@
       </div>
 
       <!-- Dropdowns row -->
-      <div class="grid grid-cols-3 gap-2 sm:flex sm:w-auto">
+      <div class="grid grid-cols-2 gap-2 sm:flex sm:w-auto">
         <!-- Category Filter -->
-        <div class="min-w-0 sm:w-[240px]">
+        <div class="col-span-2 min-w-0 sm:w-[240px]">
           <app-combobox
             [selectedValue]="selectedCategoryValue()"
             (selectedValueChange)="onCategoryChange($event)"
