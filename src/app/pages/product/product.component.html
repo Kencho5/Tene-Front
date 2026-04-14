@@ -115,8 +115,32 @@
               />
               }
 
-              <!-- Dot indicators (mobile only) -->
+              <!-- Navigation arrows -->
               @if (colorImages().length > 1) {
+              @if (canGoPrev()) {
+              <button
+                type="button"
+                (click)="goToPrevImage()"
+                class="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md backdrop-blur-sm transition-all hover:bg-white active:scale-95"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              }
+              @if (canGoNext()) {
+              <button
+                type="button"
+                (click)="goToNextImage()"
+                class="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md backdrop-blur-sm transition-all hover:bg-white active:scale-95"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              }
+
+              <!-- Dot indicators (mobile only) -->
               <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 sm:hidden">
                 @for (image of colorImages(); track image.image_uuid) {
                 <span

@@ -50,7 +50,11 @@ export class ProductsComponent implements OnInit {
   });
 
   readonly topLevelCategories = computed(() => {
-    return this.categoriesTree.value().slice(0, 8);
+    const priorityIds = [2, 3, 9];
+    const all = this.categoriesTree.value();
+    const priority = priorityIds.map((id) => all.find((c) => c.id === id)).filter(Boolean) as CategoryTreeNode[];
+    const rest = all.filter((c) => !priorityIds.includes(c.id));
+    return [...priority, ...rest].slice(0, 8);
   });
 
   readonly searchResponse = rxResource({

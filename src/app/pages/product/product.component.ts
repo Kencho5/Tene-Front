@@ -93,6 +93,18 @@ export class ProductComponent {
   private touchStartY = 0;
   private isSwiping = false;
 
+  readonly currentImageIndex = computed(() => {
+    const images = this.colorImages();
+    const currentId = this.selectedImageId();
+    return images.findIndex((img) => img.image_uuid === currentId);
+  });
+
+  readonly canGoPrev = computed(() => this.currentImageIndex() > 0);
+  readonly canGoNext = computed(() => {
+    const images = this.colorImages();
+    return this.currentImageIndex() < images.length - 1;
+  });
+
   readonly relatedProducts = rxResource({
     defaultValue: [] as ProductResponse[],
     params: () => this.product()?.data.id,
@@ -313,6 +325,22 @@ export class ProductComponent {
       .replace(/&gt;/g, '>');
   }
 
+  goToPrevImage(): void {
+    const images = this.colorImages();
+    const idx = this.currentImageIndex();
+    if (idx > 0) {
+      this.selectImage(images[idx - 1].image_uuid);
+    }
+  }
+
+  goToNextImage(): void {
+    const images = this.colorImages();
+    const idx = this.currentImageIndex();
+    if (idx < images.length - 1) {
+      this.selectImage(images[idx + 1].image_uuid);
+    }
+  }
+
   onTouchStart(event: TouchEvent): void {
     this.touchStartX = event.touches[0].clientX;
     this.touchStartY = event.touches[0].clientY;
@@ -338,18 +366,10 @@ export class ProductComponent {
     const offset = this.swipeOffset();
     const threshold = 50;
 
-    if (Math.abs(offset) > threshold) {
-      const images = this.colorImages();
-      const currentId = this.selectedImageId();
-      const currentIndex = images.findIndex((img) => img.image_uuid === currentId);
-
-      if (offset < -threshold && currentIndex < images.length - 1) {
-        // Swipe left → next image
-        this.selectImage(images[currentIndex + 1].image_uuid);
-      } else if (offset > threshold && currentIndex > 0) {
-        // Swipe right → previous image
-        this.selectImage(images[currentIndex - 1].image_uuid);
-      }
+    if (offset < -threshold) {
+      this.goToNextImage();
+    } else if (offset > threshold) {
+      this.goToPrevImage();
     }
 
     this.swipeOffset.set(0);
