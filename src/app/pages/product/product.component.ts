@@ -29,6 +29,10 @@ import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 import { AuthService } from '@core/services/auth/auth-service.service';
+import {
+  LightboxComponent,
+  LightboxImage,
+} from '@shared/components/ui/lightbox/lightbox.component';
 
 type TabName = 'specifications' | 'description';
 
@@ -41,6 +45,7 @@ type TabName = 'specifications' | 'description';
     ProductCardComponent,
     ProductCardSkeletonComponent,
     DragScrollDirective,
+    LightboxComponent,
   ],
   templateUrl: './product.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -88,6 +93,7 @@ export class ProductComponent {
   readonly quantity = signal(1);
   readonly activeTab = signal<TabName>('specifications');
   readonly swipeOffset = signal(0);
+  readonly lightboxOpen = signal(false);
 
   private touchStartX = 0;
   private touchStartY = 0;
@@ -97,6 +103,18 @@ export class ProductComponent {
     const images = this.colorImages();
     const currentId = this.selectedImageId();
     return images.findIndex((img) => img.image_uuid === currentId);
+  });
+
+  readonly lightboxImages = computed<LightboxImage[]>(() => {
+    const product = this.product();
+    const images = this.colorImages();
+    if (!product || !images.length) return [];
+
+    return images.map((img) => ({
+      id: img.image_uuid,
+      src: getProductImageUrl(product.data.id, img.image_uuid, img.extension),
+      alt: product.data.name + ' - ' + img.color,
+    }));
   });
 
   readonly canGoPrev = computed(() => this.currentImageIndex() > 0);
@@ -374,6 +392,18 @@ export class ProductComponent {
 
     this.swipeOffset.set(0);
     this.isSwiping = false;
+  }
+
+  openLightbox(): void {
+    this.lightboxOpen.set(true);
+  }
+
+  closeLightbox(): void {
+    this.lightboxOpen.set(false);
+  }
+
+  onLightboxImageChange(imageId: string): void {
+    this.selectImage(imageId);
   }
 
   addToCart(): void {
