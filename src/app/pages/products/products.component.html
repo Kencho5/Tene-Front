@@ -27,7 +27,7 @@
 
       <a
         routerLink="/search"
-        [queryParams]="{ sale_type: 'discount' }"
+        [queryParams]="{ sale_type: 'discount', sort_by: 'views_desc' }"
         class="mt-4 inline-flex h-[46px] w-full items-center justify-center rounded-full border-white/40 px-6 py-2.5 text-base font-medium text-white transition-all hover:brightness-95 lg:w-fit"
         style="
           background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%);
@@ -104,7 +104,7 @@
         @for (category of topLevelCategories(); track category.id) {
         <a
           [routerLink]="['/search']"
-          [queryParams]="{ parent_category_id: category.id }"
+          [queryParams]="{ parent_category_id: category.id, sort_by: 'views_desc' }"
           class="group flex w-[130px] shrink-0 flex-col items-center gap-3 sm:w-[150px]"
         >
           <div

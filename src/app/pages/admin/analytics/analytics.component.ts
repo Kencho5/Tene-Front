@@ -7,12 +7,22 @@ import {
   OnDestroy,
   viewChild,
   effect,
+  signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { AdminService } from '@core/services/admin/admin.service';
 import { AnalyticsResponse } from '@core/interfaces/admin/analytics.interface';
 import { SharedModule } from '@shared/shared.module';
 import { Chart, registerables } from 'chart.js';
+import { ComboboxItems } from '@core/interfaces/combobox.interface';
+import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
+
+const PERIOD_OPTIONS: ComboboxItems[] = [
+  { value: 'today', label: 'დღეს' },
+  { value: 'yesterday', label: 'გუშინ' },
+  { value: '7days', label: 'ბოლო 7 დღე' },
+  { value: '30days', label: 'ბოლო 30 დღე' },
+];
 
 Chart.register(...registerables);
 
@@ -32,7 +42,7 @@ const LABEL_COLOR = '#505050';
 
 @Component({
   selector: 'app-analytics',
-  imports: [SharedModule],
+  imports: [SharedModule, DropdownComponent],
   templateUrl: './analytics.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -46,6 +56,23 @@ export class AnalyticsComponent implements OnDestroy {
   private mostViewedChart: Chart | null = null;
   private conversionChart: Chart | null = null;
 
+  readonly periodOptions = PERIOD_OPTIONS;
+  readonly selectedPeriod = signal<string | undefined>('today');
+
+  readonly periodLabel = computed(() => {
+    const labels: Record<string, string> = {
+      today: 'დღეს',
+      yesterday: 'გუშინ',
+      '7days': 'ბოლო 7 დღე',
+      '30days': 'ბოლო 30 დღე',
+    };
+    return labels[this.selectedPeriod() ?? ''] ?? '';
+  });
+
+  onPeriodChange(value: string | undefined): void {
+    this.selectedPeriod.set(value ?? '30days');
+  }
+
   readonly analyticsResource = rxResource({
     defaultValue: {
       most_viewed: [],
@@ -55,7 +82,8 @@ export class AnalyticsComponent implements OnDestroy {
       high_views_low_sales: [],
       conversion_rates: [],
     } as AnalyticsResponse,
-    stream: () => this.adminService.getAnalytics(),
+    params: () => this.selectedPeriod(),
+    stream: ({ params: period }) => this.adminService.getAnalytics(period),
   });
 
   readonly data = computed(() => this.analyticsResource.value());

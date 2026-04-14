@@ -5,6 +5,14 @@
       <h1 class="text-platinum-100 text-xl font-semibold">ანალიტიკა</h1>
       <p class="text-platinum-50 mt-0.5 text-sm">პროდუქტების ნახვები და კონვერსიები</p>
     </div>
+    <div class="w-48">
+      <app-dropdown
+        [items]="periodOptions"
+        [selectedValue]="selectedPeriod()"
+        (selectedValueChange)="onPeriodChange($event)"
+        placeholder="სრული პერიოდი"
+      />
+    </div>
   </div>
 
   @if (analyticsResource.isLoading()) {
@@ -44,7 +52,7 @@
         <span class="text-platinum-50 text-xs font-medium tracking-wider uppercase">სულ ნახვები</span>
       </div>
       <p class="text-platinum-100 mt-3 text-2xl font-semibold">{{ totalViews() | number }}</p>
-      <p class="text-platinum-50 mt-0.5 text-[13px]">დღიური ჯამი</p>
+      <p class="text-platinum-50 mt-0.5 text-[13px]">{{ periodLabel() }}</p>
     </div>
 
     <!-- Logged In Viewers -->
@@ -97,7 +105,7 @@
     <div class="flex items-center justify-between px-6 py-5">
       <div>
         <h2 class="text-platinum-100 text-sm font-semibold">ნახვები საათების მიხედვით</h2>
-        <p class="text-platinum-40 mt-0.5 text-xs">დღიური ტრაფიკის განაწილება</p>
+        <p class="text-platinum-40 mt-0.5 text-xs">ტრაფიკის განაწილება — {{ periodLabel() }}</p>
       </div>
     </div>
     <div class="border-platinum-20 border-t px-6 pt-5 pb-6">

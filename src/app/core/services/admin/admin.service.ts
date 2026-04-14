@@ -145,7 +145,9 @@ export class AdminService {
     return this.http.delete<HttpStatusCode>(`/admin/brands/${brandId}`);
   }
 
-  getAnalytics(): Observable<AnalyticsResponse> {
-    return this.http.get<AnalyticsResponse>('/admin/analytics');
+  getAnalytics(period?: string): Observable<AnalyticsResponse> {
+    return this.http.get<AnalyticsResponse>('/admin/analytics', {
+      ...(period && { params: { period } }),
+    });
   }
 }
