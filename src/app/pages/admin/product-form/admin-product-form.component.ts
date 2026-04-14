@@ -27,6 +27,7 @@ import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.compo
 import { flattenCategoryTree } from '@utils/category';
 import { colorLabels } from '@utils/colors';
 import { Brand } from '@core/interfaces/admin/brands.interface';
+import { Location } from '@angular/common';
 
 interface SpecificationEntry {
   group: string;
@@ -56,6 +57,7 @@ export class AdminProductFormComponent {
   private readonly adminService = inject(AdminService);
   private readonly productsService = inject(ProductsService);
   private readonly toastService = inject(ToastService);
+  private readonly location = inject(Location);
 
   readonly submitted = signal(false);
   readonly isLoading = signal(false);
@@ -143,9 +145,7 @@ export class AdminProductFormComponent {
       .getBrands()
       .pipe(catchError(() => of([] as Brand[])))
       .subscribe((brands) => {
-        this.brandOptions.set(
-          brands.map((b) => ({ label: b.name, value: String(b.id) })),
-        );
+        this.brandOptions.set(brands.map((b) => ({ label: b.name, value: String(b.id) })));
       });
   }
 
@@ -461,7 +461,7 @@ export class AdminProductFormComponent {
       3000,
       'success',
     );
-    this.router.navigate(['/admin/products']);
+    this.location.back();
   }
 
   private handleError(message: string, error: unknown): void {

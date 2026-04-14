@@ -2,7 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
+import { CategoryTreeNode } from '@core/interfaces/categories.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
+import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
@@ -11,11 +13,12 @@ import { ProductResponse, ProductSearchResponse } from '@core/interfaces/product
 import { generateProductSlug } from '@utils/slug';
 import { getProductImageUrl } from '@utils/product-image-url';
 import { AdminService } from '@core/services/admin/admin.service';
+import { CategoriesService } from '@core/services/categories/categories.service';
 import { ToastService } from '@core/services/toast.service';
 
 @Component({
   selector: 'app-admin-products',
-  imports: [SharedModule, DropdownComponent, ConfirmationModalComponent, PaginationComponent],
+  imports: [SharedModule, DropdownComponent, ComboboxComponent, ConfirmationModalComponent, PaginationComponent],
   templateUrl: './admin-products.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -23,6 +26,7 @@ export class AdminProductsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly adminService = inject(AdminService);
+  private readonly categoriesService = inject(CategoriesService);
   private readonly toastService = inject(ToastService);
   private debounceTimer?: number;
 
@@ -44,6 +48,31 @@ export class AdminProductsComponent {
 
   readonly params = toSignal(this.route.queryParams, {
     initialValue: {} as Params,
+  });
+
+  readonly categoryTree = rxResource({
+    defaultValue: [] as CategoryTreeNode[],
+    stream: () => this.categoriesService.getCategoryTree().pipe(map((res) => res.categories)),
+  });
+
+  readonly categoryItems = computed<ComboboxItems[]>(() => {
+    const tree = this.categoryTree.value();
+    const items: ComboboxItems[] = [];
+    for (const parent of tree) {
+      items.push({ value: '0:' + parent.id, label: parent.name });
+      for (const child of parent.children) {
+        items.push({ value: '1:' + child.id, label: child.name });
+      }
+    }
+    return items;
+  });
+
+  readonly selectedCategoryValue = computed(() => {
+    const childParam = this.params()['child_category_id'];
+    if (childParam) return '1:' + childParam;
+    const parentParam = this.params()['parent_category_id'];
+    if (parentParam) return '0:' + parentParam;
+    return undefined;
   });
 
   readonly searchResponse = rxResource({
@@ -112,6 +141,20 @@ export class AdminProductsComponent {
         query: isId ? undefined : value,
         id: isId ? value : undefined,
       });
+    }
+  }
+
+  onCategoryChange(value: string | undefined): void {
+    if (!value) {
+      this.updateQueryParams({ parent_category_id: undefined, child_category_id: undefined, offset: 0 });
+      return;
+    }
+    const items = this.categoryItems();
+    const item = items.find((i) => i.value.endsWith(':' + value));
+    if (item && item.value.startsWith('0:')) {
+      this.updateQueryParams({ parent_category_id: value, child_category_id: undefined, offset: 0 });
+    } else {
+      this.updateQueryParams({ child_category_id: value, parent_category_id: undefined, offset: 0 });
     }
   }
 
