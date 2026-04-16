@@ -29,6 +29,7 @@ import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 import { AuthService } from '@core/services/auth/auth-service.service';
+import { ToastService } from '@core/services/toast.service';
 import {
   LightboxComponent,
   LightboxImage,
@@ -55,6 +56,7 @@ export class ProductComponent {
   private readonly categoriesService = inject(CategoriesService);
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
 
   readonly categoryTree = rxResource({
     defaultValue: [] as CategoryTreeNode[],
@@ -424,6 +426,13 @@ export class ProductComponent {
       selectedImageExtension: selectedImage.extension,
       selectedImageQuantity: selectedImage.quantity,
     });
+
+    this.toastService.add(
+      'კალათაში დაემატა',
+      productData.data.name,
+      2500,
+      'success',
+    );
 
     this.quantity.set(1);
   }
