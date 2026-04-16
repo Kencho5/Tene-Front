@@ -97,6 +97,7 @@ export class CheckoutComponent {
     address: '',
     delivery_type: 'delivery',
     delivery_time: this.sameDayAvailable ? 'same_day' : 'next_day',
+    comment: '',
   });
 
   readonly checkoutForm = form(this.checkoutModel, (fieldPath) => {
@@ -183,6 +184,7 @@ export class CheckoutComponent {
       address: model.address,
       delivery_type: model.delivery_type,
       delivery_time: model.delivery_time,
+      ...(model.comment ? { comment: model.comment } : {}),
       items: this.cartService.items().map((item) => ({
         product_id: item.product.id,
         quantity: item.quantity,

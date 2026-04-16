@@ -68,6 +68,7 @@ export interface CheckoutFields {
   address: string;
   delivery_type: string;
   delivery_time: string;
+  comment: string;
 }
 
 export interface ProductCategoryCard {
@@ -90,6 +91,7 @@ export interface CheckoutRequest {
   address: string;
   delivery_type: string;
   delivery_time: string;
+  comment?: string;
   items: { product_id: string; quantity: number; color: string }[];
 }
 
