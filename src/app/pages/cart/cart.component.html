@@ -51,7 +51,7 @@
           <app-cart-item [item]="item" />
         }
       </div>
-      <app-price-summary (checkout)="handleCheckout()" />
+      <app-price-summary [deliveryPrice]="0" (checkout)="handleCheckout()" />
     }
   </div>
 </div>
