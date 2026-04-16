@@ -119,6 +119,7 @@ export class CheckoutComponent {
     required(fieldPath.phone_number, {
       message: 'ტელეფონის ნომერი აუცილებელია',
     });
+    hidden(fieldPath.address, ({ valueOf }) => valueOf(fieldPath.delivery_type) === 'pickup');
     required(fieldPath.address, { message: 'მისამართი აუცილებელია' });
   });
 
