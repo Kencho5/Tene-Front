@@ -1,16 +1,16 @@
 <a
   [routerLink]="['/products', productSlug(), product().data.id]"
-  class="group flex w-full min-w-0 flex-col"
+  class="group flex w-full min-w-0 flex-row sm:flex-col"
 >
   <!-- Image -->
   <div
-    class="relative flex aspect-square items-center justify-center overflow-hidden px-4 pt-6 sm:py-6"
+    class="relative flex aspect-square w-[140px] shrink-0 items-center justify-center overflow-hidden p-2 sm:w-full sm:px-4 sm:pt-6 sm:py-6"
     [class.grayscale]="primaryImageQuantity() === 0"
     [class.opacity-40]="primaryImageQuantity() === 0"
   >
     @if (primaryImageQuantity() > 0 && product().data.discount > 0) {
     <div
-      class="bg-valencia-10 text-valencia-60 absolute top-2 left-2 z-10 rounded-md px-2 py-1.5 text-sm leading-none font-bold"
+      class="bg-valencia-10 text-valencia-60 absolute top-1 left-1 z-10 rounded-md px-1.5 py-1 text-xs leading-none font-bold sm:top-2 sm:left-2 sm:px-2 sm:py-1.5 sm:text-sm"
     >
       -{{ product().data.discount | number }}%
     </div>
@@ -43,20 +43,48 @@
     }
   </div>
 
-  <!-- Price -->
-  <div class="px-1 pt-2">
-    @if (product().data.discount > 0) {
-    <div class="flex items-baseline gap-2">
-      <p class="text-platinum-100 text-[17px] font-bold">{{ formatPrice(discountedPrice()) }} ₾</p>
-      <p class="text-platinum-40 text-sm line-through">{{ formatPrice(product().data.price) }} ₾</p>
+  <!-- Info -->
+  <div class="flex min-w-0 flex-col justify-center py-2 sm:py-0">
+    <!-- Name -->
+    <p class="text-platinum-80 line-clamp-2 px-1 text-[13px] leading-snug font-medium sm:text-sm sm:font-normal sm:pt-2">
+      {{ product().data.name }}
+    </p>
+
+    <!-- Brand -->
+    @if (product().data.brand_name) {
+    <p class="text-platinum-40 px-1 pt-1 text-xs sm:hidden">
+      {{ product().data.brand_name }}
+    </p>
+    }
+
+    <!-- Price -->
+    <div class="px-1 pt-1.5 sm:pt-2">
+      @if (product().data.discount > 0) {
+      <div class="flex items-baseline gap-1.5 sm:gap-2">
+        <p class="text-platinum-100 text-base font-bold sm:text-[17px]">{{ formatPrice(discountedPrice()) }} ₾</p>
+        <p class="text-platinum-40 text-xs line-through sm:text-sm">{{ formatPrice(product().data.price) }} ₾</p>
+      </div>
+      } @else {
+      <p class="text-platinum-100 text-base font-bold sm:text-[17px]">{{ formatPrice(product().data.price) }} ₾</p>
+      }
     </div>
+
+    <!-- Warranty -->
+    @if (product().data.warranty) {
+    <p class="text-platinum-40 px-1 pt-1 text-[11px] sm:hidden">
+      გარანტია: {{ product().data.warranty }}
+    </p>
+    }
+
+    <!-- Stock status -->
+    @if (primaryImageQuantity() > 0) {
+    <p class="text-emerald-600 px-1 pt-1 text-[11px] font-medium sm:hidden">
+      მარაგშია
+    </p>
     } @else {
-    <p class="text-platinum-100 text-[17px] font-bold">{{ formatPrice(product().data.price) }} ₾</p>
+    <p class="text-valencia-60 px-1 pt-1 text-[11px] font-medium sm:hidden">
+      არ არის მარაგში
+    </p>
     }
   </div>
-
-  <!-- Name -->
-  <p class="text-platinum-60 line-clamp-2 px-1 pt-2 text-sm leading-snug">
-    {{ product().data.name }}
-  </p>
 </a>
