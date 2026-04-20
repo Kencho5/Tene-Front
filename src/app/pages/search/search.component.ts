@@ -140,8 +140,20 @@ export class SearchComponent {
     initialValue: {} as Params,
   });
   readonly isFilterOpen = signal<boolean>(false);
-  readonly isCategoryExpanded = signal(false);
-  readonly expandedParentId = linkedSignal(() => this.categoryTree.value()[0]?.id ?? null);
+  readonly categoryPanelPointerMoved = signal(false);
+  readonly isCategoryExpanded = signal(
+    this.route.snapshot.queryParamMap.get('expand_categories') === 'true',
+    { equal: (a, b) => { if (a !== b) this.categoryPanelPointerMoved.set(false); return a === b; } },
+  );
+  readonly expandedParentId = linkedSignal(() => {
+    const paramId = this.route.snapshot.queryParamMap.get('parent_category_id');
+    const tree = this.categoryTree.value();
+    if (paramId) {
+      const match = tree.find((c) => '' + c.id === paramId);
+      if (match) return match.id;
+    }
+    return tree[0]?.id ?? null;
+  });
   readonly brandSearch = signal<string>('');
   readonly categorySearch = signal<string>('');
   readonly showAllBrands = signal(false);

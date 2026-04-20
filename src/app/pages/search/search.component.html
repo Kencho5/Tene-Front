@@ -70,6 +70,7 @@
   class="fixed inset-0 z-30 flex flex-col bg-white md:absolute md:inset-x-0 md:top-0 md:bottom-auto md:shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
   animate.enter="slide-down-enter 250ms ease-out"
   animate.leave="slide-up-leave 200ms ease-in"
+  (pointermove)="categoryPanelPointerMoved.set(true)"
 >
   <div class="container flex flex-1 flex-col overflow-hidden px-4 pt-6 pb-8 md:flex-none xl:px-0">
     <!-- Header -->
@@ -168,7 +169,7 @@
         @for (category of categoryTree.value(); track category.id) {
         <button
           type="button"
-          (mouseenter)="expandedParentId.set(category.id)"
+          (mouseenter)="categoryPanelPointerMoved() && expandedParentId.set(category.id)"
           (click)="setParam('parent_category_id', '' + category.id); isCategoryExpanded.set(false)"
           class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-150"
           [class]="expandedParentId() === category.id

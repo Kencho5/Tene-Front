@@ -87,7 +87,7 @@
       <h1 class="text-xl sm:text-[28px]">კატეგორიები</h1>
       <a
         routerLink="/search"
-        [queryParams]="{ sort_by: 'views_desc' }"
+        [queryParams]="{ sort_by: 'views_desc', expand_categories: 'true' }"
         class="text-green-60 hover:text-green-70 text-[13px] font-medium sm:text-sm"
       >
         ყველას ნახვა →
@@ -105,7 +105,7 @@
         @for (category of topLevelCategories(); track category.id) {
         <a
           [routerLink]="['/search']"
-          [queryParams]="{ parent_category_id: category.id }"
+          [queryParams]="{ parent_category_id: category.id, expand_categories: 'true' }"
           class="group flex w-[130px] shrink-0 flex-col items-center gap-3 sm:w-[150px]"
         >
           <div
