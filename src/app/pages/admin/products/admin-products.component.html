@@ -2,13 +2,13 @@
   <!-- Header -->
   <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div>
-      <h1 class="text-xl font-semibold text-platinum-100">პროდუქტები</h1>
-      <p class="mt-0.5 text-sm text-platinum-50">სულ {{ totalProducts() }} პროდუქტი</p>
+      <h1 class="text-platinum-100 text-xl font-semibold">პროდუქტები</h1>
+      <p class="text-platinum-50 mt-0.5 text-sm">სულ {{ totalProducts() }} პროდუქტი</p>
     </div>
 
     <a
       [routerLink]="['/admin/products/new']"
-      class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-green-60 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70"
+      class="bg-green-60 hover:bg-green-70 inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
     >
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
         <path
@@ -27,7 +27,9 @@
     <!-- Search -->
     <div class="flex flex-col gap-2 sm:flex-row">
       <div class="flex min-w-0 flex-1 gap-2">
-        <div class="flex h-10 shrink-0 items-center gap-0.5 rounded-lg bg-platinum-10 p-1 text-xs font-medium">
+        <div
+          class="bg-platinum-10 flex h-10 shrink-0 items-center gap-0.5 rounded-lg p-1 text-xs font-medium"
+        >
           <button
             type="button"
             (click)="onSearchTypeChange('query')"
@@ -60,7 +62,7 @@
             height="16"
             viewBox="0 0 20 20"
             fill="none"
-            class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-platinum-40"
+            class="text-platinum-40 pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
           >
             <path
               d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
@@ -75,13 +77,13 @@
             [value]="searchQuery()"
             (input)="onSearchInput($event)"
             [placeholder]="searchType() === 'id' ? 'ძიება ID-ით...' : 'ძიება სახელით...'"
-            class="h-10 w-full rounded-lg border border-platinum-20 bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
+            class="border-platinum-20 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-40 h-10 w-full rounded-lg border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
           />
           @if (searchQuery()) {
           <button
             type="button"
             (click)="clearSearch()"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-platinum-40 transition-colors hover:text-platinum-70"
+            class="text-platinum-40 hover:text-platinum-70 absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <path
@@ -147,39 +149,51 @@
     @if (searchResponse.isLoading()) {
     <div class="space-y-3">
       @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
-      <div class="flex gap-3 rounded-lg border border-platinum-20 bg-white p-3">
-        <div class="h-24 w-24 shrink-0 animate-pulse rounded-lg bg-platinum-10"></div>
+      <div class="border-platinum-20 flex gap-3 rounded-lg border bg-white p-3">
+        <div class="bg-platinum-10 h-24 w-24 shrink-0 animate-pulse rounded-lg"></div>
         <div class="min-w-0 flex-1 space-y-2">
-          <div class="h-4 w-3/4 animate-pulse rounded-sm bg-platinum-10"></div>
-          <div class="h-3 w-1/3 animate-pulse rounded-sm bg-platinum-10"></div>
-          <div class="h-3 w-1/2 animate-pulse rounded-sm bg-platinum-10"></div>
-          <div class="h-4 w-16 animate-pulse rounded-sm bg-platinum-10"></div>
+          <div class="bg-platinum-10 h-4 w-3/4 animate-pulse rounded-sm"></div>
+          <div class="bg-platinum-10 h-3 w-1/3 animate-pulse rounded-sm"></div>
+          <div class="bg-platinum-10 h-3 w-1/2 animate-pulse rounded-sm"></div>
+          <div class="bg-platinum-10 h-4 w-16 animate-pulse rounded-sm"></div>
         </div>
       </div>
       }
     </div>
     } @else if (products().length === 0) {
-    <div class="rounded-lg border border-platinum-20 bg-white px-4 py-16 text-center">
+    <div class="border-platinum-20 rounded-lg border bg-white px-4 py-16 text-center">
       <div class="flex flex-col items-center gap-2">
         <svg width="44" height="44" viewBox="0 0 48 48" fill="none" class="text-platinum-30">
-          <path d="M42 30V18L24 9L6 18V30L24 39L42 30Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M6 18L24 27L42 18M24 39V27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path
+            d="M42 30V18L24 9L6 18V30L24 39L42 30Z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M6 18L24 27L42 18M24 39V27"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
-        <p class="text-sm font-medium text-platinum-70">პროდუქტები არ მოიძებნა</p>
-        <p class="text-xs text-platinum-50">სცადეთ სხვა ძებნის პარამეტრები</p>
+        <p class="text-platinum-70 text-sm font-medium">პროდუქტები არ მოიძებნა</p>
+        <p class="text-platinum-50 text-xs">სცადეთ სხვა ძებნის პარამეტრები</p>
       </div>
     </div>
     } @else {
     <div class="space-y-3">
       @for (product of products(); track product.data.id) {
       <div
-        class="flex gap-3 rounded-lg border border-platinum-20 bg-white p-3 transition-colors"
+        class="border-platinum-20 flex gap-3 rounded-lg border bg-white p-3 transition-colors"
         [class.opacity-45]="!product.data.enabled"
       >
         <div class="flex shrink-0 flex-col items-center gap-1.5">
           <a [routerLink]="getProductLink(product)">
             @if (getProductImage(product)) {
-            <div class="h-24 w-24 overflow-hidden rounded-lg border border-platinum-20">
+            <div class="border-platinum-20 h-24 w-24 overflow-hidden rounded-lg border">
               <img
                 [src]="getProductImage(product)"
                 [alt]="product.data.name"
@@ -187,9 +201,17 @@
               />
             </div>
             } @else {
-            <div class="flex h-24 w-24 items-center justify-center rounded-lg border border-platinum-20 bg-platinum-10">
+            <div
+              class="border-platinum-20 bg-platinum-10 flex h-24 w-24 items-center justify-center rounded-lg border"
+            >
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" class="text-platinum-30">
-                <path d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                  d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
             </div>
             }
@@ -197,22 +219,40 @@
           <div class="flex w-24 gap-1">
             <a
               [routerLink]="['/admin/products', product.data.id, 'edit']"
-              class="flex h-8 flex-1 items-center justify-center rounded-md border border-platinum-20 text-platinum-40 transition-colors hover:bg-platinum-10 hover:text-platinum-80"
+              class="border-platinum-20 text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex h-8 flex-1 items-center justify-center rounded-md border transition-colors"
               aria-label="რედაქტირება"
             >
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                <path d="M11.3333 2.00004C11.5084 1.82494 11.7163 1.68605 11.9451 1.59129C12.1739 1.49653 12.419 1.44775 12.6666 1.44775C12.9143 1.44775 13.1594 1.49653 13.3882 1.59129C13.617 1.68605 13.8249 1.82494 14 2.00004C14.1751 2.17513 14.314 2.383 14.4087 2.61178C14.5035 2.84055 14.5523 3.08569 14.5523 3.33337C14.5523 3.58106 14.5035 3.8262 14.4087 4.05497C14.314 4.28375 14.1751 4.49162 14 4.66671L5.00001 13.6667L1.33334 14.6667L2.33334 11L11.3333 2.00004Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                  d="M11.3333 2.00004C11.5084 1.82494 11.7163 1.68605 11.9451 1.59129C12.1739 1.49653 12.419 1.44775 12.6666 1.44775C12.9143 1.44775 13.1594 1.49653 13.3882 1.59129C13.617 1.68605 13.8249 1.82494 14 2.00004C14.1751 2.17513 14.314 2.383 14.4087 2.61178C14.5035 2.84055 14.5523 3.08569 14.5523 3.33337C14.5523 3.58106 14.5035 3.8262 14.4087 4.05497C14.314 4.28375 14.1751 4.49162 14 4.66671L5.00001 13.6667L1.33334 14.6667L2.33334 11L11.3333 2.00004Z"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
             </a>
             <button
               type="button"
               (click)="openDeleteModal(product.data.id)"
-              class="flex h-8 flex-1 items-center justify-center rounded-md border border-platinum-20 text-platinum-40 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
+              class="border-platinum-20 text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex h-8 flex-1 items-center justify-center rounded-md border transition-colors"
               aria-label="წაშლა"
             >
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                <path d="M2 4H3.33333H14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M5.33334 4.00004V2.66671C5.33334 2.31309 5.47381 1.97395 5.72386 1.7239C5.97391 1.47385 6.31305 1.33337 6.66668 1.33337H9.33334C9.68697 1.33337 10.0261 1.47385 10.2762 1.7239C10.5262 1.97395 10.6667 2.31309 10.6667 2.66671V4.00004M12.6667 4.00004V13.3334C12.6667 13.687 12.5262 14.0261 12.2762 14.2762C12.0261 14.5262 11.687 14.6667 11.3333 14.6667H4.66668C4.31305 14.6667 3.97391 14.5262 3.72386 14.2762C3.47381 14.0261 3.33334 13.687 3.33334 13.3334V4.00004H12.6667Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                  d="M2 4H3.33333H14"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M5.33334 4.00004V2.66671C5.33334 2.31309 5.47381 1.97395 5.72386 1.7239C5.97391 1.47385 6.31305 1.33337 6.66668 1.33337H9.33334C9.68697 1.33337 10.0261 1.47385 10.2762 1.7239C10.5262 1.97395 10.6667 2.31309 10.6667 2.66671V4.00004M12.6667 4.00004V13.3334C12.6667 13.687 12.5262 14.0261 12.2762 14.2762C12.0261 14.5262 11.687 14.6667 11.3333 14.6667H4.66668C4.31305 14.6667 3.97391 14.5262 3.72386 14.2762C3.47381 14.0261 3.33334 13.687 3.33334 13.3334V4.00004H12.6667Z"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
             </button>
           </div>
@@ -220,15 +260,17 @@
         <div class="min-w-0 flex-1">
           <a
             [routerLink]="getProductLink(product)"
-            class="block text-sm font-medium text-platinum-100 transition-colors hover:text-green-70"
+            class="text-platinum-100 hover:text-green-70 block text-sm font-medium transition-colors"
           >
             {{ product.data.name }}
           </a>
-          <p class="mt-0.5 text-xs text-platinum-40">ID: {{ product.data.id }}</p>
+          <p class="text-platinum-40 mt-0.5 text-xs">ID: {{ product.data.id }}</p>
           @if (product.categories && product.categories.length > 0) {
           <div class="mt-1.5 flex flex-wrap gap-1">
             @for (category of product.categories.slice(0, 2); track category.id) {
-            <span class="inline-flex rounded-md bg-platinum-10 px-1.5 py-0.5 text-[11px] font-medium text-platinum-60">
+            <span
+              class="bg-platinum-10 text-platinum-60 inline-flex rounded-md px-1.5 py-0.5 text-[11px] font-medium"
+            >
               {{ category.name }}
             </span>
             }
@@ -236,18 +278,18 @@
           }
           <div class="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
             @if (product.data.discount > 0) {
-            <span class="text-sm font-semibold text-platinum-100">
+            <span class="text-platinum-100 text-sm font-semibold">
               {{ product.data.price * (1 - product.data.discount / 100) | number: "1.2-2" }} ₾
             </span>
-            <span class="text-xs text-platinum-40 line-through">{{ product.data.price }} ₾</span>
+            <span class="text-platinum-40 text-xs line-through">{{ product.data.price }} ₾</span>
             } @else {
-            <span class="text-sm font-semibold text-platinum-100">{{ product.data.price }} ₾</span>
+            <span class="text-platinum-100 text-sm font-semibold">{{ product.data.price }} ₾</span>
             }
-            <span class="text-xs text-platinum-40">·</span>
+            <span class="text-platinum-40 text-xs">·</span>
             @if (product.data.quantity > 0) {
-            <span class="text-xs text-platinum-50">{{ product.data.quantity }} მარაგი</span>
+            <span class="text-platinum-50 text-xs">{{ product.data.quantity }} მარაგი</span>
             } @else {
-            <span class="text-xs font-medium text-valencia-60">0 მარაგი</span>
+            <span class="text-valencia-60 text-xs font-medium">0 მარაგი</span>
             }
           </div>
         </div>
@@ -257,39 +299,53 @@
     }
   </div>
 
+  <!-- Mobile Pagination -->
+  <div class="sm:hidden">
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [totalItems]="totalProducts()"
+      [showingFrom]="showingFrom()"
+      [showingTo]="showingTo()"
+      [limit]="limit()"
+      (pageChange)="onPageChange($event)"
+      (limitChange)="onLimitChangeValue($event)"
+    />
+  </div>
+
   <!-- Table (sm+) -->
-  <div class="hidden overflow-hidden rounded-lg border border-platinum-20 bg-white sm:block">
+  <div class="border-platinum-20 hidden overflow-hidden rounded-lg border bg-white sm:block">
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
-          <tr class="border-b border-platinum-20">
+          <tr class="border-platinum-20 border-b">
             <th
-              class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50"
+              class="text-platinum-50 px-4 py-3 text-left text-xs font-medium tracking-wider uppercase"
             >
               პროდუქტი
             </th>
             <th
-              class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 md:table-cell"
+              class="text-platinum-50 hidden px-4 py-3 text-left text-xs font-medium tracking-wider uppercase md:table-cell"
             >
               კატეგორია
             </th>
             <th
-              class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50"
+              class="text-platinum-50 px-4 py-3 text-left text-xs font-medium tracking-wider uppercase"
             >
               ფასი
             </th>
             <th
-              class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 lg:table-cell"
+              class="text-platinum-50 hidden px-4 py-3 text-left text-xs font-medium tracking-wider uppercase lg:table-cell"
             >
               მარაგი
             </th>
             <th
-              class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 xl:table-cell"
+              class="text-platinum-50 hidden px-4 py-3 text-left text-xs font-medium tracking-wider uppercase xl:table-cell"
             >
               სტატუსი
             </th>
             <th
-              class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-platinum-50"
+              class="text-platinum-50 px-4 py-3 text-right text-xs font-medium tracking-wider uppercase"
             >
               მოქმედებები
             </th>
@@ -297,32 +353,32 @@
         </thead>
         <tbody>
           @if (searchResponse.isLoading()) { @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
-          <tr class="border-b border-platinum-20 last:border-b-0">
+          <tr class="border-platinum-20 border-b last:border-b-0">
             <td class="px-4 py-3.5">
               <div class="flex items-center gap-3">
-                <div class="h-11 w-11 animate-pulse rounded-lg bg-platinum-10"></div>
+                <div class="bg-platinum-10 h-11 w-11 animate-pulse rounded-lg"></div>
                 <div class="space-y-1.5">
-                  <div class="h-4 w-32 animate-pulse rounded-sm bg-platinum-10"></div>
-                  <div class="h-3 w-20 animate-pulse rounded-sm bg-platinum-10"></div>
+                  <div class="bg-platinum-10 h-4 w-32 animate-pulse rounded-sm"></div>
+                  <div class="bg-platinum-10 h-3 w-20 animate-pulse rounded-sm"></div>
                 </div>
               </div>
             </td>
             <td class="hidden px-4 py-3.5 md:table-cell">
-              <div class="h-4 w-24 animate-pulse rounded-sm bg-platinum-10"></div>
+              <div class="bg-platinum-10 h-4 w-24 animate-pulse rounded-sm"></div>
             </td>
             <td class="px-4 py-3.5">
-              <div class="h-4 w-14 animate-pulse rounded-sm bg-platinum-10"></div>
+              <div class="bg-platinum-10 h-4 w-14 animate-pulse rounded-sm"></div>
             </td>
             <td class="hidden px-4 py-3.5 lg:table-cell">
-              <div class="h-4 w-10 animate-pulse rounded-sm bg-platinum-10"></div>
+              <div class="bg-platinum-10 h-4 w-10 animate-pulse rounded-sm"></div>
             </td>
             <td class="hidden px-4 py-3.5 xl:table-cell">
-              <div class="h-5 w-9 animate-pulse rounded-full bg-platinum-10"></div>
+              <div class="bg-platinum-10 h-5 w-9 animate-pulse rounded-full"></div>
             </td>
             <td class="px-4 py-3.5">
               <div class="flex justify-end gap-1">
-                <div class="h-8 w-8 animate-pulse rounded-lg bg-platinum-10"></div>
-                <div class="h-8 w-8 animate-pulse rounded-lg bg-platinum-10"></div>
+                <div class="bg-platinum-10 h-8 w-8 animate-pulse rounded-lg"></div>
+                <div class="bg-platinum-10 h-8 w-8 animate-pulse rounded-lg"></div>
               </div>
             </td>
           </tr>
@@ -352,14 +408,14 @@
                     stroke-linejoin="round"
                   />
                 </svg>
-                <p class="text-sm font-medium text-platinum-70">პროდუქტები არ მოიძებნა</p>
-                <p class="text-xs text-platinum-50">სცადეთ სხვა ძებნის პარამეტრები</p>
+                <p class="text-platinum-70 text-sm font-medium">პროდუქტები არ მოიძებნა</p>
+                <p class="text-platinum-50 text-xs">სცადეთ სხვა ძებნის პარამეტრები</p>
               </div>
             </td>
           </tr>
           } @else { @for (product of products(); track product.data.id) {
           <tr
-            class="border-b border-platinum-20 transition-colors last:border-b-0 hover:bg-platinum-10/50"
+            class="border-platinum-20 hover:bg-platinum-10/50 border-b transition-colors last:border-b-0"
             [class.opacity-45]="!product.data.enabled"
           >
             <!-- Product -->
@@ -367,7 +423,7 @@
               <div class="flex items-center gap-3">
                 @if (getProductImage(product)) {
                 <div
-                  class="h-11 w-11 shrink-0 overflow-hidden rounded-lg border border-platinum-20"
+                  class="border-platinum-20 h-11 w-11 shrink-0 overflow-hidden rounded-lg border"
                 >
                   <img
                     [src]="getProductImage(product)"
@@ -377,7 +433,7 @@
                 </div>
                 } @else {
                 <div
-                  class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-platinum-20 bg-platinum-10"
+                  class="border-platinum-20 bg-platinum-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border"
                 >
                   <svg
                     width="20"
@@ -399,11 +455,11 @@
                 <div class="min-w-0 flex-1">
                   <a
                     [routerLink]="getProductLink(product)"
-                    class="block truncate text-sm font-medium text-platinum-100 transition-colors hover:text-green-70"
+                    class="text-platinum-100 hover:text-green-70 block truncate text-sm font-medium transition-colors"
                   >
                     {{ product.data.name }}
                   </a>
-                  <p class="truncate text-xs text-platinum-50">ID: {{ product.data.id }}</p>
+                  <p class="text-platinum-50 truncate text-xs">ID: {{ product.data.id }}</p>
                 </div>
               </div>
             </td>
@@ -414,35 +470,35 @@
               <div class="flex flex-wrap gap-1.5">
                 @for ( category of product.categories.slice(0, 2); track category.id ) {
                 <span
-                  class="inline-flex rounded-md bg-platinum-10 px-2 py-0.5 text-xs font-medium text-platinum-70"
+                  class="bg-platinum-10 text-platinum-70 inline-flex rounded-md px-2 py-0.5 text-xs font-medium"
                 >
                   {{ category.name }}
                 </span>
                 }
               </div>
               } @else {
-              <span class="text-xs text-platinum-40">--</span>
+              <span class="text-platinum-40 text-xs">--</span>
               }
             </td>
 
             <!-- Price -->
-            <td class="whitespace-nowrap px-4 py-3">
+            <td class="px-4 py-3 whitespace-nowrap">
               @if (product.data.discount > 0) {
-              <p class="text-sm font-semibold text-platinum-100">
+              <p class="text-platinum-100 text-sm font-semibold">
                 {{ product.data.price * (1 - product.data.discount / 100) | number: "1.2-2" }} ₾
               </p>
-              <p class="text-xs text-platinum-40 line-through">{{ product.data.price }} ₾</p>
+              <p class="text-platinum-40 text-xs line-through">{{ product.data.price }} ₾</p>
               } @else {
-              <p class="text-sm font-semibold text-platinum-100">{{ product.data.price }} ₾</p>
+              <p class="text-platinum-100 text-sm font-semibold">{{ product.data.price }} ₾</p>
               }
             </td>
 
             <!-- Stock -->
             <td class="hidden px-4 py-3 lg:table-cell">
               @if (product.data.quantity > 0) {
-              <span class="text-sm text-platinum-90">{{ product.data.quantity }}</span>
+              <span class="text-platinum-90 text-sm">{{ product.data.quantity }}</span>
               } @else {
-              <span class="text-sm font-medium text-valencia-60">0</span>
+              <span class="text-valencia-60 text-sm font-medium">0</span>
               }
             </td>
 
@@ -451,7 +507,7 @@
               <button
                 type="button"
                 (click)="toggleProductStatus(product.data.id, product.data.enabled)"
-                class="relative inline-flex h-[22px] w-10 items-center rounded-full transition-colors focus:outline-hidden focus:ring-2 focus:ring-green-60 focus:ring-offset-2"
+                class="focus:ring-green-60 relative inline-flex h-[22px] w-10 items-center rounded-full transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
                 [class.bg-green-60]="product.data.enabled"
                 [class.bg-platinum-30]="!product.data.enabled"
                 [attr.aria-label]="product.data.enabled ? 'გამორთვა' : 'ჩართვა'"
@@ -469,7 +525,7 @@
               <div class="flex items-center justify-end gap-1">
                 <a
                   [routerLink]="['/admin/products', product.data.id, 'edit']"
-                  class="flex items-center justify-center rounded-lg p-2 text-platinum-40 transition-colors hover:bg-platinum-10 hover:text-platinum-80"
+                  class="text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex items-center justify-center rounded-lg p-2 transition-colors"
                   aria-label="რედაქტირება"
                 >
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -485,7 +541,7 @@
                 <button
                   type="button"
                   (click)="openDeleteModal(product.data.id)"
-                  class="flex items-center justify-center rounded-lg p-2 text-platinum-40 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
+                  class="text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex items-center justify-center rounded-lg p-2 transition-colors"
                   aria-label="წაშლა"
                 >
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
