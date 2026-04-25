@@ -67,7 +67,6 @@ export class CheckoutComponent {
   readonly organizationTypes = organizationTypes;
 
   readonly submitted = signal(false);
-  readonly selectedCity = signal<string>('');
 
   readonly loading = signal({
     addresses: true,
@@ -169,6 +168,7 @@ export class CheckoutComponent {
 
     const model = this.checkoutModel();
     const isIndividual = model.customer_type === 'individual';
+    const selectedAddress = this.addresses().find((a) => a.address === model.address);
 
     const request: CheckoutRequest = {
       customer_type: model.customer_type,
@@ -182,6 +182,8 @@ export class CheckoutComponent {
       email: model.email,
       phone_number: model.phone_number,
       address: model.address,
+      city: selectedAddress?.city ?? '',
+      details: selectedAddress?.details ?? '',
       delivery_type: model.delivery_type,
       delivery_time: model.delivery_time,
       ...(model.comment ? { comment: model.comment } : {}),

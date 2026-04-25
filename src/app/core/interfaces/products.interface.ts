@@ -89,6 +89,8 @@ export interface CheckoutRequest {
   email: string;
   phone_number: string;
   address: string;
+  city: string;
+  details: string;
   delivery_type: string;
   delivery_time: string;
   comment?: string;
@@ -117,6 +119,8 @@ export interface Order {
   email: string;
   phone_number: number;
   address: string;
+  city: string;
+  details: string;
   delivery_type: string;
   delivery_time: string;
   checkout_url: string | null;

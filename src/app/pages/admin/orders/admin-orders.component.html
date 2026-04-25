@@ -364,10 +364,22 @@
                               <span class="text-right text-sm font-medium text-platinum-100">{{ deliveryTimeLabel(order.delivery_time) }}</span>
                             </div>
                           }
+                          @if (order.city) {
+                            <div class="flex items-baseline justify-between gap-4">
+                              <span class="shrink-0 text-xs text-platinum-50">ქალაქი</span>
+                              <span class="text-right text-sm font-medium text-platinum-100">{{ order.city }}</span>
+                            </div>
+                          }
                           @if (order.address) {
                             <div class="flex items-baseline justify-between gap-4">
                               <span class="shrink-0 text-xs text-platinum-50">მისამართი</span>
                               <span class="text-right text-sm font-medium text-platinum-100">{{ order.address }}</span>
+                            </div>
+                          }
+                          @if (order.details) {
+                            <div class="flex items-baseline justify-between gap-4">
+                              <span class="shrink-0 text-xs text-platinum-50">დეტალები</span>
+                              <span class="text-right text-sm font-medium text-platinum-100">{{ order.details }}</span>
                             </div>
                           }
                         </div>
