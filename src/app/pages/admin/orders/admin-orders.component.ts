@@ -100,6 +100,15 @@ export class AdminOrdersComponent {
     });
   }
 
+  formatTime(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('ka-GE', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+  }
+
   statusLabel(
     status: string,
   ): string {

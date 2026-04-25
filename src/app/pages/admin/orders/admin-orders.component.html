@@ -248,7 +248,7 @@
                 <!-- Date -->
                 <td class="hidden px-4 py-3 lg:table-cell">
                   <span class="text-sm text-platinum-60">
-                    {{ formatDate(order.created_at) }}
+                    {{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}
                   </span>
                 </td>
 
@@ -352,7 +352,7 @@
                           </div>
                           <div class="flex items-baseline justify-between gap-4">
                             <span class="shrink-0 text-xs text-platinum-50">თარიღი</span>
-                            <span class="text-right text-sm font-medium text-platinum-100">{{ formatDate(order.created_at) }}</span>
+                            <span class="text-right text-sm font-medium text-platinum-100">{{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}</span>
                           </div>
                           <div class="flex items-baseline justify-between gap-4">
                             <span class="shrink-0 text-xs text-platinum-50">მიწოდება</span>
