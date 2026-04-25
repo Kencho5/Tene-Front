@@ -9,7 +9,7 @@ import { form, required, FormField } from '@angular/forms/signals';
 import { AddressData } from '@core/interfaces/address.interface';
 import { AddressService } from '@core/services/address.service';
 import { ToastService } from '@core/services/toast.service';
-import { storeCities } from '@utils/store-cities';
+import { georgianCities } from './georgian-cities';
 import { ModalComponent } from '@shared/components/ui/modal/modal.component';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
@@ -24,7 +24,7 @@ export class AddressFormModalComponent {
   private readonly addressService = inject(AddressService);
   private readonly toastService = inject(ToastService);
 
-  readonly storeCities = storeCities;
+  readonly georgianCities = georgianCities;
 
   readonly isOpen = signal(false);
   readonly isEditMode = signal(false);
