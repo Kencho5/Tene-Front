@@ -53,8 +53,9 @@ export class CheckoutComponent {
     const deliveryTime = this.checkoutForm.delivery_time().value();
     const deliveryType = this.checkoutForm.delivery_type().value();
 
-    if (deliveryTime == 'same_day' && deliveryType != 'pickup') return 12;
-    else return 0;
+    if (deliveryType === 'pickup') return 0;
+    if (deliveryTime === 'same_day') return 12;
+    return 5;
   });
 
   readonly checkoutLoading = signal(false);
