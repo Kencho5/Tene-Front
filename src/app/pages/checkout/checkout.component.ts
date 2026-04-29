@@ -55,7 +55,7 @@ export class CheckoutComponent {
 
     if (deliveryType === 'pickup') return 0;
     if (deliveryTime === 'same_day') return 12;
-    return 5;
+    return 5.5;
   });
 
   readonly checkoutLoading = signal(false);
