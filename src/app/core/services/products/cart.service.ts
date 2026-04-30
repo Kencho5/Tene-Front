@@ -4,6 +4,15 @@ import { calculateDiscount } from '@utils/discountedPrice';
 
 const CART_STORAGE_KEY = 'tene_cart';
 
+function sameCableConfig(
+  a: CartItem['cableConfig'],
+  b: CartItem['cableConfig'],
+): boolean {
+  if (!a && !b) return true;
+  if (!a || !b) return false;
+  return a.watts === b.watts && a.lengthCm === b.lengthCm;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -26,7 +35,9 @@ export class CartService {
 
   readonly totalPrice = computed(() => {
     return this.items().reduce((total, item) => {
-      const price = calculateDiscount(item.product);
+      const price = item.cableConfig
+        ? item.cableConfig.price
+        : calculateDiscount(item.product);
       return total + price * item.quantity;
     }, 0);
   });
@@ -59,7 +70,8 @@ export class CartService {
         (i) =>
           i.product.id === item.product.id &&
           i.selectedColor === item.selectedColor &&
-          i.selectedImageId === item.selectedImageId,
+          i.selectedImageId === item.selectedImageId &&
+          sameCableConfig(i.cableConfig, item.cableConfig),
       );
 
       if (existingItemIndex !== -1) {

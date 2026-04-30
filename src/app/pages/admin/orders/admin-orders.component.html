@@ -420,6 +420,11 @@
                                     · {{ formatItemAmount(item.price_at_purchase) }} / ერთ.
                                   }
                                 </p>
+                                @if (item.cable_config) {
+                                  <p class="mt-0.5 inline-flex items-center gap-1 rounded-md bg-green-10 px-1.5 py-0.5 text-[11px] font-semibold text-green-70">
+                                    {{ item.cable_config.watts }}W · {{ item.cable_config.length_cm }} სმ
+                                  </p>
+                                }
                               </div>
                               <span class="shrink-0 text-sm font-semibold text-platinum-100">
                                 {{ formatItemAmount(item.price_at_purchase * item.quantity) }}

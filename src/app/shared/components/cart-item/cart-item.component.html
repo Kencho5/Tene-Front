@@ -25,6 +25,11 @@
         {{ item().product.name }}
       </h2>
       <p class="text-sm text-platinum-50">ფერი: {{ item().selectedColor }}</p>
+      @if (item().cableConfig; as cc) {
+        <p class="text-sm text-platinum-50">
+          {{ cc.watts }}W · {{ cc.lengthCm }} სმ
+        </p>
+      }
     </div>
   </div>
 
@@ -72,7 +77,11 @@
     }
 
     <div class="w-[90px]">
-      @if (item().product.discount == 0) {
+      @if (item().cableConfig; as cc) {
+        <h2 class="md:text-xl">
+          {{ cartService.calculateTotalPrice(cc.price, item().quantity) | number: "1.2-2" }}₾
+        </h2>
+      } @else if (item().product.discount == 0) {
         <h2 class="md:text-xl">
           {{
             cartService.calculateTotalPrice(

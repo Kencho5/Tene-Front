@@ -34,6 +34,12 @@ import {
   LightboxComponent,
   LightboxImage,
 } from '@shared/components/ui/lightbox/lightbox.component';
+import {
+  CABLE_LENGTHS_CM,
+  CABLE_WATTS,
+  getCableConfig,
+  isTypeCCable,
+} from '@utils/cable-config';
 
 type TabName = 'specifications' | 'description';
 
@@ -96,6 +102,24 @@ export class ProductComponent {
   readonly activeTab = signal<TabName>('specifications');
   readonly swipeOffset = signal(0);
   readonly lightboxOpen = signal(false);
+
+  readonly cableWattsOptions = CABLE_WATTS;
+  readonly cableLengths = CABLE_LENGTHS_CM;
+  readonly selectedWatts = signal<number>(CABLE_WATTS[0]);
+  readonly selectedLengthIdx = signal<number>(3);
+
+  readonly isCable = computed(() => {
+    const product = this.product();
+    return product ? isTypeCCable(product.data) : false;
+  });
+
+  readonly cableConfig = computed(() => {
+    if (!this.isCable()) return null;
+    return getCableConfig(
+      this.selectedWatts(),
+      CABLE_LENGTHS_CM[this.selectedLengthIdx()],
+    );
+  });
 
   private touchStartX = 0;
   private touchStartY = 0;
@@ -200,6 +224,9 @@ export class ProductComponent {
     const product = this.product();
     if (!product) return 0;
 
+    const cable = this.cableConfig();
+    if (cable) return cable.price;
+
     const originalPrice = product.data.price;
     const discountPercent = product.data.discount;
 
@@ -212,6 +239,25 @@ export class ProductComponent {
 
     return Math.floor(priceAfterDiscount) + 0.99;
   });
+
+  readonly displayWarranty = computed(() => {
+    const cable = this.cableConfig();
+    if (cable) return cable.warranty;
+    return this.product()?.data.warranty ?? '';
+  });
+
+  setWatts(w: number): void {
+    this.selectedWatts.set(w);
+  }
+
+  setLengthIdx(idx: number): void {
+    this.selectedLengthIdx.set(idx);
+  }
+
+  onLengthSliderChange(event: Event): void {
+    const value = +(event.target as HTMLInputElement).value;
+    this.selectedLengthIdx.set(value);
+  }
 
   readonly colorImages = computed(() => {
     const product = this.product();
@@ -418,6 +464,8 @@ export class ProductComponent {
     const selectedImage = productData.images.find((img) => img.image_uuid === imageId);
     if (!selectedImage) return;
 
+    const cable = this.cableConfig();
+
     this.cartService.addItem({
       product: productData.data,
       quantity: this.quantity(),
@@ -425,6 +473,7 @@ export class ProductComponent {
       selectedImageId: imageId,
       selectedImageExtension: selectedImage.extension,
       selectedImageQuantity: selectedImage.quantity,
+      ...(cable ? { cableConfig: cable } : {}),
     });
 
     this.toastService.add(

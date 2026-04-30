@@ -204,7 +204,11 @@
 
           <!-- ─── Price ─── -->
           <div class="border-platinum-20/40 mt-5 border-t pt-5">
-            @if (+product.data.discount === 0) {
+            @if (isCable()) {
+            <p class="text-platinum-100 text-[26px] leading-none font-bold">
+              {{ finalPrice() }}₾
+            </p>
+            } @else if (+product.data.discount === 0) {
             <p class="text-platinum-100 text-[26px] leading-none font-bold">
               {{ product.data.price }}₾
             </p>
@@ -240,6 +244,55 @@
               }
             </div>
           </div>
+
+          <!-- ─── Cable configurator ─── -->
+          @if (isCable()) {
+          <div class="border-platinum-20/40 mt-5 border-t pt-5">
+            <p class="text-platinum-90 text-[13px] font-semibold tracking-wide uppercase">
+              ვატაჟი
+            </p>
+            <div class="mt-3 flex gap-2">
+              @for (w of cableWattsOptions; track w) {
+              <button
+                type="button"
+                (click)="setWatts(w)"
+                class="h-9 rounded-lg border px-4 text-[13px] font-semibold transition-all duration-200"
+                [ngClass]="
+                  selectedWatts() === w
+                    ? 'border-green-60 bg-green-10 text-green-70'
+                    : 'border-platinum-20 text-platinum-60 hover:border-platinum-40'
+                "
+              >
+                {{ w }}W
+              </button>
+              }
+            </div>
+          </div>
+
+          <div class="border-platinum-20/40 mt-5 border-t pt-5">
+            <div class="flex items-baseline justify-between">
+              <p class="text-platinum-90 text-[13px] font-semibold tracking-wide uppercase">
+                სიგრძე
+              </p>
+              <p class="text-platinum-100 text-[13px] font-semibold">
+                {{ cableLengths[selectedLengthIdx()] }} სმ
+              </p>
+            </div>
+            <input
+              type="range"
+              min="0"
+              [max]="cableLengths.length - 1"
+              step="1"
+              [value]="selectedLengthIdx()"
+              (input)="onLengthSliderChange($event)"
+              class="accent-green-60 mt-3 w-full"
+            />
+            <div class="text-platinum-40 mt-1 flex justify-between text-[11px]">
+              <span>{{ cableLengths[0] }} სმ</span>
+              <span>{{ cableLengths[cableLengths.length - 1] }} სმ</span>
+            </div>
+          </div>
+          }
 
           <!-- ─── Categories ─── -->
           @if (product.data.categories && product.data.categories.length > 0) {
@@ -343,7 +396,7 @@
                 />
               </svg>
               <p class="text-green-70 text-[13px] font-medium">
-                გარანტია {{ product.data.warranty }}
+                გარანტია {{ displayWarranty() }}
               </p>
             </div>
 

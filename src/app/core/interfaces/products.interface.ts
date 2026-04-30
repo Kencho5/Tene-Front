@@ -50,6 +50,12 @@ export interface CartItem {
   selectedImageId: string;
   selectedImageExtension: string;
   selectedImageQuantity: number;
+  cableConfig?: {
+    watts: number;
+    lengthCm: number;
+    price: number;
+    warranty: string;
+  };
 }
 
 export interface CheckoutFields {
@@ -94,7 +100,12 @@ export interface CheckoutRequest {
   delivery_type: string;
   delivery_time: string;
   comment?: string;
-  items: { product_id: string; quantity: number; color: string }[];
+  items: {
+    product_id: string;
+    quantity: number;
+    color: string;
+    cable_config?: { watts: number; length_cm: number };
+  }[];
 }
 
 export interface CheckoutResponse {
@@ -138,6 +149,7 @@ export interface OrderItem {
   product_name: string;
   product_image: ProductImage | null;
   created_at: string;
+  cable_config?: { watts: number; length_cm: number } | null;
 }
 
 export interface OrderSearchResponse {

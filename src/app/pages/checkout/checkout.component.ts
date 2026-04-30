@@ -192,6 +192,14 @@ export class CheckoutComponent {
         product_id: item.product.id,
         quantity: item.quantity,
         color: item.selectedColor,
+        ...(item.cableConfig
+          ? {
+              cable_config: {
+                watts: item.cableConfig.watts,
+                length_cm: item.cableConfig.lengthCm,
+              },
+            }
+          : {}),
       })),
     };
 
