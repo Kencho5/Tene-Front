@@ -17,18 +17,22 @@ const PRICES_67W = [15, 20, 22, 25, 30, 35, 37, 40, 45, 50, 55, 60, 65];
 const PRICES_120W = [25, 35, 40, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95];
 const WARRANTY_MONTHS = [1, 1, 1, 3, 12, 12, 12, 12, 12, 12, 12, 12, 12];
 
+function hasTypeCToTypeC(value: string): boolean {
+  return (value.match(/type\s*-?\s*c/gi) ?? []).length >= 2;
+}
+
 export function isTypeCCable(product: Product): boolean {
   const specs = product.specifications;
-  if (!specs || typeof specs !== 'object') return false;
-  for (const group of Object.values(specs)) {
-    for (const item of group) {
-      if (item.name.includes('კონექტორები')) {
-        const v = item.value;
-        const occurrences = (v.match(/type\s*-?\s*c/gi) ?? []).length;
-        if (occurrences >= 2) return true;
+  if (specs && typeof specs === 'object') {
+    for (const group of Object.values(specs)) {
+      for (const item of group) {
+        if (item.name.includes('კონექტორები') && hasTypeCToTypeC(item.value)) {
+          return true;
+        }
       }
     }
   }
+  if (hasTypeCToTypeC(product.name)) return true;
   return false;
 }
 
