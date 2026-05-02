@@ -71,15 +71,20 @@
 
     <div class="mt-2 sm:mt-auto sm:mb-2 sm:pt-3">
       @if (product().data.discount > 0) {
-      <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+      <div class="flex items-baseline gap-2">
         <p class="text-platinum-100 text-[18px] font-bold leading-none sm:text-[19px]">{{ formatPrice(discountedPrice()) }} ₾</p>
-        <p class="text-platinum-40 text-[12px] line-through sm:text-sm">{{ formatPrice(product().data.price) }} ₾</p>
-        @if (savingsAmount() > 0) {
-        <span class="bg-valencia-10 text-valencia-60 rounded px-1.5 py-0.5 text-[11px] font-semibold leading-none sm:hidden">
-          -{{ formatPrice(savingsAmount()) }} ₾
-        </span>
-        }
+        <p class="text-platinum-40 text-[13px] line-through sm:text-sm">{{ formatPrice(product().data.price) }} ₾</p>
       </div>
+      @if (savingsAmount() > 0) {
+      <div class="mt-1.5 inline-flex items-center gap-1 rounded-md bg-valencia-10 px-1.5 py-0.5 sm:hidden">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="text-valencia-60">
+          <path d="M20 12H4M4 12L10 6M4 12L10 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="text-valencia-60 text-[11px] font-bold leading-none">
+          დაზოგე {{ formatPrice(savingsAmount()) }} ₾
+        </span>
+      </div>
+      }
       } @else {
       <p class="text-platinum-100 text-[18px] font-bold leading-none sm:text-[19px]">{{ formatPrice(product().data.price) }} ₾</p>
       }
