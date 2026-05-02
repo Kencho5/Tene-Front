@@ -230,7 +230,7 @@ export class AdminProductFormComponent {
       try {
         const compressed = await this.compressImageService.compressImage(
           file,
-          0.8,
+          0.7,
           2000,
           2000,
           'image/webp',
