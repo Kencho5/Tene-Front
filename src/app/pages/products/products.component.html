@@ -207,7 +207,7 @@
         style="scrollbar-width: none; -ms-overflow-style: none"
       >
         @for (product of products(); track product.data.id) {
-        <app-product-card class="w-[280px] shrink-0" [product]="product" />
+        <app-product-card class="w-[280px] shrink-0" [product]="product" layout="vertical" />
         }
       </div>
 
