@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   ElementRef,
   inject,
@@ -11,7 +12,7 @@ import {
 import { rxResource } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 import { OutsideClickDirective } from '@core/directives/outside-click.directive';
-import { CategoryTreeResponse } from '@core/interfaces/categories.interface';
+import { CategoryTreeNode, CategoryTreeResponse } from '@core/interfaces/categories.interface';
 import { CategoriesService } from '@core/services/categories/categories.service';
 import { SharedModule } from '@shared/shared.module';
 import { ProductImage } from '@core/interfaces/products.interface';
@@ -108,6 +109,16 @@ export class SearchDropdownComponent {
       }
       return this.categoriesService.getCategoryTree();
     },
+  });
+
+  readonly sortedCategories = computed<CategoryTreeNode[]>(() => {
+    const all = this.categories.value().categories ?? [];
+    const priorityIds = [2, 3, 9];
+    const priority = priorityIds
+      .map((id) => all.find((c) => c.id === id))
+      .filter(Boolean) as CategoryTreeNode[];
+    const rest = all.filter((c) => !priorityIds.includes(c.id));
+    return [...priority, ...rest];
   });
 
   readonly results = rxResource({

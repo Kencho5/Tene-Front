@@ -13,6 +13,7 @@ import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 import { AdminService } from '@core/services/admin/admin.service';
+import { CompressImageService } from '@core/services/compress-image.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
@@ -44,6 +45,7 @@ export class AdminCategoryFormComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly adminService = inject(AdminService);
   private readonly toastService = inject(ToastService);
+  private readonly compressImageService = inject(CompressImageService);
 
   readonly submitted = signal(false);
   readonly isLoading = signal(false);
@@ -316,7 +318,7 @@ export class AdminCategoryFormComponent {
     }));
   }
 
-  onImageSelect(event: Event): void {
+  async onImageSelect(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
 
@@ -331,13 +333,27 @@ export class AdminCategoryFormComponent {
       return;
     }
 
-    this.imageFile.set(file);
+    try {
+      const compressed = await this.compressImageService.compressImage(
+        file,
+        0.8,
+        2000,
+        2000,
+        'image/webp',
+      );
+      this.imageFile.set(compressed);
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      this.imagePreview.set(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imagePreview.set(e.target?.result as string);
+      };
+      reader.readAsDataURL(compressed);
+    } catch (err) {
+      console.error('Image compress error:', err);
+      this.toastService.add('შეცდომა', 'სურათის შეკუმშვა ვერ მოხერხდა', 3000, 'error');
+    }
+
+    input.value = '';
   }
 
   removeImage(): void {

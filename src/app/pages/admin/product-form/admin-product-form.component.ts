@@ -19,6 +19,7 @@ import {
   ImageUploadRequest,
 } from '@core/interfaces/admin/products.interface';
 import { AdminService } from '@core/services/admin/admin.service';
+import { CompressImageService } from '@core/services/compress-image.service';
 import { ProductsService } from '@core/services/products/products.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { getProductImageUrl } from '@utils/product-image-url';
@@ -58,6 +59,7 @@ export class AdminProductFormComponent {
   private readonly productsService = inject(ProductsService);
   private readonly toastService = inject(ToastService);
   private readonly location = inject(Location);
+  private readonly compressImageService = inject(CompressImageService);
 
   readonly submitted = signal(false);
   readonly isLoading = signal(false);
@@ -222,22 +224,41 @@ export class AdminProductFormComponent {
       return;
     }
 
-    const currentImages = this.images();
-    const isFirstBatch = currentImages.length === 0;
+    const isFirstBatch = this.images().length === 0;
 
-    validImages.forEach((file, index) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const newImage: ImageWithMetadata = {
+    validImages.forEach(async (file, index) => {
+      try {
+        const compressed = await this.compressImageService.compressImage(
           file,
-          previewUrl: e.target?.result as string,
+          0.8,
+          2000,
+          2000,
+          'image/webp',
+        );
+        const previewUrl = await this.readAsDataUrl(compressed);
+        const newImage: ImageWithMetadata = {
+          file: compressed,
+          previewUrl,
           color: '',
           isPrimary: isFirstBatch && index === 0,
           quantity: null as any,
           isExisting: false,
         };
         this.images.update((imgs) => [...imgs, newImage]);
-      };
+      } catch (err) {
+        console.error('Image compress error:', err);
+        this.toastService.add('შეცდომა', 'სურათის შეკუმშვა ვერ მოხერხდა', 3000, 'error');
+      }
+    });
+
+    input.value = '';
+  }
+
+  private readAsDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target?.result as string);
+      reader.onerror = () => reject(reader.error);
       reader.readAsDataURL(file);
     });
   }

@@ -158,7 +158,7 @@
               }
             } @else {
               @for (
-                category of categories.value().categories.slice(0, 8);
+                category of sortedCategories().slice(0, 8);
                 track category.id
               ) {
                 <a

@@ -42,6 +42,8 @@
             <img
               [src]="category.image_url"
               [alt]="category.name"
+              width="80"
+              height="80"
               class="h-full w-full object-contain"
             />
             }
@@ -85,7 +87,7 @@
                 <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
               } @else if (child.image_url) {
-              <img [src]="child.image_url" [alt]="child.name" class="h-5 w-5 object-contain" />
+              <img [src]="child.image_url" [alt]="child.name" width="20" height="20" class="h-5 w-5 object-contain" />
               }
             </span>
             <span class="whitespace-nowrap">{{ child.name }}</span>
@@ -152,6 +154,8 @@
           <img
             [src]="category.image_url"
             [alt]="category.name"
+            width="32"
+            height="32"
             class="h-8 w-8 shrink-0 object-contain"
           />
           }
@@ -193,6 +197,8 @@
             <img
               [src]="child.image_url"
               [alt]="child.name"
+              width="28"
+              height="28"
               class="h-7 w-7 shrink-0 object-contain"
             />
             }
@@ -223,6 +229,8 @@
           <img
             [src]="category.image_url"
             [alt]="category.name"
+            width="32"
+            height="32"
             class="h-8 w-8 shrink-0 object-contain"
           />
           }
@@ -263,6 +271,8 @@
             <img
               [src]="child.image_url"
               [alt]="child.name"
+              width="36"
+              height="36"
               class="h-9 w-9 shrink-0 object-contain"
             />
             }
