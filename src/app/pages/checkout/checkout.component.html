@@ -211,7 +211,30 @@
               </button>
             </div>
 
-            @if (checkoutForm.delivery_type().value() === 'delivery') { @if (loading().addresses) {
+            @if (checkoutForm.delivery_type().value() === 'delivery') { @if (isGuest()) {
+            <div class="flex flex-col gap-4">
+              <app-combobox
+                [(selectedValue)]="checkoutForm.guest_city().value"
+                [items]="georgianCities"
+                [error]="submitted() && checkoutForm.guest_city().invalid()"
+                placeholder="ქალაქი"
+                searchPlaceholder="ძებნა..."
+                notFoundText="ვერ მოიძებნა"
+              />
+              <app-input
+                [formField]="checkoutForm.guest_address"
+                [error]="submitted() && checkoutForm.guest_address().invalid()"
+                type="text"
+                placeholder="მისამართი"
+              />
+              <textarea
+                [formField]="checkoutForm.guest_details"
+                placeholder="დამატებითი დეტალები (სართული, ბინა, კოდი...)"
+                rows="2"
+                class="border-platinum-20 focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] px-4 py-3 text-sm outline-none transition-colors"
+              ></textarea>
+            </div>
+            } @else if (loading().addresses) {
             <div class="flex items-center justify-center py-8">
               <span class="text-platinum-50">იტვირთება...</span>
             </div>
@@ -328,6 +351,7 @@
             </div>
             }
 
+            @if (!isGuest()) {
             <button
               type="button"
               class="text-green-70 flex items-center gap-2 text-sm font-semibold"
@@ -345,6 +369,7 @@
 
               ახალი მისამართის დამატება
             </button>
+            }
 
             <div class="bg-platinum-20 my-4 h-px"></div>
 

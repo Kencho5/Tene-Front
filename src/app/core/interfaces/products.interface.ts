@@ -72,6 +72,9 @@ export interface CheckoutFields {
   email: string;
   phone_number: string;
   address: string;
+  guest_city: string;
+  guest_address: string;
+  guest_details: string;
   delivery_type: string;
   delivery_time: string;
   comment: string;

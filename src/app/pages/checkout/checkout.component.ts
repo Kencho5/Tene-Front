@@ -22,6 +22,7 @@ import { SharedModule } from '@shared/shared.module';
 import { AddressData } from '@core/interfaces/address.interface';
 import { AddressFormModalComponent } from '@shared/components/address-form-modal/address-form-modal.component';
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
+import { AuthService } from '@core/services/auth/auth-service.service';
 
 @Component({
   selector: 'app-checkout',
@@ -45,6 +46,10 @@ export class CheckoutComponent {
   private readonly router = inject(Router);
   readonly toastService = inject(ToastService);
   readonly addressService = inject(AddressService);
+  readonly authService = inject(AuthService);
+
+  readonly isGuest = computed(() => !this.authService.isAuthenticated());
+  readonly georgianCities = georgianCities;
 
   cityLabel(value: string): string {
     return georgianCities.find((c) => c.value === value)?.label ?? value;
@@ -64,6 +69,7 @@ export class CheckoutComponent {
   })();
 
   readonly selectedAddressCity = computed(() => {
+    if (this.isGuest()) return this.checkoutForm.guest_city().value();
     const addr = this.checkoutForm.address().value();
     return this.addresses().find((a) => a.address === addr)?.city ?? '';
   });
@@ -132,6 +138,9 @@ export class CheckoutComponent {
     email: '',
     phone_number: '',
     address: '',
+    guest_city: '',
+    guest_address: '',
+    guest_details: '',
     delivery_type: 'delivery',
     delivery_time: this.timeAllowsSameDay ? 'same_day' : 'next_day',
     comment: '',
@@ -157,8 +166,23 @@ export class CheckoutComponent {
     required(fieldPath.phone_number, {
       message: 'ტელეფონის ნომერი აუცილებელია',
     });
-    hidden(fieldPath.address, ({ valueOf }) => valueOf(fieldPath.delivery_type) === 'pickup');
+    hidden(
+      fieldPath.address,
+      ({ valueOf }) => valueOf(fieldPath.delivery_type) === 'pickup' || this.isGuest(),
+    );
     required(fieldPath.address, { message: 'მისამართი აუცილებელია' });
+
+    hidden(
+      fieldPath.guest_city,
+      ({ valueOf }) => valueOf(fieldPath.delivery_type) === 'pickup' || !this.isGuest(),
+    );
+    required(fieldPath.guest_city, { message: 'ქალაქი აუცილებელია' });
+
+    hidden(
+      fieldPath.guest_address,
+      ({ valueOf }) => valueOf(fieldPath.delivery_type) === 'pickup' || !this.isGuest(),
+    );
+    required(fieldPath.guest_address, { message: 'მისამართი აუცილებელია' });
   });
 
   constructor() {
@@ -175,19 +199,23 @@ export class CheckoutComponent {
       }
     });
 
-    this.addressService
-      .getAddresses()
-      .pipe(
-        takeUntilDestroyed(),
-        catchError(() => {
-          this.toastService.add('შეცდომა', 'მისამართების ჩატვირთვა ვერ მოხერხდა', 5000, 'error');
-          return of([]);
-        }),
-      )
-      .subscribe((addresses) => {
-        this.addresses.set(addresses);
-        this.loading.update((state) => ({ ...state, addresses: false }));
-      });
+    if (this.isGuest()) {
+      this.loading.update((state) => ({ ...state, addresses: false }));
+    } else {
+      this.addressService
+        .getAddresses()
+        .pipe(
+          takeUntilDestroyed(),
+          catchError(() => {
+            this.toastService.add('შეცდომა', 'მისამართების ჩატვირთვა ვერ მოხერხდა', 5000, 'error');
+            return of([]);
+          }),
+        )
+        .subscribe((addresses) => {
+          this.addresses.set(addresses);
+          this.loading.update((state) => ({ ...state, addresses: false }));
+        });
+    }
   }
 
   handleCheckout(event?: Event): void {
@@ -215,7 +243,14 @@ export class CheckoutComponent {
 
     const model = this.checkoutModel();
     const isIndividual = model.customer_type === 'individual';
-    const selectedAddress = this.addresses().find((a) => a.address === model.address);
+    const guest = this.isGuest();
+    const selectedAddress = guest
+      ? null
+      : this.addresses().find((a) => a.address === model.address);
+
+    const resolvedAddress = guest ? model.guest_address : model.address;
+    const resolvedCity = guest ? model.guest_city : selectedAddress?.city ?? '';
+    const resolvedDetails = guest ? model.guest_details : selectedAddress?.details ?? '';
 
     const request: CheckoutRequest = {
       customer_type: model.customer_type,
@@ -228,9 +263,9 @@ export class CheckoutComponent {
           }),
       email: model.email,
       phone_number: model.phone_number,
-      address: model.address,
-      city: selectedAddress?.city ?? '',
-      details: selectedAddress?.details ?? '',
+      address: resolvedAddress,
+      city: resolvedCity,
+      details: resolvedDetails,
       delivery_type: model.delivery_type,
       delivery_time: model.delivery_time,
       ...(model.comment ? { comment: model.comment } : {}),
@@ -262,6 +297,18 @@ export class CheckoutComponent {
         }),
       )
       .subscribe((response) => {
+        if (guest && typeof localStorage !== 'undefined') {
+          try {
+            const stored = JSON.parse(localStorage.getItem('guest_orders') ?? '[]');
+            const ids: string[] = Array.isArray(stored) ? stored : [];
+            if (response.order_id && !ids.includes(response.order_id)) {
+              ids.unshift(response.order_id);
+              localStorage.setItem('guest_orders', JSON.stringify(ids.slice(0, 50)));
+            }
+          } catch {
+            localStorage.setItem('guest_orders', JSON.stringify([response.order_id]));
+          }
+        }
         window.location.href = response.checkout_url;
       });
   }

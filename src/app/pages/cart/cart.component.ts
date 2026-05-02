@@ -6,7 +6,6 @@ import { SharedModule } from '@shared/shared.module';
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { CartItemComponent } from '@shared/components/cart-item/cart-item.component';
 import { PriceSummaryComponent } from '@shared/components/price-summary/price-summary.component';
-import { AuthService } from '@core/services/auth/auth-service.service';
 
 @Component({
   selector: 'app-cart',
@@ -22,14 +21,9 @@ import { AuthService } from '@core/services/auth/auth-service.service';
 })
 export class CartComponent {
   readonly cartService = inject(CartService);
-  readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   handleCheckout(): void {
-    if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['/auth/login']);
-      return;
-    }
     this.router.navigate(['/checkout']);
   }
 }
