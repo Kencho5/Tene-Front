@@ -1,26 +1,21 @@
 <a
   [routerLink]="['/products', productSlug(), product().data.id]"
-  class="group flex w-full min-w-0"
-  [class]="layout() === 'vertical'
-    ? 'flex-col'
-    : 'flex-row gap-3 border-b border-platinum-10 pb-4 sm:gap-0 sm:flex-col sm:border-0 sm:pb-0'"
+  class="group flex h-full w-full min-w-0 flex-row gap-3 border-b border-platinum-10 pb-4 sm:flex-col sm:gap-0 sm:border-0 sm:pb-0"
 >
   <!-- Image -->
   <div
-    class="relative flex aspect-square shrink-0 items-center justify-center overflow-hidden"
-    [class]="layout() === 'vertical'
-      ? 'w-full px-4 pt-6 py-6'
-      : 'w-[150px] h-[150px] self-start sm:w-full sm:h-auto sm:px-4 sm:pt-6 sm:py-6'"
+    class="relative flex aspect-square w-[45%] max-w-[200px] min-w-[140px] shrink-0 self-start items-center justify-center overflow-hidden sm:mx-auto sm:w-full sm:max-w-[220px] sm:self-auto sm:p-4"
     [class.grayscale]="primaryImageQuantity() === 0"
     [class.opacity-40]="primaryImageQuantity() === 0"
   >
     @if (primaryImageQuantity() > 0 && product().data.discount > 0) {
     <div
-      class="bg-valencia-60 text-white absolute top-1 left-1 z-10 rounded px-1.5 py-0.5 text-[11px] leading-none font-bold sm:bg-valencia-10 sm:text-valencia-60 sm:top-2 sm:left-2 sm:px-2 sm:py-1.5 sm:text-sm sm:rounded-md"
+      class="bg-valencia-60 text-white absolute top-1 left-1 z-10 rounded px-1.5 py-0.5 text-[11px] leading-none font-bold sm:top-2 sm:left-2 sm:bg-valencia-10 sm:text-valencia-60 sm:px-2 sm:py-1.5 sm:text-sm sm:rounded-md"
     >
       -{{ product().data.discount | number }}%
     </div>
-    } @if (productImage()) {
+    }
+    @if (productImage()) {
     <app-image
       [src]="productImage()"
       [alt]="product().data.name"
@@ -50,43 +45,34 @@
   </div>
 
   <!-- Info -->
-  <div
-    class="flex min-w-0 flex-1 flex-col"
-    [class]="layout() === 'vertical' ? '' : 'sm:py-0'"
-  >
-    <!-- Name -->
-    <p class="text-platinum-100 line-clamp-3 text-[15px] leading-snug font-medium sm:line-clamp-2 sm:px-1 sm:text-sm sm:font-normal sm:text-platinum-80 sm:pt-2">
+  <div class="flex min-w-0 flex-1 flex-col sm:px-1">
+    <p class="text-platinum-100 line-clamp-3 text-[15px] leading-snug font-medium sm:line-clamp-2 sm:text-[15px] sm:font-medium sm:text-platinum-90 sm:mt-2">
       {{ product().data.name }}
     </p>
 
-    <!-- Mobile: Brand · Category meta -->
-    @if (layout() !== 'vertical') {
-    <div class="sm:hidden">
-      @if (product().data.brand_name || categoryName()) {
-      <p class="text-platinum-50 mt-1.5 truncate text-[13px]">
-        @if (product().data.brand_name) { <span class="text-platinum-70 font-medium">{{ product().data.brand_name }}</span> }
-        @if (product().data.brand_name && categoryName()) { <span class="text-platinum-30"> · </span> }
-        @if (categoryName()) { {{ categoryName() }} }
-      </p>
-      }
-
-      @if (specHighlights().length > 0) {
-      <ul class="mt-1.5 space-y-0.5">
-        @for (spec of specHighlights(); track spec.name) {
-        <li class="text-platinum-60 text-[13px] leading-snug truncate">
-          <span class="text-platinum-40">{{ spec.name }}:</span> {{ spec.value }}
-        </li>
-        }
-      </ul>
-      }
+    @if (product().data.brand_name) {
+    <div class="mt-2">
+      <span class="bg-platinum-10 text-platinum-70 inline-block rounded-md px-2 py-0.5 text-[11px] font-semibold tracking-wide uppercase">
+        {{ product().data.brand_name }}
+      </span>
     </div>
     }
 
-    <!-- Price -->
-    <div class="mt-2 sm:px-1 sm:pt-2 sm:mt-0">
+    @if (specHighlights().length > 0) {
+    <ul class="mt-2 flex flex-wrap gap-x-3 gap-y-0.5 sm:hidden">
+      @for (spec of specHighlights(); track spec.name) {
+      <li class="text-platinum-60 text-[12px] leading-snug truncate">
+        <span class="text-platinum-40">{{ spec.name }}</span>
+        <span class="text-platinum-70 font-medium"> {{ spec.value }}</span>
+      </li>
+      }
+    </ul>
+    }
+
+    <div class="mt-2 sm:mt-auto sm:mb-2 sm:pt-3">
       @if (product().data.discount > 0) {
-      <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 sm:gap-2">
-        <p class="text-platinum-100 text-[18px] font-bold leading-none sm:text-[17px]">{{ formatPrice(discountedPrice()) }} ₾</p>
+      <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+        <p class="text-platinum-100 text-[18px] font-bold leading-none sm:text-[19px]">{{ formatPrice(discountedPrice()) }} ₾</p>
         <p class="text-platinum-40 text-[12px] line-through sm:text-sm">{{ formatPrice(product().data.price) }} ₾</p>
         @if (savingsAmount() > 0) {
         <span class="bg-valencia-10 text-valencia-60 rounded px-1.5 py-0.5 text-[11px] font-semibold leading-none sm:hidden">
@@ -95,38 +81,33 @@
         }
       </div>
       } @else {
-      <p class="text-platinum-100 text-[18px] font-bold leading-none sm:text-[17px]">{{ formatPrice(product().data.price) }} ₾</p>
+      <p class="text-platinum-100 text-[18px] font-bold leading-none sm:text-[19px]">{{ formatPrice(product().data.price) }} ₾</p>
       }
     </div>
 
-    <!-- Mobile: Stock + warranty + CTA -->
-    @if (layout() !== 'vertical') {
-    <div class="sm:hidden">
-      <div class="mt-2 space-y-1 text-[12px]">
-        @if (stockBadge().type === 'in' || stockBadge().type === 'low') {
-        <div class="inline-flex items-center gap-1.5 text-success font-medium">
-          <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
-          მარაგშია
-        </div>
-        }
-        @if (product().data.warranty) {
-        <p class="text-platinum-50">გარანტია {{ product().data.warranty }}</p>
-        }
+    <div class="mt-2 space-y-1 text-[12px] sm:hidden">
+      @if (stockBadge().type === 'in' || stockBadge().type === 'low') {
+      <div class="inline-flex items-center gap-1.5 text-success font-medium">
+        <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+        მარაგშია
       </div>
-
-      @if (stockBadge().type !== 'out') {
-      <button
-        type="button"
-        (click)="$event.preventDefault(); $event.stopPropagation(); addToCart()"
-        class="mt-3 inline-flex w-full items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-green-30 bg-green-10 hover:bg-green-20 active:bg-green-20 px-3 py-2 text-[12px] font-semibold text-green-70 transition-colors"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        კალათში დამატება
-      </button>
+      }
+      @if (product().data.warranty) {
+      <p class="text-platinum-50">გარანტია {{ product().data.warranty }}</p>
       }
     </div>
+
+    @if (stockBadge().type !== 'out') {
+    <button
+      type="button"
+      (click)="$event.preventDefault(); $event.stopPropagation(); addToCart()"
+      class="mt-3 flex w-full items-center justify-center gap-1 rounded-lg border border-green-30 bg-green-10 hover:bg-green-20 active:bg-green-20 px-2 py-2 text-center text-[12px] font-semibold text-green-70 transition-colors sm:mt-0 sm:gap-1.5 sm:px-3 sm:py-2.5 sm:text-[14px]"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      კალათში დამატება
+    </button>
     }
   </div>
 </a>

@@ -537,4 +537,18 @@ export class ProductComponent {
 
     this.schemaService.addBreadcrumbSchema(breadcrumbItems);
   }
+
+  readonly relatedScrollState = signal(false);
+
+  scrollRelatedLeft(el: HTMLElement) {
+    el.scrollBy({ left: -300, behavior: 'smooth' });
+  }
+
+  scrollRelatedRight(el: HTMLElement) {
+    el.scrollBy({ left: 300, behavior: 'smooth' });
+  }
+
+  onRelatedScroll(el: HTMLElement) {
+    this.relatedScrollState.set(el.scrollLeft > 0);
+  }
 }

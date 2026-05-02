@@ -514,23 +514,43 @@
         <h2 class="text-platinum-100 text-lg font-semibold">მსგავსი პროდუქტები</h2>
         <div class="relative mt-5">
           <div
-            class="pointer-events-none absolute top-0 right-0 z-10 h-full w-16 bg-linear-to-l from-white via-white/70 to-transparent"
-          ></div>
-          <div
             appDragScroll
-            class="hide-scrollbar flex gap-4 overflow-x-auto px-1 pr-16 pb-2 sm:gap-6"
+            #relatedScrollContainer
+            (scroll)="onRelatedScroll(relatedScrollContainer)"
+            class="hide-scrollbar -mx-4 flex snap-x snap-proximity gap-4 overflow-x-auto scroll-pl-4 px-4 py-2 lg:mx-0 lg:scroll-pl-1 lg:px-1 lg:py-2"
+            style="scrollbar-width: none; -ms-overflow-style: none"
           >
             @if (relatedProducts.isLoading()) { @for (i of [1, 2, 3, 4, 5, 6]; track i) {
-            <div class="w-[220px] shrink-0 sm:w-[260px]">
-              <app-product-card-skeleton />
-            </div>
+            <app-product-card-skeleton class="w-[340px] shrink-0 snap-start" />
             } } @else { @for (relatedProduct of relatedProducts.value(); track
             relatedProduct.data.id) {
-            <div class="w-[220px] shrink-0 sm:w-[260px]">
-              <app-product-card [product]="relatedProduct" />
-            </div>
+            <app-product-card class="w-[340px] shrink-0 snap-start" [product]="relatedProduct" />
             } }
           </div>
+
+          @if (relatedScrollState()) {
+          <button
+            type="button"
+            (click)="scrollRelatedLeft(relatedScrollContainer)"
+            class="bg-green-10 shadow-low hover:bg-green-20 absolute top-1/2 left-0 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-all lg:flex"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="rotate-180">
+              <path d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4" stroke="#068C0B" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          }
+
+          <button
+            type="button"
+            (click)="scrollRelatedRight(relatedScrollContainer)"
+            class="bg-green-10 shadow-low hover:bg-green-20 absolute top-1/2 right-0 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-all lg:flex"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4" stroke="#068C0B" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+
+          <div class="pointer-events-none absolute top-0 right-0 bottom-0 hidden w-20 bg-linear-to-l from-white to-transparent lg:block"></div>
         </div>
       </div>
       }

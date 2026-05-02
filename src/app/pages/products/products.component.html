@@ -203,11 +203,11 @@
         appDragScroll
         #productsScrollContainer
         (scroll)="onScroll(productsScrollContainer, 'products')"
-        class="hide-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4 py-2 lg:mx-0 lg:px-1 lg:py-2"
+        class="hide-scrollbar -mx-4 flex snap-x snap-proximity gap-4 overflow-x-auto scroll-pl-4 px-4 py-2 lg:mx-0 lg:scroll-pl-1 lg:px-1 lg:py-2"
         style="scrollbar-width: none; -ms-overflow-style: none"
       >
         @for (product of products(); track product.data.id) {
-        <app-product-card class="w-[280px] shrink-0" [product]="product" layout="vertical" />
+        <app-product-card class="w-[340px] shrink-0 snap-start" [product]="product" />
         }
       </div>
 
@@ -258,7 +258,7 @@
         appDragScroll
         #brandsScrollContainer
         (scroll)="onScroll(brandsScrollContainer, 'brands')"
-        class="hide-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:px-1"
+        class="hide-scrollbar -mx-4 flex snap-x snap-proximity gap-4 overflow-x-auto scroll-pl-4 px-4 pb-2 lg:mx-0 lg:scroll-pl-1 lg:px-1"
         style="scrollbar-width: none; -ms-overflow-style: none"
       >
         @for (brandCard of productBrandCards; track $index) {
@@ -266,7 +266,7 @@
           [routerLink]="['/search']"
           [queryParams]="{ brand: brandCard.brandId }"
           [style.background]="getBrandGradient(brandCard.color)"
-          class="shadow-low flex h-[184px] shrink-0 items-center gap-4 rounded-2xl p-4 transition-all hover:brightness-[0.97] sm:w-[410px]"
+          class="shadow-low flex h-[184px] shrink-0 snap-start items-center gap-4 rounded-2xl p-4 transition-all hover:brightness-[0.97] sm:w-[410px]"
         >
           <div class="space-y-4 p-2">
             <div class="bg-platinum-10 inline-block rounded-full px-3 py-2">
