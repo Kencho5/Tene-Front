@@ -151,12 +151,12 @@
             >
               {{
                 toast.type === "success"
-                  ? "Success"
+                  ? "წარმატება"
                   : toast.type === "error"
-                    ? "Error"
+                    ? "შეცდომა"
                     : toast.type === "warning"
-                      ? "Warning"
-                      : "Information"
+                      ? "გაფრთხილება"
+                      : "ინფორმაცია"
               }}
             </span>
           </div>
@@ -168,7 +168,7 @@
             [class.text-info]="toast.type === 'info'"
             (click)="toastService.remove(toast.id)"
           >
-            Dismiss
+            დახურვა
           </button>
         </div>
       </div>
