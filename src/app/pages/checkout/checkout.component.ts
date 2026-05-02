@@ -21,6 +21,7 @@ import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.compo
 import { SharedModule } from '@shared/shared.module';
 import { AddressData } from '@core/interfaces/address.interface';
 import { AddressFormModalComponent } from '@shared/components/address-form-modal/address-form-modal.component';
+import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
 
 @Component({
   selector: 'app-checkout',
@@ -44,6 +45,10 @@ export class CheckoutComponent {
   private readonly router = inject(Router);
   readonly toastService = inject(ToastService);
   readonly addressService = inject(AddressService);
+
+  cityLabel(value: string): string {
+    return georgianCities.find((c) => c.value === value)?.label ?? value;
+  }
 
   private readonly highMountainCities = new Set([
     'mestia',
