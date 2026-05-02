@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { email, FormField, form, hidden, required } from '@angular/forms/signals';
 import { catchError, EMPTY, of } from 'rxjs';
@@ -45,15 +45,47 @@ export class CheckoutComponent {
   readonly toastService = inject(ToastService);
   readonly addressService = inject(AddressService);
 
-  readonly sameDayAvailable = (() => {
+  private readonly highMountainCities = new Set([
+    'mestia',
+    'oni',
+    'ambrolauri',
+    'khulo',
+    'shuakhevi',
+  ]);
+
+  readonly timeAllowsSameDay = (() => {
     const now = new Date();
     return now.getHours() < 17 || (now.getHours() === 17 && now.getMinutes() < 30);
   })();
+
+  readonly selectedAddressCity = computed(() => {
+    const addr = this.checkoutForm.address().value();
+    return this.addresses().find((a) => a.address === addr)?.city ?? '';
+  });
+
+  readonly sameDayAvailable = computed(() => {
+    if (!this.timeAllowsSameDay) return false;
+    const city = this.selectedAddressCity();
+    return !city || city === 'tbilisi';
+  });
+
+  readonly deliveryNotice = computed(() => {
+    const city = this.selectedAddressCity();
+    if (!city || city === 'tbilisi') return '';
+    if (this.highMountainCities.has(city)) {
+      return 'მაღალმთიან რეგიონში (სვანეთი, რაჭა, ხევსურეთი, თუშეთი, ზემო აჭარა) მიწოდების ღირებულებაა 13.50 ₾.';
+    }
+    return 'თბილისის გარეთ მიწოდების ღირებულებაა 8.50 ₾. იმავე დღის მიწოდება ხელმისაწვდომია მხოლოდ თბილისში.';
+  });
+
   readonly deliveryPrice = computed(() => {
     const deliveryTime = this.checkoutForm.delivery_time().value();
     const deliveryType = this.checkoutForm.delivery_type().value();
+    const city = this.selectedAddressCity();
 
     if (deliveryType === 'pickup') return 0;
+    if (this.highMountainCities.has(city)) return 13.5;
+    if (city && city !== 'tbilisi') return 8.5;
     if (deliveryTime === 'same_day') return 12;
     return 5.5;
   });
@@ -96,7 +128,7 @@ export class CheckoutComponent {
     phone_number: '',
     address: '',
     delivery_type: 'delivery',
-    delivery_time: this.sameDayAvailable ? 'same_day' : 'next_day',
+    delivery_time: this.timeAllowsSameDay ? 'same_day' : 'next_day',
     comment: '',
   });
 
@@ -128,6 +160,15 @@ export class CheckoutComponent {
     if (this.cartService.items().length === 0) {
       this.router.navigate(['/cart']);
     }
+
+    effect(() => {
+      if (
+        !this.sameDayAvailable() &&
+        this.checkoutForm.delivery_time().value() === 'same_day'
+      ) {
+        this.checkoutForm.delivery_time().value.set('next_day');
+      }
+    });
 
     this.addressService
       .getAddresses()
