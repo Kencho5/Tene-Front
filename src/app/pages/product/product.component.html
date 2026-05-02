@@ -248,7 +248,7 @@
           <!-- ─── Cable configurator ─── -->
           @if (isCable()) {
           <div class="border-platinum-20/40 mt-5 border-t pt-5">
-            <p class="text-platinum-90 text-[13px] font-semibold tracking-wide uppercase">
+            <p class="text-platinum-90 text-[15px] font-semibold tracking-wide uppercase">
               ვატაჟი
             </p>
             <div class="mt-3 flex gap-2">
@@ -256,7 +256,7 @@
               <button
                 type="button"
                 (click)="setWatts(w)"
-                class="h-9 rounded-lg border px-4 text-[13px] font-semibold transition-all duration-200"
+                class="h-10 rounded-lg border px-4 text-[15px] font-semibold transition-all duration-200"
                 [ngClass]="
                   selectedWatts() === w
                     ? 'border-green-60 bg-green-10 text-green-70'
@@ -271,10 +271,10 @@
 
           <div class="border-platinum-20/40 mt-5 border-t pt-5">
             <div class="flex items-baseline justify-between">
-              <p class="text-platinum-90 text-[13px] font-semibold tracking-wide uppercase">
+              <p class="text-platinum-90 text-[15px] font-semibold tracking-wide uppercase">
                 სიგრძე
               </p>
-              <p class="text-platinum-100 text-[13px] font-semibold">
+              <p class="text-platinum-100 text-[15px] font-semibold">
                 {{ cableLengths[selectedLengthIdx()] }} სმ
               </p>
             </div>
@@ -288,8 +288,13 @@
               class="accent-green-60 mt-3 w-full"
             />
             <div class="text-platinum-40 mt-1 flex justify-between text-[11px]">
-              <span>{{ cableLengths[0] }} სმ</span>
-              <span>{{ cableLengths[cableLengths.length - 1] }} სმ</span>
+              @for (len of cableLengths; track len; let i = $index) {
+              <span
+                class="transition-colors"
+                [class.text-green-70]="selectedLengthIdx() === i"
+                [class.font-semibold]="selectedLengthIdx() === i"
+              >{{ len }}</span>
+              }
             </div>
           </div>
           }

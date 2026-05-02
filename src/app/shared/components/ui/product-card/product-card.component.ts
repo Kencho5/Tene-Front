@@ -4,6 +4,7 @@ import { SharedModule } from '@shared/shared.module';
 import { ImageComponent } from '../image/image.component';
 import { calculateDiscount } from '@utils/discountedPrice';
 import { CartService } from '@core/services/products/cart.service';
+import { ToastService } from '@core/services/toast.service';
 import { generateProductSlug } from '@utils/slug';
 import { getProductImageUrl } from '@utils/product-image-url';
 
@@ -14,6 +15,7 @@ import { getProductImageUrl } from '@utils/product-image-url';
 })
 export class ProductCardComponent {
   readonly cartService = inject(CartService);
+  private readonly toastService = inject(ToastService);
 
   readonly product = input.required<ProductResponse>();
 
@@ -44,6 +46,59 @@ export class ProductCardComponent {
     return this.primaryImage()?.quantity ?? 0;
   });
 
+  readonly categoryName = computed(() => {
+    return this.product().categories?.[0]?.name ?? null;
+  });
+
+  readonly savingsAmount = computed(() => {
+    const data = this.product().data;
+    const discount = Number(data.discount);
+    if (!discount) return 0;
+    return Number(data.price) - Number(this.discountedPrice());
+  });
+
+  readonly stockBadge = computed(() => {
+    const qty = this.primaryImageQuantity();
+    if (qty === 0) return { type: 'out' as const };
+    if (qty <= 3) return { type: 'low' as const, qty };
+    return { type: 'in' as const };
+  });
+
+  private static readonly SPEC_HIGHLIGHT_KEYS = [
+    'კაბელის სიგრძე',
+    'გამომავალი სიმძლავრე',
+    'სიმძლავრე (Watt)',
+    'კონექტორები',
+    'Bluetooth',
+    'მუშაობის დრო',
+    'შიდა მეხსიერება',
+    'ოპერატიული მეხსიერება',
+    'ეკრანის ზომა',
+    'მეგაპიქსელების რაოდენობა',
+    'პროცესორი',
+    'მოქმედების რადიუსი',
+  ];
+
+  readonly specHighlights = computed<{ name: string; value: string }[]>(() => {
+    const specs = this.product().data.specifications;
+    if (!specs) return [];
+    const flat: { name: string; value: string }[] = [];
+    for (const group of Object.values(specs)) {
+      for (const item of group) flat.push(item);
+    }
+    const seen = new Set<string>();
+    const picked: { name: string; value: string }[] = [];
+    for (const key of ProductCardComponent.SPEC_HIGHLIGHT_KEYS) {
+      const hit = flat.find((s) => s.name === key);
+      if (hit && !seen.has(hit.name)) {
+        seen.add(hit.name);
+        picked.push(hit);
+        if (picked.length === 2) break;
+      }
+    }
+    return picked;
+  });
+
   formatPrice(price: number): string {
     const num = Number(price);
     return num >= 1000 ? Math.round(num).toString() : num.toFixed(2);
@@ -53,7 +108,7 @@ export class ProductCardComponent {
     const productData = this.product().data;
     const primaryImage = this.primaryImage();
 
-    if (!productData || !primaryImage) return;
+    if (!productData || !primaryImage || primaryImage.quantity === 0) return;
 
     this.cartService.addItem({
       product: productData,
@@ -63,5 +118,12 @@ export class ProductCardComponent {
       selectedImageExtension: primaryImage.extension,
       selectedImageQuantity: primaryImage.quantity,
     });
+
+    this.toastService.add(
+      'კალათაში დაემატა',
+      productData.name,
+      2500,
+      'success',
+    );
   }
 }
