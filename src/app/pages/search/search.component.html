@@ -1,59 +1,101 @@
-<!-- Parent Categories Bar -->
+<!-- Parent Categories Bar (card chips) -->
 @if (categoryTree.value().length > 0) {
 <div class="border-platinum-20 border-b bg-white">
   <div class="container px-4 xl:px-8">
     <div class="relative">
-      <div
-        class="pointer-events-none absolute top-0 right-4 z-10 h-full w-12 bg-linear-to-l from-white to-transparent"
-      ></div>
-      <nav appDragScroll class="hide-scrollbar mr-4 -ml-4 flex items-center overflow-x-auto pr-12">
-        <!-- "ყველა" button -->
+      <nav
+        appDragScroll
+        class="hide-scrollbar -mx-4 flex items-start gap-1 overflow-x-auto px-4 py-4 sm:gap-2 sm:py-5 xl:-mx-8 xl:px-8"
+      >
+        <!-- "ყველა" -->
         <button
           type="button"
           (click)="isCategoryExpanded.set(!isCategoryExpanded())"
-          class="flex shrink-0 items-center gap-1 border-b-2 px-3 py-2.5 text-xs font-semibold transition-colors sm:px-4 sm:py-3 sm:text-sm"
-          [class]="isCategoryExpanded()
-              ? 'border-green-60 text-green-70'
-              : 'border-transparent text-platinum-60 hover:text-green-70'"
+          class="group flex w-20 shrink-0 cursor-pointer flex-col items-center gap-2 rounded-xl px-1 py-2 transition-colors sm:w-24"
         >
-          ყველა
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            class="transition-transform"
-            [class.rotate-180]="isCategoryExpanded()"
+          <span
+            class="flex h-16 w-16 items-center justify-center transition-colors sm:h-20 sm:w-20"
+            [class]="isCategoryExpanded() ? 'text-green-70' : 'text-platinum-80 group-hover:text-platinum-100'"
           >
-            <path
-              d="M4 6L8 10L12 6"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+              <path fill="currentColor" d="M3 3h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 17h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 10h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4z" />
+            </svg>
+          </span>
+          <span
+            class="line-clamp-2 w-full text-center text-[11px] leading-tight break-all sm:text-xs"
+            [class]="isCategoryExpanded() ? 'text-green-70 font-semibold' : 'text-platinum-90 font-medium'"
+          >
+            ყველა
+          </span>
         </button>
+
         @for (category of categoryTree.value(); track category.id) {
         <button
           type="button"
           (click)="setParam('parent_category_id', selectedParentId() === '' + category.id ? undefined : '' + category.id)"
-          class="flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-medium transition-colors sm:gap-2 sm:px-4 sm:py-3 sm:text-sm"
-          [class]="selectedParentId() === '' + category.id
-                ? 'border-green-60 text-green-70'
-                : 'border-transparent text-platinum-60 hover:text-green-70'"
+          class="group flex w-20 shrink-0 cursor-pointer flex-col items-center gap-2 rounded-xl px-1 py-2 transition-colors sm:w-24"
         >
-          @if (category.image_url) {
-          <img
-            [src]="category.image_url"
-            [alt]="category.name"
-            class="h-4 w-4 object-contain sm:h-5 sm:w-5"
-          />
-          } {{ category.name }}
+          <span
+            class="flex h-16 w-16 items-center justify-center p-1.5 transition-all sm:h-20 sm:w-20"
+          >
+            @if (category.image_url) {
+            <img
+              [src]="category.image_url"
+              [alt]="category.name"
+              class="h-full w-full object-contain"
+            />
+            }
+          </span>
+          <span
+            class="line-clamp-2 w-full text-center text-[11px] leading-tight break-all sm:text-xs"
+            [class]="selectedParentId() === '' + category.id
+                  ? 'text-green-70 font-semibold'
+                  : 'text-platinum-90 font-medium'"
+          >
+            {{ category.name }}
+          </span>
         </button>
         }
       </nav>
     </div>
+
+    <!-- Child sub-bar: shown when parent selected -->
+    @if (selectedParent() && selectedParent()!.children.length > 0) {
+    <div class="border-platinum-20 border-t" animate.enter="slide-down-enter 200ms ease-out">
+      <div class="relative">
+        <nav
+          appDragScroll
+          class="hide-scrollbar -mx-4 flex items-center gap-2 overflow-x-auto px-4 py-4 xl:-mx-8 xl:px-8"
+        >
+          @for (child of selectedParent()!.children; track child.id) {
+          <button
+            type="button"
+            (click)="toggleParam('child_category_id', '' + child.id, !hasValue('child_category_id', '' + child.id))"
+            class="flex shrink-0 cursor-pointer items-center gap-2 rounded-full border py-1 pr-4 pl-1 text-xs font-medium transition-all duration-150"
+            [class]="hasValue('child_category_id', '' + child.id)
+                  ? 'border-green-60 bg-green-60 text-white'
+                  : 'border-platinum-20 bg-white text-platinum-70 hover:border-green-60 hover:text-green-70'"
+          >
+            <span
+              class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
+              [class]="hasValue('child_category_id', '' + child.id) ? 'bg-white/20' : 'bg-platinum-10'"
+            >
+              @if (hasValue('child_category_id', '' + child.id)) {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              } @else if (child.image_url) {
+              <img [src]="child.image_url" [alt]="child.name" class="h-5 w-5 object-contain" />
+              }
+            </span>
+            <span class="whitespace-nowrap">{{ child.name }}</span>
+          </button>
+          }
+        </nav>
+      </div>
+    </div>
+    }
+
   </div>
 </div>
 }
@@ -72,14 +114,15 @@
   animate.leave="slide-up-leave 200ms ease-in"
   (pointermove)="categoryPanelPointerMoved.set(true)"
 >
-  <div class="container flex flex-1 flex-col overflow-hidden px-4 pt-6 pb-8 md:flex-none xl:px-0">
+  <div class="container flex flex-1 flex-col overflow-hidden px-4 pt-20 pb-8 md:flex-none md:pt-6 xl:px-0">
     <!-- Header -->
-    <div class="mb-6 flex items-center justify-between">
+    <div class="mb-4 flex items-center justify-between md:mb-6">
       <h2 class="text-lg font-bold tracking-tight">ყველა კატეგორია</h2>
       <button
         type="button"
         (click)="isCategoryExpanded.set(false)"
-        class="border-platinum-20 hover:bg-platinum-10 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border transition-colors"
+        aria-label="დახურვა"
+        class="border-platinum-20 hover:bg-platinum-10 flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
           <path
@@ -250,7 +293,7 @@
 }
 
 <!-- Main Content -->
-<div class="container px-4 pt-8 pb-10 sm:pt-10 xl:px-8">
+<div class="container px-4 pt-4 pb-10 sm:pt-5 xl:px-8">
   <!-- Two-column layout: Sidebar + Products -->
   <div class="flex items-start gap-6 lg:gap-8">
     <!-- FILTERS SIDEBAR (Walmart-style collapsible sections) -->

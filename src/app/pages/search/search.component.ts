@@ -203,7 +203,18 @@ export class SearchComponent {
 
   readonly categoryTree = rxResource({
     defaultValue: [] as CategoryTreeNode[],
-    stream: () => this.categoriesService.getCategoryTree().pipe(map((res) => res.categories)),
+    stream: () =>
+      this.categoriesService.getCategoryTree().pipe(
+        map((res) => {
+          const priorityIds = [2, 3, 9];
+          const all = res.categories;
+          const priority = priorityIds
+            .map((id) => all.find((c) => c.id === id))
+            .filter(Boolean) as CategoryTreeNode[];
+          const rest = all.filter((c) => !priorityIds.includes(c.id));
+          return [...priority, ...rest];
+        }),
+      ),
   });
 
   readonly selectedParentId = computed(() => {
@@ -217,6 +228,20 @@ export class SearchComponent {
     const parents = this.categoryTree.value();
     const parent = parents.find((p) => p.children.some((c) => '' + c.id === firstChildId));
     return parent ? '' + parent.id : null;
+  });
+
+  readonly selectedParent = computed(() => {
+    const id = this.selectedParentId();
+    if (!id) return null;
+    return this.categoryTree.value().find((c) => '' + c.id === id) ?? null;
+  });
+
+  readonly selectedChildren = computed(() => {
+    const childParam = this.params()['child_category_id'] as string | undefined;
+    if (!childParam) return [];
+    const ids = new Set(childParam.split(','));
+    const all = this.categoryTree.value().flatMap((p) => p.children);
+    return all.filter((c) => ids.has('' + c.id));
   });
 
   readonly filteredBrands = computed(() => {
