@@ -95,6 +95,7 @@ export class CheckoutComponent {
     const city = this.selectedAddressCity();
 
     if (deliveryType === 'pickup') return 0;
+    if (this.cartService.qualifiesForFreeShipping()) return 0;
     if (this.highMountainCities.has(city)) return 13.5;
     if (city && city !== 'tbilisi') return 8.5;
     if (deliveryTime === 'same_day') return 12;
