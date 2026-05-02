@@ -11,6 +11,7 @@ export class ImageComponent {
   readonly width = input<number>(200);
   readonly height = input<number>(200);
   readonly loading = input<'lazy' | 'eager'>('lazy');
+  readonly fetchpriority = input<'high' | 'low' | 'auto'>('auto');
   readonly class = input<string>('');
   readonly alt = input<string>('');
 

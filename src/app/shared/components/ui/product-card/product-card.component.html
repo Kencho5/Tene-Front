@@ -21,7 +21,8 @@
       [alt]="product().data.name"
       [width]="272"
       [height]="272"
-      loading="lazy"
+      [loading]="priority() ? 'eager' : 'lazy'"
+      [fetchpriority]="priority() ? 'high' : 'auto'"
       class="h-full w-full object-contain"
     />
     } @else {

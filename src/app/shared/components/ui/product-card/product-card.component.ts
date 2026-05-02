@@ -18,6 +18,7 @@ export class ProductCardComponent {
   private readonly toastService = inject(ToastService);
 
   readonly product = input.required<ProductResponse>();
+  readonly priority = input<boolean>(false);
 
   readonly productSlug = computed(() => {
     return generateProductSlug(this.product().data.name);

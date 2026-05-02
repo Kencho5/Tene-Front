@@ -851,6 +851,7 @@
         } @else { @for (product of products(); track product.data.id) {
         <app-product-card
           [product]="product"
+          [priority]="$index === 0"
           animate.enter="scale-fade-in 300ms ease-out"
           [style.animation-delay.ms]="$index * 40"
           style="animation-fill-mode: backwards"

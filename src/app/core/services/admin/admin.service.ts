@@ -52,7 +52,10 @@ export class AdminService {
   }
 
   uploadToS3(url: string, file: File): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': file.type });
+    const headers = new HttpHeaders({
+      'Content-Type': file.type,
+      'Cache-Control': 'public, max-age=31536000, immutable',
+    });
 
     return this.http.put(url, file, { headers });
   }

@@ -4,6 +4,7 @@
   [width]="width()"
   [height]="height()"
   [loading]="loading()"
+  [attr.fetchpriority]="fetchpriority()"
   [class]="'transition-opacity duration-200 ' + class()"
   [class.opacity-0]="!imageLoaded()"
   [class.opacity-100]="imageLoaded()"
