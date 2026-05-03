@@ -4,7 +4,7 @@ import { calculateDiscount } from '@utils/discountedPrice';
 
 const CART_STORAGE_KEY = 'tene_cart';
 
-export const FREE_SHIPPING_THRESHOLD = 50;
+export const FREE_SHIPPING_THRESHOLD = 100;
 
 function sameCableConfig(
   a: CartItem['cableConfig'],
