@@ -65,6 +65,7 @@ export class CheckoutComponent {
 
   readonly timeAllowsSameDay = (() => {
     const now = new Date();
+    if (now.getDay() === 0) return false;
     return now.getHours() < 17 || (now.getHours() === 17 && now.getMinutes() < 30);
   })();
 
