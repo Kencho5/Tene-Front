@@ -181,7 +181,7 @@
         </button>
         @if (expandedParentId() === category.id && category.children.length > 0) {
         <div
-          class="grid grid-cols-2 gap-2 px-2 pt-1 pb-2"
+          class="flex flex-col gap-1 px-2 pt-1 pb-2"
           animate.enter="slide-down-enter 200ms ease-out"
         >
           @for (child of category.children; track child.id) {
@@ -197,12 +197,12 @@
             <img
               [src]="child.image_url"
               [alt]="child.name"
-              width="28"
-              height="28"
-              class="h-7 w-7 shrink-0 object-contain"
+              width="40"
+              height="40"
+              class="h-10 w-10 shrink-0 object-contain"
             />
             }
-            <span class="truncate text-xs font-medium">{{ child.name }}</span>
+            <span class="truncate text-sm font-medium">{{ child.name }}</span>
           </button>
           }
         </div>
