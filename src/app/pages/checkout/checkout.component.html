@@ -7,7 +7,7 @@
     <app-breadcrumb [items]="breadcrumbs()" />
 
     <div class="container mt-10 flex flex-col justify-between gap-6 xl:flex-row">
-      <div class="flex-1 sm:border-platinum-20 sm:rounded-2xl sm:border sm:bg-white sm:px-6">
+      <div class="sm:border-platinum-20 flex-1 sm:rounded-2xl sm:border sm:bg-white sm:px-6">
         <div class="border-platinum-20 w-full border-b py-5 last:border-b-0 sm:py-6">
           <div class="mb-6">
             <h1 class="text-xl">ჩემი ნივთები</h1>
@@ -62,7 +62,7 @@
                   }"
                 class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
               >
-                ფიზიკური
+                ფიზიკური პირი
               </button>
               <button
                 type="button"
@@ -75,7 +75,7 @@
                   }"
                 class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
               >
-                იურიდიული
+                იურიდიული პირი
               </button>
             </div>
 
@@ -149,9 +149,7 @@
               type="text"
               placeholder="საიდენტიფიკაციო კოდი"
             />
-            }
-
-            @if (submitted() && checkoutForm.email().invalid()) {
+            } @if (submitted() && checkoutForm.email().invalid()) {
             <span #errorAnchor></span>
             }
             <app-input
@@ -244,7 +242,14 @@
                 />
                 @if (submitted() && checkoutForm.guest_city().invalid()) {
                 <p role="alert" class="text-valencia-50 mt-1.5 flex items-center gap-1 text-xs">
-                  <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <svg
+                    class="h-3.5 w-3.5 shrink-0"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    aria-hidden="true"
+                  >
                     <circle cx="10" cy="10" r="8" />
                     <path d="M10 6.5v4M10 13.5h.01" stroke-linecap="round" />
                   </svg>
@@ -266,7 +271,7 @@
                 [formField]="checkoutForm.guest_details"
                 placeholder="დამატებითი დეტალები (სართული, ბინა, კოდი...)"
                 rows="2"
-                class="border-platinum-20 focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] px-4 py-3 text-sm outline-none transition-colors"
+                class="border-platinum-20 focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] px-4 py-3 text-sm transition-colors outline-none"
               ></textarea>
             </div>
             } @else if (loading().addresses) {
@@ -306,8 +311,7 @@
                 მისამართის დამატება
               </button>
             </div>
-            } @else {
-            @if (submitted() && checkoutForm.address().invalid()) {
+            } @else { @if (submitted() && checkoutForm.address().invalid()) {
             <span #errorAnchor></span>
             }
             <div class="flex flex-col gap-4">
@@ -390,19 +394,22 @@
               </button>
               }
             </div>
-            }
-
-            @if (!isGuest() && submitted() && checkoutForm.address().invalid()) {
+            } @if (!isGuest() && submitted() && checkoutForm.address().invalid()) {
             <p role="alert" class="text-valencia-50 flex items-center gap-1 text-xs">
-              <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <svg
+                class="h-3.5 w-3.5 shrink-0"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                aria-hidden="true"
+              >
                 <circle cx="10" cy="10" r="8" />
                 <path d="M10 6.5v4M10 13.5h.01" stroke-linecap="round" />
               </svg>
               {{ checkoutForm.address().errors()[0]?.message }}
             </p>
-            }
-
-            @if (!isGuest()) {
+            } @if (!isGuest()) {
             <button
               type="button"
               class="text-green-70 flex items-center gap-2 text-sm font-semibold"
@@ -536,8 +543,7 @@
               </svg>
               <span>{{ notice }}</span>
             </div>
-            }
-            } @else {
+            } } @else {
             <div class="border-platinum-20 flex flex-col gap-3 rounded-xl border-[1.5px] p-4">
               <div class="flex items-center gap-3">
                 <div
@@ -656,7 +662,7 @@
             [formField]="checkoutForm.comment"
             placeholder="დაამატეთ კომენტარი თქვენი შეკვეთისთვის..."
             rows="3"
-            class="border-platinum-20 focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] px-4 py-3 text-sm outline-none transition-colors"
+            class="border-platinum-20 focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] px-4 py-3 text-sm transition-colors outline-none"
           ></textarea>
         </div>
       </div>

@@ -1,4 +1,6 @@
-<div class="w-full space-y-6 sm:border-platinum-20 sm:rounded-2xl sm:border sm:bg-white sm:p-6 xl:w-[420px]">
+<div
+  class="sm:border-platinum-20 w-full space-y-6 sm:rounded-2xl sm:border sm:bg-white sm:p-6 xl:w-[420px]"
+>
   <h2 class="text-xl">{{ title() }}</h2>
 
   @if (cartService.itemCount() > 0) {
@@ -11,11 +13,23 @@
         [ngClass]="cartService.qualifiesForFreeShipping() ? 'bg-green-60 text-white' : 'bg-white text-green-70 border-green-20 border'"
       >
         @if (cartService.qualifiesForFreeShipping()) {
-        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
+        <svg
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+        >
           <path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         } @else {
-        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <svg
+          class="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
           <path d="M3 7h11v9H3z" stroke-linecap="round" stroke-linejoin="round" />
           <path d="M14 10h4l3 3v3h-7" stroke-linecap="round" stroke-linejoin="round" />
           <circle cx="7" cy="18" r="1.6" />
@@ -26,12 +40,14 @@
       <div class="min-w-0 flex-1">
         @if (cartService.qualifiesForFreeShipping()) {
         <p class="text-green-70 text-sm font-semibold">უფასო მიწოდება გააქტიურებულია 🎉</p>
-        <p class="text-platinum-60 mt-0.5 text-xs">მიწოდების ღირებულება გადაგიხდით ჩვენ</p>
+        <p class="text-platinum-60 mt-0.5 text-xs">მიწოდების ღირებულებას გადაგიხდით ჩვენ</p>
         } @else {
         <p class="text-sm leading-snug">
-          <span>დაამატეთ კიდევ </span>
-          <span class="text-green-70 font-bold">{{ cartService.freeShippingRemaining() | number: "1.2-2" }}₾</span>
-          <span class="text-platinum-70"> უფასო მიწოდებისთვის</span>
+          <span>დაამატეთ კიდევ</span>
+          <span class="text-green-70 font-bold">
+            {{ cartService.freeShippingRemaining() | number: "1.2-2" }}₾
+          </span>
+          <span class="text-platinum-70">უფასო მიწოდებისთვის</span>
         </p>
         <p class="text-platinum-50 mt-1 text-xs">
           {{ cartService.totalPrice() | number: "1.2-2" }}₾ / 100₾
