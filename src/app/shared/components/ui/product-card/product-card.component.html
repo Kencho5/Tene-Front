@@ -1,21 +1,20 @@
 <a
   [routerLink]="['/products', productSlug(), product().data.id]"
-  class="group flex h-full w-full min-w-0 flex-row gap-3 border-b border-platinum-10 pb-4 sm:flex-col sm:gap-0 sm:border-0 sm:pb-0"
+  class="group border-platinum-10 flex h-full w-full min-w-0 flex-row gap-3 border-b pb-4 sm:flex-col sm:gap-0 sm:border-0 sm:pb-0"
 >
   <!-- Image -->
   <div
-    class="relative flex aspect-square w-[45%] max-w-[200px] min-w-[140px] shrink-0 self-start items-center justify-center overflow-hidden sm:mx-auto sm:w-full sm:max-w-[220px] sm:self-auto sm:p-4"
+    class="relative flex w-[45%] max-w-[200px] min-w-[140px] shrink-0 items-center justify-center self-stretch overflow-hidden sm:mx-auto sm:aspect-square sm:w-full sm:max-w-[220px] sm:self-auto sm:p-4"
     [class.grayscale]="primaryImageQuantity() === 0"
     [class.opacity-40]="primaryImageQuantity() === 0"
   >
     @if (primaryImageQuantity() > 0 && product().data.discount > 0) {
     <div
-      class="bg-valencia-60 text-white absolute top-1 left-1 z-10 rounded px-1.5 py-0.5 text-[11px] leading-none font-bold sm:top-2 sm:left-2 sm:bg-valencia-10 sm:text-valencia-60 sm:px-2 sm:py-1.5 sm:text-sm sm:rounded-md"
+      class="bg-valencia-60 sm:bg-valencia-10 sm:text-valencia-60 absolute top-1 left-1 z-10 rounded px-1.5 py-0.5 text-[11px] leading-none font-bold text-white sm:top-2 sm:left-2 sm:rounded-md sm:px-2 sm:py-1.5 sm:text-sm"
     >
       -{{ product().data.discount | number }}%
     </div>
-    }
-    @if (productImage()) {
+    } @if (productImage()) {
     <app-image
       [src]="productImage()"
       [alt]="product().data.name"
@@ -47,24 +46,26 @@
 
   <!-- Info -->
   <div class="flex min-w-0 flex-1 flex-col sm:px-1">
-    <p class="text-platinum-100 line-clamp-3 text-[15px] leading-snug font-medium sm:line-clamp-2 sm:text-[15px] sm:font-medium sm:text-platinum-90 sm:mt-2">
+    <p
+      class="text-platinum-100 sm:text-platinum-90 line-clamp-3 text-[15px] leading-snug font-medium sm:mt-2 sm:line-clamp-2 sm:text-[15px] sm:font-medium"
+    >
       {{ product().data.name }}
     </p>
 
     @if (product().data.brand_name) {
     <div class="mt-2">
-      <span class="bg-platinum-10 text-platinum-70 inline-block rounded-md px-2 py-0.5 text-[11px] font-semibold tracking-wide uppercase">
+      <span
+        class="bg-platinum-10 text-platinum-70 inline-block rounded-md px-2 py-0.5 text-[11px] font-semibold tracking-wide uppercase"
+      >
         {{ product().data.brand_name }}
       </span>
     </div>
-    }
-
-    @if (specHighlights().length > 0) {
+    } @if (specHighlights().length > 0) {
     <ul class="mt-2 flex flex-wrap gap-x-3 gap-y-0.5 sm:hidden">
       @for (spec of specHighlights(); track spec.name) {
-      <li class="text-platinum-60 text-[12px] leading-snug truncate">
+      <li class="text-platinum-60 truncate text-[12px] leading-snug">
         <span class="text-platinum-40">{{ spec.name }}</span>
-        <span class="text-platinum-70 font-medium"> {{ spec.value }}</span>
+        <span class="text-platinum-70 font-medium">{{ spec.value }}</span>
       </li>
       }
     </ul>
@@ -73,32 +74,44 @@
     <div class="mt-2 sm:mt-auto sm:mb-2 sm:pt-3">
       @if (product().data.discount > 0) {
       <div class="flex items-baseline gap-2">
-        <p class="text-platinum-100 text-[18px] font-bold leading-none sm:text-[19px]">{{ formatPrice(discountedPrice()) }} ₾</p>
-        <p class="text-platinum-40 text-[13px] line-through sm:text-sm">{{ formatPrice(product().data.price) }} ₾</p>
+        <p class="text-platinum-100 text-[18px] leading-none font-bold sm:text-[19px]">
+          {{ formatPrice(discountedPrice()) }} ₾
+        </p>
+        <p class="text-platinum-40 text-[13px] line-through sm:text-sm">
+          {{ formatPrice(product().data.price) }} ₾
+        </p>
       </div>
       @if (savingsAmount() > 0) {
-      <div class="mt-1.5 inline-flex items-center gap-1 rounded-md bg-valencia-10 px-1.5 py-0.5 sm:hidden">
+      <div
+        class="bg-valencia-10 mt-1.5 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 sm:hidden"
+      >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="text-valencia-60">
-          <path d="M20 12H4M4 12L10 6M4 12L10 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M20 12H4M4 12L10 6M4 12L10 18"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
-        <span class="text-valencia-60 text-[11px] font-bold leading-none">
+        <span class="text-valencia-60 text-[11px] leading-none font-bold">
           დაზოგე {{ formatPrice(savingsAmount()) }} ₾
         </span>
       </div>
-      }
-      } @else {
-      <p class="text-platinum-100 text-[18px] font-bold leading-none sm:text-[19px]">{{ formatPrice(product().data.price) }} ₾</p>
+      } } @else {
+      <p class="text-platinum-100 text-[18px] leading-none font-bold sm:text-[19px]">
+        {{ formatPrice(product().data.price) }} ₾
+      </p>
       }
     </div>
 
     <div class="mt-2 space-y-1 text-[12px] sm:hidden">
       @if (stockBadge().type === 'in' || stockBadge().type === 'low') {
-      <div class="inline-flex items-center gap-1.5 text-success font-medium">
-        <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+      <div class="text-success inline-flex items-center gap-1.5 font-medium">
+        <span class="bg-success h-1.5 w-1.5 rounded-full"></span>
         მარაგშია
       </div>
-      }
-      @if (product().data.warranty) {
+      } @if (product().data.warranty) {
       <p class="text-platinum-50">გარანტია {{ product().data.warranty }}</p>
       }
     </div>
@@ -107,10 +120,16 @@
     <button
       type="button"
       (click)="$event.preventDefault(); $event.stopPropagation(); addToCart()"
-      class="mt-3 flex w-full items-center justify-center gap-1 rounded-lg border border-green-30 bg-green-10 hover:bg-green-20 active:bg-green-20 px-2 py-2 text-center text-[12px] font-semibold text-green-70 transition-colors sm:mt-0 sm:gap-1.5 sm:px-3 sm:py-2.5 sm:text-[14px]"
+      class="border-green-30 bg-green-10 hover:bg-green-20 active:bg-green-20 text-green-70 mt-3 flex w-full items-center justify-center gap-1 rounded-lg border px-2 py-2 text-center text-[12px] font-semibold transition-colors sm:mt-0 sm:gap-1.5 sm:px-3 sm:py-2.5 sm:text-[14px]"
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <path
+          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
       ყიდვა
     </button>
