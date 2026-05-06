@@ -14,4 +14,5 @@ export class InputComponent {
   readonly placeholder = input.required<string>();
   readonly customClass = input<string>('');
   readonly error = input<boolean>(false);
+  readonly errorMessage = input<string>('');
 }

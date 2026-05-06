@@ -1,6 +1,17 @@
-import { Component, ChangeDetectionStrategy, computed, effect, inject, signal } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  signal,
+  viewChildren,
+} from '@angular/core';
+import { NgClass } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { email, FormField, form, hidden, required } from '@angular/forms/signals';
+import { email, FormField, form, hidden, required, submit } from '@angular/forms/signals';
 import { catchError, EMPTY, of } from 'rxjs';
 import { CheckoutFields, CheckoutRequest } from '@core/interfaces/products.interface';
 import { organizationTypes } from '@utils/organizationTypes';
@@ -18,16 +29,17 @@ import {
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
-import { SharedModule } from '@shared/shared.module';
 import { AddressData } from '@core/interfaces/address.interface';
 import { AddressFormModalComponent } from '@shared/components/address-form-modal/address-form-modal.component';
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
 import { AuthService } from '@core/services/auth/auth-service.service';
 
+type SectionKey = 'contactDetails' | 'deliveryDetails' | 'paymentMethod';
+
 @Component({
   selector: 'app-checkout',
   imports: [
-    SharedModule,
+    NgClass,
     BreadcrumbComponent,
     PriceSummaryComponent,
     CartItemComponent,
@@ -81,6 +93,13 @@ export class CheckoutComponent {
     return !city || city === 'tbilisi';
   });
 
+  readonly sameDayUnavailableReason = computed(() => {
+    const city = this.selectedAddressCity();
+    if (city && city !== 'tbilisi') return 'ხელმისაწვდომია მხოლოდ თბილისში';
+    if (!this.timeAllowsSameDay) return 'ხელმისაწვდომია 17:30-მდე';
+    return '';
+  });
+
   readonly deliveryNotice = computed(() => {
     const city = this.selectedAddressCity();
     if (!city || city === 'tbilisi') return '';
@@ -103,6 +122,17 @@ export class CheckoutComponent {
     return 5.5;
   });
 
+  private readonly priceForTime = (time: 'same_day' | 'next_day') => {
+    if (this.cartService.qualifiesForFreeShipping()) return 0;
+    const city = this.selectedAddressCity();
+    if (this.highMountainCities.has(city)) return 13.5;
+    if (city && city !== 'tbilisi') return 8.5;
+    return time === 'same_day' ? 12 : 5.5;
+  };
+
+  readonly sameDayPrice = computed(() => this.priceForTime('same_day'));
+  readonly nextDayPrice = computed(() => this.priceForTime('next_day'));
+
   readonly checkoutLoading = signal(false);
 
   readonly breadcrumbs = computed<BreadcrumbItem[]>(() => [
@@ -113,6 +143,8 @@ export class CheckoutComponent {
   readonly organizationTypes = organizationTypes;
 
   readonly submitted = signal(false);
+  private readonly scrollPending = signal(false);
+  private readonly errorElements = viewChildren<ElementRef<HTMLElement>>('errorAnchor');
 
   readonly loading = signal({
     addresses: true,
@@ -120,7 +152,7 @@ export class CheckoutComponent {
 
   readonly addresses = signal<AddressData[]>([]);
 
-  readonly sectionStates = signal({
+  readonly sectionStates = signal<Record<SectionKey, boolean>>({
     contactDetails: true,
     deliveryDetails: true,
     paymentMethod: true,
@@ -188,9 +220,11 @@ export class CheckoutComponent {
   });
 
   constructor() {
-    if (this.cartService.items().length === 0) {
-      this.router.navigate(['/cart']);
-    }
+    afterNextRender(() => {
+      if (this.cartService.items().length === 0) {
+        this.router.navigate(['/cart']);
+      }
+    });
 
     effect(() => {
       if (
@@ -199,6 +233,19 @@ export class CheckoutComponent {
       ) {
         this.checkoutForm.delivery_time().value.set('next_day');
       }
+    });
+
+    effect(() => {
+      if (!this.scrollPending()) return;
+      const els = this.errorElements();
+      if (els.length === 0) return;
+      const el = els[0].nativeElement;
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const focusable = el.matches('input, textarea, button')
+        ? el
+        : el.querySelector<HTMLElement>('input, textarea, button');
+      focusable?.focus({ preventScroll: true });
+      this.scrollPending.set(false);
     });
 
     if (this.isGuest()) {
@@ -225,16 +272,8 @@ export class CheckoutComponent {
     this.submitted.set(true);
 
     if (this.checkoutForm().invalid()) {
-      const errors = this.checkoutForm().errorSummary();
-      const errorMessage =
-        errors.length > 0 ? errors[0].message : 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი';
-
-      this.toastService.add(
-        'შეკვეთის გაფორმება ვერ მოხერხდა',
-        errorMessage || 'გთხოვთ შეამოწმოთ დეტალები',
-        5000,
-        'error',
-      );
+      this.expandSectionsWithErrors();
+      this.scrollPending.set(true);
       return;
     }
 
@@ -243,6 +282,13 @@ export class CheckoutComponent {
       return;
     }
 
+    submit(this.checkoutForm, async () => {
+      this.dispatchCheckout();
+      return [];
+    });
+  }
+
+  private dispatchCheckout(): void {
     const model = this.checkoutModel();
     const isIndividual = model.customer_type === 'individual';
     const guest = this.isGuest();
@@ -315,7 +361,39 @@ export class CheckoutComponent {
       });
   }
 
-  toggleSection(section: 'contactDetails' | 'deliveryDetails' | 'paymentMethod') {
+  private hasContactErrors(): boolean {
+    const f = this.checkoutForm;
+    const isIndividual = f.customer_type().value() === 'individual';
+    const isCompany = f.customer_type().value() === 'company';
+    return (
+      f.email().invalid() ||
+      f.phone_number().invalid() ||
+      (isIndividual && (f.individual.name().invalid() || f.individual.surname().invalid())) ||
+      (isCompany &&
+        (f.company.organization_name().invalid() || f.company.organization_code().invalid()))
+    );
+  }
+
+  private hasDeliveryErrors(): boolean {
+    const f = this.checkoutForm;
+    if (f.delivery_type().value() === 'pickup') return false;
+    if (this.isGuest()) {
+      return f.guest_city().invalid() || f.guest_address().invalid();
+    }
+    return f.address().invalid();
+  }
+
+  private expandSectionsWithErrors() {
+    const contact = this.hasContactErrors();
+    const delivery = this.hasDeliveryErrors();
+    this.sectionStates.update((state) => ({
+      ...state,
+      contactDetails: contact ? true : state.contactDetails,
+      deliveryDetails: delivery ? true : state.deliveryDetails,
+    }));
+  }
+
+  toggleSection(section: SectionKey) {
     this.sectionStates.update((state) => ({
       ...state,
       [section]: !state[section],
@@ -329,5 +407,6 @@ export class CheckoutComponent {
     } else {
       this.addresses.set([...this.addresses(), address]);
     }
+    this.checkoutForm.address().value.set(address.address);
   }
 }

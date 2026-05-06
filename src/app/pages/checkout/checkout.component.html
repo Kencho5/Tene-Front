@@ -7,8 +7,8 @@
     <app-breadcrumb [items]="breadcrumbs()" />
 
     <div class="container mt-10 flex flex-col justify-between gap-6 xl:flex-row">
-      <div class="space-y-6">
-        <div class="shadow-low w-full rounded-2xl bg-white p-4 sm:p-6">
+      <div class="flex-1 sm:border-platinum-20 sm:rounded-2xl sm:border sm:bg-white sm:px-6">
+        <div class="border-platinum-20 w-full border-b py-5 last:border-b-0 sm:py-6">
           <div class="mb-6">
             <h1 class="text-xl">ჩემი ნივთები</h1>
             <p class="text-platinum-50 text-sm">
@@ -26,11 +26,13 @@
         <form
           (submit)="handleCheckout($event)"
           novalidate
-          class="shadow-low w-full rounded-2xl bg-white p-4 sm:p-6"
+          class="border-platinum-20 w-full border-b py-5 last:border-b-0 sm:py-6"
         >
           <button
             type="button"
             (click)="toggleSection('contactDetails')"
+            [attr.aria-expanded]="sectionStates().contactDetails"
+            aria-controls="section-contact"
             class="flex w-full items-center justify-between text-left transition-opacity hover:opacity-70"
           >
             <h1 class="text-xl">1. საკონტაქტო დეტალები</h1>
@@ -47,7 +49,7 @@
           </button>
 
           @if (sectionStates().contactDetails) {
-          <div class="mt-4 flex flex-col gap-4">
+          <div id="section-contact" class="mt-4 flex flex-col gap-4">
             <div class="flex gap-3">
               <button
                 type="button"
@@ -80,23 +82,26 @@
             @if (checkoutForm.customer_type().value() === "individual") {
             <div class="flex w-full gap-4">
               <div class="flex-1">
+                @if (submitted() && checkoutForm.individual.name().invalid()) {
+                <span #errorAnchor></span>
+                }
                 <app-input
                   [formField]="checkoutForm.individual.name"
-                  [error]="
-                        submitted() && checkoutForm.individual.name().invalid()
-                      "
+                  [error]="submitted() && checkoutForm.individual.name().invalid()"
+                  [errorMessage]="checkoutForm.individual.name().errors()[0]?.message ?? ''"
                   type="text"
                   placeholder="სახელი"
                 />
               </div>
 
               <div class="flex-1">
+                @if (submitted() && checkoutForm.individual.surname().invalid()) {
+                <span #errorAnchor></span>
+                }
                 <app-input
                   [formField]="checkoutForm.individual.surname"
-                  [error]="
-                        submitted() &&
-                        checkoutForm.individual.surname().invalid()
-                      "
+                  [error]="submitted() && checkoutForm.individual.surname().invalid()"
+                  [errorMessage]="checkoutForm.individual.surname().errors()[0]?.message ?? ''"
                   type="text"
                   placeholder="გვარი"
                 />
@@ -121,39 +126,49 @@
               </div>
 
               <div class="w-full md:flex-1">
+                @if (submitted() && checkoutForm.company.organization_name().invalid()) {
+                <span #errorAnchor></span>
+                }
                 <app-input
                   [formField]="checkoutForm.company.organization_name"
-                  [error]="
-                        submitted() &&
-                        checkoutForm.company.organization_name().invalid()
-                      "
+                  [error]="submitted() && checkoutForm.company.organization_name().invalid()"
+                  [errorMessage]="checkoutForm.company.organization_name().errors()[0]?.message ?? ''"
                   type="text"
                   placeholder="ორგანიზაციის დასახელება"
                 />
               </div>
             </div>
 
+            @if (submitted() && checkoutForm.company.organization_code().invalid()) {
+            <span #errorAnchor></span>
+            }
             <app-input
               [formField]="checkoutForm.company.organization_code"
-              [error]="
-                    submitted() &&
-                    checkoutForm.company.organization_code().invalid()
-                  "
+              [error]="submitted() && checkoutForm.company.organization_code().invalid()"
+              [errorMessage]="checkoutForm.company.organization_code().errors()[0]?.message ?? ''"
               type="text"
               placeholder="საიდენტიფიკაციო კოდი"
             />
             }
 
+            @if (submitted() && checkoutForm.email().invalid()) {
+            <span #errorAnchor></span>
+            }
             <app-input
               [formField]="checkoutForm.email"
               [error]="submitted() && checkoutForm.email().invalid()"
+              [errorMessage]="checkoutForm.email().errors()[0]?.message ?? ''"
               type="email"
               placeholder="ელ. ფოსტა"
             />
 
+            @if (submitted() && checkoutForm.phone_number().invalid()) {
+            <span #errorAnchor></span>
+            }
             <app-input
               [formField]="checkoutForm.phone_number"
               [error]="submitted() && checkoutForm.phone_number().invalid()"
+              [errorMessage]="checkoutForm.phone_number().errors()[0]?.message ?? ''"
               type="text"
               placeholder="ტელეფონის ნომერი"
             />
@@ -161,10 +176,12 @@
           }
         </form>
 
-        <div class="shadow-low w-full rounded-2xl bg-white p-4 sm:p-6">
+        <div class="border-platinum-20 w-full border-b py-5 last:border-b-0 sm:py-6">
           <button
             type="button"
             (click)="toggleSection('deliveryDetails')"
+            [attr.aria-expanded]="sectionStates().deliveryDetails"
+            aria-controls="section-delivery"
             class="flex w-full items-center justify-between text-left transition-opacity hover:opacity-70"
           >
             <h1 class="text-xl">2. მიწოდება</h1>
@@ -181,7 +198,7 @@
           </button>
 
           @if (sectionStates().deliveryDetails) {
-          <div class="mt-4 flex flex-col gap-4">
+          <div id="section-delivery" class="mt-4 flex flex-col gap-4">
             <div class="flex gap-3">
               <button
                 type="button"
@@ -213,17 +230,35 @@
 
             @if (checkoutForm.delivery_type().value() === 'delivery') { @if (isGuest()) {
             <div class="flex flex-col gap-4">
-              <app-combobox
-                [(selectedValue)]="checkoutForm.guest_city().value"
-                [items]="georgianCities"
-                [error]="submitted() && checkoutForm.guest_city().invalid()"
-                placeholder="ქალაქი"
-                searchPlaceholder="ძებნა..."
-                notFoundText="ვერ მოიძებნა"
-              />
+              <div>
+                @if (submitted() && checkoutForm.guest_city().invalid()) {
+                <span #errorAnchor></span>
+                }
+                <app-combobox
+                  [(selectedValue)]="checkoutForm.guest_city().value"
+                  [items]="georgianCities"
+                  [error]="submitted() && checkoutForm.guest_city().invalid()"
+                  placeholder="ქალაქი"
+                  searchPlaceholder="ძებნა..."
+                  notFoundText="ვერ მოიძებნა"
+                />
+                @if (submitted() && checkoutForm.guest_city().invalid()) {
+                <p role="alert" class="text-valencia-50 mt-1.5 flex items-center gap-1 text-xs">
+                  <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <circle cx="10" cy="10" r="8" />
+                    <path d="M10 6.5v4M10 13.5h.01" stroke-linecap="round" />
+                  </svg>
+                  {{ checkoutForm.guest_city().errors()[0]?.message }}
+                </p>
+                }
+              </div>
+              @if (submitted() && checkoutForm.guest_address().invalid()) {
+              <span #errorAnchor></span>
+              }
               <app-input
                 [formField]="checkoutForm.guest_address"
                 [error]="submitted() && checkoutForm.guest_address().invalid()"
+                [errorMessage]="checkoutForm.guest_address().errors()[0]?.message ?? ''"
                 type="text"
                 placeholder="მისამართი"
               />
@@ -272,6 +307,9 @@
               </button>
             </div>
             } @else {
+            @if (submitted() && checkoutForm.address().invalid()) {
+            <span #errorAnchor></span>
+            }
             <div class="flex flex-col gap-4">
               @for (address of addresses(); track address.id) {
               <button
@@ -282,8 +320,11 @@
                 [class.border-green-60]="
                           checkoutForm.address().value() === address.address
                         "
+                [class.border-valencia-50]="
+                          submitted() && checkoutForm.address().invalid()
+                        "
                 [class.border-platinum-20]="
-                          checkoutForm.address().value() !== address.address
+                          checkoutForm.address().value() !== address.address && !(submitted() && checkoutForm.address().invalid())
                         "
                 class="flex w-full flex-col rounded-xl border-[1.5px] px-4 py-1 transition-all"
               >
@@ -351,6 +392,16 @@
             </div>
             }
 
+            @if (!isGuest() && submitted() && checkoutForm.address().invalid()) {
+            <p role="alert" class="text-valencia-50 flex items-center gap-1 text-xs">
+              <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <circle cx="10" cy="10" r="8" />
+                <path d="M10 6.5v4M10 13.5h.01" stroke-linecap="round" />
+              </svg>
+              {{ checkoutForm.address().errors()[0]?.message }}
+            </p>
+            }
+
             @if (!isGuest()) {
             <button
               type="button"
@@ -403,7 +454,11 @@
                   <div class="flex flex-col items-start">
                     <span class="font-normal">იმავე დღეს</span>
                     @if (!sameDayAvailable()) {
-                    <span class="text-platinum-50 text-xs">ხელმისაწვდომია 17:30-მდე</span>
+                    <span class="text-platinum-50 text-xs">{{ sameDayUnavailableReason() }}</span>
+                    } @else {
+                    <span class="text-platinum-50 text-xs">
+                      @if (sameDayPrice() === 0) { უფასო } @else { {{ sameDayPrice() }} ₾ }
+                    </span>
                     }
                   </div>
                 </div>
@@ -444,7 +499,12 @@
                       />
                     </svg>
                   </div>
-                  <span class="font-normal">2 - 3 სამუშაო დღეში</span>
+                  <div class="flex flex-col items-start">
+                    <span class="font-normal">2 - 3 სამუშაო დღეში</span>
+                    <span class="text-platinum-50 text-xs">
+                      @if (nextDayPrice() === 0) { უფასო } @else { {{ nextDayPrice() }} ₾ }
+                    </span>
+                  </div>
                 </div>
                 <div
                   [ngClass]="{
@@ -536,7 +596,8 @@
           }
         </div>
 
-        <div class="shadow-low w-full rounded-2xl bg-white p-4 sm:p-6">
+        <!--
+        <div class="border-platinum-20 w-full border-b py-5 last:border-b-0 sm:py-6">
           <button
             type="button"
             (click)="toggleSection('paymentMethod')"
@@ -586,8 +647,9 @@
           </div>
           }
         </div>
+        -->
 
-        <div class="shadow-low w-full rounded-2xl bg-white p-4 sm:p-6">
+        <div class="border-platinum-20 w-full border-b py-5 last:border-b-0 sm:py-6">
           <h1 class="text-xl">კომენტარი</h1>
           <p class="text-platinum-50 mb-4 text-sm">არასავალდებულო</p>
           <textarea
