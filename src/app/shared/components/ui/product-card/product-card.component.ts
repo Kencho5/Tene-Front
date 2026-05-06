@@ -1,10 +1,10 @@
 import { Component, computed, inject, input } from '@angular/core';
+import { Router } from '@angular/router';
 import { ProductResponse } from '@core/interfaces/products.interface';
 import { SharedModule } from '@shared/shared.module';
 import { ImageComponent } from '../image/image.component';
 import { calculateDiscount } from '@utils/discountedPrice';
 import { CartService } from '@core/services/products/cart.service';
-import { ToastService } from '@core/services/toast.service';
 import { generateProductSlug } from '@utils/slug';
 import { getProductImageUrl } from '@utils/product-image-url';
 
@@ -15,7 +15,7 @@ import { getProductImageUrl } from '@utils/product-image-url';
 })
 export class ProductCardComponent {
   readonly cartService = inject(CartService);
-  private readonly toastService = inject(ToastService);
+  private readonly router = inject(Router);
 
   readonly product = input.required<ProductResponse>();
   readonly priority = input<boolean>(false);
@@ -120,11 +120,6 @@ export class ProductCardComponent {
       selectedImageQuantity: primaryImage.quantity,
     });
 
-    this.toastService.add(
-      'კალათაში დაემატა',
-      productData.name,
-      2500,
-      'success',
-    );
+    this.router.navigate(['/cart']);
   }
 }
