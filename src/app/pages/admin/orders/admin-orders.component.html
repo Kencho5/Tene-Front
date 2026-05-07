@@ -164,7 +164,7 @@
                 (click)="toggleExpand(order)"
               >
                 <!-- Product -->
-                <td class="px-4 py-3">
+                <td class="px-4 py-3 lg:min-w-[360px]">
                   <div class="flex items-center gap-3">
                     <!-- Chevron -->
                     <svg
@@ -210,8 +210,8 @@
                         </div>
                       }
                     }
-                    <div class="min-w-0">
-                      <p class="truncate text-sm font-medium text-platinum-100">
+                    <div class="min-w-[220px] flex-1">
+                      <p class="text-sm font-medium text-platinum-100 lg:truncate">
                         {{ order.items[0]?.product_name ?? "შეკვეთა" }}
                       </p>
                       <p class="truncate text-xs text-platinum-50">
@@ -222,45 +222,48 @@
                           +{{ order.items.length - 1 }} სხვა ნივთი
                         </p>
                       }
+                      <p class="mt-0.5 text-xs text-platinum-50 lg:hidden">
+                        {{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}
+                      </p>
                     </div>
                   </div>
                 </td>
 
                 <!-- User -->
-                <td class="hidden px-4 py-3 md:table-cell">
-                  <div>
+                <td class="hidden px-4 py-3 md:table-cell w-[200px] max-w-[200px]">
+                  <div class="min-w-0">
                     @if (
                       order.customer_type === "company" &&
                       order.organization_name
                     ) {
-                      <p class="text-sm font-medium text-platinum-100">
+                      <p class="truncate text-sm font-medium text-platinum-100">
                         {{ order.organization_name }}
                       </p>
                     } @else {
-                      <p class="text-sm font-medium text-platinum-100">
+                      <p class="truncate text-sm font-medium text-platinum-100">
                         {{ order.customer_name }} {{ order.customer_surname }}
                       </p>
                     }
-                    <p class="text-xs text-platinum-50">{{ order.email }}</p>
+                    <p class="truncate text-xs text-platinum-50">{{ order.email }}</p>
                   </div>
                 </td>
 
                 <!-- Date -->
-                <td class="hidden px-4 py-3 lg:table-cell">
+                <td class="hidden whitespace-nowrap px-4 py-3 lg:table-cell">
                   <span class="text-sm text-platinum-60">
                     {{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}
                   </span>
                 </td>
 
                 <!-- Amount -->
-                <td class="px-4 py-3">
+                <td class="whitespace-nowrap px-4 py-3">
                   <span class="text-sm font-semibold text-platinum-100">
                     {{ formatAmount(order.amount) }} {{ order.currency }}
                   </span>
                 </td>
 
                 <!-- Status -->
-                <td class="px-4 py-3">
+                <td class="whitespace-nowrap px-4 py-3">
                   <div class="flex justify-end">
                     @switch (order.status) {
                       @case ("approved") {
@@ -449,15 +452,17 @@
     </div>
 
     <!-- Pagination -->
-    <app-pagination
-      [currentPage]="currentPage()"
-      [totalPages]="totalPages()"
-      [totalItems]="totalOrders()"
-      [showingFrom]="showingFrom()"
-      [showingTo]="showingTo()"
-      [limit]="limit()"
-      (pageChange)="onPageChange($event)"
-      (limitChange)="onLimitChangeValue($event)"
-    />
+    <div class="px-4">
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [totalItems]="totalOrders()"
+        [showingFrom]="showingFrom()"
+        [showingTo]="showingTo()"
+        [limit]="limit()"
+        (pageChange)="onPageChange($event)"
+        (limitChange)="onLimitChangeValue($event)"
+      />
+    </div>
   </div>
 </div>

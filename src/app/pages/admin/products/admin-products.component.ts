@@ -85,14 +85,14 @@ export class AdminProductsComponent {
   readonly totalProducts = computed(() => this.searchResponse.value().total);
   readonly currentPage = computed(() => {
     const offset = Number(this.params()['offset']) || 0;
-    const limit = Number(this.params()['limit']) || 10;
+    const limit = Number(this.params()['limit']) || 12;
     return Math.floor(offset / limit) + 1;
   });
   readonly totalPages = computed(() => {
-    const limit = Number(this.params()['limit']) || 10;
+    const limit = Number(this.params()['limit']) || 12;
     return Math.ceil(this.totalProducts() / limit);
   });
-  readonly limit = computed(() => Number(this.params()['limit']) || 10);
+  readonly limit = computed(() => Number(this.params()['limit']) || 12);
   readonly offset = computed(() => Number(this.params()['offset']) || 0);
 
   readonly showingFrom = computed(() => {
@@ -228,7 +228,7 @@ export class AdminProductsComponent {
   }
 
   onLimitChangeValue(value: string): void {
-    this.updateQueryParams({ limit: value || '10', offset: 0 });
+    this.updateQueryParams({ limit: value || '12', offset: 0 });
   }
 
   toggleProductStatus(productId: string, currentStatus: boolean): void {

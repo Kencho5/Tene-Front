@@ -217,16 +217,18 @@
     </div>
 
     <!-- Pagination -->
-    <app-pagination
-      [currentPage]="currentPage()"
-      [totalPages]="totalPages()"
-      [totalItems]="totalBrands()"
-      [showingFrom]="showingFrom()"
-      [showingTo]="showingTo()"
-      [limit]="limit()"
-      (pageChange)="onPageChange($event)"
-      (limitChange)="onLimitChangeValue($event)"
-    />
+    <div class="px-4">
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [totalItems]="totalBrands()"
+        [showingFrom]="showingFrom()"
+        [showingTo]="showingTo()"
+        [limit]="limit()"
+        (pageChange)="onPageChange($event)"
+        (limitChange)="onLimitChangeValue($event)"
+      />
+    </div>
   </div>
 </div>
 

@@ -112,7 +112,7 @@ export class AdminCategoriesComponent {
     }
 
     // Pagination
-    const limit = Number(params['limit']) || 10;
+    const limit = Number(params['limit']) || 12;
     const offset = Number(params['offset']) || 0;
     const paginated = filtered.slice(offset, offset + limit);
 
@@ -128,14 +128,14 @@ export class AdminCategoriesComponent {
   readonly totalCategories = computed(() => this.searchResponse().total);
   readonly currentPage = computed(() => {
     const offset = Number(this.params()['offset']) || 0;
-    const limit = Number(this.params()['limit']) || 10;
+    const limit = Number(this.params()['limit']) || 12;
     return Math.floor(offset / limit) + 1;
   });
   readonly totalPages = computed(() => {
-    const limit = Number(this.params()['limit']) || 10;
+    const limit = Number(this.params()['limit']) || 12;
     return Math.ceil(this.totalCategories() / limit);
   });
-  readonly limit = computed(() => Number(this.params()['limit']) || 10);
+  readonly limit = computed(() => Number(this.params()['limit']) || 12);
   readonly offset = computed(() => Number(this.params()['offset']) || 0);
 
   readonly showingFrom = computed(() => {
@@ -237,7 +237,7 @@ export class AdminCategoriesComponent {
   }
 
   onLimitChangeValue(value: string): void {
-    this.updateQueryParams({ limit: value || '10', offset: 0 });
+    this.updateQueryParams({ limit: value || '12', offset: 0 });
   }
 
   toggleCategoryStatus(categoryId: number, currentStatus: boolean): void {

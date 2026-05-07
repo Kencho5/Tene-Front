@@ -47,7 +47,7 @@ export class AdminBrandsComponent {
       filtered = filtered.filter((brand) => brand.id === Number(id));
     }
 
-    const limit = Number(params['limit']) || 15;
+    const limit = Number(params['limit']) || 12;
     const offset = Number(params['offset']) || 0;
     const paginated = filtered.slice(offset, offset + limit);
 
@@ -63,14 +63,14 @@ export class AdminBrandsComponent {
   readonly totalBrands = computed(() => this.searchResponse().total);
   readonly currentPage = computed(() => {
     const offset = Number(this.params()['offset']) || 0;
-    const limit = Number(this.params()['limit']) || 15;
+    const limit = Number(this.params()['limit']) || 12;
     return Math.floor(offset / limit) + 1;
   });
   readonly totalPages = computed(() => {
-    const limit = Number(this.params()['limit']) || 15;
+    const limit = Number(this.params()['limit']) || 12;
     return Math.ceil(this.totalBrands() / limit);
   });
-  readonly limit = computed(() => Number(this.params()['limit']) || 15);
+  readonly limit = computed(() => Number(this.params()['limit']) || 12);
   readonly offset = computed(() => Number(this.params()['offset']) || 0);
 
   readonly showingFrom = computed(() => {
@@ -160,7 +160,7 @@ export class AdminBrandsComponent {
   }
 
   onLimitChangeValue(value: string): void {
-    this.updateQueryParams({ limit: value || '15', offset: 0 });
+    this.updateQueryParams({ limit: value || '12', offset: 0 });
   }
 
   formatDate(dateString: string): string {

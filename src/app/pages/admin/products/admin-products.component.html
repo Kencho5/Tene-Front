@@ -314,7 +314,7 @@
   </div>
 
   <!-- Table (sm+) -->
-  <div class="border-platinum-20 hidden overflow-hidden rounded-lg border bg-white sm:block">
+  <div class="border-platinum-20 hidden overflow-visible rounded-lg border bg-white sm:block">
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
@@ -570,16 +570,18 @@
     </div>
 
     <!-- Pagination -->
-    <app-pagination
-      [currentPage]="currentPage()"
-      [totalPages]="totalPages()"
-      [totalItems]="totalProducts()"
-      [showingFrom]="showingFrom()"
-      [showingTo]="showingTo()"
-      [limit]="limit()"
-      (pageChange)="onPageChange($event)"
-      (limitChange)="onLimitChangeValue($event)"
-    />
+    <div class="px-4">
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [totalItems]="totalProducts()"
+        [showingFrom]="showingFrom()"
+        [showingTo]="showingTo()"
+        [limit]="limit()"
+        (pageChange)="onPageChange($event)"
+        (limitChange)="onLimitChangeValue($event)"
+      />
+    </div>
   </div>
 </div>
 
