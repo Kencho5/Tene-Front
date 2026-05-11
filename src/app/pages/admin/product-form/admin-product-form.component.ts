@@ -28,6 +28,7 @@ import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.compo
 import { flattenCategoryTree } from '@utils/category';
 import { colorLabels } from '@utils/colors';
 import { Brand } from '@core/interfaces/admin/brands.interface';
+import { CableType } from '@core/interfaces/admin/cable-types.interface';
 import { Location } from '@angular/common';
 
 interface SpecificationEntry {
@@ -74,6 +75,7 @@ export class AdminProductFormComponent {
   }));
 
   readonly brandOptions = signal<ComboboxItems[]>([]);
+  readonly cableTypeOptions = signal<ComboboxItems[]>([]);
 
   readonly productId = computed(() => {
     return this.route.snapshot.paramMap.get('id') ?? null;
@@ -117,6 +119,7 @@ export class AdminProductFormComponent {
     price: null as any,
     discount: null as any,
     brand_id: null as any,
+    cable_type_id: null,
     warranty: '',
   });
 
@@ -133,6 +136,7 @@ export class AdminProductFormComponent {
   constructor() {
     this.loadCategoryOptions();
     this.loadBrandOptions();
+    this.loadCableTypeOptions();
 
     effect(() => {
       const response = this.product();
@@ -148,6 +152,15 @@ export class AdminProductFormComponent {
       .pipe(catchError(() => of([] as Brand[])))
       .subscribe((brands) => {
         this.brandOptions.set(brands.map((b) => ({ label: b.name, value: String(b.id) })));
+      });
+  }
+
+  private loadCableTypeOptions(): void {
+    this.adminService
+      .getCableTypes()
+      .pipe(catchError(() => of([] as CableType[])))
+      .subscribe((types) => {
+        this.cableTypeOptions.set(types.map((t) => ({ label: t.name, value: String(t.id) })));
       });
   }
 
@@ -183,6 +196,7 @@ export class AdminProductFormComponent {
       price: product.price,
       discount: product.discount,
       brand_id: product.brand_id,
+      cable_type_id: product.cable_type_id ?? null,
       warranty: product.warranty,
     });
     if (this.categoryOptions().length > 0 && categories.length > 0) {
@@ -397,6 +411,7 @@ export class AdminProductFormComponent {
       discount: Number(productData.discount) || 0,
       specifications,
       brand_id: productData.brand_id ? Number(productData.brand_id) : null,
+      cable_type_id: productData.cable_type_id ? Number(productData.cable_type_id) : null,
       warranty: productData.warranty,
     };
   }
@@ -549,6 +564,18 @@ export class AdminProductFormComponent {
     this.productModel.update((m) => ({
       ...m,
       brand_id: value ? Number(value) : null,
+    }));
+  }
+
+  getSelectedCableTypeValue(): string | undefined {
+    const id = this.productModel().cable_type_id;
+    return id ? String(id) : undefined;
+  }
+
+  onCableTypeChange(value: string | undefined): void {
+    this.productModel.update((m) => ({
+      ...m,
+      cable_type_id: value ? Number(value) : null,
     }));
   }
 

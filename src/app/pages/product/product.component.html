@@ -252,7 +252,7 @@
               ვატაჟი
             </p>
             <div class="mt-3 flex gap-2">
-              @for (w of cableWattsOptions; track w) {
+              @for (w of cableWattsOptions(); track w) {
               <button
                 type="button"
                 (click)="setWatts(w)"
@@ -275,13 +275,13 @@
                 სიგრძე
               </p>
               <p class="text-platinum-100 text-[15px] font-semibold">
-                {{ cableLengths[selectedLengthIdx()] }} სმ
+                {{ cableLengths()[selectedLengthIdx()] }} სმ
               </p>
             </div>
             <input
               type="range"
               min="0"
-              [max]="cableLengths.length - 1"
+              [max]="cableLengths().length - 1"
               step="1"
               [value]="selectedLengthIdx()"
               (input)="onLengthSliderChange($event)"
@@ -290,16 +290,16 @@
             <!-- Ruler -->
             <div class="relative mt-1 h-3 select-none">
               <!-- ticks -->
-              @for (len of cableLengths; track len; let i = $index; let isLast = $last) {
+              @for (len of cableLengths(); track len; let i = $index; let isLast = $last) {
               <div
                 class="bg-platinum-60 absolute top-0 h-2 w-px"
-                [style.left.%]="(i / (cableLengths.length - 1)) * 100"
+                [style.left.%]="(i / (cableLengths().length - 1)) * 100"
               ></div>
               @if (!isLast) {
               @for (m of [1, 2, 3, 4]; track m) {
               <div
                 class="bg-platinum-30 absolute top-0 h-1 w-px"
-                [style.left.%]="((i + m / 5) / (cableLengths.length - 1)) * 100"
+                [style.left.%]="((i + m / 5) / (cableLengths().length - 1)) * 100"
               ></div>
               }
               }
@@ -307,10 +307,10 @@
             </div>
             <!-- numbers -->
             <div class="relative mt-0.5 h-4 select-none">
-              @for (len of cableLengths; track len; let i = $index) {
+              @for (len of cableLengths(); track len; let i = $index) {
               <span
                 class="absolute top-0 -translate-x-1/2 text-[10px] transition-colors"
-                [style.left.%]="(i / (cableLengths.length - 1)) * 100"
+                [style.left.%]="(i / (cableLengths().length - 1)) * 100"
                 [class.text-green-70]="selectedLengthIdx() === i"
                 [class.font-semibold]="selectedLengthIdx() === i"
                 [class.text-platinum-40]="selectedLengthIdx() !== i"

@@ -34,12 +34,7 @@ import {
   LightboxComponent,
   LightboxImage,
 } from '@shared/components/ui/lightbox/lightbox.component';
-import {
-  CABLE_LENGTHS_CM,
-  CABLE_WATTS,
-  getCableConfig,
-  isTypeCCable,
-} from '@utils/cable-config';
+import { CableType, CableVariant } from '@core/interfaces/admin/cable-types.interface';
 
 type TabName = 'specifications' | 'description';
 
@@ -103,22 +98,67 @@ export class ProductComponent {
   readonly swipeOffset = signal(0);
   readonly lightboxOpen = signal(false);
 
-  readonly cableWattsOptions = CABLE_WATTS;
-  readonly cableLengths = CABLE_LENGTHS_CM;
-  readonly selectedWatts = signal<number>(CABLE_WATTS[0]);
-  readonly selectedLengthIdx = signal<number>(3);
+  readonly cableTypeResource = rxResource({
+    defaultValue: null as CableType | null,
+    params: () => this.product()?.data.cable_type_id ?? null,
+    stream: ({ params: typeId }) => {
+      if (!typeId) return of(null as CableType | null);
+      return this.productsService.getCableType(typeId).pipe(
+        catchError(() => of(null as CableType | null)),
+      );
+    },
+  });
 
-  readonly isCable = computed(() => {
-    const product = this.product();
-    return product ? isTypeCCable(product.data) : false;
+  readonly cableType = computed(() => this.cableTypeResource.value());
+
+  readonly isCable = computed(() => this.product()?.data.cable_type_id != null);
+
+  readonly cableVariants = computed<CableVariant[]>(() => {
+    const type = this.cableType();
+    if (!type) return [];
+    return [...type.variants].sort(
+      (a, b) => a.watts - b.watts || a.length_cm - b.length_cm,
+    );
+  });
+
+  readonly cableWattsOptions = computed<number[]>(() =>
+    [...new Set(this.cableVariants().map((v) => v.watts))].sort((a, b) => a - b),
+  );
+
+  readonly selectedWatts = signal<number | null>(null);
+
+  readonly cableLengths = computed<number[]>(() => {
+    const watts = this.selectedWatts();
+    if (watts === null) return [];
+    return this.cableVariants()
+      .filter((v) => v.watts === watts)
+      .map((v) => v.length_cm)
+      .sort((a, b) => a - b);
+  });
+
+  readonly selectedLengthIdx = signal<number>(0);
+
+  readonly selectedVariant = computed<CableVariant | null>(() => {
+    const watts = this.selectedWatts();
+    const lengths = this.cableLengths();
+    const idx = this.selectedLengthIdx();
+    if (watts === null || lengths.length === 0) return null;
+    const length = lengths[Math.min(idx, lengths.length - 1)];
+    return this.cableVariants().find((v) => v.watts === watts && v.length_cm === length) ?? null;
   });
 
   readonly cableConfig = computed(() => {
-    if (!this.isCable()) return null;
-    return getCableConfig(
-      this.selectedWatts(),
-      CABLE_LENGTHS_CM[this.selectedLengthIdx()],
-    );
+    const v = this.selectedVariant();
+    if (!v) return null;
+    return {
+      variantId: v.id,
+      cableTypeId: v.cable_type_id,
+      watts: v.watts,
+      lengthCm: v.length_cm,
+      price: Number(v.price),
+      warranty:
+        v.warranty_months === 1 ? '1 month' : `${v.warranty_months} months`,
+    };
   });
 
   private touchStartX = 0;
@@ -247,7 +287,33 @@ export class ProductComponent {
   });
 
   setWatts(w: number): void {
+    if (this.selectedWatts() === w) return;
+    const prevLengths = this.cableLengths();
+    const prevLength = prevLengths[this.selectedLengthIdx()];
     this.selectedWatts.set(w);
+    const nextLengths = this.cableVariants()
+      .filter((v) => v.watts === w)
+      .map((v) => v.length_cm)
+      .sort((a, b) => a - b);
+    if (nextLengths.length === 0) {
+      this.selectedLengthIdx.set(0);
+      return;
+    }
+    const exactIdx = nextLengths.indexOf(prevLength);
+    if (exactIdx !== -1) {
+      this.selectedLengthIdx.set(exactIdx);
+      return;
+    }
+    let closestIdx = 0;
+    let closestDiff = Infinity;
+    nextLengths.forEach((len, i) => {
+      const diff = Math.abs(len - prevLength);
+      if (diff < closestDiff) {
+        closestDiff = diff;
+        closestIdx = i;
+      }
+    });
+    this.selectedLengthIdx.set(closestIdx);
   }
 
   setLengthIdx(idx: number): void {
@@ -321,6 +387,15 @@ export class ProductComponent {
       if (!product || !isPlatformBrowser(this.platformId)) return;
       const userId = this.authService.user()?.user_id ?? null;
       this.productsService.addProductViews(product.data.id, userId).subscribe();
+    });
+
+    effect(() => {
+      const watts = this.cableWattsOptions();
+      if (watts.length === 0) return;
+      if (this.selectedWatts() === null || !watts.includes(this.selectedWatts()!)) {
+        this.selectedWatts.set(watts[0]);
+        this.selectedLengthIdx.set(0);
+      }
     });
   }
 

@@ -30,6 +30,7 @@ export class AdminLayoutComponent {
     { label: 'პროდუქტები', route: '/admin/products', icon: 'products' },
     { label: 'ბრენდები', route: '/admin/brands', icon: 'brands' },
     { label: 'კატეგორიები', route: '/admin/categories', icon: 'categories' },
+    { label: 'კაბელის ტიპები', route: '/admin/cable-types', icon: 'cable-specs' },
     { label: 'შეკვეთები', route: '/admin/orders', icon: 'orders' },
     { label: 'მომხმარებლები', route: '/admin/users', icon: 'users' },
     { label: 'ანალიტიკა', route: '/admin/analytics', icon: 'analytics' },

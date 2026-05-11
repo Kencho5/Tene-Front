@@ -5,6 +5,7 @@ import {
   ProductResponse,
   ProductSearchResponse,
 } from '@core/interfaces/products.interface';
+import { CableType } from '@core/interfaces/admin/cable-types.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -31,5 +32,9 @@ export class ProductsService {
 
   addProductViews(product_id: string, user_id: number | null): Observable<HttpStatusCode> {
     return this.http.post<HttpStatusCode>(`/products/${product_id}/views`, { user_id });
+  }
+
+  getCableType(id: number): Observable<CableType> {
+    return this.http.get<CableType>(`/cable-types/${id}`);
   }
 }

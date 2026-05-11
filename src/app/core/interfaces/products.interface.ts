@@ -15,6 +15,7 @@ export interface Product {
   warranty: string;
   brand_id: number;
   brand_name: string;
+  cable_type_id: number | null;
   enabled: boolean;
   categories: ProductCategory[];
   created_at: string;
@@ -51,6 +52,8 @@ export interface CartItem {
   selectedImageExtension: string;
   selectedImageQuantity: number;
   cableConfig?: {
+    variantId: number;
+    cableTypeId: number;
     watts: number;
     lengthCm: number;
     price: number;

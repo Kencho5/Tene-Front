@@ -25,6 +25,13 @@ import {
 import { CategoryTreeResponse } from '@core/interfaces/categories.interface';
 import { Brand, BrandRequest } from '@core/interfaces/admin/brands.interface';
 import { AnalyticsResponse } from '@core/interfaces/admin/analytics.interface';
+import {
+  CableType,
+  CableTypeRequest,
+  CableVariant,
+  CableVariantRequest,
+  CableVariantUpdate,
+} from '@core/interfaces/admin/cable-types.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -146,6 +153,45 @@ export class AdminService {
 
   deleteBrand(brandId: number): Observable<HttpStatusCode> {
     return this.http.delete<HttpStatusCode>(`/admin/brands/${brandId}`);
+  }
+
+  getCableTypes(): Observable<CableType[]> {
+    return this.http.get<CableType[]>('/admin/cable-types');
+  }
+
+  createCableType(payload: CableTypeRequest): Observable<CableType> {
+    return this.http.post<CableType>('/admin/cable-types', payload);
+  }
+
+  updateCableType(id: number, payload: CableTypeRequest): Observable<CableType> {
+    return this.http.put<CableType>(`/admin/cable-types/${id}`, payload);
+  }
+
+  deleteCableType(id: number): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/cable-types/${id}`);
+  }
+
+  getCableVariants(typeId: number): Observable<CableVariant[]> {
+    return this.http.get<CableVariant[]>(`/admin/cable-types/${typeId}/variants`);
+  }
+
+  createCableVariant(typeId: number, payload: CableVariantRequest): Observable<CableVariant> {
+    return this.http.post<CableVariant>(`/admin/cable-types/${typeId}/variants`, payload);
+  }
+
+  updateCableVariant(
+    typeId: number,
+    variantId: number,
+    payload: CableVariantUpdate,
+  ): Observable<CableVariant> {
+    return this.http.put<CableVariant>(
+      `/admin/cable-types/${typeId}/variants/${variantId}`,
+      payload,
+    );
+  }
+
+  deleteCableVariant(typeId: number, variantId: number): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/cable-types/${typeId}/variants/${variantId}`);
   }
 
   getAnalytics(period?: string): Observable<AnalyticsResponse> {

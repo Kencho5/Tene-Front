@@ -76,6 +76,21 @@
           />
         </div>
 
+        <!-- Cable Type -->
+        <div>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">
+            კაბელის ტიპი (არასავალდებულო)
+          </label>
+          <app-combobox
+            [selectedValue]="getSelectedCableTypeValue()"
+            (selectedValueChange)="onCableTypeChange($event)"
+            [items]="cableTypeOptions()"
+            placeholder="აირჩიეთ კაბელის ტიპი"
+            searchPlaceholder="ძიება..."
+            notFoundText="ტიპი ვერ მოიძებნა"
+          />
+        </div>
+
         <!-- Warranty -->
         <app-input
           [formField]="productForm.warranty"

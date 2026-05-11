@@ -239,6 +239,46 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'cable-types',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/cable-types/admin-cable-types.component').then(
+            (m) => m.AdminCableTypesComponent,
+          ),
+      },
+      {
+        path: 'cable-types/new',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/cable-type-form/admin-cable-type-form.component').then(
+            (m) => m.AdminCableTypeFormComponent,
+          ),
+      },
+      {
+        path: 'cable-types/:id/edit',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/cable-type-form/admin-cable-type-form.component').then(
+            (m) => m.AdminCableTypeFormComponent,
+          ),
+      },
+      {
+        path: 'cable-types/:typeId/variants/new',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/cable-variant-form/admin-cable-variant-form.component').then(
+            (m) => m.AdminCableVariantFormComponent,
+          ),
+      },
+      {
+        path: 'cable-types/:typeId/variants/:variantId/edit',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/cable-variant-form/admin-cable-variant-form.component').then(
+            (m) => m.AdminCableVariantFormComponent,
+          ),
+      },
+      {
         path: 'analytics',
         canActivate: [adminOnlyGuard],
         loadComponent: () =>
