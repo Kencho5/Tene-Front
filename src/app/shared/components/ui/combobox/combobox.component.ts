@@ -33,7 +33,6 @@ export class ComboboxComponent {
   readonly searchValue = signal<string>('');
 
   getIndentLevel(value: string): number {
-    // Extract depth from value format "depth:id"
     const parts = value.split(':');
     if (parts.length === 2 && !isNaN(Number(parts[0]))) {
       return Number(parts[0]);
@@ -42,7 +41,6 @@ export class ComboboxComponent {
   }
 
   getActualValue(value: string): string {
-    // Extract actual ID from value format "depth:id"
     const parts = value.split(':');
     if (parts.length === 2) {
       return parts[1];
@@ -50,11 +48,22 @@ export class ComboboxComponent {
     return value;
   }
 
-  readonly filteredItems = computed(() =>
-    this.items().filter((item) =>
+  readonly filteredItems = computed(() => {
+    const filtered = this.items().filter((item) =>
       item.label.toLowerCase().includes(this.searchValue().toLowerCase()),
-    ),
-  );
+    );
+    const idx = filtered.findIndex(
+      (item) => item.label === 'კაბელები' && this.getIndentLevel(item.value) === 0,
+    );
+    if (idx === -1) return filtered;
+    const block: typeof filtered = [filtered[idx]];
+    for (let i = idx + 1; i < filtered.length; i++) {
+      if (this.getIndentLevel(filtered[i].value) === 0) break;
+      block.push(filtered[i]);
+    }
+    const rest = filtered.filter((_, i) => i < idx || i >= idx + block.length);
+    return [...block, ...rest];
+  });
 
   readonly itemLabel = computed(() => {
     const item = this.items().find((item) => item.value === this.selectedValue());
@@ -64,7 +73,6 @@ export class ComboboxComponent {
 
   selectItem(value: string) {
     const newValue = this.selectedValue() === value ? undefined : value;
-    // Emit the actual value (without depth prefix)
     const actualValue = newValue ? this.getActualValue(newValue) : undefined;
     this.selectedValueChange.emit(actualValue!);
     this.selectedValue.set(newValue);
