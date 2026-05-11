@@ -10,7 +10,7 @@
   >
     @if (primaryImageQuantity() > 0 && product().data.discount > 0) {
     <div
-      class="bg-valencia-60 sm:bg-valencia-10 sm:text-valencia-60 absolute top-1 left-1 z-10 rounded px-1.5 py-0.5 text-[11px] leading-none font-bold text-white sm:top-2 sm:left-2 sm:rounded-md sm:px-2 sm:py-1.5 sm:text-sm"
+      class="bg-valencia-60 sm:bg-valencia-10 sm:text-valencia-60 absolute top-1 left-1 z-10 rounded px-1.5 py-0.5 text-[13px] leading-none font-bold text-white sm:top-2 sm:left-2 sm:rounded-md sm:px-2 sm:py-1.5 sm:text-sm"
     >
       -{{ product().data.discount | number }}%
     </div>
@@ -47,7 +47,7 @@
   <!-- Info -->
   <div class="flex min-w-0 flex-1 flex-col sm:px-1">
     <p
-      class="text-platinum-100 sm:text-platinum-90 line-clamp-3 text-[15px] leading-snug font-medium sm:mt-2 sm:line-clamp-2 sm:text-[15px] sm:font-medium"
+      class="text-platinum-100 sm:text-platinum-90 line-clamp-3 text-[17px] leading-snug font-medium sm:mt-2 sm:line-clamp-2 sm:text-[15px] sm:font-medium"
     >
       {{ product().data.name }}
     </p>
@@ -55,7 +55,7 @@
     @if (product().data.brand_name) {
     <div class="mt-2">
       <span
-        class="bg-platinum-10 text-platinum-70 inline-block rounded-md px-2 py-0.5 text-[11px] font-semibold tracking-wide uppercase"
+        class="bg-platinum-10 text-platinum-70 inline-block rounded-md px-2 py-0.5 text-[13px] font-semibold tracking-wide uppercase sm:text-[11px]"
       >
         {{ product().data.brand_name }}
       </span>
@@ -63,9 +63,9 @@
     } @if (specHighlights().length > 0) {
     <ul class="mt-2 flex flex-wrap gap-x-3 gap-y-0.5 sm:hidden">
       @for (spec of specHighlights(); track spec.name) {
-      <li class="text-platinum-60 truncate text-[12px] leading-snug">
+      <li class="text-platinum-60 truncate text-[14px] leading-snug">
         <span class="text-platinum-40">{{ spec.name }}</span>
-        <span class="text-platinum-70 font-medium">{{ spec.value }}</span>
+        <span class="text-platinum-70 font-medium"> {{ spec.value }}</span>
       </li>
       }
     </ul>
@@ -74,10 +74,10 @@
     <div class="mt-2 sm:mt-auto sm:mb-2 sm:pt-3">
       @if (product().data.discount > 0) {
       <div class="flex items-baseline gap-2">
-        <p class="text-platinum-100 text-[18px] leading-none font-bold sm:text-[19px]">
+        <p class="text-platinum-100 text-[20px] leading-none font-bold sm:text-[19px]">
           {{ formatPrice(discountedPrice()) }} ₾
         </p>
-        <p class="text-platinum-40 text-[13px] line-through sm:text-sm">
+        <p class="text-platinum-40 text-[15px] line-through sm:text-sm">
           {{ formatPrice(product().data.price) }} ₾
         </p>
       </div>
@@ -94,18 +94,18 @@
             stroke-linejoin="round"
           />
         </svg>
-        <span class="text-valencia-60 text-[11px] leading-none font-bold">
+        <span class="text-valencia-60 text-[13px] leading-none font-bold">
           დაზოგე {{ formatPrice(savingsAmount()) }} ₾
         </span>
       </div>
       } } @else {
-      <p class="text-platinum-100 text-[18px] leading-none font-bold sm:text-[19px]">
+      <p class="text-platinum-100 text-[20px] leading-none font-bold sm:text-[19px]">
         {{ formatPrice(product().data.price) }} ₾
       </p>
       }
     </div>
 
-    <div class="mt-2 space-y-1 text-[12px] sm:hidden">
+    <div class="mt-2 space-y-1 text-[14px] sm:hidden">
       @if (stockBadge().type === 'in' || stockBadge().type === 'low') {
       <div class="text-success inline-flex items-center gap-1.5 font-medium">
         <span class="bg-success h-1.5 w-1.5 rounded-full"></span>
@@ -120,7 +120,7 @@
     <button
       type="button"
       (click)="$event.preventDefault(); $event.stopPropagation(); addToCart()"
-      class="border-green-30 bg-green-10 hover:bg-green-20 active:bg-green-20 text-green-70 mt-3 flex w-full items-center justify-center gap-1 rounded-lg border px-2 py-2 text-center text-[12px] font-semibold transition-colors sm:mt-0 sm:gap-1.5 sm:px-3 sm:py-2.5 sm:text-[14px]"
+      class="border-green-30 bg-green-10 hover:bg-green-20 active:bg-green-20 text-green-70 mt-3 flex w-full items-center justify-center gap-1 rounded-lg border px-2 py-2 text-center text-[14px] font-semibold transition-colors sm:mt-0 sm:gap-1.5 sm:px-3 sm:py-2.5 sm:text-[14px]"
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
