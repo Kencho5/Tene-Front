@@ -12,7 +12,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { SharedModule } from '@shared/shared.module';
 import { ProductsService } from '@core/services/products/products.service';
 import { catchError, of, map } from 'rxjs';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductResponse, ProductImage } from '@core/interfaces/products.interface';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
 import {
@@ -58,6 +59,12 @@ export class ProductComponent {
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
   private readonly toastService = inject(ToastService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
+  readonly queryParams = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
 
   readonly categoryTree = rxResource({
     defaultValue: [] as CategoryTreeNode[],
@@ -368,14 +375,6 @@ export class ProductComponent {
     effect(() => {
       const product = this.product();
       if (!product) return;
-      const slug = this.slug();
-      this.categoryTree.value(); // re-run when tree loads for accurate breadcrumb schema
-      this.updateSEO(product, slug);
-    });
-
-    effect(() => {
-      const product = this.product();
-      if (!product) return;
       if (!this.hasSpecifications()) {
         this.activeTab.set('description');
       }
@@ -388,13 +387,58 @@ export class ProductComponent {
       this.productsService.addProductViews(product.data.id, userId).subscribe();
     });
 
+    // Init variant from URL params (or defaults) once variants load
     effect(() => {
       const watts = this.cableWattsOptions();
       if (watts.length === 0) return;
-      if (this.selectedWatts() === null || !watts.includes(this.selectedWatts()!)) {
-        this.selectedWatts.set(watts[0]);
-        this.selectedLengthIdx.set(0);
+      if (this.selectedWatts() !== null && watts.includes(this.selectedWatts()!)) return;
+
+      const params = this.queryParams();
+      const wParam = Number(params.get('w'));
+      const lenParam = Number(params.get('len'));
+
+      const chosenWatts = watts.includes(wParam) ? wParam : watts[0];
+      this.selectedWatts.set(chosenWatts);
+
+      const lengths = this.cableVariants()
+        .filter((v) => v.watts === chosenWatts)
+        .map((v) => v.length_cm)
+        .sort((a, b) => a - b);
+      const lenIdx = lengths.indexOf(lenParam);
+      if (lenIdx !== -1) {
+        this.selectedLengthIdx.set(lenIdx);
+      } else {
+        const defaultIdx = lengths.indexOf(100);
+        this.selectedLengthIdx.set(defaultIdx !== -1 ? defaultIdx : 0);
       }
+    });
+
+    // Sync variant -> URL (replaceUrl to avoid history pollution)
+    effect(() => {
+      if (!isPlatformBrowser(this.platformId)) return;
+      if (!this.isCable()) return;
+      const watts = this.selectedWatts();
+      const lengths = this.cableLengths();
+      const idx = this.selectedLengthIdx();
+      if (watts === null || lengths.length === 0) return;
+      const len = lengths[Math.min(idx, lengths.length - 1)];
+      const cur = this.queryParams();
+      if (Number(cur.get('w')) === watts && Number(cur.get('len')) === len) return;
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { w: watts, len },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    });
+
+    // Re-run SEO when product / variant / breadcrumb tree changes
+    effect(() => {
+      const product = this.product();
+      if (!product) return;
+      this.selectedVariant();
+      this.categoryTree.value();
+      this.updateSEO(product, this.slug());
     });
   }
 
@@ -572,9 +616,14 @@ export class ProductComponent {
         ? productDescription.substring(0, 147) + '...'
         : productDescription;
 
-    const fullDescription = `${description} ფასი: ${price}₾. სულ: ${product.data.quantity} ცალი.`;
+    const variant = this.selectedVariant();
+    const variantSuffix = variant ? ` ${variant.watts}W ${variant.length_cm}სმ` : '';
+    const priceLine = variant
+      ? `ფასი: ${price}₾ (${variant.watts}W · ${variant.length_cm}სმ).`
+      : `ფასი: ${price}₾.`;
+    const fullDescription = `${description} ${priceLine} სულ: ${product.data.quantity} ცალი.`;
 
-    // Always use the canonical URL with slug for SEO
+    // Canonical strips query params to consolidate variant URLs into one
     const canonicalUrl = `https://tene.ge/products/${slug}/${product.data.id}`;
 
     const categoryKeyword =
@@ -583,7 +632,7 @@ export class ProductComponent {
         : 'პროდუქტი';
 
     this.seoService.setMetaTags({
-      title: `${product.data.name} - ${price}₾ | Tene`,
+      title: `${product.data.name}${variantSuffix} - ${price}₾ | Tene`,
       description: fullDescription,
       image: imageUrl,
       url: canonicalUrl,
@@ -591,15 +640,29 @@ export class ProductComponent {
       keywords: `${product.data.name}, ${categoryKeyword}, ტექნიკა`,
     });
 
+    // Reset schemas so AggregateOffer / Breadcrumb don't stack on variant change
+    this.schemaService.clearSchemas();
+
+    const variants = this.cableVariants();
     this.schemaService.addProductSchema({
       name: product.data.name,
       description: productDescription,
       image: imageUrl,
       sku: product.data.id.toString(),
+      brand_name: product.data.brand_name,
       price: price,
       currency: 'GEL',
       availability: product.data.quantity > 0 ? 'InStock' : 'OutOfStock',
       url: canonicalUrl,
+      variants:
+        variants.length > 0
+          ? variants.map((v) => ({
+              sku: `${product.data.id}-${v.id}`,
+              name: `${product.data.name} ${v.watts}W ${v.length_cm}სმ`,
+              price: Number(v.price),
+              url: `${canonicalUrl}?w=${v.watts}&len=${v.length_cm}`,
+            }))
+          : undefined,
     });
 
     const breadcrumbItems = this.breadcrumbs().map((item) => ({

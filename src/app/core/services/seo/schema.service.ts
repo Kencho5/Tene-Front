@@ -22,7 +22,43 @@ export class SchemaService {
     currency: string;
     availability: 'InStock' | 'OutOfStock' | 'PreOrder';
     url: string;
+    variants?: {
+      sku: string;
+      price: number;
+      url: string;
+      name?: string;
+    }[];
   }): void {
+    let offers: object;
+    if (data.variants && data.variants.length > 0) {
+      const prices = data.variants.map((v) => v.price);
+      offers = {
+        '@type': 'AggregateOffer',
+        priceCurrency: data.currency,
+        lowPrice: Math.min(...prices).toFixed(2),
+        highPrice: Math.max(...prices).toFixed(2),
+        offerCount: data.variants.length,
+        availability: `https://schema.org/${data.availability}`,
+        offers: data.variants.map((v) => ({
+          '@type': 'Offer',
+          sku: v.sku,
+          name: v.name,
+          url: v.url,
+          priceCurrency: data.currency,
+          price: v.price.toFixed(2),
+          availability: `https://schema.org/${data.availability}`,
+        })),
+      };
+    } else {
+      offers = {
+        '@type': 'Offer',
+        url: data.url,
+        priceCurrency: data.currency,
+        price: data.price.toFixed(2),
+        availability: `https://schema.org/${data.availability}`,
+      };
+    }
+
     const schema = {
       '@context': 'https://schema.org/',
       '@type': 'Product',
@@ -36,13 +72,7 @@ export class SchemaService {
             name: data.brand_name,
           }
         : undefined,
-      offers: {
-        '@type': 'Offer',
-        url: data.url,
-        priceCurrency: data.currency,
-        price: data.price.toFixed(2),
-        availability: `https://schema.org/${data.availability}`,
-      },
+      offers,
     };
 
     this.injectSchema(schema);
