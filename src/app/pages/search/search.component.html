@@ -154,12 +154,12 @@
           <img
             [src]="category.image_url"
             [alt]="category.name"
-            width="44"
-            height="44"
-            class="h-11 w-11 shrink-0 object-contain"
+            width="60"
+            height="60"
+            class="h-15 w-15 shrink-0 object-contain"
           />
           }
-          <span class="truncate text-[16px] font-medium">{{ category.name }}</span>
+          <span class="truncate text-[19px] font-medium">{{ category.name }}</span>
           @if (category.children.length > 0) {
           <svg
             width="18"
@@ -197,12 +197,12 @@
             <img
               [src]="child.image_url"
               [alt]="child.name"
-              width="52"
-              height="52"
-              class="h-13 w-13 shrink-0 object-contain"
+              width="68"
+              height="68"
+              class="h-17 w-17 shrink-0 object-contain"
             />
             }
-            <span class="truncate text-[16px] font-medium">{{ child.name }}</span>
+            <span class="truncate text-[18px] font-medium">{{ child.name }}</span>
           </button>
           }
         </div>
@@ -229,12 +229,12 @@
           <img
             [src]="category.image_url"
             [alt]="category.name"
-            width="40"
-            height="40"
-            class="h-10 w-10 shrink-0 object-contain"
+            width="52"
+            height="52"
+            class="h-13 w-13 shrink-0 object-contain"
           />
           }
-          <span class="truncate text-[15px] font-medium">{{ category.name }}</span>
+          <span class="truncate text-[17px] font-medium">{{ category.name }}</span>
           @if (category.children.length > 0) {
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="ml-auto shrink-0">
             <path
@@ -271,12 +271,12 @@
             <img
               [src]="child.image_url"
               [alt]="child.name"
-              width="48"
-              height="48"
-              class="h-12 w-12 shrink-0 object-contain"
+              width="60"
+              height="60"
+              class="h-15 w-15 shrink-0 object-contain"
             />
             }
-            <span class="text-platinum-70 truncate text-[15px]">{{ child.name }}</span>
+            <span class="text-platinum-70 truncate text-[17px]">{{ child.name }}</span>
           </button>
           }
         </div>
