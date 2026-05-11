@@ -93,7 +93,11 @@ export class ProductCardComponent {
       const hit = flat.find((s) => s.name === key);
       if (hit && !seen.has(hit.name)) {
         seen.add(hit.name);
-        picked.push(hit);
+        if (hit.name === 'სიმძლავრე (Watt)') {
+          picked.push({ name: 'სიმძლავრე', value: hit.value });
+        } else {
+          picked.push(hit);
+        }
         if (picked.length === 2) break;
       }
     }
