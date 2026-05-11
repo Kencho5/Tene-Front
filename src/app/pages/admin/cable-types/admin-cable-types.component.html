@@ -136,7 +136,7 @@
               <div>
                 <p class="text-sm font-medium text-platinum-100">{{ type.name }}</p>
                 <p class="text-xs text-platinum-50">
-                  ID: {{ type.id }} · {{ type.variants.length }} ვარიანტი
+                  {{ type.variants.length }} ვარიანტი
                 </p>
               </div>
             </button>
@@ -219,11 +219,6 @@
                         <th
                           class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-platinum-50"
                         >
-                          ID
-                        </th>
-                        <th
-                          class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-platinum-50"
-                        >
                           სიმძლავრე
                         </th>
                         <th
@@ -258,7 +253,6 @@
                         <tr
                           class="border-t border-platinum-20 transition-colors hover:bg-platinum-10/50"
                         >
-                          <td class="px-4 py-3 text-xs text-platinum-50">{{ variant.id }}</td>
                           <td class="px-4 py-3 text-sm text-platinum-90">{{ variant.watts }}W</td>
                           <td class="px-4 py-3 text-sm text-platinum-90">
                             {{ variant.length_cm }} სმ

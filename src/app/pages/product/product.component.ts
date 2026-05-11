@@ -156,8 +156,7 @@ export class ProductComponent {
       watts: v.watts,
       lengthCm: v.length_cm,
       price: Number(v.price),
-      warranty:
-        v.warranty_months === 1 ? '1 month' : `${v.warranty_months} months`,
+      warranty: v.warranty_months === 1 ? '1 თვე' : `${v.warranty_months} თვე`,
     };
   });
 
