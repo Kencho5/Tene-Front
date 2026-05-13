@@ -129,13 +129,21 @@
         appDragScroll
         #productsScrollContainer
         (scroll)="onScroll(productsScrollContainer, 'products')"
-        class="hide-scrollbar -mx-4 flex snap-x snap-proximity scroll-pl-4 gap-4 overflow-x-auto px-4 py-2 lg:mx-0 lg:scroll-pl-1 lg:px-1 lg:py-2"
+        class="hide-scrollbar -mx-4 flex snap-x snap-proximity scroll-pl-4 flex-col gap-4 overflow-x-auto px-4 py-2 sm:flex-row lg:mx-0 lg:scroll-pl-1 lg:px-1 lg:py-2"
         style="scrollbar-width: none; -ms-overflow-style: none"
       >
         @for (product of products(); track product.data.id) {
         <app-product-card class="w-[340px] shrink-0 snap-start" [product]="product" />
         }
       </div>
+
+      <a
+        routerLink="/search"
+        [queryParams]="{ sort_by: 'views_desc' }"
+        class="border-green-60 text-green-60 hover:bg-green-10 mt-4 flex w-full items-center justify-center rounded-full border px-4 py-3 text-[15px] font-medium transition-colors sm:hidden"
+      >
+        ყველას ნახვა →
+      </a>
 
       @if (canScrollLeft("products")) {
       <button
@@ -176,130 +184,130 @@
   </div>
 
   <!-- Featured Brands -->
-  <div class="space-y-6">
-    <h1 class="text-xl sm:text-[28px]">რჩეული ბრენდები</h1>
-
-    <div class="relative">
-      <div
-        appDragScroll
-        #brandsScrollContainer
-        (scroll)="onScroll(brandsScrollContainer, 'brands')"
-        class="hide-scrollbar -mx-4 flex snap-x snap-proximity scroll-pl-4 gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:scroll-pl-1 lg:px-1"
-        style="scrollbar-width: none; -ms-overflow-style: none"
-      >
-        @for (brandCard of productBrandCards; track $index) {
-        <a
-          [routerLink]="['/search']"
-          [queryParams]="{ brand: brandCard.brandId }"
-          [style.background]="getBrandGradient(brandCard.color)"
-          class="shadow-low flex h-[184px] shrink-0 snap-start items-center gap-4 rounded-2xl p-4 transition-all hover:brightness-[0.97] sm:w-[410px]"
-        >
-          <div class="space-y-4 p-2">
-            <div class="bg-platinum-10 inline-block rounded-full px-3 py-2">
-              <img src="/assets/images/products/{{ brandCard.brand }}.svg" class="h-5" />
-            </div>
-
-            <h2 class="max-w-[161px] sm:text-xl">{{ brandCard.title }}</h2>
-
-            <p class="text-green-70 flex items-center gap-1.5 text-sm font-semibold">
-              აღმოაჩინე
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M12.082 5.41669L16.5594 9.89305C16.63 9.96248 16.6654 10.0535 16.6654 10.1445M12.082 14.5834L16.5594 10.3959C16.63 10.3265 16.6654 10.2355 16.6654 10.1445M16.6654 10.1445H3.33203"
-                  stroke="#068C0B"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </p>
-          </div>
-
-          <app-image
-            src="/assets/images/products/{{ brandCard.brand }}-product.webp"
-            [width]="185"
-            class="w-[105px] sm:w-[185px]"
-          />
-        </a>
-        }
-      </div>
-
-      @if (canScrollLeft("brands")) {
-      <button
-        type="button"
-        (click)="scrollLeft(brandsScrollContainer)"
-        class="bg-green-10 shadow-low hover:bg-green-20 absolute top-1/2 left-0 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-all lg:flex"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="rotate-180">
-          <path
-            d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4"
-            stroke="#068C0B"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
-        </svg>
-      </button>
-      }
-
-      <button
-        type="button"
-        (click)="scrollRight(brandsScrollContainer)"
-        class="bg-green-10 shadow-low hover:bg-green-20 absolute top-1/2 right-0 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-all lg:flex"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4"
-            stroke="#068C0B"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
-        </svg>
-      </button>
-
-      <div
-        class="pointer-events-none absolute top-0 right-0 bottom-0 hidden w-20 bg-linear-to-l from-white to-transparent lg:block"
-      ></div>
-    </div>
-  </div>
+  <!-- <div class="space-y-6"> -->
+  <!--   <h1 class="text-xl sm:text-[28px]">რჩეული ბრენდები</h1> -->
+  <!---->
+  <!--   <div class="relative"> -->
+  <!--     <div -->
+  <!--       appDragScroll -->
+  <!--       #brandsScrollContainer -->
+  <!--       (scroll)="onScroll(brandsScrollContainer, 'brands')" -->
+  <!--       class="hide-scrollbar -mx-4 flex snap-x snap-proximity scroll-pl-4 gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:scroll-pl-1 lg:px-1" -->
+  <!--       style="scrollbar-width: none; -ms-overflow-style: none" -->
+  <!--     > -->
+  <!--       @for (brandCard of productBrandCards; track $index) { -->
+  <!--       <a -->
+  <!--         [routerLink]="['/search']" -->
+  <!--         [queryParams]="{ brand: brandCard.brandId }" -->
+  <!--         [style.background]="getBrandGradient(brandCard.color)" -->
+  <!--         class="shadow-low flex h-[184px] shrink-0 snap-start items-center gap-4 rounded-2xl p-4 transition-all hover:brightness-[0.97] sm:w-[410px]" -->
+  <!--       > -->
+  <!--         <div class="space-y-4 p-2"> -->
+  <!--           <div class="bg-platinum-10 inline-block rounded-full px-3 py-2"> -->
+  <!--             <img src="/assets/images/products/{{ brandCard.brand }}.svg" class="h-5" /> -->
+  <!--           </div> -->
+  <!---->
+  <!--           <h2 class="max-w-[161px] sm:text-xl">{{ brandCard.title }}</h2> -->
+  <!---->
+  <!--           <p class="text-green-70 flex items-center gap-1.5 text-sm font-semibold"> -->
+  <!--             აღმოაჩინე -->
+  <!--             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"> -->
+  <!--               <path -->
+  <!--                 d="M12.082 5.41669L16.5594 9.89305C16.63 9.96248 16.6654 10.0535 16.6654 10.1445M12.082 14.5834L16.5594 10.3959C16.63 10.3265 16.6654 10.2355 16.6654 10.1445M16.6654 10.1445H3.33203" -->
+  <!--                 stroke="#068C0B" -->
+  <!--                 stroke-width="1.5" -->
+  <!--                 stroke-linecap="round" -->
+  <!--               /> -->
+  <!--             </svg> -->
+  <!--           </p> -->
+  <!--         </div> -->
+  <!---->
+  <!--         <app-image -->
+  <!--           src="/assets/images/products/{{ brandCard.brand }}-product.webp" -->
+  <!--           [width]="185" -->
+  <!--           class="w-[105px] sm:w-[185px]" -->
+  <!--         /> -->
+  <!--       </a> -->
+  <!--       } -->
+  <!--     </div> -->
+  <!---->
+  <!--     @if (canScrollLeft("brands")) { -->
+  <!--     <button -->
+  <!--       type="button" -->
+  <!--       (click)="scrollLeft(brandsScrollContainer)" -->
+  <!--       class="bg-green-10 shadow-low hover:bg-green-20 absolute top-1/2 left-0 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-all lg:flex" -->
+  <!--     > -->
+  <!--       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="rotate-180"> -->
+  <!--         <path -->
+  <!--           d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4" -->
+  <!--           stroke="#068C0B" -->
+  <!--           stroke-width="1.5" -->
+  <!--           stroke-linecap="round" -->
+  <!--         /> -->
+  <!--       </svg> -->
+  <!--     </button> -->
+  <!--     } -->
+  <!---->
+  <!--     <button -->
+  <!--       type="button" -->
+  <!--       (click)="scrollRight(brandsScrollContainer)" -->
+  <!--       class="bg-green-10 shadow-low hover:bg-green-20 absolute top-1/2 right-0 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-all lg:flex" -->
+  <!--     > -->
+  <!--       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"> -->
+  <!--         <path -->
+  <!--           d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4" -->
+  <!--           stroke="#068C0B" -->
+  <!--           stroke-width="1.5" -->
+  <!--           stroke-linecap="round" -->
+  <!--         /> -->
+  <!--       </svg> -->
+  <!--     </button> -->
+  <!---->
+  <!--     <div -->
+  <!--       class="pointer-events-none absolute top-0 right-0 bottom-0 hidden w-20 bg-linear-to-l from-white to-transparent lg:block" -->
+  <!--     ></div> -->
+  <!--   </div> -->
+  <!-- </div> -->
 
   <!-- Top Categories Grid -->
-  <div
-    class="relative h-[500px] space-y-6"
-    style="
-      margin-left: calc(-50vw + 50%);
-      margin-right: calc(-50vw + 50%);
-      padding-left: calc(50vw - 50%);
-      padding-right: calc(50vw - 50%);
-      background: linear-gradient(180deg, #ffffff 0%, #fef6e8 30%, #fef6e8 70%, #ffffff 100%);
-    "
-  >
-    <div class="container space-y-6 px-4">
-      <h1 class="text-xl sm:text-[28px]">ტოპ კატეგორიები</h1>
-
-      <div class="grid grid-cols-2 gap-6 lg:grid-cols-4">
-        @for (topCategoryCard of productTopCategoryCards; track $index) {
-        <a
-          [routerLink]="['/search']"
-          [queryParams]="topCategoryCard.categoryId ? { child_category_id: topCategoryCard.categoryId } : {}"
-          class="shadow-low relative flex h-[187px] flex-col items-center justify-between rounded-2xl bg-white p-2 sm:h-[320px] sm:p-3"
-        >
-          <img
-            src="/assets/images/products/category-{{
-                topCategoryCard.color
-              }}.svg"
-            class="h-[100px] sm:h-auto"
-          />
-
-          <img
-            src="/assets/images/products/{{ topCategoryCard.image }}.webp"
-            width="210"
-            height="210"
-            class="absolute top-1/2 w-[90px] -translate-y-1/2 sm:w-[210px]"
-          />
-
-          <h2 class="sm:b-2 text-sm sm:text-xl">{{ topCategoryCard.text }}</h2>
-        </a>
-        }
-      </div>
-    </div>
-  </div>
+  <!-- <div -->
+  <!--   class="relative h-[500px] space-y-6" -->
+  <!--   style=" -->
+  <!--     margin-left: calc(-50vw + 50%); -->
+  <!--     margin-right: calc(-50vw + 50%); -->
+  <!--     padding-left: calc(50vw - 50%); -->
+  <!--     padding-right: calc(50vw - 50%); -->
+  <!--     background: linear-gradient(180deg, #ffffff 0%, #fef6e8 30%, #fef6e8 70%, #ffffff 100%); -->
+  <!--   " -->
+  <!-- > -->
+  <!--   <div class="container space-y-6 px-4"> -->
+  <!--     <h1 class="text-xl sm:text-[28px]">ტოპ კატეგორიები</h1> -->
+  <!---->
+  <!--     <div class="grid grid-cols-2 gap-6 lg:grid-cols-4"> -->
+  <!--       @for (topCategoryCard of productTopCategoryCards; track $index) { -->
+  <!--       <a -->
+  <!--         [routerLink]="['/search']" -->
+  <!--         [queryParams]="topCategoryCard.categoryId ? { child_category_id: topCategoryCard.categoryId } : {}" -->
+  <!--         class="shadow-low relative flex h-[187px] flex-col items-center justify-between rounded-2xl bg-white p-2 sm:h-[320px] sm:p-3" -->
+  <!--       > -->
+  <!--         <img -->
+  <!--           src="/assets/images/products/category-{{ -->
+  <!--               topCategoryCard.color -->
+  <!--             }}.svg" -->
+  <!--           class="h-[100px] sm:h-auto" -->
+  <!--         /> -->
+  <!---->
+  <!--         <img -->
+  <!--           src="/assets/images/products/{{ topCategoryCard.image }}.webp" -->
+  <!--           width="210" -->
+  <!--           height="210" -->
+  <!--           class="absolute top-1/2 w-[90px] -translate-y-1/2 sm:w-[210px]" -->
+  <!--         /> -->
+  <!---->
+  <!--         <h2 class="sm:b-2 text-sm sm:text-xl">{{ topCategoryCard.text }}</h2> -->
+  <!--       </a> -->
+  <!--       } -->
+  <!--     </div> -->
+  <!--   </div> -->
+  <!-- </div> -->
 </div>
