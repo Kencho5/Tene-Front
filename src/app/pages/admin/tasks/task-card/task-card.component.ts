@@ -26,6 +26,7 @@ const STATE_LABELS: Record<TaskState, string> = {
 export class TaskCardComponent {
   readonly task = input.required<Task>();
 
+  readonly view = output<void>();
   readonly edit = output<void>();
   readonly delete = output<void>();
   readonly stateChange = output<TaskState>();
@@ -69,6 +70,10 @@ export class TaskCardComponent {
     e.stopPropagation();
     this.stateOpen.set(false);
     this.stateChange.emit(state);
+  }
+
+  onCardClick(): void {
+    this.view.emit();
   }
 
   onEdit(e: Event): void {

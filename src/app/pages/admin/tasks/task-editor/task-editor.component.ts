@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { AdminService } from '@core/services/admin/admin.service';
+import { CompressImageService } from '@core/services/compress-image.service';
 import { ToastService } from '@core/services/toast.service';
 import {
   Task,
@@ -28,7 +29,8 @@ import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.compo
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { SpinnerComponent } from '@shared/components/ui/spinner/spinner.component';
 import { SharedModule } from '@shared/shared.module';
-import { catchError, finalize, forkJoin, mergeMap, of, tap } from 'rxjs';
+import { HttpEventType } from '@angular/common/http';
+import { catchError, finalize, forkJoin, last, mergeMap, Observable, of, tap } from 'rxjs';
 
 interface TaskFormFields {
   title: string;
@@ -62,7 +64,7 @@ function classifyType(contentType: string): TaskMediaType | null {
   templateUrl: './task-editor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '(document:keydown.escape)': 'close()',
+    '(document:keydown.escape)': 'onEscape()',
     role: 'dialog',
     'aria-modal': 'true',
     'aria-labelledby': 'task-editor-title',
@@ -70,13 +72,16 @@ function classifyType(contentType: string): TaskMediaType | null {
 })
 export class TaskEditorComponent implements OnInit {
   private readonly adminService = inject(AdminService);
+  private readonly compressImageService = inject(CompressImageService);
   private readonly toastService = inject(ToastService);
 
   readonly task = input<Task | null>(null);
   readonly initialState = input<TaskState>('todo');
+  readonly mode = input<'view' | 'edit' | 'create'>('edit');
 
   readonly closed = output<void>();
   readonly saved = output<void>();
+  readonly modeChange = output<'view' | 'edit' | 'create'>();
 
   readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
 
@@ -88,7 +93,13 @@ export class TaskEditorComponent implements OnInit {
   readonly priority = signal<TaskPriority>('medium');
 
   readonly savedMedia = signal<TaskMedia[]>([]);
+  readonly mediaToDelete = signal<Set<string>>(new Set());
   readonly pending = signal<PendingUpload[]>([]);
+  readonly viewerMedia = signal<TaskMedia | null>(null);
+
+  readonly visibleSavedMedia = computed(() =>
+    this.savedMedia().filter((m) => !this.mediaToDelete().has(m.media_uuid)),
+  );
 
   readonly model = signal<TaskFormFields>({ title: '', description: '' });
 
@@ -97,6 +108,11 @@ export class TaskEditorComponent implements OnInit {
   });
 
   readonly isEdit = computed(() => this.task() !== null);
+  readonly isView = computed(() => this.mode() === 'view');
+
+  switchToEdit(): void {
+    this.modeChange.emit('edit');
+  }
 
   readonly errorMessage = computed(() => {
     const errors = this.taskForm().errorSummary();
@@ -116,6 +132,13 @@ export class TaskEditorComponent implements OnInit {
     { label: 'მაღალი', value: 'high' },
     { label: 'სასწრაფო', value: 'urgent' },
   ];
+
+  readonly stateLabel = computed(
+    () => this.stateOptions.find((o) => o.value === this.state())?.label ?? '',
+  );
+  readonly priorityLabel = computed(
+    () => this.priorityOptions.find((o) => o.value === this.priority())?.label ?? '',
+  );
 
   readonly acceptList = ALL_TYPES.join(',');
 
@@ -171,8 +194,7 @@ export class TaskEditorComponent implements OnInit {
     if (event.dataTransfer?.files) this.addFiles(Array.from(event.dataTransfer.files));
   }
 
-  private addFiles(files: File[]): void {
-    const accepted: PendingUpload[] = [];
+  private async addFiles(files: File[]): Promise<void> {
     for (const file of files) {
       const mediaType = classifyType(file.type);
       if (!mediaType) {
@@ -184,15 +206,34 @@ export class TaskEditorComponent implements OnInit {
         );
         continue;
       }
-      accepted.push({
-        id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-        file,
-        media_type: mediaType,
-        previewUrl: URL.createObjectURL(file),
-        progress: 0,
-      });
+
+      let finalFile = file;
+      if (mediaType === 'image') {
+        try {
+          finalFile = await this.compressImageService.compressImage(
+            file,
+            0.7,
+            2000,
+            2000,
+            'image/webp',
+          );
+        } catch {
+          this.toastService.add('შეცდომა', 'სურათის შეკუმშვა ვერ მოხერხდა', 3000, 'error');
+          continue;
+        }
+      }
+
+      this.pending.update((p) => [
+        ...p,
+        {
+          id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+          file: finalFile,
+          media_type: mediaType,
+          previewUrl: URL.createObjectURL(finalFile),
+          progress: 0,
+        },
+      ]);
     }
-    if (accepted.length) this.pending.update((p) => [...p, ...accepted]);
   }
 
   removePending(id: string): void {
@@ -201,22 +242,29 @@ export class TaskEditorComponent implements OnInit {
     this.pending.update((p) => p.filter((x) => x.id !== id));
   }
 
-  removeSavedMedia(media: TaskMedia): void {
-    const task = this.task();
-    if (!task) return;
-    this.adminService
-      .deleteTaskMedia(task.id, media.media_uuid)
-      .pipe(
-        tap(() => {
-          this.savedMedia.update((arr) => arr.filter((m) => m.media_uuid !== media.media_uuid));
-          this.toastService.add('წარმატება', 'მედია წაიშალა', 2500, 'success');
-        }),
-        catchError((err) => {
-          this.toastService.add('შეცდომა', err.error?.error || 'ვერ წაიშალა', 3000, 'error');
-          return of(null);
-        }),
-      )
-      .subscribe();
+  markSavedMediaForDelete(media: TaskMedia): void {
+    this.mediaToDelete.update((set) => {
+      const next = new Set(set);
+      next.add(media.media_uuid);
+      return next;
+    });
+  }
+
+  onEscape(): void {
+    if (this.viewerMedia()) {
+      this.closeViewer();
+      return;
+    }
+    this.close();
+  }
+
+  openViewer(media: TaskMedia, event: Event): void {
+    event.stopPropagation();
+    this.viewerMedia.set(media);
+  }
+
+  closeViewer(): void {
+    this.viewerMedia.set(null);
   }
 
   close(): void {
@@ -255,7 +303,7 @@ export class TaskEditorComponent implements OnInit {
               this.saving.set(false);
               return;
             }
-            this.uploadPending(existing.id);
+            this.deletePendingRemovals(existing.id).subscribe(() => this.uploadPending(existing.id));
           });
       } else {
         const payload: TaskCreatePayload = {
@@ -284,6 +332,25 @@ export class TaskEditorComponent implements OnInit {
     });
   }
 
+  private deletePendingRemovals(taskId: number): Observable<unknown> {
+    const uuids = Array.from(this.mediaToDelete());
+    if (uuids.length === 0) return of(null);
+    return forkJoin(
+      uuids.map((uuid) =>
+        this.adminService.deleteTaskMedia(taskId, uuid).pipe(
+          tap(() => {
+            this.savedMedia.update((arr) => arr.filter((m) => m.media_uuid !== uuid));
+          }),
+          catchError(() => of(null)),
+        ),
+      ),
+    ).pipe(
+      tap(() => {
+        this.mediaToDelete.set(new Set());
+      }),
+    );
+  }
+
   private uploadPending(taskId: number): void {
     const pending = this.pending();
     if (pending.length === 0) {
@@ -302,12 +369,23 @@ export class TaskEditorComponent implements OnInit {
       .pipe(
         mergeMap((res) => {
           const uploads = res.media.map((entry, idx) =>
-            this.adminService.uploadToS3(entry.upload_url, pending[idx].file).pipe(
-              tap(() => {
-                this.pending.update((arr) =>
-                  arr.map((p) => (p.id === pending[idx].id ? { ...p, progress: 100 } : p)),
-                );
+            this.adminService.uploadToS3WithProgress(entry.upload_url, pending[idx].file).pipe(
+              tap((event) => {
+                if (event.type === HttpEventType.UploadProgress) {
+                  const total = event.total || pending[idx].file.size;
+                  const progress = total
+                    ? Math.min(99, Math.round((event.loaded / total) * 100))
+                    : 0;
+                  this.pending.update((arr) =>
+                    arr.map((p) => (p.id === pending[idx].id ? { ...p, progress } : p)),
+                  );
+                } else if (event.type === HttpEventType.Response || event.type === HttpEventType.ResponseHeader) {
+                  this.pending.update((arr) =>
+                    arr.map((p) => (p.id === pending[idx].id ? { ...p, progress: 100 } : p)),
+                  );
+                }
               }),
+              last(),
               catchError(() => {
                 this.pending.update((arr) =>
                   arr.map((p) =>

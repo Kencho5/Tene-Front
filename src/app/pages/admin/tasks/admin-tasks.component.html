@@ -111,6 +111,7 @@
         @for (task of tasksByState()[col.state]; track task.id) {
         <app-task-card
           [task]="task"
+          (view)="openView(task)"
           (edit)="openEdit(task)"
           (delete)="openDelete(task.id)"
           (stateChange)="changeState(task, $event)"
@@ -130,8 +131,10 @@
 <app-task-editor
   [task]="editingTask()"
   [initialState]="editorInitialState()"
+  [mode]="editorMode()"
   (closed)="closeEditor()"
   (saved)="onSaved()"
+  (modeChange)="editorMode.set($event)"
 />
 }
 

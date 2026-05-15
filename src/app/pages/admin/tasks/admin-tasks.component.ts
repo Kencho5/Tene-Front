@@ -56,6 +56,7 @@ export class AdminTasksComponent {
   readonly editorOpen = signal(false);
   readonly editingTask = signal<Task | null>(null);
   readonly editorInitialState = signal<TaskState>('todo');
+  readonly editorMode = signal<'view' | 'edit' | 'create'>('view');
 
   readonly deleteOpen = signal(false);
   readonly taskToDelete = signal<number | null>(null);
@@ -103,11 +104,19 @@ export class AdminTasksComponent {
   openNew(state: TaskState): void {
     this.editingTask.set(null);
     this.editorInitialState.set(state);
+    this.editorMode.set('create');
+    this.editorOpen.set(true);
+  }
+
+  openView(task: Task): void {
+    this.editingTask.set(task);
+    this.editorMode.set('view');
     this.editorOpen.set(true);
   }
 
   openEdit(task: Task): void {
     this.editingTask.set(task);
+    this.editorMode.set('edit');
     this.editorOpen.set(true);
   }
 

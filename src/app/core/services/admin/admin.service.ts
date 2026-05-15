@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpStatusCode } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders, HttpStatusCode } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
   OrderSearchResponse,
@@ -76,6 +76,19 @@ export class AdminService {
     });
 
     return this.http.put(url, file, { headers });
+  }
+
+  uploadToS3WithProgress(url: string, file: File): Observable<HttpEvent<unknown>> {
+    const headers = new HttpHeaders({
+      'Content-Type': file.type,
+      'Cache-Control': 'public, max-age=31536000, immutable',
+    });
+
+    return this.http.put(url, file, {
+      headers,
+      reportProgress: true,
+      observe: 'events',
+    });
   }
 
   deleteProduct(id: string): Observable<HttpStatusCode> {
