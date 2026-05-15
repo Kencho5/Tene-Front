@@ -5,11 +5,12 @@ import {
   ElementRef,
   inject,
   input,
+  OnInit,
   output,
   signal,
   viewChild,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { form, FormField, required, submit } from '@angular/forms/signals';
 import { AdminService } from '@core/services/admin/admin.service';
 import { ToastService } from '@core/services/toast.service';
 import {
@@ -24,9 +25,15 @@ import {
 } from '@core/interfaces/admin/tasks.interface';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
+import { InputComponent } from '@shared/components/ui/input/input.component';
 import { SpinnerComponent } from '@shared/components/ui/spinner/spinner.component';
 import { SharedModule } from '@shared/shared.module';
 import { catchError, finalize, forkJoin, mergeMap, of, tap } from 'rxjs';
+
+interface TaskFormFields {
+  title: string;
+  description: string;
+}
 
 interface PendingUpload {
   id: string;
@@ -51,11 +58,17 @@ function classifyType(contentType: string): TaskMediaType | null {
 
 @Component({
   selector: 'app-task-editor',
-  imports: [SharedModule, FormsModule, DropdownComponent, SpinnerComponent],
+  imports: [SharedModule, FormField, DropdownComponent, InputComponent, SpinnerComponent],
   templateUrl: './task-editor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:keydown.escape)': 'close()',
+    role: 'dialog',
+    'aria-modal': 'true',
+    'aria-labelledby': 'task-editor-title',
+  },
 })
-export class TaskEditorComponent {
+export class TaskEditorComponent implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly toastService = inject(ToastService);
 
@@ -65,19 +78,30 @@ export class TaskEditorComponent {
   readonly closed = output<void>();
   readonly saved = output<void>();
 
-  readonly fileInput = viewChild<ElementRef<HTMLInputElement>>('fileInput');
+  readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
 
-  readonly title = signal('');
-  readonly description = signal('');
+  readonly submitted = signal(false);
+  readonly saving = signal(false);
+  readonly dragOver = signal(false);
+
   readonly state = signal<TaskState>('todo');
   readonly priority = signal<TaskPriority>('medium');
 
   readonly savedMedia = signal<TaskMedia[]>([]);
   readonly pending = signal<PendingUpload[]>([]);
-  readonly saving = signal(false);
-  readonly dragOver = signal(false);
+
+  readonly model = signal<TaskFormFields>({ title: '', description: '' });
+
+  readonly taskForm = form(this.model, (path) => {
+    required(path.title, { message: 'სათაური აუცილებელია' });
+  });
 
   readonly isEdit = computed(() => this.task() !== null);
+
+  readonly errorMessage = computed(() => {
+    const errors = this.taskForm().errorSummary();
+    return errors.length > 0 ? errors[0].message || 'შეავსეთ ველები' : '';
+  });
 
   readonly stateOptions: ComboboxItems[] = [
     { label: 'გასაკეთებელი', value: 'todo' },
@@ -95,13 +119,10 @@ export class TaskEditorComponent {
 
   readonly acceptList = ALL_TYPES.join(',');
 
-  readonly titleInvalid = computed(() => this.title().trim().length === 0);
-
-  constructor() {
+  ngOnInit(): void {
     const t = this.task();
     if (t) {
-      this.title.set(t.title);
-      this.description.set(t.description ?? '');
+      this.model.set({ title: t.title, description: t.description ?? '' });
       this.state.set(t.state);
       this.priority.set(t.priority);
       this.savedMedia.set(t.media);
@@ -110,34 +131,33 @@ export class TaskEditorComponent {
     }
   }
 
-  onTitleInput(e: Event): void {
-    this.title.set((e.target as HTMLInputElement).value);
+  onStateChange(value: string | undefined): void {
+    if (value) this.state.set(value as TaskState);
   }
 
-  onDescriptionInput(e: Event): void {
-    this.description.set((e.target as HTMLTextAreaElement).value);
-  }
-
-  onStateChange(v: string | undefined): void {
-    if (v) this.state.set(v as TaskState);
-  }
-
-  onPriorityChange(v: string | undefined): void {
-    if (v) this.priority.set(v as TaskPriority);
+  onPriorityChange(value: string | undefined): void {
+    if (value) this.priority.set(value as TaskPriority);
   }
 
   triggerPicker(): void {
-    this.fileInput()?.nativeElement.click();
+    this.fileInput().nativeElement.click();
   }
 
-  onFilesPicked(e: Event): void {
-    const input = e.target as HTMLInputElement;
+  onDropZoneKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.triggerPicker();
+    }
+  }
+
+  onFilesPicked(event: Event): void {
+    const input = event.target as HTMLInputElement;
     if (input.files) this.addFiles(Array.from(input.files));
     input.value = '';
   }
 
-  onDragOver(e: DragEvent): void {
-    e.preventDefault();
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
     this.dragOver.set(true);
   }
 
@@ -145,10 +165,10 @@ export class TaskEditorComponent {
     this.dragOver.set(false);
   }
 
-  onDrop(e: DragEvent): void {
-    e.preventDefault();
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
     this.dragOver.set(false);
-    if (e.dataTransfer?.files) this.addFiles(Array.from(e.dataTransfer.files));
+    if (event.dataTransfer?.files) this.addFiles(Array.from(event.dataTransfer.files));
   }
 
   private addFiles(files: File[]): void {
@@ -204,58 +224,64 @@ export class TaskEditorComponent {
     this.closed.emit();
   }
 
-  save(): void {
-    if (this.titleInvalid() || this.saving()) return;
-    this.saving.set(true);
+  onSubmit(event?: Event): void {
+    event?.preventDefault();
+    this.submitted.set(true);
+    if (this.saving()) return;
 
-    const existing = this.task();
-    if (existing) {
-      const payload: TaskUpdatePayload = {
-        title: this.title().trim(),
-        description: this.description(),
-        state: this.state(),
-        priority: this.priority(),
-      };
-      this.adminService
-        .updateTask(existing.id, payload)
-        .pipe(
-          tap(() => this.toastService.add('წარმატება', 'დავალება განახლდა', 2500, 'success')),
-          catchError((err) => {
-            this.toastService.add('შეცდომა', err.error?.error || 'ვერ განახლდა', 3000, 'error');
-            return of(null);
-          }),
-        )
-        .subscribe((res) => {
-          if (!res) {
-            this.saving.set(false);
-            return;
-          }
-          this.uploadPending(existing.id);
-        });
-    } else {
-      const payload: TaskCreatePayload = {
-        title: this.title().trim(),
-        description: this.description() || null,
-        state: this.state(),
-        priority: this.priority(),
-      };
-      this.adminService
-        .createTask(payload)
-        .pipe(
-          catchError((err) => {
-            this.toastService.add('შეცდომა', err.error?.error || 'ვერ შეიქმნა', 3000, 'error');
-            return of(null);
-          }),
-        )
-        .subscribe((res) => {
-          if (!res) {
-            this.saving.set(false);
-            return;
-          }
-          this.toastService.add('წარმატება', 'დავალება შეიქმნა', 2500, 'success');
-          this.uploadPending(res.id);
-        });
-    }
+    submit(this.taskForm, async () => {
+      this.saving.set(true);
+      const values = this.model();
+      const existing = this.task();
+
+      if (existing) {
+        const payload: TaskUpdatePayload = {
+          title: values.title.trim(),
+          description: values.description,
+          state: this.state(),
+          priority: this.priority(),
+        };
+        this.adminService
+          .updateTask(existing.id, payload)
+          .pipe(
+            tap(() => this.toastService.add('წარმატება', 'დავალება განახლდა', 2500, 'success')),
+            catchError((err) => {
+              this.toastService.add('შეცდომა', err.error?.error || 'ვერ განახლდა', 3000, 'error');
+              return of(null);
+            }),
+          )
+          .subscribe((res) => {
+            if (!res) {
+              this.saving.set(false);
+              return;
+            }
+            this.uploadPending(existing.id);
+          });
+      } else {
+        const payload: TaskCreatePayload = {
+          title: values.title.trim(),
+          description: values.description || null,
+          state: this.state(),
+          priority: this.priority(),
+        };
+        this.adminService
+          .createTask(payload)
+          .pipe(
+            catchError((err) => {
+              this.toastService.add('შეცდომა', err.error?.error || 'ვერ შეიქმნა', 3000, 'error');
+              return of(null);
+            }),
+          )
+          .subscribe((res) => {
+            if (!res) {
+              this.saving.set(false);
+              return;
+            }
+            this.toastService.add('წარმატება', 'დავალება შეიქმნა', 2500, 'success');
+            this.uploadPending(res.id);
+          });
+      }
+    });
   }
 
   private uploadPending(taskId: number): void {

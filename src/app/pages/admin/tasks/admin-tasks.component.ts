@@ -42,6 +42,17 @@ export class AdminTasksComponent {
 
   readonly priorityFilter = signal<TaskPriority | undefined>(undefined);
 
+  readonly collapsed = signal<Record<TaskState, boolean>>({
+    todo: false,
+    in_progress: false,
+    review: false,
+    done: false,
+  });
+
+  toggleCollapse(state: TaskState): void {
+    this.collapsed.update((c) => ({ ...c, [state]: !c[state] }));
+  }
+
   readonly editorOpen = signal(false);
   readonly editingTask = signal<Task | null>(null);
   readonly editorInitialState = signal<TaskState>('todo');
