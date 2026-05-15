@@ -29,8 +29,7 @@ import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.compo
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { SpinnerComponent } from '@shared/components/ui/spinner/spinner.component';
 import { SharedModule } from '@shared/shared.module';
-import { HttpEventType } from '@angular/common/http';
-import { catchError, finalize, forkJoin, last, mergeMap, Observable, of, tap } from 'rxjs';
+import { catchError, finalize, forkJoin, mergeMap, Observable, of, tap } from 'rxjs';
 
 interface TaskFormFields {
   title: string;
@@ -370,22 +369,11 @@ export class TaskEditorComponent implements OnInit {
         mergeMap((res) => {
           const uploads = res.media.map((entry, idx) =>
             this.adminService.uploadToS3WithProgress(entry.upload_url, pending[idx].file).pipe(
-              tap((event) => {
-                if (event.type === HttpEventType.UploadProgress) {
-                  const total = event.total || pending[idx].file.size;
-                  const progress = total
-                    ? Math.min(99, Math.round((event.loaded / total) * 100))
-                    : 0;
-                  this.pending.update((arr) =>
-                    arr.map((p) => (p.id === pending[idx].id ? { ...p, progress } : p)),
-                  );
-                } else if (event.type === HttpEventType.Response || event.type === HttpEventType.ResponseHeader) {
-                  this.pending.update((arr) =>
-                    arr.map((p) => (p.id === pending[idx].id ? { ...p, progress: 100 } : p)),
-                  );
-                }
+              tap(({ progress }) => {
+                this.pending.update((arr) =>
+                  arr.map((p) => (p.id === pending[idx].id ? { ...p, progress } : p)),
+                );
               }),
-              last(),
               catchError(() => {
                 this.pending.update((arr) =>
                   arr.map((p) =>

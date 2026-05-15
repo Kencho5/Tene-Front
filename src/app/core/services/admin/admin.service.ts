@@ -1,4 +1,4 @@
-import { HttpClient, HttpEvent, HttpHeaders, HttpStatusCode } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpStatusCode } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
   OrderSearchResponse,
@@ -78,16 +78,39 @@ export class AdminService {
     return this.http.put(url, file, { headers });
   }
 
-  uploadToS3WithProgress(url: string, file: File): Observable<HttpEvent<unknown>> {
-    const headers = new HttpHeaders({
-      'Content-Type': file.type,
-      'Cache-Control': 'public, max-age=31536000, immutable',
-    });
+  uploadToS3WithProgress(url: string, file: File): Observable<{ progress: number; done: boolean }> {
+    return new Observable((subscriber) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', url, true);
+      xhr.setRequestHeader('Content-Type', file.type);
+      xhr.setRequestHeader('Cache-Control', 'public, max-age=31536000, immutable');
 
-    return this.http.put(url, file, {
-      headers,
-      reportProgress: true,
-      observe: 'events',
+      xhr.upload.addEventListener('progress', (event) => {
+        if (event.lengthComputable) {
+          subscriber.next({
+            progress: Math.min(99, Math.round((event.loaded / event.total) * 100)),
+            done: false,
+          });
+        }
+      });
+
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          subscriber.next({ progress: 100, done: true });
+          subscriber.complete();
+        } else {
+          subscriber.error(new Error(`Upload failed: ${xhr.status}`));
+        }
+      });
+
+      xhr.addEventListener('error', () => subscriber.error(new Error('Upload network error')));
+      xhr.addEventListener('abort', () => subscriber.error(new Error('Upload aborted')));
+
+      xhr.send(file);
+
+      return () => {
+        if (xhr.readyState !== XMLHttpRequest.DONE) xhr.abort();
+      };
     });
   }
 
