@@ -284,6 +284,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin/analytics/analytics.component').then((m) => m.AnalyticsComponent),
       },
+      {
+        path: 'tasks',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/tasks/admin-tasks.component').then((m) => m.AdminTasksComponent),
+      },
     ],
   },
 

@@ -11,7 +11,6 @@ import { ProductsService } from '@core/services/products/products.service';
 import { CategoriesService } from '@core/services/categories/categories.service';
 import { catchError, map } from 'rxjs';
 import { of } from 'rxjs';
-import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { SharedModule } from '@shared/shared.module';
 import { productTopCategoryCards, productBrandCards } from '@utils/productsCards';
@@ -22,7 +21,7 @@ import { ProductSearchResponse } from '@core/interfaces/products.interface';
 
 @Component({
   selector: 'app-products',
-  imports: [SharedModule, ProductCardComponent, ImageComponent, DragScrollDirective],
+  imports: [SharedModule, ProductCardComponent, DragScrollDirective],
   templateUrl: './products.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: `
@@ -52,7 +51,9 @@ export class ProductsComponent implements OnInit {
   readonly topLevelCategories = computed(() => {
     const priorityIds = [2, 3, 9];
     const all = this.categoriesTree.value();
-    const priority = priorityIds.map((id) => all.find((c) => c.id === id)).filter(Boolean) as CategoryTreeNode[];
+    const priority = priorityIds
+      .map((id) => all.find((c) => c.id === id))
+      .filter(Boolean) as CategoryTreeNode[];
     const rest = all.filter((c) => !priorityIds.includes(c.id));
     return [...priority, ...rest].slice(0, 8);
   });

@@ -32,6 +32,17 @@ import {
   CableVariantRequest,
   CableVariantUpdate,
 } from '@core/interfaces/admin/cable-types.interface';
+import {
+  Task,
+  TaskCreatePayload,
+  TaskListParams,
+  TaskListResponse,
+  TaskMediaPresignedResponse,
+  TaskMediaUploadItem,
+  TaskState,
+  TaskUpdatePayload,
+} from '@core/interfaces/admin/tasks.interface';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -198,5 +209,46 @@ export class AdminService {
     return this.http.get<AnalyticsResponse>('/admin/analytics', {
       ...(period && { params: { period } }),
     });
+  }
+
+  // Task Management
+  listTasks(params: TaskListParams = {}): Observable<TaskListResponse> {
+    let httpParams = new HttpParams();
+    if (params.state) httpParams = httpParams.set('state', params.state);
+    if (params.priority) httpParams = httpParams.set('priority', params.priority);
+    if (params.limit != null) httpParams = httpParams.set('limit', String(params.limit));
+    if (params.offset != null) httpParams = httpParams.set('offset', String(params.offset));
+    return this.http.get<TaskListResponse>('/admin/tasks', { params: httpParams });
+  }
+
+  getTask(id: number): Observable<Task> {
+    return this.http.get<Task>(`/admin/tasks/${id}`);
+  }
+
+  createTask(payload: TaskCreatePayload): Observable<Task> {
+    return this.http.post<Task>('/admin/tasks', payload);
+  }
+
+  updateTask(id: number, payload: TaskUpdatePayload): Observable<Task> {
+    return this.http.put<Task>(`/admin/tasks/${id}`, payload);
+  }
+
+  updateTaskState(id: number, state: TaskState): Observable<Task> {
+    return this.http.patch<Task>(`/admin/tasks/${id}/state`, { state });
+  }
+
+  deleteTask(id: number): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/tasks/${id}`);
+  }
+
+  getTaskMediaPresignedUrls(
+    id: number,
+    items: TaskMediaUploadItem[],
+  ): Observable<TaskMediaPresignedResponse> {
+    return this.http.put<TaskMediaPresignedResponse>(`/admin/tasks/${id}/media`, { items });
+  }
+
+  deleteTaskMedia(id: number, mediaUuid: string): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/tasks/${id}/media/${mediaUuid}`);
   }
 }
