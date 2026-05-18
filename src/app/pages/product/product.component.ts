@@ -408,7 +408,7 @@ export class ProductComponent {
       if (lenIdx !== -1) {
         this.selectedLengthIdx.set(lenIdx);
       } else {
-        const defaultIdx = lengths.indexOf(100);
+        const defaultIdx = lengths.indexOf(20);
         this.selectedLengthIdx.set(defaultIdx !== -1 ? defaultIdx : 0);
       }
     });
