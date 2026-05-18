@@ -20,6 +20,7 @@ import { getProductImageUrl } from '@utils/product-image-url';
 })
 export class CartItemComponent {
   readonly item = input.required<CartItem>();
+  readonly index = input<number | null>(null);
   readonly showQuantityControls = input<boolean>(true);
   readonly clickable = input<boolean>(true);
 
