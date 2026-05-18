@@ -34,7 +34,13 @@ import { AddressFormModalComponent } from '@shared/components/address-form-modal
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
 import { AuthService } from '@core/services/auth/auth-service.service';
 
-type SectionKey = 'contactDetails' | 'deliveryDetails' | 'paymentMethod';
+type StepKey = 'contact' | 'delivery' | 'review';
+
+interface StepInfo {
+  key: StepKey;
+  label: string;
+  shortLabel: string;
+}
 
 @Component({
   selector: 'app-checkout',
@@ -152,11 +158,19 @@ export class CheckoutComponent {
 
   readonly addresses = signal<AddressData[]>([]);
 
-  readonly sectionStates = signal<Record<SectionKey, boolean>>({
-    contactDetails: true,
-    deliveryDetails: true,
-    paymentMethod: true,
-  });
+  readonly steps: StepInfo[] = [
+    { key: 'contact', label: 'საკონტაქტო დეტალები', shortLabel: 'საკონტაქტო' },
+    { key: 'delivery', label: 'მიწოდება', shortLabel: 'მიწოდება' },
+    { key: 'review', label: 'მიმოხილვა', shortLabel: 'მიმოხილვა' },
+  ];
+
+  readonly currentStepIndex = signal(0);
+  readonly currentStep = computed(() => this.steps[this.currentStepIndex()].key);
+  readonly isFirstStep = computed(() => this.currentStepIndex() === 0);
+  readonly isLastStep = computed(() => this.currentStepIndex() === this.steps.length - 1);
+  readonly progressPercent = computed(
+    () => ((this.currentStepIndex() + 1) / this.steps.length) * 100,
+  );
 
   readonly checkoutModel = signal<CheckoutFields>({
     customer_type: 'individual',
@@ -272,7 +286,7 @@ export class CheckoutComponent {
     this.submitted.set(true);
 
     if (this.checkoutForm().invalid()) {
-      this.expandSectionsWithErrors();
+      this.goToFirstInvalidStep();
       this.scrollPending.set(true);
       return;
     }
@@ -286,6 +300,78 @@ export class CheckoutComponent {
       this.dispatchCheckout();
       return [];
     });
+  }
+
+  goNext(): void {
+    if (this.isLastStep()) {
+      this.handleCheckout();
+      return;
+    }
+    this.submitted.set(true);
+    if (!this.isCurrentStepValid()) {
+      this.scrollPending.set(true);
+      return;
+    }
+    this.submitted.set(false);
+    this.currentStepIndex.update((i) => Math.min(i + 1, this.steps.length - 1));
+    this.scrollToTop();
+  }
+
+  goBack(): void {
+    if (this.isFirstStep()) return;
+    this.currentStepIndex.update((i) => Math.max(i - 1, 0));
+    this.scrollToTop();
+  }
+
+  goToStep(index: number): void {
+    if (index === this.currentStepIndex()) return;
+    if (index < this.currentStepIndex()) {
+      this.currentStepIndex.set(index);
+      this.scrollToTop();
+      return;
+    }
+    for (let i = this.currentStepIndex(); i < index; i++) {
+      this.submitted.set(true);
+      if (!this.isStepValid(this.steps[i].key)) {
+        this.scrollPending.set(true);
+        return;
+      }
+    }
+    this.submitted.set(false);
+    this.currentStepIndex.set(index);
+    this.scrollToTop();
+  }
+
+  private scrollToTop(): void {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  private isCurrentStepValid(): boolean {
+    return this.isStepValid(this.currentStep());
+  }
+
+  private isStepValid(step: StepKey): boolean {
+    switch (step) {
+      case 'contact':
+        return !this.hasContactErrors();
+      case 'delivery':
+        return !this.hasDeliveryErrors();
+      case 'review':
+        return !this.checkoutForm().invalid();
+    }
+  }
+
+  private goToFirstInvalidStep(): void {
+    if (this.hasContactErrors()) {
+      this.currentStepIndex.set(0);
+      return;
+    }
+    if (this.hasDeliveryErrors()) {
+      this.currentStepIndex.set(1);
+      return;
+    }
   }
 
   private dispatchCheckout(): void {
@@ -381,23 +467,6 @@ export class CheckoutComponent {
       return f.guest_city().invalid() || f.guest_address().invalid();
     }
     return f.address().invalid();
-  }
-
-  private expandSectionsWithErrors() {
-    const contact = this.hasContactErrors();
-    const delivery = this.hasDeliveryErrors();
-    this.sectionStates.update((state) => ({
-      ...state,
-      contactDetails: contact ? true : state.contactDetails,
-      deliveryDetails: delivery ? true : state.deliveryDetails,
-    }));
-  }
-
-  toggleSection(section: SectionKey) {
-    this.sectionStates.update((state) => ({
-      ...state,
-      [section]: !state[section],
-    }));
   }
 
   onAddressSaved(address: AddressData) {

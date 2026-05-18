@@ -7,59 +7,80 @@
     <app-breadcrumb [items]="breadcrumbs()" />
 
     <div class="container mt-10 flex flex-col justify-between gap-6 xl:flex-row">
-      <div class="sm:border-platinum-20 flex-1 sm:rounded-2xl sm:border sm:bg-white sm:px-6">
-        <div class="-mx-4 mb-5 bg-[#fafafa] px-4 py-5 sm:border-platinum-20 sm:mx-0 sm:mb-0 sm:w-full sm:border-b sm:bg-transparent sm:px-0 sm:py-6 sm:last:border-b-0">
-          <div class="mb-6">
-            <h1 class="text-xl">ჩემი ნივთები</h1>
-            <p class="text-platinum-50 text-sm">
-              დამატებული ნივთები: {{ cartService.itemCount() }}
-            </p>
+      <div class="sm:border-platinum-20 flex-1 sm:rounded-2xl sm:border sm:bg-white sm:px-6 sm:py-6">
+        <!-- Stepper -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between">
+            @for (step of steps; track step.key; let i = $index) {
+            <button
+              type="button"
+              (click)="goToStep(i)"
+              class="flex flex-1 flex-col items-center gap-2 text-center transition-opacity"
+              [class.opacity-60]="i > currentStepIndex()"
+            >
+              <div
+                class="flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] text-sm font-medium transition-all"
+                [ngClass]="{
+                  'bg-green-60 border-green-60 text-white': i <= currentStepIndex(),
+                  'border-platinum-20 text-platinum-50 bg-white': i > currentStepIndex(),
+                }"
+              >
+                @if (i < currentStepIndex()) {
+                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                } @else {
+                {{ i + 1 }}
+                }
+              </div>
+              <span
+                class="hidden text-xs sm:block"
+                [ngClass]="{
+                  'text-platinum-90 font-medium': i === currentStepIndex(),
+                  'text-platinum-50': i !== currentStepIndex(),
+                }"
+              >
+                {{ step.shortLabel }}
+              </span>
+            </button>
+            @if (!$last) {
+            <div class="bg-platinum-20 mx-1 h-px flex-1 sm:mx-2">
+              <div
+                class="bg-green-60 h-full transition-all duration-300"
+                [style.width.%]="i < currentStepIndex() ? 100 : 0"
+              ></div>
+            </div>
+            }
+            }
           </div>
 
-          <div class="flex flex-col gap-6">
-            @for (item of cartService.items(); track $index) {
-            <app-cart-item [item]="item" />
-            }
+          <div class="bg-platinum-10 mt-4 h-1 w-full overflow-hidden rounded-full sm:hidden">
+            <div
+              class="bg-green-60 h-full rounded-full transition-all duration-300"
+              [style.width.%]="progressPercent()"
+            ></div>
           </div>
         </div>
 
-        <form
-          (submit)="handleCheckout($event)"
-          novalidate
-          class="-mx-4 mb-5 bg-[#fafafa] px-4 py-5 sm:border-platinum-20 sm:mx-0 sm:mb-0 sm:w-full sm:border-b sm:bg-transparent sm:px-0 sm:py-6 sm:last:border-b-0"
-        >
-          <button
-            type="button"
-            (click)="toggleSection('contactDetails')"
-            [attr.aria-expanded]="sectionStates().contactDetails"
-            aria-controls="section-contact"
-            class="flex w-full items-center justify-between text-left transition-opacity hover:opacity-70"
-          >
-            <h1 class="text-xl">1. საკონტაქტო დეტალები</h1>
-            <svg
-              class="text-platinum-70 h-6 w-6 shrink-0 transition-transform duration-200"
-              [class.rotate-180]="!sectionStates().contactDetails"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+        <div class="bg-platinum-20 mb-6 h-px"></div>
 
-          @if (sectionStates().contactDetails) {
-          <div id="section-contact" class="mt-4 flex flex-col gap-4">
+        <form (submit)="handleCheckout($event)" novalidate>
+          <!-- Step 1: Contact -->
+          @if (currentStep() === 'contact') {
+          <div class="flex flex-col gap-4">
+            <div>
+              <h2 class="text-xl">საკონტაქტო დეტალები</h2>
+              <p class="text-platinum-50 text-sm">შეიყვანეთ თქვენი მონაცემები</p>
+            </div>
+
             <div class="flex gap-3">
               <button
                 type="button"
                 (click)="checkoutForm.customer_type().value.set('individual')"
                 [ngClass]="{
-                    'bg-green-60 text-white':
-                      checkoutForm.customer_type().value() === 'individual',
-                    'bg-green-10 text-green-70':
-                      checkoutForm.customer_type().value() !== 'individual',
-                  }"
+                  'bg-green-60 text-white': checkoutForm.customer_type().value() === 'individual',
+                  'bg-green-10 text-green-70': checkoutForm.customer_type().value() !== 'individual',
+                }"
                 class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
               >
                 ფიზიკური პირი
@@ -68,11 +89,9 @@
                 type="button"
                 (click)="checkoutForm.customer_type().value.set('company')"
                 [ngClass]="{
-                    'bg-green-60 text-white':
-                      checkoutForm.customer_type().value() === 'company',
-                    'bg-green-10 text-green-70':
-                      checkoutForm.customer_type().value() !== 'company',
-                  }"
+                  'bg-green-60 text-white': checkoutForm.customer_type().value() === 'company',
+                  'bg-green-10 text-green-70': checkoutForm.customer_type().value() !== 'company',
+                }"
                 class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
               >
                 იურიდიული პირი
@@ -111,14 +130,9 @@
             <div class="flex w-full flex-col gap-4 md:flex-row">
               <div class="w-full md:w-32">
                 <app-combobox
-                  [(selectedValue)]="
-                        checkoutForm.company.organization_type().value
-                      "
+                  [(selectedValue)]="checkoutForm.company.organization_type().value"
                   [items]="organizationTypes"
-                  [error]="
-                        submitted() &&
-                        checkoutForm.company.organization_type().invalid()
-                      "
+                  [error]="submitted() && checkoutForm.company.organization_type().invalid()"
                   placeholder="ტიპი"
                   searchPlaceholder="ძებნა..."
                   notFoundText="ვერ მოიძებნა"
@@ -172,41 +186,23 @@
             />
           </div>
           }
-        </form>
 
-        <div class="-mx-4 mb-5 bg-[#fafafa] px-4 py-5 sm:border-platinum-20 sm:mx-0 sm:mb-0 sm:w-full sm:border-b sm:bg-transparent sm:px-0 sm:py-6 sm:last:border-b-0">
-          <button
-            type="button"
-            (click)="toggleSection('deliveryDetails')"
-            [attr.aria-expanded]="sectionStates().deliveryDetails"
-            aria-controls="section-delivery"
-            class="flex w-full items-center justify-between text-left transition-opacity hover:opacity-70"
-          >
-            <h1 class="text-xl">2. მიწოდება</h1>
-            <svg
-              class="text-platinum-70 h-6 w-6 shrink-0 transition-transform duration-200"
-              [class.rotate-180]="!sectionStates().deliveryDetails"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+          <!-- Step 2: Delivery -->
+          @if (currentStep() === 'delivery') {
+          <div class="flex flex-col gap-4">
+            <div>
+              <h2 class="text-xl">მიწოდება</h2>
+              <p class="text-platinum-50 text-sm">აირჩიეთ მისამართი და დრო</p>
+            </div>
 
-          @if (sectionStates().deliveryDetails) {
-          <div id="section-delivery" class="mt-4 flex flex-col gap-4">
             <div class="flex gap-3">
               <button
                 type="button"
                 (click)="checkoutForm.delivery_type().value.set('delivery')"
                 [ngClass]="{
-                    'bg-green-60 text-white':
-                      checkoutForm.delivery_type().value() === 'delivery',
-                    'bg-green-10 text-green-70':
-                      checkoutForm.delivery_type().value() !== 'delivery',
-                  }"
+                  'bg-green-60 text-white': checkoutForm.delivery_type().value() === 'delivery',
+                  'bg-green-10 text-green-70': checkoutForm.delivery_type().value() !== 'delivery',
+                }"
                 class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
               >
                 ადგილზე
@@ -215,11 +211,9 @@
                 type="button"
                 (click)="checkoutForm.delivery_type().value.set('pickup')"
                 [ngClass]="{
-                    'bg-green-60 text-white':
-                      checkoutForm.delivery_type().value() === 'pickup',
-                    'bg-green-10 text-green-70':
-                      checkoutForm.delivery_type().value() !== 'pickup',
-                  }"
+                  'bg-green-60 text-white': checkoutForm.delivery_type().value() === 'pickup',
+                  'bg-green-10 text-green-70': checkoutForm.delivery_type().value() !== 'pickup',
+                }"
                 class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
               >
                 ჩემით წავიღებ
@@ -316,73 +310,74 @@
             }
             <div class="flex flex-col gap-4">
               @for (address of addresses(); track address.id) {
-              <button
-                type="button"
-                (click)="
-                          checkoutForm.address().value.set(address.address)
-                        "
-                [class.border-green-60]="
-                          checkoutForm.address().value() === address.address
-                        "
-                [class.border-valencia-50]="
-                          submitted() && checkoutForm.address().invalid()
-                        "
-                [class.border-platinum-20]="
-                          checkoutForm.address().value() !== address.address && !(submitted() && checkoutForm.address().invalid())
-                        "
-                class="flex w-full flex-col rounded-xl border-[1.5px] px-4 py-1 transition-all"
+              @let selected = checkoutForm.address().value() === address.address;
+              @let hasError = submitted() && checkoutForm.address().invalid();
+              <div
+                (click)="checkoutForm.address().value.set(address.address)"
+                [ngClass]="{
+                  'border-green-60 bg-green-10/30': selected,
+                  'border-valencia-50': !selected && hasError,
+                  'border-platinum-20': !selected && !hasError,
+                }"
+                class="group relative flex w-full cursor-pointer flex-col overflow-hidden rounded-2xl border-[1.5px] transition-colors duration-200 ease-out"
               >
-                <div class="flex items-center justify-between gap-4 py-4">
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="bg-platinum-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                <div
+                  [ngClass]="selected ? 'bg-green-60' : 'bg-platinum-10'"
+                  class="flex items-center justify-between px-4 py-2.5 transition-colors duration-200 ease-out"
+                >
+                  <div class="flex items-center gap-2">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      [ngClass]="selected ? 'text-white' : 'text-platinum-90'"
+                      stroke="currentColor"
+                      class="transition-colors duration-200 ease-out"
                     >
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path
-                          d="M10 10.625C11.3807 10.625 12.5 9.50571 12.5 8.125C12.5 6.74429 11.3807 5.625 10 5.625C8.61929 5.625 7.5 6.74429 7.5 8.125C7.5 9.50571 8.61929 10.625 10 10.625Z"
-                          stroke="#212121"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                        <path
-                          d="M16.25 8.125C16.25 13.75 10 18.125 10 18.125C10 18.125 3.75 13.75 3.75 8.125C3.75 6.4674 4.40848 4.87769 5.58058 3.70558C6.75269 2.53348 8.3424 1.875 10 1.875C11.6576 1.875 13.2473 2.53348 14.4194 3.70558C15.5915 4.87769 16.25 6.4674 16.25 8.125Z"
-                          stroke="#212121"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                    </div>
-                    <div class="flex flex-col items-start text-left">
-                      <span class="font-normal">{{ address.address }}</span>
-                      <span class="text-platinum-50 text-sm">{{ cityLabel(address.city) }}</span>
-                    </div>
+                      <path
+                        d="M10 10.625C11.3807 10.625 12.5 9.50571 12.5 8.125C12.5 6.74429 11.3807 5.625 10 5.625C8.61929 5.625 7.5 6.74429 7.5 8.125C7.5 9.50571 8.61929 10.625 10 10.625Z"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M16.25 8.125C16.25 13.75 10 18.125 10 18.125C10 18.125 3.75 13.75 3.75 8.125C3.75 6.4674 4.40848 4.87769 5.58058 3.70558C6.75269 2.53348 8.3424 1.875 10 1.875C11.6576 1.875 13.2473 2.53348 14.4194 3.70558C15.5915 4.87769 16.25 6.4674 16.25 8.125Z"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span
+                      [ngClass]="selected ? 'text-white' : 'text-platinum-70'"
+                      class="text-xs font-medium tracking-wide uppercase transition-colors duration-200 ease-out"
+                    >
+                      {{ cityLabel(address.city) }}
+                    </span>
                   </div>
                   <div
-                    [class.bg-green-60]="
-                              checkoutForm.address().value() === address.address
-                            "
-                    [class.bg-platinum-20]="
-                              checkoutForm.address().value() !== address.address
-                            "
-                    class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+                    [ngClass]="selected ? 'border-white bg-white' : 'border-platinum-30 bg-transparent'"
+                    class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-[1.5px] transition-colors duration-200 ease-out"
                   >
-                    <div class="h-2 w-2 rounded-full bg-white"></div>
+                    <div
+                      [ngClass]="selected ? 'bg-green-60 scale-100' : 'bg-transparent scale-0'"
+                      class="h-2 w-2 rounded-full transition-transform duration-200 ease-out"
+                    ></div>
                   </div>
                 </div>
 
-                @if (address.details) {
-                <div class="bg-platinum-20 h-px"></div>
-                <div class="flex items-center justify-between">
-                  <div class="text-platinum-50 py-4 text-left text-sm">{{ address.details }}</div>
-
-                  <button type="button" (click)="addressModal.openForEdit(address)">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <path d="M24 0V24H0V0H24Z" fill="white" fill-opacity="0.01" />
+                <div class="flex items-start justify-between gap-3 px-4 py-4">
+                  <p class="text-left text-base font-medium">{{ address.address }}</p>
+                  <button
+                    type="button"
+                    (click)="$event.stopPropagation(); addressModal.openForEdit(address)"
+                    class="text-platinum-50 hover:text-green-70 shrink-0 transition-colors"
+                    aria-label="რედაქტირება"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                       <path
                         d="M11.9946 5.99512L18.0042 12.0047M5.64457 20.3532L6.33892 20.3534C7.97462 20.3539 8.79247 20.3542 9.5279 20.0497C10.2633 19.7452 10.8416 19.1669 11.9982 18.0103L18.4952 11.5133C19.3175 10.691 19.7287 10.2798 19.9477 9.83586C20.3605 8.99914 20.3605 8.01799 19.9477 7.18127C19.7287 6.7373 19.3175 6.32614 18.4952 5.5038C17.6729 4.68146 17.2617 4.27029 16.8177 4.05126C15.981 3.63847 14.9998 3.63847 14.1631 4.05126C13.7192 4.27029 13.308 4.68146 12.4856 5.50379L5.98822 12.0012C4.83184 13.1576 4.25365 13.7358 3.94916 14.4711C3.64467 15.2063 3.64481 16.024 3.64508 17.6594L3.64519 18.3536C3.64535 19.296 3.64542 19.7672 3.9382 20.06C4.23097 20.3528 4.70217 20.3529 5.64457 20.3532Z"
-                        stroke="#888888"
+                        stroke="currentColor"
                         stroke-width="2"
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -390,8 +385,14 @@
                     </svg>
                   </button>
                 </div>
+
+                @if (address.details) {
+                <div class="bg-platinum-20 mx-4 h-px"></div>
+                <div class="text-platinum-50 px-4 py-3 text-left text-sm">
+                  {{ address.details }}
+                </div>
                 }
-              </button>
+              </div>
               }
             </div>
             } @if (!isGuest() && submitted() && checkoutForm.address().invalid()) {
@@ -437,12 +438,10 @@
                 (click)="sameDayAvailable() && checkoutForm.delivery_time().value.set('same_day')"
                 [disabled]="!sameDayAvailable()"
                 [ngClass]="{
-                    'border-green-60':
-                      checkoutForm.delivery_time().value() === 'same_day',
-                    'border-platinum-20':
-                      checkoutForm.delivery_time().value() !== 'same_day',
-                    'opacity-50 cursor-not-allowed': !sameDayAvailable(),
-                  }"
+                  'border-green-60': checkoutForm.delivery_time().value() === 'same_day',
+                  'border-platinum-20': checkoutForm.delivery_time().value() !== 'same_day',
+                  'opacity-50 cursor-not-allowed': !sameDayAvailable(),
+                }"
                 class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"
               >
                 <div class="flex items-center gap-3">
@@ -471,11 +470,9 @@
                 </div>
                 <div
                   [ngClass]="{
-                      'bg-green-60':
-                        checkoutForm.delivery_time().value() === 'same_day',
-                      'bg-platinum-20':
-                        checkoutForm.delivery_time().value() !== 'same_day',
-                    }"
+                    'bg-green-60': checkoutForm.delivery_time().value() === 'same_day',
+                    'bg-platinum-20': checkoutForm.delivery_time().value() !== 'same_day',
+                  }"
                   class="flex h-6 w-6 items-center justify-center rounded-full"
                 >
                   <div class="h-2 w-2 rounded-full bg-white"></div>
@@ -485,11 +482,9 @@
                 type="button"
                 (click)="checkoutForm.delivery_time().value.set('next_day')"
                 [ngClass]="{
-                    'border-green-60':
-                      checkoutForm.delivery_time().value() === 'next_day',
-                    'border-platinum-20':
-                      checkoutForm.delivery_time().value() !== 'next_day',
-                  }"
+                  'border-green-60': checkoutForm.delivery_time().value() === 'next_day',
+                  'border-platinum-20': checkoutForm.delivery_time().value() !== 'next_day',
+                }"
                 class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"
               >
                 <div class="flex items-center gap-3">
@@ -515,11 +510,9 @@
                 </div>
                 <div
                   [ngClass]="{
-                      'bg-green-60':
-                        checkoutForm.delivery_time().value() === 'next_day',
-                      'bg-platinum-20':
-                        checkoutForm.delivery_time().value() !== 'next_day',
-                    }"
+                    'bg-green-60': checkoutForm.delivery_time().value() === 'next_day',
+                    'bg-platinum-20': checkoutForm.delivery_time().value() !== 'next_day',
+                  }"
                   class="flex h-6 w-6 items-center justify-center rounded-full"
                 >
                   <div class="h-2 w-2 rounded-full bg-white"></div>
@@ -600,76 +593,161 @@
             }
           </div>
           }
-        </div>
 
-        <!--
-        <div class="-mx-4 mb-5 bg-[#fafafa] px-4 py-5 sm:border-platinum-20 sm:mx-0 sm:mb-0 sm:w-full sm:border-b sm:bg-transparent sm:px-0 sm:py-6 sm:last:border-b-0">
-          <button
-            type="button"
-            (click)="toggleSection('paymentMethod')"
-            class="flex w-full items-center justify-between text-left transition-opacity hover:opacity-70"
-          >
-            <h1 class="text-xl">3. გადახდის მეთოდი</h1>
-            <svg
-              class="text-platinum-70 h-6 w-6 shrink-0 transition-transform duration-200"
-              [class.rotate-180]="!sectionStates().paymentMethod"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+          <!-- Step 3: Review -->
+          @if (currentStep() === 'review') {
+          <div class="flex flex-col gap-6">
+            <div>
+              <h2 class="text-xl">მიმოხილვა</h2>
+              <p class="text-platinum-50 text-sm">გადაამოწმეთ შეკვეთის დეტალები</p>
+            </div>
 
-          @if (sectionStates().paymentMethod) {
-          <div class="mt-4 flex flex-col gap-4">
-            <button
-              type="button"
-              class="border-green-60 flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all"
-            >
-              <div class="flex items-center gap-3">
-                <div class="bg-platinum-10 flex h-10 w-10 items-center justify-center rounded-full">
-                  <div
-                    class="bg-platinum-10 flex h-10 w-10 items-center justify-center rounded-full"
-                  >
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <path
-                        d="M11.4792 11.489C11.065 11.489 10.7292 11.8247 10.7292 12.239C10.7292 12.6532 11.065 12.989 11.4792 12.989V12.239V11.489ZM13.5561 12.989C13.9703 12.989 14.3061 12.6532 14.3061 12.239C14.3061 11.8247 13.9703 11.489 13.5561 11.489V12.239V12.989ZM3.33399 12.5L4.08399 12.5L4.08399 12.5L3.33399 12.5ZM3.33399 7.5L4.08399 7.5V7.5H3.33399ZM3.33398 8.33333V9.08333H16.6673V8.33333V7.58333H3.33398V8.33333ZM11.4792 12.239V12.989H13.5561V12.239V11.489H11.4792V12.239ZM3.33399 12.5L2.58399 12.5C2.58399 14.2949 4.03906 15.75 5.83399 15.75V15V14.25C4.86749 14.25 4.08399 13.4665 4.08399 12.5L3.33399 12.5ZM16.6673 12.5H15.9173C15.9173 13.4665 15.1338 14.25 14.1673 14.25V15V15.75C15.9623 15.75 17.4173 14.2949 17.4173 12.5H16.6673ZM16.6673 7.5H17.4173C17.4173 5.70507 15.9623 4.25 14.1673 4.25V5V5.75C15.1338 5.75 15.9173 6.5335 15.9173 7.5H16.6673ZM3.33399 7.5H4.08399C4.08399 6.5335 4.8675 5.75 5.83399 5.75V5V4.25C4.03907 4.25 2.58399 5.70507 2.58399 7.5H3.33399ZM16.6673 7.5H15.9173V12.5H16.6673H17.4173V7.5H16.6673ZM3.33399 12.5L4.08399 12.5L4.08399 7.5L3.33399 7.5L2.58399 7.5L2.58399 12.5L3.33399 12.5ZM5.83399 5V5.75H14.1673V5V4.25H5.83399V5ZM14.1673 15V14.25H5.83399V15V15.75H14.1673V15Z"
-                        fill="#212121"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <div class="flex flex-col items-start">
-                  <span class="font-normal">ყველა ბანკის ბარათი</span>
-                  <span class="text-platinum-50 text-sm">Visa / Mastercard</span>
-                </div>
+            <div>
+              <div class="mb-3 flex items-center justify-between">
+                <h3 class="font-medium">ჩემი ნივთები ({{ cartService.itemCount() }})</h3>
               </div>
-              <div class="bg-green-60 flex h-6 w-6 items-center justify-center rounded-full">
-                <div class="h-2 w-2 rounded-full bg-white"></div>
+              <div class="flex flex-col gap-4">
+                @for (item of cartService.items(); track $index) {
+                <app-cart-item [item]="item" />
+                }
               </div>
-            </button>
+            </div>
+
+            <div class="bg-platinum-20 h-px"></div>
+
+            <div>
+              <div class="mb-3 flex items-center justify-between">
+                <h3 class="font-medium">საკონტაქტო დეტალები</h3>
+                <button
+                  type="button"
+                  (click)="goToStep(0)"
+                  class="text-green-70 text-sm font-medium"
+                >
+                  რედაქტირება
+                </button>
+              </div>
+              <div class="text-platinum-70 space-y-1 text-sm">
+                @if (checkoutForm.customer_type().value() === 'individual') {
+                <p>
+                  {{ checkoutForm.individual.name().value() }}
+                  {{ checkoutForm.individual.surname().value() }}
+                </p>
+                } @else {
+                <p>{{ checkoutForm.company.organization_name().value() }}</p>
+                <p>{{ checkoutForm.company.organization_code().value() }}</p>
+                }
+                <p>{{ checkoutForm.email().value() }}</p>
+                <p>{{ checkoutForm.phone_number().value() }}</p>
+              </div>
+            </div>
+
+            <div class="bg-platinum-20 h-px"></div>
+
+            <div>
+              <div class="mb-3 flex items-center justify-between">
+                <h3 class="font-medium">მიწოდება</h3>
+                <button
+                  type="button"
+                  (click)="goToStep(1)"
+                  class="text-green-70 text-sm font-medium"
+                >
+                  რედაქტირება
+                </button>
+              </div>
+              <div class="text-platinum-70 space-y-1 text-sm">
+                @if (checkoutForm.delivery_type().value() === 'pickup') {
+                <p>ჩემით წავიღებ — თბილისი, სოხუმის ქუჩა 4/6ა</p>
+                } @else {
+                @if (isGuest()) {
+                <p>{{ cityLabel(checkoutForm.guest_city().value()) }}, {{ checkoutForm.guest_address().value() }}</p>
+                @if (checkoutForm.guest_details().value()) {
+                <p class="text-platinum-50">{{ checkoutForm.guest_details().value() }}</p>
+                }
+                } @else {
+                <p>{{ checkoutForm.address().value() }}</p>
+                }
+                <p>
+                  @if (checkoutForm.delivery_time().value() === 'same_day') { იმავე დღეს } @else { 2 - 3 სამუშაო დღეში }
+                </p>
+                }
+              </div>
+            </div>
+
+            <div class="bg-platinum-20 h-px"></div>
+
+            <div>
+              <h3 class="mb-1 font-medium">კომენტარი</h3>
+              <p class="text-platinum-50 mb-3 text-sm">არასავალდებულო</p>
+              <textarea
+                [formField]="checkoutForm.comment"
+                placeholder="დაამატეთ კომენტარი თქვენი შეკვეთისთვის..."
+                rows="3"
+                class="border-platinum-20 focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] bg-white px-4 py-3 text-sm transition-colors outline-none"
+              ></textarea>
+            </div>
           </div>
           }
-        </div>
-        -->
 
-        <div class="-mx-4 mb-5 bg-[#fafafa] px-4 py-5 sm:border-platinum-20 sm:mx-0 sm:mb-0 sm:w-full sm:border-b sm:bg-transparent sm:px-0 sm:py-6 sm:last:border-b-0">
-          <h1 class="text-xl">კომენტარი</h1>
-          <p class="text-platinum-50 mb-4 text-sm">არასავალდებულო</p>
-          <textarea
-            [formField]="checkoutForm.comment"
-            placeholder="დაამატეთ კომენტარი თქვენი შეკვეთისთვის..."
-            rows="3"
-            class="border-platinum-20 focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] bg-white px-4 py-3 text-sm transition-colors outline-none"
-          ></textarea>
-        </div>
+          <!-- Step navigation -->
+          <div class="border-platinum-20 mt-8 flex items-center justify-between gap-4 border-t pt-6">
+            <button
+              type="button"
+              (click)="goBack()"
+              [disabled]="isFirstStep()"
+              class="border-platinum-20 text-platinum-70 hover:bg-platinum-10 inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] px-6 py-3 font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5l-5 5 5 5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              უკან
+            </button>
+
+            @if (!isLastStep()) {
+            <button
+              type="button"
+              (click)="goNext()"
+              class="inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all hover:brightness-95"
+              style="
+                background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%);
+                box-shadow: 0px 20px 16px -8px #0ad10426;
+              "
+            >
+              შემდეგი
+              <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 5l5 5-5 5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            } @else {
+            <button
+              type="submit"
+              [disabled]="checkoutLoading()"
+              class="inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
+              style="
+                background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%);
+                box-shadow: 0px 20px 16px -8px #0ad10426;
+              "
+            >
+              @if (checkoutLoading()) {
+              <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              იტვირთება... } @else {
+              შეკვეთის დადასტურება
+              <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              }
+            </button>
+            }
+          </div>
+        </form>
       </div>
 
       <app-price-summary
         [checkoutLoading]="checkoutLoading()"
         [deliveryPrice]="deliveryPrice()"
+        [showCheckoutButton]="false"
         (checkout)="handleCheckout()"
       />
     </div>
