@@ -31,7 +31,7 @@
         @for (category of topLevelCategories(); track category.id) {
         <a
           [routerLink]="['/search']"
-          [queryParams]="{ parent_category_id: category.id, expand_categories: 'true' }"
+          [queryParams]="{ parent_category_id: category.id }"
           class="group flex w-[130px] shrink-0 flex-col items-center gap-3 sm:w-[150px]"
         >
           <div
