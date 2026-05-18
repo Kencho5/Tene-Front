@@ -142,28 +142,29 @@
     <div class="hide-scrollbar flex-1 space-y-2 overflow-y-auto md:hidden">
       @for (category of categoryTree.value(); track category.id) {
       <div
-        class="border-platinum-20/70 overflow-hidden rounded-2xl border bg-white transition-all duration-200"
+        class="overflow-hidden rounded-2xl border-2 bg-white transition-all duration-200"
         [class.shadow-low]="expandedParentId() === category.id"
-        [class.border-green-60/30]="expandedParentId() === category.id"
+        [class.border-green-60/40]="expandedParentId() === category.id"
+        [class.border-platinum-20/70]="expandedParentId() !== category.id"
       >
         <button
           type="button"
           (click)="expandedParentId.set(expandedParentId() === category.id ? null! : category.id)"
           class="flex w-full cursor-pointer items-center gap-3 px-3 py-2.5 transition-colors duration-150"
           [class]="expandedParentId() === category.id
-                ? 'bg-green-10/40 text-platinum-100'
+                ? 'bg-green-20 text-platinum-100'
                 : 'text-platinum-80'"
         >
           @if (category.image_url) {
           <span
-            class="bg-platinum-10/70 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl p-1.5"
+            class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl"
           >
             <img
               [src]="category.image_url"
               [alt]="category.name"
-              width="44"
-              height="44"
-              class="h-full w-full object-contain"
+              width="48"
+              height="48"
+              class="h-full w-full object-cover"
             />
           </span>
           }
@@ -189,7 +190,7 @@
         </button>
         @if (expandedParentId() === category.id && category.children.length > 0) {
         <div
-          class="border-platinum-20/60 flex flex-wrap gap-1.5 border-t bg-white px-3 py-3"
+          class="border-platinum-20/60 flex flex-wrap gap-1.5 border-t bg-green-10 px-3 py-3"
           animate.enter="slide-down-enter 200ms ease-out"
         >
           @for (child of category.children; track child.id) {
