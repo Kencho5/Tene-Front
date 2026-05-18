@@ -37,6 +37,8 @@ export class DropdownComponent {
   });
 
   selectItem(value: string): void {
+    const item = this.items().find((i) => i.value === value);
+    if (item?.disabled) return;
     const newValue = this.selectedValue() === value ? undefined : value;
     this.selectedValueChange.emit(newValue!);
     this.selectedValue.set(newValue);

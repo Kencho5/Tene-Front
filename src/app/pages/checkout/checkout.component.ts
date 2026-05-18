@@ -22,19 +22,16 @@ import { ToastService } from '@core/services/toast.service';
 import { AddressService } from '@core/services/address.service';
 import { CartItemComponent } from '@shared/components/cart-item/cart-item.component';
 import { PriceSummaryComponent } from '@shared/components/price-summary/price-summary.component';
-import {
-  BreadcrumbComponent,
-  BreadcrumbItem,
-} from '@shared/components/ui/breadcrumb/breadcrumb.component';
 import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
+import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { AddressData } from '@core/interfaces/address.interface';
 import { AddressFormModalComponent } from '@shared/components/address-form-modal/address-form-modal.component';
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
 import { AuthService } from '@core/services/auth/auth-service.service';
 
-type StepKey = 'contact' | 'delivery' | 'review';
+type StepKey = 'contact' | 'delivery' | 'review' | 'payment';
 
 interface StepInfo {
   key: StepKey;
@@ -46,12 +43,12 @@ interface StepInfo {
   selector: 'app-checkout',
   imports: [
     NgClass,
-    BreadcrumbComponent,
     PriceSummaryComponent,
     CartItemComponent,
     ConfirmationModalComponent,
     InputComponent,
     ComboboxComponent,
+    DropdownComponent,
     AddressFormModalComponent,
     FormField,
   ],
@@ -141,12 +138,23 @@ export class CheckoutComponent {
 
   readonly checkoutLoading = signal(false);
 
-  readonly breadcrumbs = computed<BreadcrumbItem[]>(() => [
-    { label: 'ჩემი კალათა', route: '/cart' },
-    { label: 'შეკვეთის გაფორმება', route: '/checkout' },
-  ]);
-
   readonly organizationTypes = organizationTypes;
+
+  readonly deliveryTimeOptions = computed(() => {
+    const available = this.sameDayAvailable();
+    const price = this.sameDayPrice();
+    const nextPrice = this.nextDayPrice();
+    const sameDayLabel = available
+      ? `იმავე დღეს — ${price === 0 ? 'უფასო' : price + ' ₾'}`
+      : `იმავე დღეს — ${this.sameDayUnavailableReason()}`;
+    return [
+      { value: 'same_day', label: sameDayLabel, disabled: !available },
+      {
+        value: 'next_day',
+        label: `2 - 3 სამუშაო დღეში — ${nextPrice === 0 ? 'უფასო' : nextPrice + ' ₾'}`,
+      },
+    ];
+  });
 
   readonly submitted = signal(false);
   private readonly scrollPending = signal(false);
@@ -162,6 +170,7 @@ export class CheckoutComponent {
     { key: 'contact', label: 'საკონტაქტო დეტალები', shortLabel: 'საკონტაქტო' },
     { key: 'delivery', label: 'მიწოდება', shortLabel: 'მიწოდება' },
     { key: 'review', label: 'მიმოხილვა', shortLabel: 'მიმოხილვა' },
+    { key: 'payment', label: 'გადახდა', shortLabel: 'გადახდა' },
   ];
 
   readonly currentStepIndex = signal(0);
@@ -172,25 +181,36 @@ export class CheckoutComponent {
     () => ((this.currentStepIndex() + 1) / this.steps.length) * 100,
   );
 
+  private readonly initialUserInfo = (() => {
+    const user = this.authService.user();
+    const fullName = user?.name?.trim() ?? '';
+    const [firstName = '', ...rest] = fullName.split(/\s+/);
+    return {
+      name: firstName,
+      surname: rest.join(' '),
+      email: user?.email ?? '',
+    };
+  })();
+
   readonly checkoutModel = signal<CheckoutFields>({
     customer_type: 'individual',
     individual: {
-      name: '',
-      surname: '',
+      name: this.initialUserInfo.name,
+      surname: this.initialUserInfo.surname,
     },
     company: {
       organization_type: 'llc',
       organization_name: '',
       organization_code: '',
     },
-    email: '',
+    email: this.initialUserInfo.email,
     phone_number: '',
     address: '',
     guest_city: '',
     guest_address: '',
     guest_details: '',
     delivery_type: 'delivery',
-    delivery_time: this.timeAllowsSameDay ? 'same_day' : 'next_day',
+    delivery_time: '',
     comment: '',
   });
 
@@ -231,6 +251,9 @@ export class CheckoutComponent {
       ({ valueOf }) => valueOf(fieldPath.delivery_type) === 'pickup' || !this.isGuest(),
     );
     required(fieldPath.guest_address, { message: 'მისამართი აუცილებელია' });
+
+    hidden(fieldPath.delivery_time, ({ valueOf }) => valueOf(fieldPath.delivery_type) === 'pickup');
+    required(fieldPath.delivery_time, { message: 'მიწოდების დრო აუცილებელია' });
   });
 
   constructor() {
@@ -245,7 +268,13 @@ export class CheckoutComponent {
         !this.sameDayAvailable() &&
         this.checkoutForm.delivery_time().value() === 'same_day'
       ) {
-        this.checkoutForm.delivery_time().value.set('next_day');
+        this.checkoutForm.delivery_time().value.set('');
+      }
+    });
+
+    effect(() => {
+      if (this.currentStep() === 'payment' && !this.checkoutLoading()) {
+        this.handleCheckout();
       }
     });
 
@@ -277,6 +306,9 @@ export class CheckoutComponent {
         .subscribe((addresses) => {
           this.addresses.set(addresses);
           this.loading.update((state) => ({ ...state, addresses: false }));
+          if (addresses.length > 0 && !this.checkoutForm.address().value()) {
+            this.checkoutForm.address().value.set(addresses[0].address);
+          }
         });
     }
   }
@@ -319,6 +351,7 @@ export class CheckoutComponent {
 
   goBack(): void {
     if (this.isFirstStep()) return;
+    if (this.currentStep() === 'payment') return;
     this.currentStepIndex.update((i) => Math.max(i - 1, 0));
     this.scrollToTop();
   }
@@ -359,6 +392,7 @@ export class CheckoutComponent {
       case 'delivery':
         return !this.hasDeliveryErrors();
       case 'review':
+      case 'payment':
         return !this.checkoutForm().invalid();
     }
   }
@@ -463,6 +497,7 @@ export class CheckoutComponent {
   private hasDeliveryErrors(): boolean {
     const f = this.checkoutForm;
     if (f.delivery_type().value() === 'pickup') return false;
+    if (f.delivery_time().invalid()) return true;
     if (this.isGuest()) {
       return f.guest_city().invalid() || f.guest_address().invalid();
     }

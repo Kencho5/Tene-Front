@@ -46,11 +46,12 @@
         @for (item of items(); track item.value) {
           <button
             type="button"
-            class="w-full rounded-lg px-3 py-2 text-left text-platinum-100 transition-colors"
+            [disabled]="item.disabled"
+            class="w-full rounded-lg px-3 py-2 text-left text-platinum-100 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             [ngClass]="
               selectedValue() === item.value
                 ? 'bg-green-10 font-medium text-green-70'
-                : 'hover:bg-platinum-10'
+                : item.disabled ? '' : 'hover:bg-platinum-10'
             "
             (click)="selectItem(item.value)"
           >
