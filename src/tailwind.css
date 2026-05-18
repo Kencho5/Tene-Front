@@ -91,6 +91,19 @@
   --color-platinum-90: #333333;
   --color-platinum-100: #212121;
 
+  --color-surface-10: #fbfaf7;
+  --color-surface-20: #f5f3ee;
+  --color-surface-30: #ece9e0;
+
+  --color-ink-10: #f4f5f7;
+  --color-ink-20: #e3e6eb;
+  --color-ink-30: #c4c9d4;
+  --color-ink-40: #8b93a4;
+  --color-ink-50: #5b6577;
+  --color-ink-60: #3e4757;
+  --color-ink-70: #2c3340;
+  --color-ink-80: #1d222c;
+
   --color-success: #059669;
   --color-warning: #d97706;
   --color-info: #0284c7;

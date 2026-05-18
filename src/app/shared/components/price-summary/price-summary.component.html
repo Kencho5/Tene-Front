@@ -1,16 +1,21 @@
 <div
-  class="sm:border-platinum-20 w-full space-y-6 sm:rounded-2xl sm:border sm:bg-white sm:p-6 xl:w-[420px]"
+  class="sm:border-ink-20 w-full space-y-6 sm:rounded-xl sm:border sm:bg-white sm:p-6 xl:w-[420px]"
 >
-  <h2 class="text-xl">{{ title() }}</h2>
+  <h2 class="text-ink-80 text-xl">{{ title() }}</h2>
 
   @if (cartService.itemCount() > 0) {
   <div
-    class="border-green-20 from-green-10/60 relative overflow-hidden rounded-2xl border bg-gradient-to-br to-white p-4"
+    [ngClass]="cartService.qualifiesForFreeShipping()
+      ? 'border-green-20 bg-green-10/60'
+      : 'border-ink-20 bg-white sm:bg-surface-10'"
+    class="relative overflow-hidden rounded-xl border p-4 transition-colors duration-200"
   >
     <div class="flex items-start gap-3">
       <div
         class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
-        [ngClass]="cartService.qualifiesForFreeShipping() ? 'bg-green-60 text-white' : 'bg-white text-green-70 border-green-20 border'"
+        [ngClass]="cartService.qualifiesForFreeShipping()
+          ? 'bg-green-60 text-white'
+          : 'bg-white text-ink-60 border-ink-20 border'"
       >
         @if (cartService.qualifiesForFreeShipping()) {
         <svg
@@ -39,51 +44,46 @@
       </div>
       <div class="min-w-0 flex-1">
         @if (cartService.qualifiesForFreeShipping()) {
-        <p class="text-green-70 text-sm font-semibold">უფასო მიწოდება გააქტიურებულია 🎉</p>
-        <p class="text-platinum-60 mt-0.5 text-xs">მიწოდების ღირებულებას გადაგიხდით ჩვენ</p>
+        <p class="text-green-80 text-sm font-semibold">უფასო მიწოდება გააქტიურებულია 🎉</p>
+        <p class="text-ink-50 mt-0.5 text-xs">მიწოდების ღირებულებას გადაგიხდით ჩვენ</p>
         } @else {
-        <p class="text-sm leading-snug">
+        <p class="text-ink-70 text-sm leading-snug">
           <span>დაამატეთ კიდევ</span>
           <span class="text-green-70 font-bold">
             {{ cartService.freeShippingRemaining() | number: "1.2-2" }}₾
           </span>
-          <span class="text-platinum-70">უფასო მიწოდებისთვის</span>
+          <span>უფასო მიწოდებისთვის</span>
         </p>
-        <p class="text-platinum-50 mt-1 text-xs">
+        <p class="text-ink-40 mt-1 text-xs">
           {{ cartService.totalPrice() | number: "1.2-2" }}₾ / 100₾
         </p>
         }
       </div>
     </div>
 
-    <div class="bg-platinum-10 mt-3 h-2 w-full overflow-hidden rounded-full">
+    <div class="bg-ink-10 mt-3 h-2 w-full overflow-hidden rounded-full">
       <div
-        class="h-full rounded-full transition-all duration-500"
+        class="bg-green-60 h-full rounded-full transition-all duration-500"
         [style.width.%]="cartService.freeShippingProgress()"
-        [style.background]="
-          cartService.qualifiesForFreeShipping()
-            ? 'linear-gradient(90deg, #0ad810 0%, #0bb705 50%, #0ad810 100%)'
-            : 'linear-gradient(90deg, #0bb705 0%, #0ad810 100%)'
-        "
       ></div>
     </div>
   </div>
   }
 
-  <div class="space-y-2 text-sm">
+  <div class="space-y-2.5 text-sm">
     <div class="flex items-center justify-between">
-      <p class="text-platinum-50">ნივთები ({{ cartService.itemCount() }})</p>
-      <p class="font-semibold">{{ cartService.totalPrice() | number: "1.2-2" }}₾</p>
+      <p class="text-ink-50">ნივთები ({{ cartService.itemCount() }})</p>
+      <p class="text-ink-80 font-semibold">{{ cartService.totalPrice() | number: "1.2-2" }}₾</p>
     </div>
     <div class="flex items-center justify-between">
-      <p class="text-platinum-50">მიწოდება</p>
-      <p class="font-semibold" [ngClass]="{'text-green-60' : deliveryPrice() == 0}">
+      <p class="text-ink-50">მიწოდება</p>
+      <p class="font-semibold" [ngClass]="deliveryPrice() == 0 ? 'text-green-70' : 'text-ink-80'">
         @if (deliveryPrice() == 0) { უფასო } @else { {{ deliveryPrice() | number: "1.2-2" }}₾ }
       </p>
     </div>
     @if (cartService.totalDiscount() > 0) {
     <div class="flex items-center justify-between">
-      <p class="text-platinum-50">ფასდაკლება</p>
+      <p class="text-ink-50">ფასდაკლება</p>
       <p class="text-valencia-50 font-semibold">
         -{{ cartService.totalDiscount() | number: "1.2-2" }}₾
       </p>
@@ -91,11 +91,11 @@
     }
   </div>
 
-  <div class="bg-platinum-20 h-px"></div>
+  <div class="bg-ink-20 h-px"></div>
 
-  <div class="flex items-center justify-between text-lg">
-    <h2 class="text-base">ჯამური ღირებულება</h2>
-    <p class="text-base font-bold">
+  <div class="flex items-center justify-between">
+    <h2 class="text-ink-70 text-base font-medium">ჯამური ღირებულება</h2>
+    <p class="text-ink-80 text-lg font-bold">
       {{ cartService.totalPrice() + deliveryPrice() | number: "1.2-2" }}₾
     </p>
   </div>
@@ -105,11 +105,8 @@
     type="button"
     (click)="onCheckout()"
     [disabled]="checkoutLoading()"
-    class="inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 text-base font-medium text-white transition-all hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
-    style="
-      background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%);
-      box-shadow: 0px 20px 16px -8px #0ad10426;
-    "
+    [class.sm:hidden]="mobileOnlyCheckoutButton()"
+    class="bg-green-60 hover:bg-green-70 inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-base font-medium text-white transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60"
   >
     @if (checkoutLoading()) {
     <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">

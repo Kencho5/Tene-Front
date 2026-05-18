@@ -1,13 +1,13 @@
-<div class="px-4 lg:px-0">
-  <div class="container mt-24 mb-10 md:mt-36">
+<div class="bg-surface-10 min-h-screen px-4 py-10 md:py-16 lg:px-0">
+  <div class="container">
     <h1 class="text-2xl md:text-4xl">შეკვეთის გაფორმება</h1>
 
-    <div class="bg-platinum-20 my-6 h-px"></div>
+    <div class="bg-ink-20 my-6 h-px"></div>
 
     <app-breadcrumb [items]="breadcrumbs()" />
 
     <div class="container mt-10 flex flex-col justify-between gap-6 xl:flex-row">
-      <div class="sm:border-platinum-20 flex-1 sm:rounded-2xl sm:border sm:bg-white sm:px-6 sm:py-6">
+      <div class="sm:border-ink-20 flex-1 sm:rounded-xl sm:border sm:bg-white sm:px-6 sm:py-6">
         <!-- Stepper -->
         <div class="mb-6">
           <div class="flex items-center justify-between">
@@ -21,48 +21,45 @@
               <div
                 class="flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] text-sm font-medium transition-all"
                 [ngClass]="{
-                  'bg-green-60 border-green-60 text-white': i <= currentStepIndex(),
-                  'border-platinum-20 text-platinum-50 bg-white': i > currentStepIndex(),
+                  'bg-green-60 border-green-60 text-white shadow-low': i <= currentStepIndex(),
+                  'border-ink-20 text-ink-40 bg-white': i > currentStepIndex(),
                 }"
               >
                 @if (i < currentStepIndex()) {
-                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
                   <path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-                } @else {
-                {{ i + 1 }}
-                }
+                } @else { {{ i + 1 }} }
               </div>
               <span
                 class="hidden text-xs sm:block"
                 [ngClass]="{
-                  'text-platinum-90 font-medium': i === currentStepIndex(),
-                  'text-platinum-50': i !== currentStepIndex(),
+                  'text-ink-70 font-medium': i === currentStepIndex(),
+                  'text-ink-40': i !== currentStepIndex(),
                 }"
               >
                 {{ step.shortLabel }}
               </span>
             </button>
             @if (!$last) {
-            <div class="bg-platinum-20 mx-1 h-px flex-1 sm:mx-2">
+            <div class="bg-ink-20 mx-1 h-px flex-1 sm:mx-2">
               <div
                 class="bg-green-60 h-full transition-all duration-300"
                 [style.width.%]="i < currentStepIndex() ? 100 : 0"
               ></div>
             </div>
-            }
-            }
+            } }
           </div>
 
-          <div class="bg-platinum-10 mt-4 h-1 w-full overflow-hidden rounded-full sm:hidden">
-            <div
-              class="bg-green-60 h-full rounded-full transition-all duration-300"
-              [style.width.%]="progressPercent()"
-            ></div>
-          </div>
         </div>
 
-        <div class="bg-platinum-20 mb-6 h-px"></div>
+        <div class="bg-ink-20 mb-6 h-px"></div>
 
         <form (submit)="handleCheckout($event)" novalidate>
           <!-- Step 1: Contact -->
@@ -70,7 +67,7 @@
           <div class="flex flex-col gap-4">
             <div>
               <h2 class="text-xl">საკონტაქტო დეტალები</h2>
-              <p class="text-platinum-50 text-sm">შეიყვანეთ თქვენი მონაცემები</p>
+              <p class="text-ink-50 text-sm">შეიყვანეთ თქვენი მონაცემები</p>
             </div>
 
             <div class="flex gap-3">
@@ -78,8 +75,8 @@
                 type="button"
                 (click)="checkoutForm.customer_type().value.set('individual')"
                 [ngClass]="{
-                  'bg-green-60 text-white': checkoutForm.customer_type().value() === 'individual',
-                  'bg-green-10 text-green-70': checkoutForm.customer_type().value() !== 'individual',
+                  'bg-ink-70 text-white': checkoutForm.customer_type().value() === 'individual',
+                  'bg-ink-10 text-ink-60 hover:bg-ink-20': checkoutForm.customer_type().value() !== 'individual',
                 }"
                 class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
               >
@@ -89,8 +86,8 @@
                 type="button"
                 (click)="checkoutForm.customer_type().value.set('company')"
                 [ngClass]="{
-                  'bg-green-60 text-white': checkoutForm.customer_type().value() === 'company',
-                  'bg-green-10 text-green-70': checkoutForm.customer_type().value() !== 'company',
+                  'bg-ink-70 text-white': checkoutForm.customer_type().value() === 'company',
+                  'bg-ink-10 text-ink-60 hover:bg-ink-20': checkoutForm.customer_type().value() !== 'company',
                 }"
                 class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
               >
@@ -192,7 +189,7 @@
           <div class="flex flex-col gap-4">
             <div>
               <h2 class="text-xl">მიწოდება</h2>
-              <p class="text-platinum-50 text-sm">აირჩიეთ მისამართი და დრო</p>
+              <p class="text-ink-50 text-sm">აირჩიეთ მისამართი და დრო</p>
             </div>
 
             <div class="flex gap-3">
@@ -200,8 +197,8 @@
                 type="button"
                 (click)="checkoutForm.delivery_type().value.set('delivery')"
                 [ngClass]="{
-                  'bg-green-60 text-white': checkoutForm.delivery_type().value() === 'delivery',
-                  'bg-green-10 text-green-70': checkoutForm.delivery_type().value() !== 'delivery',
+                  'bg-ink-70 text-white': checkoutForm.delivery_type().value() === 'delivery',
+                  'bg-ink-10 text-ink-60 hover:bg-ink-20': checkoutForm.delivery_type().value() !== 'delivery',
                 }"
                 class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
               >
@@ -211,8 +208,8 @@
                 type="button"
                 (click)="checkoutForm.delivery_type().value.set('pickup')"
                 [ngClass]="{
-                  'bg-green-60 text-white': checkoutForm.delivery_type().value() === 'pickup',
-                  'bg-green-10 text-green-70': checkoutForm.delivery_type().value() !== 'pickup',
+                  'bg-ink-70 text-white': checkoutForm.delivery_type().value() === 'pickup',
+                  'bg-ink-10 text-ink-60 hover:bg-ink-20': checkoutForm.delivery_type().value() !== 'pickup',
                 }"
                 class="flex max-h-[33px] items-center rounded-full px-4 py-2 text-sm font-medium transition-all"
               >
@@ -290,17 +287,7 @@
               <button
                 type="button"
                 (click)="addressModal.openForCreate()"
-                class="inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all hover:brightness-95"
-                style="
-                  background: linear-gradient(
-                    90deg,
-                    #0ad810 0%,
-                    #0bb705 35%,
-                    #0bb705 65%,
-                    #0ad810 100%
-                  );
-                  box-shadow: 0px 20px 16px -8px #0ad10426;
-                "
+                class="bg-green-60 hover:bg-green-70 inline-flex h-[44px] items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-white transition-colors duration-200"
               >
                 მისამართის დამატება
               </button>
@@ -309,20 +296,20 @@
             <span #errorAnchor></span>
             }
             <div class="flex flex-col gap-4">
-              @for (address of addresses(); track address.id) {
-              @let selected = checkoutForm.address().value() === address.address;
-              @let hasError = submitted() && checkoutForm.address().invalid();
+              @for (address of addresses(); track address.id) { @let selected =
+              checkoutForm.address().value() === address.address; @let hasError = submitted() &&
+              checkoutForm.address().invalid();
               <div
                 (click)="checkoutForm.address().value.set(address.address)"
                 [ngClass]="{
-                  'border-green-60 bg-green-10/30': selected,
-                  'border-valencia-50': !selected && hasError,
-                  'border-platinum-20': !selected && !hasError,
+                  'border-green-60 bg-green-10/40 shadow-low': selected,
+                  'border-valencia-50 bg-white': !selected && hasError,
+                  'border-ink-20 bg-white': !selected && !hasError,
                 }"
                 class="group relative flex w-full cursor-pointer flex-col overflow-hidden rounded-2xl border-[1.5px] transition-colors duration-200 ease-out"
               >
                 <div
-                  [ngClass]="selected ? 'bg-green-60' : 'bg-platinum-10'"
+                  [ngClass]="selected ? 'bg-green-60' : 'bg-ink-10'"
                   class="flex items-center justify-between px-4 py-2.5 transition-colors duration-200 ease-out"
                 >
                   <div class="flex items-center gap-2">
@@ -331,7 +318,7 @@
                       height="14"
                       viewBox="0 0 20 20"
                       fill="none"
-                      [ngClass]="selected ? 'text-white' : 'text-platinum-90'"
+                      [ngClass]="selected ? 'text-white' : 'text-ink-60'"
                       stroke="currentColor"
                       class="transition-colors duration-200 ease-out"
                     >
@@ -349,14 +336,14 @@
                       />
                     </svg>
                     <span
-                      [ngClass]="selected ? 'text-white' : 'text-platinum-70'"
+                      [ngClass]="selected ? 'text-white' : 'text-ink-60'"
                       class="text-xs font-medium tracking-wide uppercase transition-colors duration-200 ease-out"
                     >
                       {{ cityLabel(address.city) }}
                     </span>
                   </div>
                   <div
-                    [ngClass]="selected ? 'border-white bg-white' : 'border-platinum-30 bg-transparent'"
+                    [ngClass]="selected ? 'border-white bg-white' : 'border-ink-30 bg-transparent'"
                     class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-[1.5px] transition-colors duration-200 ease-out"
                   >
                     <div
@@ -371,7 +358,7 @@
                   <button
                     type="button"
                     (click)="$event.stopPropagation(); addressModal.openForEdit(address)"
-                    class="text-platinum-50 hover:text-green-70 shrink-0 transition-colors"
+                    class="text-ink-40 hover:text-ink-70 shrink-0 transition-colors"
                     aria-label="რედაქტირება"
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -387,10 +374,8 @@
                 </div>
 
                 @if (address.details) {
-                <div class="bg-platinum-20 mx-4 h-px"></div>
-                <div class="text-platinum-50 px-4 py-3 text-left text-sm">
-                  {{ address.details }}
-                </div>
+                <div class="bg-ink-20 mx-4 h-px"></div>
+                <div class="text-ink-50 px-4 py-3 text-left text-sm">{{ address.details }}</div>
                 }
               </div>
               }
@@ -430,7 +415,7 @@
             </button>
             }
 
-            <div class="bg-platinum-20 my-4 h-px"></div>
+            <div class="bg-ink-20 my-4 h-px"></div>
 
             <div class="flex w-full flex-col gap-4 md:flex-row">
               <button
@@ -438,63 +423,75 @@
                 (click)="sameDayAvailable() && checkoutForm.delivery_time().value.set('same_day')"
                 [disabled]="!sameDayAvailable()"
                 [ngClass]="{
-                  'border-green-60': checkoutForm.delivery_time().value() === 'same_day',
-                  'border-platinum-20': checkoutForm.delivery_time().value() !== 'same_day',
+                  'border-green-60 bg-green-10/40': checkoutForm.delivery_time().value() === 'same_day',
+                  'border-ink-20 bg-white': checkoutForm.delivery_time().value() !== 'same_day',
                   'opacity-50 cursor-not-allowed': !sameDayAvailable(),
                 }"
-                class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"
+                class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-colors duration-200 md:flex-1"
               >
                 <div class="flex items-center gap-3">
                   <div
-                    class="bg-platinum-10 flex h-10 w-10 items-center justify-center rounded-full"
+                    [ngClass]="checkoutForm.delivery_time().value() === 'same_day' ? 'bg-green-20 text-green-80' : 'bg-cream-10 text-cream-60'"
+                    class="flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-200"
                   >
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                    >
                       <path
                         d="M5.00065 5H8.75065C10.5867 5 12.3157 5.86447 13.4173 7.33333L14.0111 8.12508C14.1128 8.26069 14.2535 8.36205 14.4143 8.41565L15.5277 8.78679C16.2083 9.01365 16.6673 9.65055 16.6673 10.3679V11.6667C16.6673 12.5871 15.9211 13.3333 15.0007 13.3333M15.0007 13.3333C15.0007 14.2538 14.2545 15 13.334 15C12.4135 15 11.6673 14.2538 11.6673 13.3333M15.0007 13.3333C15.0007 12.4129 14.2545 11.6667 13.334 11.6667C12.4135 11.6667 11.6673 12.4129 11.6673 13.3333M8.33398 13.3333C8.33398 14.2538 7.58779 15 6.66732 15C5.74684 15 5.00065 14.2538 5.00065 13.3333M8.33398 13.3333C8.33398 12.4129 7.58779 11.6667 6.66732 11.6667C5.74684 11.6667 5.00065 12.4129 5.00065 13.3333M8.33398 13.3333H11.6673M5.00065 13.3333H3.33398M3.33398 10L5.83398 10M4.16732 7.5L7.50065 7.5M10.0007 8.33333L14.1673 8.33333"
-                        stroke="#212121"
                         stroke-width="1.5"
                         stroke-linecap="round"
                       />
                     </svg>
                   </div>
                   <div class="flex flex-col items-start">
-                    <span class="font-normal">იმავე დღეს</span>
+                    <span class="text-ink-80 font-medium">იმავე დღეს</span>
                     @if (!sameDayAvailable()) {
-                    <span class="text-platinum-50 text-xs">{{ sameDayUnavailableReason() }}</span>
+                    <span class="text-ink-40 text-xs">{{ sameDayUnavailableReason() }}</span>
                     } @else {
-                    <span class="text-platinum-50 text-xs">
+                    <span class="text-ink-50 text-xs">
                       @if (sameDayPrice() === 0) { უფასო } @else { {{ sameDayPrice() }} ₾ }
                     </span>
                     }
                   </div>
                 </div>
                 <div
-                  [ngClass]="{
-                    'bg-green-60': checkoutForm.delivery_time().value() === 'same_day',
-                    'bg-platinum-20': checkoutForm.delivery_time().value() !== 'same_day',
-                  }"
-                  class="flex h-6 w-6 items-center justify-center rounded-full"
+                  [ngClass]="checkoutForm.delivery_time().value() === 'same_day' ? 'border-green-60 bg-green-60' : 'border-ink-30 bg-transparent'"
+                  class="flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] transition-colors duration-200"
                 >
-                  <div class="h-2 w-2 rounded-full bg-white"></div>
+                  <div
+                    [ngClass]="checkoutForm.delivery_time().value() === 'same_day' ? 'bg-white scale-100' : 'bg-transparent scale-0'"
+                    class="h-2 w-2 rounded-full transition-transform duration-200"
+                  ></div>
                 </div>
               </button>
               <button
                 type="button"
                 (click)="checkoutForm.delivery_time().value.set('next_day')"
                 [ngClass]="{
-                  'border-green-60': checkoutForm.delivery_time().value() === 'next_day',
-                  'border-platinum-20': checkoutForm.delivery_time().value() !== 'next_day',
+                  'border-green-60 bg-green-10/40': checkoutForm.delivery_time().value() === 'next_day',
+                  'border-ink-20 bg-white': checkoutForm.delivery_time().value() !== 'next_day',
                 }"
-                class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-all md:flex-1"
+                class="flex h-16 w-full items-center justify-between rounded-xl border-[1.5px] px-4 transition-colors duration-200 md:flex-1"
               >
                 <div class="flex items-center gap-3">
                   <div
-                    class="bg-platinum-10 flex h-10 w-10 items-center justify-center rounded-full"
+                    [ngClass]="checkoutForm.delivery_time().value() === 'next_day' ? 'bg-green-20 text-green-80' : 'bg-ink-10 text-ink-60'"
+                    class="flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-200"
                   >
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                    >
                       <path
                         d="M10.0007 6.66665V9.99998L12.084 10.8333M16.6673 9.99998C16.6673 13.6819 13.6825 16.6666 10.0007 16.6666C6.31875 16.6666 3.33398 13.6819 3.33398 9.99998C3.33398 6.31808 6.31875 3.33331 10.0007 3.33331C13.6825 3.33331 16.6673 6.31808 16.6673 9.99998Z"
-                        stroke="#212121"
                         stroke-width="1.5"
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -502,27 +499,27 @@
                     </svg>
                   </div>
                   <div class="flex flex-col items-start">
-                    <span class="font-normal">2 - 3 სამუშაო დღეში</span>
-                    <span class="text-platinum-50 text-xs">
+                    <span class="text-ink-80 font-medium">2 - 3 სამუშაო დღეში</span>
+                    <span class="text-ink-50 text-xs">
                       @if (nextDayPrice() === 0) { უფასო } @else { {{ nextDayPrice() }} ₾ }
                     </span>
                   </div>
                 </div>
                 <div
-                  [ngClass]="{
-                    'bg-green-60': checkoutForm.delivery_time().value() === 'next_day',
-                    'bg-platinum-20': checkoutForm.delivery_time().value() !== 'next_day',
-                  }"
-                  class="flex h-6 w-6 items-center justify-center rounded-full"
+                  [ngClass]="checkoutForm.delivery_time().value() === 'next_day' ? 'border-green-60 bg-green-60' : 'border-ink-30 bg-transparent'"
+                  class="flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] transition-colors duration-200"
                 >
-                  <div class="h-2 w-2 rounded-full bg-white"></div>
+                  <div
+                    [ngClass]="checkoutForm.delivery_time().value() === 'next_day' ? 'bg-white scale-100' : 'bg-transparent scale-0'"
+                    class="h-2 w-2 rounded-full transition-transform duration-200"
+                  ></div>
                 </div>
               </button>
             </div>
 
             @if (deliveryNotice(); as notice) {
             <div
-              class="bg-green-10 text-green-70 flex items-start gap-2 rounded-xl px-4 py-3 text-sm"
+              class="border-cream-30/40 bg-cream-10 text-cream-80 flex items-start gap-2 rounded-xl border px-4 py-3 text-sm"
             >
               <svg
                 class="mt-0.5 h-4 w-4 shrink-0"
@@ -537,22 +534,22 @@
               <span>{{ notice }}</span>
             </div>
             } } @else {
-            <div class="border-platinum-20 flex flex-col gap-3 rounded-xl border-[1.5px] p-4">
+            <div
+              class="border-ink-20 bg-surface-10 flex flex-col gap-3 rounded-xl border-[1.5px] p-4"
+            >
               <div class="flex items-center gap-3">
                 <div
-                  class="bg-platinum-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                  class="bg-cream-10 text-cream-70 flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
                 >
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
                     <path
                       d="M10 10.625C11.3807 10.625 12.5 9.50571 12.5 8.125C12.5 6.74429 11.3807 5.625 10 5.625C8.61929 5.625 7.5 6.74429 7.5 8.125C7.5 9.50571 8.61929 10.625 10 10.625Z"
-                      stroke="#212121"
                       stroke-width="1.5"
                       stroke-linecap="round"
                       stroke-linejoin="round"
                     />
                     <path
                       d="M16.25 8.125C16.25 13.75 10 18.125 10 18.125C10 18.125 3.75 13.75 3.75 8.125C3.75 6.4674 4.40848 4.87769 5.58058 3.70558C6.75269 2.53348 8.3424 1.875 10 1.875C11.6576 1.875 13.2473 2.53348 14.4194 3.70558C15.5915 4.87769 16.25 6.4674 16.25 8.125Z"
-                      stroke="#212121"
                       stroke-width="1.5"
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -560,11 +557,11 @@
                   </svg>
                 </div>
                 <div class="flex flex-col">
-                  <span class="font-medium">თბილისი, სოხუმის ქუჩა 4/6ა</span>
+                  <span class="text-ink-80 font-medium">თბილისი, სოხუმის ქუჩა 4/6ა</span>
                 </div>
               </div>
-              <div class="bg-platinum-20 h-px"></div>
-              <div class="text-platinum-60 flex flex-col gap-1 text-sm">
+              <div class="bg-ink-20 h-px"></div>
+              <div class="text-ink-50 flex flex-col gap-1 text-sm">
                 <div class="flex items-center gap-2">
                   <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                     <path
@@ -599,7 +596,7 @@
           <div class="flex flex-col gap-6">
             <div>
               <h2 class="text-xl">მიმოხილვა</h2>
-              <p class="text-platinum-50 text-sm">გადაამოწმეთ შეკვეთის დეტალები</p>
+              <p class="text-ink-50 text-sm">გადაამოწმეთ შეკვეთის დეტალები</p>
             </div>
 
             <div>
@@ -613,7 +610,7 @@
               </div>
             </div>
 
-            <div class="bg-platinum-20 h-px"></div>
+            <div class="bg-ink-20 h-px"></div>
 
             <div>
               <div class="mb-3 flex items-center justify-between">
@@ -621,16 +618,16 @@
                 <button
                   type="button"
                   (click)="goToStep(0)"
-                  class="text-green-70 text-sm font-medium"
+                  class="text-ink-70 hover:text-green-70 text-sm font-medium underline-offset-2 hover:underline"
                 >
                   რედაქტირება
                 </button>
               </div>
-              <div class="text-platinum-70 space-y-1 text-sm">
+              <div class="text-ink-60 space-y-1 text-sm">
                 @if (checkoutForm.customer_type().value() === 'individual') {
                 <p>
-                  {{ checkoutForm.individual.name().value() }}
-                  {{ checkoutForm.individual.surname().value() }}
+                  {{ checkoutForm.individual.name().value() }} {{
+                  checkoutForm.individual.surname().value() }}
                 </p>
                 } @else {
                 <p>{{ checkoutForm.company.organization_name().value() }}</p>
@@ -641,7 +638,7 @@
               </div>
             </div>
 
-            <div class="bg-platinum-20 h-px"></div>
+            <div class="bg-ink-20 h-px"></div>
 
             <div>
               <div class="mb-3 flex items-center justify-between">
@@ -649,54 +646,62 @@
                 <button
                   type="button"
                   (click)="goToStep(1)"
-                  class="text-green-70 text-sm font-medium"
+                  class="text-ink-70 hover:text-green-70 text-sm font-medium underline-offset-2 hover:underline"
                 >
                   რედაქტირება
                 </button>
               </div>
-              <div class="text-platinum-70 space-y-1 text-sm">
+              <div class="text-ink-60 space-y-1 text-sm">
                 @if (checkoutForm.delivery_type().value() === 'pickup') {
                 <p>ჩემით წავიღებ — თბილისი, სოხუმის ქუჩა 4/6ა</p>
-                } @else {
-                @if (isGuest()) {
-                <p>{{ cityLabel(checkoutForm.guest_city().value()) }}, {{ checkoutForm.guest_address().value() }}</p>
+                } @else { @if (isGuest()) {
+                <p>
+                  {{ cityLabel(checkoutForm.guest_city().value()) }}, {{
+                  checkoutForm.guest_address().value() }}
+                </p>
                 @if (checkoutForm.guest_details().value()) {
-                <p class="text-platinum-50">{{ checkoutForm.guest_details().value() }}</p>
-                }
-                } @else {
+                <p class="text-ink-40">{{ checkoutForm.guest_details().value() }}</p>
+                } } @else {
                 <p>{{ checkoutForm.address().value() }}</p>
                 }
                 <p>
-                  @if (checkoutForm.delivery_time().value() === 'same_day') { იმავე დღეს } @else { 2 - 3 სამუშაო დღეში }
+                  @if (checkoutForm.delivery_time().value() === 'same_day') { იმავე დღეს } @else { 2
+                  - 3 სამუშაო დღეში }
                 </p>
                 }
               </div>
             </div>
 
-            <div class="bg-platinum-20 h-px"></div>
+            <div class="bg-ink-20 h-px"></div>
 
             <div>
               <h3 class="mb-1 font-medium">კომენტარი</h3>
-              <p class="text-platinum-50 mb-3 text-sm">არასავალდებულო</p>
+              <p class="text-ink-40 mb-3 text-sm">არასავალდებულო</p>
               <textarea
                 [formField]="checkoutForm.comment"
                 placeholder="დაამატეთ კომენტარი თქვენი შეკვეთისთვის..."
                 rows="3"
-                class="border-platinum-20 focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] bg-white px-4 py-3 text-sm transition-colors outline-none"
+                class="border-ink-20 focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] bg-white px-4 py-3 text-sm transition-colors outline-none"
               ></textarea>
             </div>
           </div>
           }
 
           <!-- Step navigation -->
-          <div class="border-platinum-20 mt-8 flex items-center justify-between gap-4 border-t pt-6">
+          <div class="border-ink-20 mt-8 flex items-center justify-between gap-4 border-t pt-6">
             <button
               type="button"
               (click)="goBack()"
               [disabled]="isFirstStep()"
-              class="border-platinum-20 text-platinum-70 hover:bg-platinum-10 inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] px-6 py-3 font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40"
+              class="border-ink-20 text-ink-70 hover:bg-ink-10 inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] px-6 py-3 font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path d="M12 5l-5 5 5 5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
               უკან
@@ -706,14 +711,16 @@
             <button
               type="button"
               (click)="goNext()"
-              class="inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all hover:brightness-95"
-              style="
-                background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%);
-                box-shadow: 0px 20px 16px -8px #0ad10426;
-              "
+              class="bg-green-60 hover:bg-green-70 inline-flex h-[44px] items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-white transition-colors duration-200"
             >
               შემდეგი
-              <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path d="M8 5l5 5-5 5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </button>
@@ -721,23 +728,25 @@
             <button
               type="submit"
               [disabled]="checkoutLoading()"
-              class="inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 py-3 font-medium text-white transition-all hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
-              style="
-                background: linear-gradient(90deg, #0ad810 0%, #0bb705 35%, #0bb705 65%, #0ad810 100%);
-                box-shadow: 0px 20px 16px -8px #0ad10426;
-              "
+              class="bg-green-60 hover:bg-green-70 hidden h-[44px] items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-white transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60 sm:inline-flex"
             >
               @if (checkoutLoading()) {
               <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                ></path>
               </svg>
-              იტვირთება... } @else {
-              შეკვეთის დადასტურება
-              <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              }
+              იტვირთება... } @else { დადასტურება }
             </button>
             }
           </div>
@@ -747,7 +756,9 @@
       <app-price-summary
         [checkoutLoading]="checkoutLoading()"
         [deliveryPrice]="deliveryPrice()"
-        [showCheckoutButton]="false"
+        [showCheckoutButton]="isLastStep()"
+        [mobileOnlyCheckoutButton]="true"
+        [checkoutButtonText]="'დადასტურება'"
         (checkout)="handleCheckout()"
       />
     </div>
