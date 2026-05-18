@@ -4,6 +4,7 @@ export interface ProductFormData {
   description: string;
   price: number;
   discount: number;
+  discounted_price: number;
   brand_id: number | null;
   cable_type_id: number | null;
   warranty: string;
@@ -14,7 +15,8 @@ export interface CreateProductPayload {
   name: string;
   description: string;
   price: number;
-  discount: number;
+  discount?: number;
+  discounted_price?: number;
   specifications: Record<string, Array<{ name: string; value: string }>>;
   brand_id: number | null;
   cable_type_id: number | null;

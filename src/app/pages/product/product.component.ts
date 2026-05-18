@@ -283,7 +283,7 @@ export class ProductComponent {
     const discountAmount = (originalPrice * discountPercent) / 100;
     const priceAfterDiscount = originalPrice - discountAmount;
 
-    return Math.floor(priceAfterDiscount) + 0.99;
+    return priceAfterDiscount;
   });
 
   readonly displayWarranty = computed(() => {

@@ -112,12 +112,15 @@ export class AdminProductFormComponent {
     })),
   );
 
+  readonly discountMode = signal<'percent' | 'final'>('percent');
+
   readonly productModel = signal<ProductFormData>({
     id: null as any,
     name: '',
     description: '',
     price: null as any,
     discount: null as any,
+    discounted_price: null as any,
     brand_id: null as any,
     cable_type_id: null,
     warranty: '',
@@ -131,7 +134,19 @@ export class AdminProductFormComponent {
     min(fieldPath.discount, 0, {
       message: 'ფასდაკლება უნდა იყოს 0-დან 100-მდე',
     });
+    min(fieldPath.discounted_price, 0, {
+      message: 'ფასდაკლებული ფასი უნდა იყოს 0-დან ფასამდე',
+    });
   });
+
+  setDiscountMode(mode: 'percent' | 'final'): void {
+    this.discountMode.set(mode);
+    this.productModel.update((m) => ({
+      ...m,
+      discount: null as any,
+      discounted_price: null as any,
+    }));
+  }
 
   constructor() {
     this.loadCategoryOptions();
@@ -195,10 +210,12 @@ export class AdminProductFormComponent {
       description: product.description ?? '',
       price: product.price,
       discount: product.discount,
+      discounted_price: null as any,
       brand_id: product.brand_id,
       cable_type_id: product.cable_type_id ?? null,
       warranty: product.warranty,
     });
+    this.discountMode.set('percent');
     if (this.categoryOptions().length > 0 && categories.length > 0) {
       this.selectedCategoryIds.set([categories[0].id]);
     }
@@ -375,6 +392,20 @@ export class AdminProductFormComponent {
       return false;
     }
 
+    if (this.discountMode() === 'final') {
+      const dp = this.productModel().discounted_price;
+      const price = this.productModel().price;
+      if (dp != null && (dp as any) !== '' && Number(dp) > Number(price)) {
+        this.toastService.add(
+          'პროდუქტის დამატება ვერ მოხერხდა',
+          'ფასდაკლებული ფასი არ უნდა აღემატებოდეს ფასს',
+          5000,
+          'error',
+        );
+        return false;
+      }
+    }
+
     if (!this.isEditMode() && this.images().length === 0) {
       this.toastService.add(
         'პროდუქტის დამატება ვერ მოხერხდა',
@@ -403,17 +434,30 @@ export class AdminProductFormComponent {
         {} as Record<string, Array<{ name: string; value: string }>>,
       );
 
-    return {
+    const payload: CreateProductPayload = {
       id: productData.id,
       name: productData.name,
       description: productData.description,
       price: Number(productData.price) || 0,
-      discount: Number(productData.discount) || 0,
       specifications,
       brand_id: productData.brand_id ? Number(productData.brand_id) : null,
       cable_type_id: productData.cable_type_id ? Number(productData.cable_type_id) : null,
       warranty: productData.warranty,
     };
+
+    if (this.discountMode() === 'percent') {
+      if (productData.discount != null && productData.discount !== ('' as any)) {
+        payload.discount = Number(productData.discount) || 0;
+      } else if (!this.isEditMode()) {
+        payload.discount = 0;
+      }
+    } else {
+      if (productData.discounted_price != null && productData.discounted_price !== ('' as any)) {
+        payload.discounted_price = Number(productData.discounted_price);
+      }
+    }
+
+    return payload;
   }
 
   private handleImageOperations(productId: string): Observable<unknown> {

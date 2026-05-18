@@ -1,20 +1,13 @@
-import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 
-const DISMISSED_KEY = 'free_ship_bar_dismissed';
-
 @Injectable({ providedIn: 'root' })
 export class FreeShippingBarService {
   private readonly router = inject(Router);
-  private readonly platformId = inject(PLATFORM_ID);
-  private readonly isBrowser = isPlatformBrowser(this.platformId);
   private readonly currentUrl = signal(this.router.url);
-  private readonly dismissed = signal(
-    this.isBrowser ? localStorage.getItem(DISMISSED_KEY) === '1' : false,
-  );
+  private readonly dismissed = signal(false);
 
   readonly visible = computed(() => {
     if (this.dismissed()) return false;
@@ -24,7 +17,6 @@ export class FreeShippingBarService {
 
   dismiss(): void {
     this.dismissed.set(true);
-    if (this.isBrowser) localStorage.setItem(DISMISSED_KEY, '1');
   }
 
   constructor() {

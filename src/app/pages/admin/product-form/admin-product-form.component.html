@@ -107,22 +107,63 @@
         ფასი და მარაგი
       </h2>
 
-      <div class="grid gap-4 sm:grid-cols-3">
+      <div class="grid gap-4 sm:grid-cols-2">
         <!-- Price -->
-        <app-input
-          [formField]="productForm.price"
-          [error]="submitted() && productForm.price().invalid()"
-          type="number"
-          placeholder="ფასი (₾) *"
-        />
+        <div>
+          <div class="mb-2 h-7"></div>
+          <app-input
+            [formField]="productForm.price"
+            [error]="submitted() && productForm.price().invalid()"
+            type="number"
+            placeholder="ფასი (₾) *"
+          />
+        </div>
 
-        <!-- Discount -->
-        <app-input
-          [formField]="productForm.discount"
-          [error]="submitted() && productForm.discount().invalid()"
-          type="number"
-          placeholder="ფასდაკლება (%)"
-        />
+        <!-- Discount (toggle: percent / final price) -->
+        <div>
+          <div class="border-platinum-20 mb-2 inline-flex h-7 rounded-lg border p-0.5">
+            <button
+              type="button"
+              (click)="setDiscountMode('percent')"
+              [class]="
+                'rounded-md px-3 text-xs font-medium transition-colors ' +
+                (discountMode() === 'percent'
+                  ? 'bg-green-60 text-white'
+                  : 'text-platinum-60 hover:text-platinum-100')
+              "
+            >
+              ფასდაკლება (%)
+            </button>
+            <button
+              type="button"
+              (click)="setDiscountMode('final')"
+              [class]="
+                'rounded-md px-3 text-xs font-medium transition-colors ' +
+                (discountMode() === 'final'
+                  ? 'bg-green-60 text-white'
+                  : 'text-platinum-60 hover:text-platinum-100')
+              "
+            >
+              ფასდაკლებული ფასი (₾)
+            </button>
+          </div>
+
+          @if (discountMode() === 'percent') {
+          <app-input
+            [formField]="productForm.discount"
+            [error]="submitted() && productForm.discount().invalid()"
+            type="number"
+            placeholder="ფასდაკლება (%)"
+          />
+          } @else {
+          <app-input
+            [formField]="productForm.discounted_price"
+            [error]="submitted() && productForm.discounted_price().invalid()"
+            type="number"
+            placeholder="ფასდაკლებული ფასი (₾)"
+          />
+          }
+        </div>
 
         <!-- Quantity is auto-computed from image variants -->
       </div>
