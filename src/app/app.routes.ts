@@ -158,6 +158,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'top-products',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/top-products/admin-top-products.component').then(
+            (m) => m.AdminTopProductsComponent,
+          ),
+      },
+      {
         path: 'products/new',
         canActivate: [adminOnlyGuard],
         loadComponent: () =>

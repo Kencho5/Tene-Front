@@ -130,6 +130,16 @@ export class AdminService {
     return this.http.patch(`/admin/products/${productId}/images/${imageUuid}`, payload);
   }
 
+  // Top Products
+  getTopProducts(limit?: number): Observable<ProductResponse[]> {
+    const query = limit != null ? `?limit=${limit}` : '';
+    return this.http.get<ProductResponse[]>(`/admin/top-products${query}`);
+  }
+
+  updateTopProducts(productIds: string[]): Observable<HttpStatusCode> {
+    return this.http.put<HttpStatusCode>('/admin/top-products', { product_ids: productIds });
+  }
+
   // Order Management
   searchOrders(params: string): Observable<OrderSearchResponse> {
     return this.http.get<OrderSearchResponse>(`/admin/orders?${params}`);

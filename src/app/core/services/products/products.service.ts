@@ -18,6 +18,11 @@ export class ProductsService {
     return this.http.get<ProductSearchResponse>(`/products?${params}`);
   }
 
+  getTopProducts(limit?: number): Observable<ProductResponse[]> {
+    const query = limit != null ? `?limit=${limit}` : '';
+    return this.http.get<ProductResponse[]>(`/top-products${query}`);
+  }
+
   getProduct(product_id: string | number): Observable<ProductResponse> {
     return this.http.get<ProductResponse>(`/products/${product_id}`);
   }

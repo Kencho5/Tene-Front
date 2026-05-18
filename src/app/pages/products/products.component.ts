@@ -17,7 +17,7 @@ import { productTopCategoryCards, productBrandCards } from '@utils/productsCards
 import { SeoService } from '@core/services/seo/seo.service';
 import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
 import { CategoryTreeNode } from '@core/interfaces/categories.interface';
-import { ProductSearchResponse } from '@core/interfaces/products.interface';
+import { ProductResponse } from '@core/interfaces/products.interface';
 
 @Component({
   selector: 'app-products',
@@ -58,12 +58,13 @@ export class ProductsComponent implements OnInit {
     return [...priority, ...rest].slice(0, 8);
   });
 
-  readonly searchResponse = rxResource({
-    defaultValue: { products: [], total: 0, limit: 0, offset: 0 } as ProductSearchResponse,
-    stream: () => this.productsService.searchProduct('in_stock=true&sort_by=views_desc'),
+  readonly topProductsResource = rxResource({
+    defaultValue: [] as ProductResponse[],
+    stream: () =>
+      this.productsService.getTopProducts().pipe(catchError(() => of([] as ProductResponse[]))),
   });
 
-  readonly products = computed(() => this.searchResponse.value().products);
+  readonly products = computed(() => this.topProductsResource.value());
 
   ngOnInit(): void {
     this.seoService.setMetaTags({

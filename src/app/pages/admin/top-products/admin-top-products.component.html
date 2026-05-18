@@ -1,0 +1,178 @@
+<div class="space-y-5">
+  <!-- Header -->
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-xl font-semibold text-platinum-100">ტოპ პროდუქტები</h1>
+      <p class="mt-0.5 text-sm text-platinum-50">
+        არჩეული {{ selected().length }} პროდუქტი · რიგი ემთხვევა ჩვენების თანმიმდევრობას
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        (click)="reset()"
+        [disabled]="!isDirty() || saving()"
+        class="rounded-lg border border-platinum-20 bg-white px-4 py-2 text-sm font-medium text-platinum-70 transition-colors hover:bg-platinum-10 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        გაუქმება
+      </button>
+      <button
+        type="button"
+        (click)="save()"
+        [disabled]="!isDirty() || saving()"
+        class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-green-60 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        @if (saving()) {
+          შენახვა...
+        } @else {
+          შენახვა
+        }
+      </button>
+    </div>
+  </div>
+
+  <!-- Add product search -->
+  <div class="rounded-lg border border-platinum-20 bg-white p-4">
+    <h2 class="mb-3 text-sm font-medium text-platinum-90">პროდუქტის დამატება</h2>
+    <div class="relative">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 20 20"
+        fill="none"
+        class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-platinum-40"
+      >
+        <path
+          d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <input
+        type="text"
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+        placeholder="ძიება პროდუქტის სახელით ან ID-ით..."
+        class="h-10 w-full rounded-lg border border-platinum-20 bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
+      />
+      @if (searchQuery()) {
+        <button
+          type="button"
+          (click)="clearSearch()"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-platinum-40 transition-colors hover:text-platinum-70"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+      }
+    </div>
+
+    @if (searchTerm()) {
+      <div class="mt-3 max-h-72 overflow-y-auto rounded-md border border-platinum-20">
+        @if (searchResource.isLoading()) {
+          <div class="p-4 text-center text-sm text-platinum-50">იძებნება...</div>
+        } @else if (searchResults().length === 0) {
+          <div class="p-4 text-center text-sm text-platinum-50">პროდუქტი ვერ მოიძებნა</div>
+        } @else {
+          @for (product of searchResults(); track product.data.id) {
+            <button
+              type="button"
+              (click)="addProduct(product)"
+              class="flex w-full items-center gap-3 border-b border-platinum-20 px-3 py-2 text-left transition-colors last:border-b-0 hover:bg-platinum-10"
+            >
+              <div class="h-10 w-10 shrink-0 overflow-hidden rounded-md bg-platinum-10">
+                @if (getImage(product)) {
+                  <img [src]="getImage(product)" [alt]="product.data.name" class="h-full w-full object-cover" />
+                }
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-medium text-platinum-100">{{ product.data.name }}</p>
+                <p class="truncate text-xs text-platinum-50">ID: {{ product.data.id }}</p>
+              </div>
+              <span class="text-green-60 text-sm font-medium">დამატება +</span>
+            </button>
+          }
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Selected list -->
+  <div class="rounded-lg border border-platinum-20 bg-white">
+    <div class="border-b border-platinum-20 px-4 py-3">
+      <h2 class="text-sm font-medium text-platinum-90">აქტიური სია</h2>
+    </div>
+
+    @if (topResource.isLoading()) {
+      <div class="space-y-2 p-4">
+        @for (s of [1,2,3,4]; track s) {
+          <div class="h-14 animate-pulse rounded-md bg-platinum-10"></div>
+        }
+      </div>
+    } @else if (selected().length === 0) {
+      <div class="p-10 text-center">
+        <p class="text-sm font-medium text-platinum-70">სია ცარიელია</p>
+        <p class="mt-1 text-xs text-platinum-50">ჩაამატე პროდუქტი ზემოთა ძიებიდან</p>
+      </div>
+    } @else {
+      <ul>
+        @for (product of selected(); track product.data.id; let i = $index, count = $count) {
+          <li class="flex items-center gap-3 border-b border-platinum-20 px-3 py-2.5 last:border-b-0">
+            <span class="w-6 shrink-0 text-center text-xs font-semibold text-platinum-50">{{ i + 1 }}</span>
+
+            <div class="h-12 w-12 shrink-0 overflow-hidden rounded-md bg-platinum-10">
+              @if (getImage(product)) {
+                <img [src]="getImage(product)" [alt]="product.data.name" class="h-full w-full object-cover" />
+              }
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-medium text-platinum-100">{{ product.data.name }}</p>
+              <p class="truncate text-xs text-platinum-50">ID: {{ product.data.id }}</p>
+            </div>
+
+            <div class="flex items-center gap-1">
+              <button
+                type="button"
+                (click)="moveUp(i)"
+                [disabled]="i === 0"
+                class="flex h-8 w-8 items-center justify-center rounded-lg text-platinum-50 transition-colors hover:bg-platinum-10 hover:text-platinum-90 disabled:cursor-not-allowed disabled:opacity-30"
+                aria-label="ზემოთ"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M4 10L8 6L12 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                (click)="moveDown(i)"
+                [disabled]="i === count - 1"
+                class="flex h-8 w-8 items-center justify-center rounded-lg text-platinum-50 transition-colors hover:bg-platinum-10 hover:text-platinum-90 disabled:cursor-not-allowed disabled:opacity-30"
+                aria-label="ქვემოთ"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                (click)="removeProduct(product.data.id)"
+                class="flex h-8 w-8 items-center justify-center rounded-lg text-platinum-40 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
+                aria-label="წაშლა"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M2 4H3.33333H14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M5.33334 4.00004V2.66671C5.33334 2.31309 5.47381 1.97395 5.72386 1.7239C5.97391 1.47385 6.31305 1.33337 6.66668 1.33337H9.33334C9.68697 1.33337 10.0261 1.47385 10.2762 1.7239C10.5262 1.97395 10.6667 2.31309 10.6667 2.66671V4.00004M12.6667 4.00004V13.3334C12.6667 13.687 12.5262 14.0261 12.2762 14.2762C12.0261 14.5262 11.687 14.6667 11.3333 14.6667H4.66668C4.31305 14.6667 3.97391 14.5262 3.72386 14.2762C3.47381 14.0261 3.33334 13.687 3.33334 13.3334V4.00004H12.6667Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</div>

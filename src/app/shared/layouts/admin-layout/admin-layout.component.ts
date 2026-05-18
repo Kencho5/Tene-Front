@@ -28,6 +28,7 @@ export class AdminLayoutComponent {
 
   private readonly allNavItems: NavItem[] = [
     { label: 'პროდუქტები', route: '/admin/products', icon: 'products' },
+    { label: 'ტოპ პროდუქტები', route: '/admin/top-products', icon: 'top-products' },
     { label: 'ბრენდები', route: '/admin/brands', icon: 'brands' },
     { label: 'კატეგორიები', route: '/admin/categories', icon: 'categories' },
     { label: 'კაბელის ტიპები', route: '/admin/cable-types', icon: 'cable-specs' },
