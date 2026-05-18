@@ -18,12 +18,12 @@
     </button>
   }
 
-  <div class="flex flex-wrap items-center gap-1 text-sm text-platinum-50">
+  <div class="flex flex-nowrap items-center gap-1 text-sm text-platinum-50 min-w-0">
     @for (item of items(); track $index; let isLast = $last) {
       @if (item.route) {
-        <a [routerLink]="item.route" [queryParams]="item.queryParams">{{ item.label }}</a>
+        <a [routerLink]="item.route" [queryParams]="item.queryParams" class="shrink-0">{{ item.label }}</a>
       } @else {
-        <span>{{ item.label }}</span>
+        <span class="truncate min-w-0" [title]="item.label">{{ item.label }}</span>
       }
 
       @if (!isLast) {
@@ -33,6 +33,7 @@
           viewBox="0 0 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          class="shrink-0"
         >
           <path
             d="M6 12L9.79026 8.4714C10.0699 8.21106 10.0699 7.78894 9.79026 7.5286L6 4"
