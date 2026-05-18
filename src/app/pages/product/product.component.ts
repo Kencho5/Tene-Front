@@ -30,7 +30,6 @@ import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
 import { ProductCardComponent } from '@shared/components/ui/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '@shared/components/ui/product-card-skeleton/product-card-skeleton.component';
 import { AuthService } from '@core/services/auth/auth-service.service';
-import { ToastService } from '@core/services/toast.service';
 import {
   LightboxComponent,
   LightboxImage,
@@ -58,7 +57,6 @@ export class ProductComponent {
   private readonly categoriesService = inject(CategoriesService);
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
-  private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -283,7 +281,7 @@ export class ProductComponent {
     const discountAmount = (originalPrice * discountPercent) / 100;
     const priceAfterDiscount = originalPrice - discountAmount;
 
-    return priceAfterDiscount;
+    return Math.round(priceAfterDiscount * 100) / 100;
   });
 
   readonly displayWarranty = computed(() => {
@@ -594,14 +592,8 @@ export class ProductComponent {
       ...(cable ? { cableConfig: cable } : {}),
     });
 
-    this.toastService.add(
-      'კალათაში დაემატა',
-      productData.data.name,
-      2500,
-      'success',
-    );
-
     this.quantity.set(1);
+    this.router.navigate(['/cart']);
   }
 
   private updateSEO(product: ProductResponse, slug: string): void {
