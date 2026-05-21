@@ -267,10 +267,10 @@
             }
             <div class="flex flex-col gap-4">
               @for (address of addresses(); track address.id) { @let selected =
-              checkoutForm.address().value() === address.address; @let hasError = submitted() &&
+              checkoutForm.address().value() === (address.id + ''); @let hasError = submitted() &&
               checkoutForm.address().invalid();
               <div
-                (click)="checkoutForm.address().value.set(address.address)"
+                (click)="checkoutForm.address().value.set(address.id + '')"
                 [ngClass]="{
                   'border-green-60 bg-green-10/40 shadow-low': selected,
                   'border-valencia-50 bg-white': !selected && hasError,
@@ -626,7 +626,7 @@
                   } } @else {
                   <div class="flex justify-between gap-3">
                     <dt class="text-ink-40">მისამართი</dt>
-                    <dd class="text-ink-70 text-right">{{ checkoutForm.address().value() }}</dd>
+                    <dd class="text-ink-70 text-right">{{ selectedAddressDisplay() }}</dd>
                   </div>
                   }
                   <div class="flex justify-between gap-3">

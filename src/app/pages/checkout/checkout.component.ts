@@ -84,10 +84,15 @@ export class CheckoutComponent {
     return now.getHours() < 17 || (now.getHours() === 17 && now.getMinutes() < 30);
   })();
 
+  readonly selectedAddressDisplay = computed(() => {
+    const id = this.checkoutForm.address().value();
+    return this.addresses().find((a) => String(a.id) === id)?.address ?? '';
+  });
+
   readonly selectedAddressCity = computed(() => {
     if (this.isGuest()) return this.checkoutForm.guest_city().value();
-    const addr = this.checkoutForm.address().value();
-    return this.addresses().find((a) => a.address === addr)?.city ?? '';
+    const id = this.checkoutForm.address().value();
+    return this.addresses().find((a) => String(a.id) === id)?.city ?? '';
   });
 
   readonly sameDayAvailable = computed(() => {
@@ -307,7 +312,7 @@ export class CheckoutComponent {
           this.addresses.set(addresses);
           this.loading.update((state) => ({ ...state, addresses: false }));
           if (addresses.length > 0 && !this.checkoutForm.address().value()) {
-            this.checkoutForm.address().value.set(addresses[0].address);
+            this.checkoutForm.address().value.set(String(addresses[0].id));
           }
         });
     }
@@ -414,9 +419,9 @@ export class CheckoutComponent {
     const guest = this.isGuest();
     const selectedAddress = guest
       ? null
-      : this.addresses().find((a) => a.address === model.address);
+      : this.addresses().find((a) => String(a.id) === model.address);
 
-    const resolvedAddress = guest ? model.guest_address : model.address;
+    const resolvedAddress = guest ? model.guest_address : selectedAddress?.address ?? '';
     const resolvedCity = guest ? model.guest_city : selectedAddress?.city ?? '';
     const resolvedDetails = guest ? model.guest_details : selectedAddress?.details ?? '';
 
@@ -511,6 +516,6 @@ export class CheckoutComponent {
     } else {
       this.addresses.set([...this.addresses(), address]);
     }
-    this.checkoutForm.address().value.set(address.address);
+    this.checkoutForm.address().value.set(String(address.id));
   }
 }
