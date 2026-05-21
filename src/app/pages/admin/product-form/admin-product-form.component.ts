@@ -12,7 +12,7 @@ import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { catchError, forkJoin, Observable, of, switchMap } from 'rxjs';
-import { Product, ProductCategory, ProductImage } from '@core/interfaces/products.interface';
+import { Product, ProductCategory, ProductImage, ProductSeo } from '@core/interfaces/products.interface';
 import {
   ProductFormData,
   CreateProductPayload,
@@ -177,7 +177,7 @@ export class AdminProductFormComponent {
     effect(() => {
       const response = this.product();
       if (this.isEditMode() && response) {
-        this.loadProductData(response.data, response.images, response.categories);
+        this.loadProductData(response.data, response.images, response.categories, response.seo ?? null);
       }
     });
   }
@@ -224,6 +224,7 @@ export class AdminProductFormComponent {
     product: Product,
     productImages: ProductImage[],
     categories: ProductCategory[],
+    seo: ProductSeo | null,
   ): void {
     this.productModel.set({
       id: product.id,
@@ -235,14 +236,14 @@ export class AdminProductFormComponent {
       brand_id: product.brand_id,
       cable_type_id: product.cable_type_id ?? null,
       warranty: product.warranty,
-      meta_title: product.seo?.meta_title ?? '',
-      meta_description: product.seo?.meta_description ?? '',
-      slug: product.seo?.slug ?? '',
-      no_index: product.seo?.no_index ?? false,
+      meta_title: seo?.meta_title ?? '',
+      meta_description: seo?.meta_description ?? '',
+      slug: seo?.slug ?? '',
+      no_index: seo?.no_index ?? false,
     });
-    this.metaKeywords.set(product.seo?.meta_keywords ?? []);
-    this.searchTerms.set(product.seo?.search_terms ?? []);
-    this.faqs.set(product.seo?.faqs ?? []);
+    this.metaKeywords.set(seo?.meta_keywords ?? []);
+    this.searchTerms.set(seo?.search_terms ?? []);
+    this.faqs.set(seo?.faqs ?? []);
     this.discountMode.set('percent');
     if (this.categoryOptions().length > 0 && categories.length > 0) {
       this.selectedCategoryIds.set([categories[0].id]);

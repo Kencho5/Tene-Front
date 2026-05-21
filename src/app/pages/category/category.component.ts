@@ -101,8 +101,9 @@ export class CategoryComponent {
       const total = this.totalProducts();
       if (!cat) return;
 
-      const title = `${cat.name} - იყიდე ონლაინ | Tene`;
-      const description = `${cat.name} ★ ${total}+ პროდუქტი ★ საუკეთესო ფასები ★ მიწოდება თბილისში და საქართველოს მასშტაბით ★ Tene.ge`;
+      const countLabel = total > 0 ? `${total}+ პროდუქტი` : 'ფართო არჩევანი';
+      const title = `${cat.name} — ფასები, ყიდვა ონლაინ | Tene`;
+      const description = `${cat.name}: ${countLabel}, ოფიციალური გარანტია, სწრაფი მიწოდება თბილისში და საქართველოს მასშტაბით. შეადარეთ ფასები და შეიძინეთ Tene.ge-ზე.`;
       const url = `https://tene.ge/category/${cat.slug}`;
 
       this.seoService.setMetaTags({
@@ -110,7 +111,7 @@ export class CategoryComponent {
         description,
         url,
         type: 'website',
-        keywords: `${cat.name}, ${cat.name} ყიდვა, ${cat.name} ონლაინ, ტექნიკა, Tene`,
+        keywords: `${cat.name}, ${cat.name} ფასი, ${cat.name} ყიდვა, ${cat.name} თბილისი, ${cat.name} ონლაინ მაღაზია, Tene`,
       });
 
       this.schemaService.clearSchemas();
@@ -122,25 +123,17 @@ export class CategoryComponent {
         })),
       );
 
-      const productItems = this.products().slice(0, 10).map((p, i) => ({
-        '@type': 'ListItem' as const,
-        position: i + 1,
-        name: p.data.name,
-        url: `https://tene.ge/products/${p.data.id}`,
-      }));
-
-      if (productItems.length > 0) {
-        this.schemaService['injectSchema']({
-          '@context': 'https://schema.org/',
-          '@type': 'CollectionPage',
+      const products = this.products().slice(0, 10);
+      if (products.length > 0) {
+        this.schemaService.addCollectionSchema({
           name: cat.name,
           description,
           url,
-          mainEntity: {
-            '@type': 'ItemList',
-            numberOfItems: total,
-            itemListElement: productItems,
-          },
+          total,
+          items: products.map((p) => ({
+            name: p.data.name,
+            url: `https://tene.ge/products/${p.data.id}`,
+          })),
         });
       }
     });

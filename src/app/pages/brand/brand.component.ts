@@ -91,8 +91,9 @@ export class BrandComponent {
       if (!brand) return;
 
       const slug = this.slug();
-      const title = `${brand.name} - პროდუქცია | Tene`;
-      const description = `${brand.name} პროდუქცია ★ ${total}+ პროდუქტი ★ ოფიციალური დისტრიბუტორი ★ საუკეთესო ფასები ★ მიწოდება საქართველოს მასშტაბით ★ Tene.ge`;
+      const countLabel = total > 0 ? `${total}+ პროდუქტი` : 'ფართო არჩევანი';
+      const title = `${brand.name} — ფასები და კატალოგი | Tene`;
+      const description = `${brand.name} საქართველოში: ${countLabel}, ოფიციალური გარანტია, სწრაფი მიწოდება. შეიძინეთ ${brand.name}-ის ორიგინალური პროდუქცია Tene-ზე.`;
       const url = `https://tene.ge/brand/${slug}`;
 
       this.seoService.setMetaTags({
@@ -100,7 +101,7 @@ export class BrandComponent {
         description,
         url,
         type: 'website',
-        keywords: `${brand.name}, ${brand.name} საქართველო, ${brand.name} ყიდვა, ${brand.name} პროდუქტები, Tene`,
+        keywords: `${brand.name}, ${brand.name} საქართველო, ${brand.name} ფასი, ${brand.name} ყიდვა, ${brand.name} თბილისი, ${brand.name} ორიგინალი, Tene`,
       });
 
       this.schemaService.clearSchemas();
@@ -112,26 +113,21 @@ export class BrandComponent {
         })),
       );
 
-      this.schemaService['injectSchema']({
-        '@context': 'https://schema.org/',
-        '@type': 'CollectionPage',
+      this.schemaService.addBrandSchema({
+        name: brand.name,
+        url,
+        description: `${brand.name} პროდუქცია — ოფიციალური დისტრიბუტორი საქართველოში.`,
+      });
+
+      this.schemaService.addCollectionSchema({
         name: `${brand.name} პროდუქცია`,
         description,
         url,
-        about: {
-          '@type': 'Brand',
-          name: brand.name,
-        },
-        mainEntity: {
-          '@type': 'ItemList',
-          numberOfItems: total,
-          itemListElement: this.products().slice(0, 10).map((p, i) => ({
-            '@type': 'ListItem',
-            position: i + 1,
-            name: p.data.name,
-            url: `https://tene.ge/products/${p.data.id}`,
-          })),
-        },
+        total,
+        items: this.products().slice(0, 10).map((p) => ({
+          name: p.data.name,
+          url: `https://tene.ge/products/${p.data.id}`,
+        })),
       });
     });
 

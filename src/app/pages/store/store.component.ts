@@ -33,7 +33,8 @@ const CITY_DATA: Record<string, CityData> = {
   tbilisi: {
     slug: 'tbilisi',
     name: 'თბილისი',
-    description: 'ტექნიკის მაღაზია თბილისში - მობილურები, კაბელები, აქსესუარები და სხვა ტექნიკა საუკეთესო ფასებით. ეწვიეთ ჩვენს მაღაზიას ან შეუკვეთეთ ონლაინ მიწოდებით თბილისის მასშტაბით.',
+    description:
+      'ტექნიკის მაღაზია თბილისში — USB კაბელები, დამტენები, მობილურები, ყურსასმენები და აქსესუარები. ოფიციალური გარანტია, უფასო მიწოდება 100₾+ შეკვეთაზე, 1-2 სამუშაო დღეში.',
     hasPhysicalStore: true,
     address: 'თბილისი',
     deliveryInfo: 'მიწოდება თბილისის მასშტაბით 1-2 სამუშაო დღეში',
@@ -41,28 +42,32 @@ const CITY_DATA: Record<string, CityData> = {
   batumi: {
     slug: 'batumi',
     name: 'ბათუმი',
-    description: 'ტექნიკის ონლაინ მაღაზია ბათუმში - მობილურები, კაბელები, აქსესუარები და სხვა ტექნიკა. შეუკვეთეთ ონლაინ და მიიღეთ მიწოდება ბათუმში.',
+    description:
+      'ტექნიკის ონლაინ მაღაზია ბათუმში — USB კაბელები, დამტენები, მობილურები და აქსესუარები. შეუკვეთეთ ონლაინ, მიიღეთ ბათუმში 2-4 სამუშაო დღეში.',
     hasPhysicalStore: false,
     deliveryInfo: 'მიწოდება ბათუმში 2-4 სამუშაო დღეში',
   },
   kutaisi: {
     slug: 'kutaisi',
     name: 'ქუთაისი',
-    description: 'ტექნიკის ონლაინ მაღაზია ქუთაისში - მობილურები, კაბელები, აქსესუარები და სხვა ტექნიკა. შეუკვეთეთ ონლაინ და მიიღეთ მიწოდება ქუთაისში.',
+    description:
+      'ტექნიკის ონლაინ მაღაზია ქუთაისში — USB კაბელები, დამტენები, მობილურები და აქსესუარები. ოფიციალური გარანტია, მიწოდება ქუთაისში 2-4 დღეში.',
     hasPhysicalStore: false,
     deliveryInfo: 'მიწოდება ქუთაისში 2-4 სამუშაო დღეში',
   },
   rustavi: {
     slug: 'rustavi',
     name: 'რუსთავი',
-    description: 'ტექნიკის ონლაინ მაღაზია რუსთავში - მობილურები, კაბელები, აქსესუარები და სხვა ტექნიკა. შეუკვეთეთ ონლაინ და მიიღეთ მიწოდება რუსთავში.',
+    description:
+      'ტექნიკის ონლაინ მაღაზია რუსთავში — USB კაბელები, დამტენები, მობილურები და აქსესუარები. სწრაფი მიწოდება რუსთავში 1-2 დღეში, ოფიციალური გარანტია.',
     hasPhysicalStore: false,
     deliveryInfo: 'მიწოდება რუსთავში 1-2 სამუშაო დღეში',
   },
   poti: {
     slug: 'poti',
     name: 'ფოთი',
-    description: 'ტექნიკის ონლაინ მაღაზია ფოთში - მობილურები, კაბელები, აქსესუარები და სხვა ტექნიკა. შეუკვეთეთ ონლაინ და მიიღეთ მიწოდება ფოთში.',
+    description:
+      'ტექნიკის ონლაინ მაღაზია ფოთში — USB კაბელები, დამტენები, მობილურები და აქსესუარები. შეუკვეთეთ ონლაინ, მიიღეთ ფოთში 3-5 დღეში.',
     hasPhysicalStore: false,
     deliveryInfo: 'მიწოდება ფოთში 3-5 სამუშაო დღეში',
   },
@@ -119,14 +124,14 @@ export class StoreComponent {
       }
 
       const url = `https://tene.ge/store/${data.slug}`;
-      const title = `ტექნიკის მაღაზია ${data.name}ში | Tene`;
+      const title = `ტექნიკის მაღაზია ${data.name}ში — USB კაბელები, დამტენები | Tene`;
 
       this.seoService.setMetaTags({
         title,
         description: data.description,
         url,
         type: 'website',
-        keywords: `ტექნიკა ${data.name}, მობილურები ${data.name}, ტექნიკის მაღაზია ${data.name}, ონლაინ მაღაზია ${data.name}, Tene ${data.name}`,
+        keywords: `ტექნიკის მაღაზია ${data.name}, USB კაბელი ${data.name}, დამტენი ${data.name}, ონლაინ მაღაზია ${data.name}, მობილური აქსესუარები ${data.name}, Tene ${data.name}`,
       });
 
       this.schemaService.clearSchemas();
@@ -139,33 +144,29 @@ export class StoreComponent {
       );
 
       if (data.hasPhysicalStore) {
-        this.schemaService['injectSchema']({
-          '@context': 'https://schema.org/',
-          '@type': 'Store',
-          name: `Tene - ${data.name}`,
-          description: data.description,
+        this.schemaService.addLocalBusinessSchema({
+          name: `Tene — ${data.name}`,
           url,
-          address: {
-            '@type': 'PostalAddress',
-            addressLocality: data.name,
-            addressCountry: 'GE',
-          },
-          ...(data.phone ? { telephone: data.phone } : {}),
+          description: data.description,
+          image: 'https://tene.ge/logo.svg',
+          telephone: data.phone,
+          addressLocality: data.name,
+          streetAddress: data.address,
+          openingHours: ['Mo-Sa 10:00-20:00'],
+          priceRange: '₾₾',
         });
       } else {
-        this.schemaService['injectSchema']({
+        this.schemaService.injectRaw({
           '@context': 'https://schema.org/',
           '@type': 'WebPage',
           name: title,
           description: data.description,
           url,
+          inLanguage: 'ka-GE',
           about: {
             '@type': 'Organization',
             name: 'Tene',
-            areaServed: {
-              '@type': 'City',
-              name: data.name,
-            },
+            areaServed: { '@type': 'City', name: data.name },
           },
         });
       }

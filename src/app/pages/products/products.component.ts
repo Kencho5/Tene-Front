@@ -68,13 +68,13 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit(): void {
     this.seoService.setMetaTags({
-      title: 'პროდუქცია - USB კაბელები და ტექნიკა | Tene',
+      title: 'პროდუქცია — USB კაბელები, დამტენები და ტექნიკა | Tene',
       description:
-        'ყველა პროდუქტი ერთ ადგილას ★ USB Type-C, Lightning, Micro-USB კაბელები ★ Apple, Anker, Logitech ★ დამტენები, ყურსასმენები, აქსესუარები ★ 30% ფასდაკლება',
+        'სრული კატალოგი: USB Type-C, Lightning და Micro-USB კაბელები, სწრაფი დამტენები, ყურსასმენები, მობილურები და აქსესუარები. ოფიციალური გარანტია, მიწოდება საქართველოს მასშტაბით.',
       url: 'https://tene.ge/products',
       type: 'website',
       keywords:
-        'USB კაბელები, Type-C კაბელი, Lightning კაბელი, დამტენი, ყურსასმენები, Apple აქსესუარები, ტექნიკა, კატალოგი',
+        'USB კაბელი ფასი, Type-C კაბელი ყიდვა, Lightning კაბელი, სწრაფი დამტენი, ყურსასმენი, მობილური აქსესუარები, ტექნიკის კატალოგი, Tene',
     });
   }
 

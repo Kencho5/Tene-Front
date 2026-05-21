@@ -36,7 +36,6 @@ export interface Product {
   categories: ProductCategory[];
   created_at: string;
   updated_at: string;
-  seo?: ProductSeo | null;
 }
 
 export interface ProductImage {
@@ -52,6 +51,7 @@ export interface ProductResponse {
   data: Product;
   images: ProductImage[];
   categories: ProductCategory[];
+  seo?: ProductSeo | null;
 }
 
 export interface ProductSearchResponse {
