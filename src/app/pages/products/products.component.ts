@@ -49,7 +49,7 @@ export class ProductsComponent implements OnInit {
   });
 
   readonly topLevelCategories = computed(() => {
-    const priorityIds = [2, 3, 9];
+    const priorityIds = [66, 2, 3, 9];
     const all = this.categoriesTree.value();
     const priority = priorityIds
       .map((id) => all.find((c) => c.id === id))

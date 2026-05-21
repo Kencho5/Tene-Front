@@ -36,20 +36,6 @@
   </div>
 
   <!-- Board -->
-  @if (tasksResource.isLoading()) {
-  <div class="grid grid-cols-1 items-start gap-4 md:grid-cols-2 xl:grid-cols-4">
-    @for (col of columns; track col.state) {
-    <div class="bg-platinum-10/40 border-platinum-20 flex flex-col rounded-xl border p-3">
-      <div class="bg-platinum-20 mb-3 h-5 w-24 animate-pulse rounded-md"></div>
-      <div class="space-y-2">
-        @for (s of [1,2,3]; track s) {
-        <div class="border-platinum-20 h-24 animate-pulse rounded-lg border bg-white"></div>
-        }
-      </div>
-    </div>
-    }
-  </div>
-  } @else {
   <div class="grid grid-cols-1 items-start gap-4 md:grid-cols-2 xl:grid-cols-4">
     @for (col of columns; track col.state) {
     <div
@@ -86,7 +72,7 @@
           <span
             class="bg-platinum-20 text-platinum-70 inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-medium"
           >
-            {{ tasksByState()[col.state].length }}
+            {{ totalFor(col.state) }}
           </span>
         </div>
         <span
@@ -108,7 +94,12 @@
       <!-- Cards -->
       @if (!collapsed()[col.state]) {
       <div class="flex-1 space-y-2 overflow-y-auto p-2.5">
-        @for (task of tasksByState()[col.state]; track task.id) {
+        @if (resources[col.state].isLoading()) {
+        @for (s of [1,2,3]; track s) {
+        <div class="border-platinum-20 h-24 animate-pulse rounded-lg border bg-white"></div>
+        }
+        } @else {
+        @for (task of tasksFor(col.state); track task.id) {
         <app-task-card
           [task]="task"
           (view)="openView(task)"
@@ -119,12 +110,58 @@
         } @empty {
         <div class="text-platinum-40 flex h-32 items-center justify-center text-xs">ცარიელია</div>
         }
+        }
       </div>
+
+      @if (totalFor(col.state) > pageSize) {
+      <div
+        class="border-platinum-20 flex shrink-0 items-center justify-between border-t px-3 py-2"
+      >
+        <span class="text-platinum-50 text-[11px]">
+          {{ pageInfo(col.state).from }}–{{ pageInfo(col.state).to }} / {{ pageInfo(col.state).total }}
+        </span>
+        <div class="flex items-center gap-1">
+          <button
+            type="button"
+            (click)="prevPage(col.state)"
+            [disabled]="!canPrev(col.state)"
+            class="text-platinum-70 hover:bg-platinum-20 disabled:text-platinum-30 flex h-6 w-6 items-center justify-center rounded-md transition-colors disabled:cursor-not-allowed disabled:hover:bg-transparent"
+            aria-label="წინა"
+          >
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M10 4L6 8L10 12"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            (click)="nextPage(col.state)"
+            [disabled]="!canNext(col.state)"
+            class="text-platinum-70 hover:bg-platinum-20 disabled:text-platinum-30 flex h-6 w-6 items-center justify-center rounded-md transition-colors disabled:cursor-not-allowed disabled:hover:bg-transparent"
+            aria-label="შემდეგი"
+          >
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M6 4L10 8L6 12"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      }
       }
     </div>
     }
   </div>
-  }
 </div>
 
 @if (editorOpen()) {

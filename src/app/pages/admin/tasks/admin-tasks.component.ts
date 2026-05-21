@@ -23,6 +23,8 @@ interface Column {
   accent: string;
 }
 
+const PAGE_SIZE = 20;
+
 @Component({
   selector: 'app-admin-tasks',
   imports: [
@@ -40,6 +42,8 @@ export class AdminTasksComponent {
   private readonly adminService = inject(AdminService);
   private readonly toastService = inject(ToastService);
 
+  readonly pageSize = PAGE_SIZE;
+
   readonly priorityFilter = signal<TaskPriority | undefined>(undefined);
 
   readonly collapsed = signal<Record<TaskState, boolean>>({
@@ -47,6 +51,13 @@ export class AdminTasksComponent {
     in_progress: false,
     review: false,
     done: false,
+  });
+
+  readonly offsets = signal<Record<TaskState, number>>({
+    todo: 0,
+    in_progress: 0,
+    review: 0,
+    done: 0,
   });
 
   toggleCollapse(state: TaskState): void {
@@ -76,29 +87,85 @@ export class AdminTasksComponent {
     { label: 'სასწრაფო', value: 'urgent' },
   ];
 
-  readonly tasksResource = rxResource({
-    defaultValue: { tasks: [], total: 0, limit: 100, offset: 0 } as TaskListResponse,
-    params: () => ({ priority: this.priorityFilter() }),
-    stream: ({ params }) => this.adminService.listTasks({ ...params, limit: 100 }),
+  private readonly emptyResponse = (state: TaskState): TaskListResponse => ({
+    tasks: [],
+    total: 0,
+    limit: PAGE_SIZE,
+    offset: this.offsets()[state],
   });
 
-  readonly tasksByState = computed(() => {
-    const grouped: Record<TaskState, Task[]> = {
-      todo: [],
-      in_progress: [],
-      review: [],
-      done: [],
+  private readonly columnResource = (state: TaskState) =>
+    rxResource({
+      defaultValue: this.emptyResponse(state),
+      params: () => ({
+        state,
+        priority: this.priorityFilter(),
+        offset: this.offsets()[state],
+      }),
+      stream: ({ params }) =>
+        this.adminService.listTasks({
+          state: params.state,
+          priority: params.priority,
+          limit: PAGE_SIZE,
+          offset: params.offset,
+        }),
+    });
+
+  readonly resources: Record<TaskState, ReturnType<typeof this.columnResource>> = {
+    todo: this.columnResource('todo'),
+    in_progress: this.columnResource('in_progress'),
+    review: this.columnResource('review'),
+    done: this.columnResource('done'),
+  };
+
+  readonly total = computed(
+    () =>
+      this.resources.todo.value().total +
+      this.resources.in_progress.value().total +
+      this.resources.review.value().total +
+      this.resources.done.value().total,
+  );
+
+  tasksFor(state: TaskState): Task[] {
+    return this.resources[state].value().tasks;
+  }
+
+  totalFor(state: TaskState): number {
+    return this.resources[state].value().total;
+  }
+
+  pageInfo(state: TaskState): { from: number; to: number; total: number } {
+    const total = this.totalFor(state);
+    const offset = this.offsets()[state];
+    const count = this.tasksFor(state).length;
+    return {
+      from: total === 0 ? 0 : offset + 1,
+      to: offset + count,
+      total,
     };
-    for (const task of this.tasksResource.value().tasks) {
-      grouped[task.state].push(task);
-    }
-    return grouped;
-  });
+  }
 
-  readonly total = computed(() => this.tasksResource.value().total);
+  canPrev(state: TaskState): boolean {
+    return this.offsets()[state] > 0;
+  }
+
+  canNext(state: TaskState): boolean {
+    return this.offsets()[state] + PAGE_SIZE < this.totalFor(state);
+  }
+
+  prevPage(state: TaskState): void {
+    if (!this.canPrev(state)) return;
+    this.offsets.update((o) => ({ ...o, [state]: Math.max(0, o[state] - PAGE_SIZE) }));
+  }
+
+  nextPage(state: TaskState): void {
+    if (!this.canNext(state)) return;
+    this.offsets.update((o) => ({ ...o, [state]: o[state] + PAGE_SIZE }));
+  }
 
   onPriorityChange(value: string | undefined): void {
     this.priorityFilter.set(!value || value === 'all' ? undefined : (value as TaskPriority));
+    this.offsets.set({ todo: 0, in_progress: 0, review: 0, done: 0 });
   }
 
   openNew(state: TaskState): void {
@@ -125,9 +192,16 @@ export class AdminTasksComponent {
     this.editingTask.set(null);
   }
 
+  private reloadAll(): void {
+    this.resources.todo.reload();
+    this.resources.in_progress.reload();
+    this.resources.review.reload();
+    this.resources.done.reload();
+  }
+
   onSaved(): void {
     this.closeEditor();
-    this.tasksResource.reload();
+    this.reloadAll();
   }
 
   changeState(task: Task, state: TaskState): void {
@@ -137,7 +211,8 @@ export class AdminTasksComponent {
       .pipe(
         tap(() => {
           this.toastService.add('წარმატება', 'სტატუსი განახლდა', 2500, 'success');
-          this.tasksResource.reload();
+          this.resources[task.state].reload();
+          this.resources[state].reload();
         }),
         catchError((err) => {
           this.toastService.add('შეცდომა', err.error?.error || 'ვერ შესრულდა', 3000, 'error');
@@ -165,7 +240,7 @@ export class AdminTasksComponent {
       .pipe(
         tap(() => {
           this.toastService.add('წარმატება', 'დავალება წაიშალა', 2500, 'success');
-          this.tasksResource.reload();
+          this.reloadAll();
         }),
         catchError((err) => {
           this.toastService.add('შეცდომა', err.error?.error || 'ვერ წაიშალა', 3000, 'error');
