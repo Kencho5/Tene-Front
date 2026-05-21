@@ -30,6 +30,7 @@ import { AddressData } from '@core/interfaces/address.interface';
 import { AddressFormModalComponent } from '@shared/components/address-form-modal/address-form-modal.component';
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
 import { AuthService } from '@core/services/auth/auth-service.service';
+import { DeliveryPricingService } from './delivery-pricing.service';
 
 type StepKey = 'contact' | 'delivery' | 'review' | 'payment';
 
@@ -62,6 +63,7 @@ export class CheckoutComponent {
   readonly toastService = inject(ToastService);
   readonly addressService = inject(AddressService);
   readonly authService = inject(AuthService);
+  private readonly deliveryPricing = inject(DeliveryPricingService);
 
   readonly isGuest = computed(() => !this.authService.isAuthenticated());
   readonly georgianCities = georgianCities;
@@ -70,19 +72,7 @@ export class CheckoutComponent {
     return georgianCities.find((c) => c.value === value)?.label ?? value;
   }
 
-  private readonly highMountainCities = new Set([
-    'mestia',
-    'oni',
-    'ambrolauri',
-    'khulo',
-    'shuakhevi',
-  ]);
-
-  readonly timeAllowsSameDay = (() => {
-    const now = new Date();
-    if (now.getDay() === 0) return false;
-    return now.getHours() < 17 || (now.getHours() === 17 && now.getMinutes() < 30);
-  })();
+  readonly timeAllowsSameDay = this.deliveryPricing.timeAllowsSameDay;
 
   readonly selectedAddressDisplay = computed(() => {
     const id = this.checkoutForm.address().value();
@@ -95,71 +85,24 @@ export class CheckoutComponent {
     return this.addresses().find((a) => String(a.id) === id)?.city ?? '';
   });
 
-  readonly sameDayAvailable = computed(() => {
-    if (!this.timeAllowsSameDay) return false;
-    const city = this.selectedAddressCity();
-    return !city || city === 'tbilisi';
+  private readonly pricing = this.deliveryPricing.create({
+    city: this.selectedAddressCity,
+    deliveryTime: computed(() => this.checkoutForm.delivery_time().value()),
+    deliveryType: computed(() => this.checkoutForm.delivery_type().value()),
+    qualifiesForFreeShipping: this.cartService.qualifiesForFreeShipping,
   });
 
-  readonly sameDayUnavailableReason = computed(() => {
-    const city = this.selectedAddressCity();
-    if (city && city !== 'tbilisi') return 'ხელმისაწვდომია მხოლოდ თბილისში';
-    if (!this.timeAllowsSameDay) return 'ხელმისაწვდომია 17:30-მდე';
-    return '';
-  });
-
-  readonly deliveryNotice = computed(() => {
-    const city = this.selectedAddressCity();
-    if (!city || city === 'tbilisi') return '';
-    if (this.highMountainCities.has(city)) {
-      return 'მაღალმთიან რეგიონში (სვანეთი, რაჭა, ხევსურეთი, თუშეთი, ზემო აჭარა) მიწოდების ღირებულებაა 13.50 ₾.';
-    }
-    return 'თბილისის გარეთ მიწოდების ღირებულებაა 8.50 ₾. იმავე დღის მიწოდება ხელმისაწვდომია მხოლოდ თბილისში.';
-  });
-
-  readonly deliveryPrice = computed(() => {
-    const deliveryTime = this.checkoutForm.delivery_time().value();
-    const deliveryType = this.checkoutForm.delivery_type().value();
-    const city = this.selectedAddressCity();
-
-    if (deliveryType === 'pickup') return 0;
-    if (this.cartService.qualifiesForFreeShipping()) return 0;
-    if (this.highMountainCities.has(city)) return 13.5;
-    if (city && city !== 'tbilisi') return 8.5;
-    if (deliveryTime === 'same_day') return 12;
-    return 5.5;
-  });
-
-  private readonly priceForTime = (time: 'same_day' | 'next_day') => {
-    if (this.cartService.qualifiesForFreeShipping()) return 0;
-    const city = this.selectedAddressCity();
-    if (this.highMountainCities.has(city)) return 13.5;
-    if (city && city !== 'tbilisi') return 8.5;
-    return time === 'same_day' ? 12 : 5.5;
-  };
-
-  readonly sameDayPrice = computed(() => this.priceForTime('same_day'));
-  readonly nextDayPrice = computed(() => this.priceForTime('next_day'));
+  readonly sameDayAvailable = this.pricing.sameDayAvailable;
+  readonly sameDayUnavailableReason = this.pricing.sameDayUnavailableReason;
+  readonly deliveryNotice = this.pricing.deliveryNotice;
+  readonly deliveryPrice = this.pricing.deliveryPrice;
+  readonly sameDayPrice = this.pricing.sameDayPrice;
+  readonly nextDayPrice = this.pricing.nextDayPrice;
+  readonly deliveryTimeOptions = this.pricing.deliveryTimeOptions;
 
   readonly checkoutLoading = signal(false);
 
   readonly organizationTypes = organizationTypes;
-
-  readonly deliveryTimeOptions = computed(() => {
-    const available = this.sameDayAvailable();
-    const price = this.sameDayPrice();
-    const nextPrice = this.nextDayPrice();
-    const sameDayLabel = available
-      ? `იმავე დღეს — ${price === 0 ? 'უფასო' : price + ' ₾'}`
-      : `იმავე დღეს — ${this.sameDayUnavailableReason()}`;
-    return [
-      { value: 'same_day', label: sameDayLabel, disabled: !available },
-      {
-        value: 'next_day',
-        label: `2 - 3 სამუშაო დღეში — ${nextPrice === 0 ? 'უფასო' : nextPrice + ' ₾'}`,
-      },
-    ];
-  });
 
   readonly submitted = signal(false);
   private readonly scrollPending = signal(false);
@@ -269,10 +212,7 @@ export class CheckoutComponent {
     });
 
     effect(() => {
-      if (
-        !this.sameDayAvailable() &&
-        this.checkoutForm.delivery_time().value() === 'same_day'
-      ) {
+      if (!this.sameDayAvailable() && this.checkoutForm.delivery_time().value() === 'same_day') {
         this.checkoutForm.delivery_time().value.set('');
       }
     });
@@ -421,9 +361,9 @@ export class CheckoutComponent {
       ? null
       : this.addresses().find((a) => String(a.id) === model.address);
 
-    const resolvedAddress = guest ? model.guest_address : selectedAddress?.address ?? '';
-    const resolvedCity = guest ? model.guest_city : selectedAddress?.city ?? '';
-    const resolvedDetails = guest ? model.guest_details : selectedAddress?.details ?? '';
+    const resolvedAddress = guest ? model.guest_address : (selectedAddress?.address ?? '');
+    const resolvedCity = guest ? model.guest_city : (selectedAddress?.city ?? '');
+    const resolvedDetails = guest ? model.guest_details : (selectedAddress?.details ?? '');
 
     const request: CheckoutRequest = {
       customer_type: model.customer_type,

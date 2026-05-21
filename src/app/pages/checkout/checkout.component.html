@@ -396,7 +396,7 @@
                 [selectedValue]="checkoutForm.delivery_time().value()"
                 (selectedValueChange)="checkoutForm.delivery_time().value.set($any($event))"
                 [error]="submitted() && checkoutForm.delivery_time().invalid()"
-                placeholder="მიწოდების დრო"
+                placeholder="აირჩიე მიწოდების სისწრაფე"
               />
               @if (submitted() && checkoutForm.delivery_time().invalid()) {
               <p role="alert" class="text-valencia-50 mt-1.5 flex items-center gap-1 text-xs">
@@ -632,8 +632,8 @@
                   <div class="flex justify-between gap-3">
                     <dt class="text-ink-40">დრო</dt>
                     <dd class="text-ink-70 text-right">
-                      @if (checkoutForm.delivery_time().value() === 'same_day') { იმავე დღეს } @else
-                      { 2 - 3 სამუშაო დღეში }
+                      @if (checkoutForm.delivery_time().value() === 'same_day') { დღეს დღის ბოლომდე } @else
+                      { მომდევნო სამუშაო დღეს }
                     </dd>
                   </div>
                   }
