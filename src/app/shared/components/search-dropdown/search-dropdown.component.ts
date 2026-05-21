@@ -15,7 +15,7 @@ import { OutsideClickDirective } from '@core/directives/outside-click.directive'
 import { CategoryTreeNode, CategoryTreeResponse } from '@core/interfaces/categories.interface';
 import { CategoriesService } from '@core/services/categories/categories.service';
 import { SharedModule } from '@shared/shared.module';
-import { ProductImage } from '@core/interfaces/products.interface';
+import { ProductImage, ProductResponse } from '@core/interfaces/products.interface';
 import { ProductsService } from '@core/services/products/products.service';
 import { getProductImageUrl } from '@utils/product-image-url';
 import { Router } from '@angular/router';
@@ -147,8 +147,9 @@ export class SearchDropdownComponent {
     return getProductImageUrl(productId, image.image_uuid, image.extension);
   }
 
-  openProduct(id: string, name: string): void {
+  openProduct(result: ProductResponse): void {
     this.close();
-    this.router.navigate(['/products', generateSlug(name), id]);
+    const slug = result.seo?.slug?.trim() || generateSlug(result.data.name);
+    this.router.navigate(['/products', slug, result.data.id]);
   }
 }

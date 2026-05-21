@@ -21,7 +21,8 @@ export class ProductCardComponent {
   readonly priority = input<boolean>(false);
 
   readonly productSlug = computed(() => {
-    return generateProductSlug(this.product().data.name);
+    const product = this.product();
+    return product.seo?.slug?.trim() || generateProductSlug(product.data.name);
   });
 
   readonly discountedPrice = computed(() => {

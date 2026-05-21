@@ -610,7 +610,19 @@ export class ProductComponent {
 
     const variant = this.selectedVariant();
     const variantSuffix = variant ? ` ${variant.watts}W ${variant.length_cm}სმ` : '';
-    const canonicalUrl = `https://tene.ge/products/${slug}/${product.data.id}`;
+    const canonicalSlug = product.seo?.slug?.trim() || slug;
+    const canonicalUrl = `https://tene.ge/products/${canonicalSlug}/${product.data.id}`;
+
+    if (
+      isPlatformBrowser(this.platformId) &&
+      product.seo?.slug &&
+      product.seo.slug !== slug
+    ) {
+      this.router.navigate(['/products', product.seo.slug, product.data.id], {
+        queryParamsHandling: 'preserve',
+        replaceUrl: true,
+      });
+    }
 
     const seo = product.seo;
     const adminTitle = seo?.meta_title?.trim();
