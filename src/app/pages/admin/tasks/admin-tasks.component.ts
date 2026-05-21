@@ -23,7 +23,7 @@ interface Column {
   accent: string;
 }
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 @Component({
   selector: 'app-admin-tasks',
