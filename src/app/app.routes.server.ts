@@ -43,12 +43,12 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: '404',
-    renderMode: RenderMode.Prerender,
+    renderMode: RenderMode.Server,
+    status: 404,
   },
   {
     path: 'coming-soon',
-    renderMode: RenderMode.Server,
-    status: 404,
+    renderMode: RenderMode.Prerender,
   },
   {
     path: '**',

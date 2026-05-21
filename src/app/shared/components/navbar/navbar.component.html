@@ -43,22 +43,19 @@
           ურნები
         </a>
         <a
-          routerLink="/coins"
-          routerLinkActive="bg-white text-green-70 shadow-sm"
+          routerLink="/coming-soon"
           class="hover:text-green-70 flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all"
         >
           ტენე ქულები
         </a>
         <a
-          routerLink="/recycle"
-          routerLinkActive="bg-white text-green-70 shadow-sm"
+          routerLink="/coming-soon"
           class="hover:text-green-70 flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all"
         >
           გადადნობა
         </a>
         <a
-          routerLink="/earn"
-          routerLinkActive="bg-white text-green-70 shadow-sm"
+          routerLink="/coming-soon"
           class="hover:text-green-70 flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all"
         >
           გამოიმუშავე თანხა
@@ -110,7 +107,7 @@
               </svg>
             </a>
             <a
-              routerLink="blog"
+              routerLink="/coming-soon"
               class="hover:bg-platinum-10 flex items-center justify-between rounded-lg px-3 py-2.5 transition-colors"
             >
               <div class="flex items-center gap-3">
@@ -294,14 +291,14 @@
       @for (navUrl of navUrls; track $index) {
       <a
         [routerLink]="navUrl.url"
-        routerLinkActive="bg-green-10 text-green-70"
+        [routerLinkActive]="navUrl.url === 'coming-soon' ? '' : 'bg-green-10 text-green-70'"
         [routerLinkActiveOptions]="{ exact: true }"
         (click)="closeMobileMenu()"
         class="text-platinum-80 hover:bg-platinum-10 flex h-14 items-center justify-between gap-3 rounded-xl px-3 py-2 text-base font-semibold transition-colors"
       >
         <div class="flex items-center gap-3.5">
           <div class="bg-green-10 flex h-9 w-9 items-center justify-center rounded-lg">
-            <img src="/assets/images/navbar/{{ navUrl.url }}.svg" class="h-5 w-5" />
+            <img src="/assets/images/navbar/{{ navUrl.icon }}.svg" class="h-5 w-5" />
           </div>
 
           {{ navUrl.name }}

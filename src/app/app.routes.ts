@@ -301,5 +301,5 @@ export const routes: Routes = [
     ],
   },
 
-  { path: '**', redirectTo: '/coming-soon' },
+  { path: '**', redirectTo: '/404' },
 ];

@@ -4,33 +4,41 @@ export const navUrls: NavUrl[] = [
   {
     url: 'products',
     name: 'პროდუქცია',
+    icon: 'products',
   },
   {
     url: 'bins',
     name: 'ურნები',
+    icon: 'bins',
   },
   {
-    url: 'coins',
+    url: 'coming-soon',
     name: 'ტენე ქულები',
+    icon: 'coins',
   },
   {
-    url: 'recycle',
+    url: 'coming-soon',
     name: 'გადადნობა',
+    icon: 'recycle',
   },
   {
-    url: 'earn',
+    url: 'coming-soon',
     name: 'გამოიმუშავე თანხა',
+    icon: 'earn',
   },
   {
     url: 'about',
     name: 'ჩვენს შესახებ',
+    icon: 'about',
   },
   {
-    url: 'blog',
+    url: 'coming-soon',
     name: 'ბლოგი',
+    icon: 'blog',
   },
   {
     url: 'contact',
     name: 'კონტაქტი',
+    icon: 'contact',
   },
 ];

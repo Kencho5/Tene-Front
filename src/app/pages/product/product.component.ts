@@ -87,6 +87,7 @@ export class ProductComponent {
       return this.productsService.getProduct(productId).pipe(
         catchError((error) => {
           console.error('Failed to load product:', error);
+          this.router.navigate(['/404'], { replaceUrl: true });
           return of(null as ProductResponse | null);
         }),
       );
