@@ -47,7 +47,8 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: 'coming-soon',
-    renderMode: RenderMode.Prerender,
+    renderMode: RenderMode.Server,
+    status: 404,
   },
   {
     path: '**',
