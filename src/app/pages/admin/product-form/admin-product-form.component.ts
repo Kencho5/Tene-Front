@@ -26,6 +26,7 @@ import { getProductImageUrl } from '@utils/product-image-url';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
 import { flattenCategoryTree } from '@utils/category';
+import { generateProductSlug } from '@utils/slug';
 import { colorLabels } from '@utils/colors';
 import { Brand } from '@core/interfaces/admin/brands.interface';
 import { CableType } from '@core/interfaces/admin/cable-types.interface';
@@ -35,6 +36,11 @@ interface SpecificationEntry {
   group: string;
   key: string;
   value: string;
+}
+
+interface FaqEntry {
+  question: string;
+  answer: string;
 }
 
 interface ImageWithMetadata {
@@ -68,6 +74,17 @@ export class AdminProductFormComponent {
   readonly specifications = signal<SpecificationEntry[]>([]);
   readonly selectedCategoryIds = signal<number[]>([]);
   readonly categoryOptions = signal<ComboboxItems[]>([]);
+
+  readonly metaKeywords = signal<string[]>([]);
+  readonly searchTerms = signal<string[]>([]);
+  readonly faqs = signal<FaqEntry[]>([]);
+  readonly keywordDraft = signal('');
+  readonly searchTermDraft = signal('');
+
+  readonly metaTitleLength = computed(() => this.productModel().meta_title?.length ?? 0);
+  readonly metaDescriptionLength = computed(
+    () => this.productModel().meta_description?.length ?? 0,
+  );
 
   readonly colorOptions: ComboboxItems[] = Object.entries(colorLabels).map(([value, label]) => ({
     label,
@@ -124,6 +141,10 @@ export class AdminProductFormComponent {
     brand_id: null as any,
     cable_type_id: null,
     warranty: '',
+    meta_title: '',
+    meta_description: '',
+    slug: '',
+    no_index: false,
   });
 
   readonly productForm = form(this.productModel, (fieldPath) => {
@@ -214,7 +235,14 @@ export class AdminProductFormComponent {
       brand_id: product.brand_id,
       cable_type_id: product.cable_type_id ?? null,
       warranty: product.warranty,
+      meta_title: product.seo?.meta_title ?? '',
+      meta_description: product.seo?.meta_description ?? '',
+      slug: product.seo?.slug ?? '',
+      no_index: product.seo?.no_index ?? false,
     });
+    this.metaKeywords.set(product.seo?.meta_keywords ?? []);
+    this.searchTerms.set(product.seo?.search_terms ?? []);
+    this.faqs.set(product.seo?.faqs ?? []);
     this.discountMode.set('percent');
     if (this.categoryOptions().length > 0 && categories.length > 0) {
       this.selectedCategoryIds.set([categories[0].id]);
@@ -434,6 +462,11 @@ export class AdminProductFormComponent {
         {} as Record<string, Array<{ name: string; value: string }>>,
       );
 
+    const normalize = (v: string) => v.trim();
+    const cleanedFaqs = this.faqs()
+      .map((f) => ({ question: normalize(f.question), answer: normalize(f.answer) }))
+      .filter((f) => f.question && f.answer);
+
     const payload: CreateProductPayload = {
       id: productData.id,
       name: productData.name,
@@ -443,6 +476,15 @@ export class AdminProductFormComponent {
       brand_id: productData.brand_id ? Number(productData.brand_id) : null,
       cable_type_id: productData.cable_type_id ? Number(productData.cable_type_id) : null,
       warranty: productData.warranty,
+      seo: {
+        meta_title: normalize(productData.meta_title) || null,
+        meta_description: normalize(productData.meta_description) || null,
+        meta_keywords: this.metaKeywords().map(normalize).filter(Boolean),
+        slug: normalize(productData.slug) || null,
+        search_terms: this.searchTerms().map(normalize).filter(Boolean),
+        faqs: cleanedFaqs,
+        no_index: productData.no_index,
+      },
     };
 
     if (this.discountMode() === 'percent') {
@@ -625,5 +667,79 @@ export class AdminProductFormComponent {
 
   cancel(): void {
     this.router.navigate(['/admin/products']);
+  }
+
+  addKeyword(): void {
+    const draft = this.keywordDraft().trim();
+    if (!draft) return;
+    const parts = draft
+      .split(',')
+      .map((p) => p.trim())
+      .filter(Boolean);
+    this.metaKeywords.update((list) => {
+      const set = new Set(list);
+      for (const p of parts) set.add(p);
+      return [...set];
+    });
+    this.keywordDraft.set('');
+  }
+
+  removeKeyword(keyword: string): void {
+    this.metaKeywords.update((list) => list.filter((k) => k !== keyword));
+  }
+
+  onKeywordKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ',') {
+      event.preventDefault();
+      this.addKeyword();
+    }
+  }
+
+  addSearchTerm(): void {
+    const draft = this.searchTermDraft().trim();
+    if (!draft) return;
+    const parts = draft
+      .split(',')
+      .map((p) => p.trim())
+      .filter(Boolean);
+    this.searchTerms.update((list) => {
+      const set = new Set(list);
+      for (const p of parts) set.add(p);
+      return [...set];
+    });
+    this.searchTermDraft.set('');
+  }
+
+  removeSearchTerm(term: string): void {
+    this.searchTerms.update((list) => list.filter((t) => t !== term));
+  }
+
+  onSearchTermKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ',') {
+      event.preventDefault();
+      this.addSearchTerm();
+    }
+  }
+
+  addFaq(): void {
+    this.faqs.update((list) => [...list, { question: '', answer: '' }]);
+  }
+
+  removeFaq(index: number): void {
+    this.faqs.update((list) => list.filter((_, i) => i !== index));
+  }
+
+  updateFaqQuestion(index: number, question: string): void {
+    this.faqs.update((list) => list.map((f, i) => (i === index ? { ...f, question } : f)));
+  }
+
+  updateFaqAnswer(index: number, answer: string): void {
+    this.faqs.update((list) => list.map((f, i) => (i === index ? { ...f, answer } : f)));
+  }
+
+  suggestSlug(): void {
+    const name = this.productModel().name?.trim();
+    if (!name) return;
+    this.productModel.update((m) => ({ ...m, slug: generateProductSlug(name) }));
   }
 }

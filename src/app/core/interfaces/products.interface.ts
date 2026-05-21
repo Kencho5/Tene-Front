@@ -4,6 +4,22 @@ export interface ProductCategory {
   slug: string;
 }
 
+export interface ProductFaq {
+  question: string;
+  answer: string;
+}
+
+export interface ProductSeo {
+  meta_title: string | null;
+  meta_description: string | null;
+  meta_keywords: string[] | null;
+  slug: string | null;
+  search_terms: string[] | null;
+  faqs: ProductFaq[] | null;
+  og_image_uuid: string | null;
+  no_index: boolean | null;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -20,6 +36,7 @@ export interface Product {
   categories: ProductCategory[];
   created_at: string;
   updated_at: string;
+  seo?: ProductSeo | null;
 }
 
 export interface ProductImage {

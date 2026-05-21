@@ -8,6 +8,15 @@ export interface ProductFormData {
   brand_id: number | null;
   cable_type_id: number | null;
   warranty: string;
+  meta_title: string;
+  meta_description: string;
+  slug: string;
+  no_index: boolean;
+}
+
+export interface ProductSeoFaqInput {
+  question: string;
+  answer: string;
 }
 
 export interface CreateProductPayload {
@@ -21,6 +30,15 @@ export interface CreateProductPayload {
   brand_id: number | null;
   cable_type_id: number | null;
   warranty: string;
+  seo?: {
+    meta_title: string | null;
+    meta_description: string | null;
+    meta_keywords: string[];
+    slug: string | null;
+    search_terms: string[];
+    faqs: ProductSeoFaqInput[];
+    no_index: boolean;
+  };
 }
 
 export interface ImageUploadRequest {

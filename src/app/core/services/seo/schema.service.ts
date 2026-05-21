@@ -93,6 +93,24 @@ export class SchemaService {
     this.injectSchema(schema);
   }
 
+  addFaqSchema(items: { question: string; answer: string }[]): void {
+    if (!items.length) return;
+    const schema = {
+      '@context': 'https://schema.org/',
+      '@type': 'FAQPage',
+      mainEntity: items.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer,
+        },
+      })),
+    };
+
+    this.injectSchema(schema);
+  }
+
   addOrganizationSchema(data: {
     name: string;
     url: string;

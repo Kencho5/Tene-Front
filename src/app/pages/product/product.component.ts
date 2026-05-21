@@ -600,10 +600,14 @@ export class ProductComponent {
     const price = this.finalPrice();
     const image = product.images?.[0];
     if (!image) return;
-    const imageUrl = getProductImageUrl(product.data.id, image.image_uuid, image.extension);
+    const ogImage = product.data.seo?.og_image_uuid
+      ? product.images.find((img) => img.image_uuid === product.data.seo!.og_image_uuid) ?? image
+      : image;
+    const imageUrl = getProductImageUrl(product.data.id, ogImage.image_uuid, ogImage.extension);
 
     const productDescription = product.data.description || product.data.name;
-    const description =
+    const schemaDescription = product.data.seo?.meta_description?.trim() || productDescription;
+    const fallbackDescription =
       productDescription.length > 150
         ? productDescription.substring(0, 147) + '...'
         : productDescription;
@@ -613,7 +617,7 @@ export class ProductComponent {
     const priceLine = variant
       ? `ფასი: ${price}₾ (${variant.watts}W · ${variant.length_cm}სმ).`
       : `ფასი: ${price}₾.`;
-    const fullDescription = `${description} ${priceLine} სულ: ${product.data.quantity} ცალი.`;
+    const computedDescription = `${fallbackDescription} ${priceLine} სულ: ${product.data.quantity} ცალი.`;
 
     // Canonical strips query params to consolidate variant URLs into one
     const canonicalUrl = `https://tene.ge/products/${slug}/${product.data.id}`;
@@ -623,14 +627,36 @@ export class ProductComponent {
         ? product.data.categories[0].name
         : 'პროდუქტი';
 
+    const seo = product.data.seo;
+    const adminTitle = seo?.meta_title?.trim();
+    const adminDescription = seo?.meta_description?.trim();
+    const adminKeywords = seo?.meta_keywords?.filter(Boolean) ?? [];
+    const searchTerms = seo?.search_terms?.filter(Boolean) ?? [];
+    const keywordList = [
+      ...adminKeywords,
+      ...searchTerms,
+      product.data.name,
+      categoryKeyword,
+      product.data.brand_name,
+      'ტექნიკა',
+    ]
+      .filter(Boolean)
+      .filter((v, i, arr) => arr.indexOf(v) === i);
+
     this.seoService.setMetaTags({
-      title: `${product.data.name}${variantSuffix} - ${price}₾ | Tene`,
-      description: fullDescription,
+      title: adminTitle
+        ? `${adminTitle}${variantSuffix}`
+        : `${product.data.name}${variantSuffix} - ${price}₾ | Tene`,
+      description: adminDescription
+        ? `${adminDescription} ${priceLine}`.trim()
+        : computedDescription,
       image: imageUrl,
       url: canonicalUrl,
       type: 'product',
-      keywords: `${product.data.name}, ${categoryKeyword}, ტექნიკა`,
+      keywords: keywordList.join(', '),
     });
+
+    this.seoService.setRobots(!!seo?.no_index);
 
     // Reset schemas so AggregateOffer / Breadcrumb don't stack on variant change
     this.schemaService.clearSchemas();
@@ -638,7 +664,7 @@ export class ProductComponent {
     const variants = this.cableVariants();
     this.schemaService.addProductSchema({
       name: product.data.name,
-      description: productDescription,
+      description: schemaDescription,
       image: imageUrl,
       sku: product.data.id.toString(),
       brand_name: product.data.brand_name,
@@ -665,7 +691,25 @@ export class ProductComponent {
     }));
 
     this.schemaService.addBreadcrumbSchema(breadcrumbItems);
+
+    const faqs = seo?.faqs?.filter((f) => f.question?.trim() && f.answer?.trim()) ?? [];
+    if (faqs.length > 0) {
+      this.schemaService.addFaqSchema(faqs);
+    }
   }
+
+  readonly seoFaqs = computed(() => {
+    const faqs = this.product()?.data.seo?.faqs ?? [];
+    return faqs.filter((f) => f.question?.trim() && f.answer?.trim());
+  });
+
+  readonly seoSearchTerms = computed(() => {
+    return this.product()?.data.seo?.search_terms?.filter((t) => t?.trim()) ?? [];
+  });
+
+  readonly seoKeywords = computed(() => {
+    return this.product()?.data.seo?.meta_keywords?.filter((k) => k?.trim()) ?? [];
+  });
 
   readonly relatedScrollState = signal(false);
 

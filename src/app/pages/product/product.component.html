@@ -188,6 +188,16 @@
             {{ product.data.name }}
           </h1>
 
+          <!-- SEO: visually hidden but indexable synonyms / alt names -->
+          @if (seoSearchTerms().length > 0) {
+          <p class="sr-only">
+            ცნობილია აგრეთვე როგორც:
+            @for (term of seoSearchTerms(); track term; let isLast = $last) {
+              <span>{{ term }}</span>@if (!isLast) {<span>, </span>}
+            }
+          </p>
+          }
+
           <!-- ID & Stock -->
           <p class="text-platinum-40 mt-1.5 text-[15px] sm:text-[13px]">
             ID: {{ product.data.id }}
@@ -539,6 +549,31 @@
         </div>
         }
       </div>
+      }
+
+      <!-- ── FAQ (visible + rich snippet eligible) ── -->
+      @if (seoFaqs().length > 0) {
+      <section class="border-platinum-20/40 mt-12 border-t pt-8 lg:max-w-[55%]">
+        <h2 class="text-platinum-100 text-lg font-semibold">ხშირად დასმული კითხვები</h2>
+        <dl class="mt-5 space-y-4">
+          @for (faq of seoFaqs(); track faq.question) {
+          <div class="border-platinum-20/40 border-b pb-4 last:border-0">
+            <dt class="text-platinum-100 text-[15px] font-semibold">{{ faq.question }}</dt>
+            <dd class="text-platinum-60 mt-2 text-[14px] leading-[1.65]">{{ faq.answer }}</dd>
+          </div>
+          }
+        </dl>
+      </section>
+      }
+
+      <!-- SEO: hidden semantic keyword list for crawlers -->
+      @if (seoKeywords().length > 0) {
+      <p class="sr-only">
+        საკვანძო სიტყვები:
+        @for (kw of seoKeywords(); track kw; let isLast = $last) {
+          <span>{{ kw }}</span>@if (!isLast) {<span>, </span>}
+        }
+      </p>
       }
 
       <!-- ── RELATED PRODUCTS ── -->
