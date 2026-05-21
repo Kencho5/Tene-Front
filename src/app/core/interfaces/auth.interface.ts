@@ -4,6 +4,10 @@ export interface RegisterFields {
   password: string;
 }
 
+export interface RegisterVerifyFields extends RegisterFields {
+  code: number;
+}
+
 export interface LoginFields {
   email: string;
   password: string;

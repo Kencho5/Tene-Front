@@ -4,7 +4,13 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { isPlatformBrowser } from '@angular/common';
-import { AuthResponse, LoginFields, RegisterFields, User } from '@core/interfaces/auth.interface';
+import {
+  AuthResponse,
+  LoginFields,
+  RegisterFields,
+  RegisterVerifyFields,
+  User,
+} from '@core/interfaces/auth.interface';
 import { PosthogService } from '@core/services/posthog.service';
 
 const TOKEN_KEY = 'token';
@@ -43,8 +49,12 @@ export class AuthService {
   }
 
   // API Methods
-  register(userData: RegisterFields): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>('/auth/register', userData);
+  register(userData: RegisterFields): Observable<void> {
+    return this.http.post<void>('/auth/register', userData);
+  }
+
+  verifyRegister(userData: RegisterVerifyFields): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>('/auth/register/verify', userData);
   }
 
   login(userData: LoginFields): Observable<AuthResponse> {

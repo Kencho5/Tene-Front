@@ -4,6 +4,7 @@ import {
   signal,
   computed,
   ChangeDetectionStrategy,
+  DestroyRef,
 } from '@angular/core';
 import {
   form,
@@ -11,6 +12,8 @@ import {
   required,
   email,
   minLength,
+  maxLength,
+  pattern,
   submit,
 } from '@angular/forms/signals';
 import { finalize } from 'rxjs';
@@ -35,15 +38,23 @@ export class RegisterComponent {
   private readonly authTitleService = inject(AuthTitleService);
   private readonly toastService = inject(ToastService);
 
+  readonly step = signal<'form' | 'verify'>('form');
   readonly submitted = signal(false);
+  readonly verifySubmitted = signal(false);
   readonly isLoading = signal(false);
+  readonly isVerifyLoading = signal(false);
+  readonly isResending = signal(false);
   readonly isGoogleLoading = signal(false);
+  readonly resendCooldown = signal(0);
+  private resendTimer: ReturnType<typeof setInterval> | null = null;
 
   readonly registerModel = signal<RegisterFields>({
     name: '',
     email: '',
     password: '',
   });
+
+  readonly verifyModel = signal<{ code: string }>({ code: '' });
 
   readonly registerForm = form(this.registerModel, (fieldPath) => {
     required(fieldPath.name, { message: 'სახელი აუცილებელია' });
@@ -55,6 +66,12 @@ export class RegisterComponent {
     });
   });
 
+  readonly verifyForm = form(this.verifyModel, (fieldPath) => {
+    required(fieldPath.code, { message: 'შეიყვანეთ კოდი' });
+    pattern(fieldPath.code, /^\d{6}$/, { message: 'არასწორი კოდი' });
+    maxLength(fieldPath.code, 6, { message: 'არასწორი კოდი' });
+  });
+
   readonly errorMessage = computed(() => {
     const allErrors = this.registerForm().errorSummary();
     return allErrors.length > 0
@@ -62,8 +79,42 @@ export class RegisterComponent {
       : '';
   });
 
+  readonly verifyErrorMessage = computed(() => {
+    if (this.verifyServerError()) return this.verifyServerError();
+    const allErrors = this.verifyForm().errorSummary();
+    return allErrors.length > 0
+      ? allErrors[0].message || 'არასწორი კოდი'
+      : '';
+  });
+
+  readonly verifyServerError = signal('');
+
+  readonly maskedEmail = computed(() => this.registerModel().email);
+
   constructor() {
     this.authTitleService.setTitle('რეგისტრაცია');
+    inject(DestroyRef).onDestroy(() => this.clearResendTimer());
+  }
+
+  private startResendCooldown(seconds = 30): void {
+    this.clearResendTimer();
+    this.resendCooldown.set(seconds);
+    this.resendTimer = setInterval(() => {
+      const next = this.resendCooldown() - 1;
+      if (next <= 0) {
+        this.clearResendTimer();
+        this.resendCooldown.set(0);
+      } else {
+        this.resendCooldown.set(next);
+      }
+    }, 1000);
+  }
+
+  private clearResendTimer(): void {
+    if (this.resendTimer) {
+      clearInterval(this.resendTimer);
+      this.resendTimer = null;
+    }
   }
 
   onSubmit(event?: Event): void {
@@ -78,13 +129,18 @@ export class RegisterComponent {
         .register(userData)
         .pipe(finalize(() => this.isLoading.set(false)))
         .subscribe({
-          next: (response) => {
-            this.authService.setAuth(response.token);
+          next: () => {
+            this.step.set('verify');
+            this.verifyModel.set({ code: '' });
+            this.verifySubmitted.set(false);
+            this.verifyServerError.set('');
+            this.startResendCooldown();
+            this.authTitleService.setTitle('კოდის დადასტურება');
           },
           error: (errorResponse: HttpErrorResponse) => {
             this.toastService.add(
               'რეგისტრაცია ვერ მოხერხდა',
-              errorResponse.error.message ||
+              errorResponse.error?.message ||
                 'გთხოვთ შეამოწმოთ თქვენი მონაცემები და სცადოთ თავიდან.',
               4000,
               'error',
@@ -92,6 +148,77 @@ export class RegisterComponent {
           },
         });
     });
+  }
+
+  onVerifySubmit(event?: Event): void {
+    event?.preventDefault();
+    this.verifySubmitted.set(true);
+
+    this.verifyServerError.set('');
+
+    submit(this.verifyForm, async () => {
+      this.isVerifyLoading.set(true);
+      const { name, email, password } = this.registerModel();
+      const code = Number(this.verifyModel().code);
+
+      this.authService
+        .verifyRegister({ name, email, password, code })
+        .pipe(finalize(() => this.isVerifyLoading.set(false)))
+        .subscribe({
+          next: (response) => {
+            this.authService.setAuth(response.token);
+          },
+          error: (errorResponse: HttpErrorResponse) => {
+            const status = errorResponse.status;
+            if (status === 401) {
+              this.verifyServerError.set('არასწორი ან ვადაგასული კოდი');
+            } else {
+              this.verifyServerError.set(
+                errorResponse.error?.message || 'დადასტურება ვერ მოხერხდა',
+              );
+            }
+          },
+        });
+    });
+  }
+
+  resendCode(): void {
+    if (this.isResending() || this.resendCooldown() > 0) return;
+    this.isResending.set(true);
+    this.authService
+      .register(this.registerModel())
+      .pipe(finalize(() => this.isResending.set(false)))
+      .subscribe({
+        next: () => {
+          this.verifyModel.set({ code: '' });
+          this.verifySubmitted.set(false);
+          this.verifyServerError.set('');
+          this.startResendCooldown();
+          this.toastService.add(
+            'კოდი გამოგზავნილია',
+            'შეამოწმეთ ელ. ფოსტა ახალი კოდისთვის.',
+            4000,
+            'success',
+          );
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          this.toastService.add(
+            'კოდის გამოგზავნა ვერ მოხერხდა',
+            errorResponse.error?.message || 'გთხოვთ სცადოთ თავიდან.',
+            4000,
+            'error',
+          );
+        },
+      });
+  }
+
+  backToForm(): void {
+    this.step.set('form');
+    this.verifySubmitted.set(false);
+    this.verifyServerError.set('');
+    this.clearResendTimer();
+    this.resendCooldown.set(0);
+    this.authTitleService.setTitle('რეგისტრაცია');
   }
 
   authorizeWithGoogle(): void {
