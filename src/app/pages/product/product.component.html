@@ -238,14 +238,16 @@
               <p
                 class="text-valencia-60 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[26px]"
               >
-                -{{ product.data.discount | number }}%
+                -{{ product.data.discount | number: '1.0-0' }}%
               </p>
               <p
                 class="text-platinum-100 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[26px]"
               >
                 {{ finalPrice() }}₾
               </p>
-              <p class="text-platinum-40 text-[14px] whitespace-nowrap line-through sm:text-sm">
+              <p
+                class="text-platinum-40 text-[20px] leading-none whitespace-nowrap line-through sm:text-[16px]"
+              >
                 {{ product.data.price }}₾
               </p>
             </div>
