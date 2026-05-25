@@ -726,6 +726,33 @@ export class ProductComponent {
     return this.product()?.seo?.meta_keywords?.filter((k) => k?.trim()) ?? [];
   });
 
+  readonly questionText = signal('');
+  readonly chatChannel = signal<'messenger' | 'whatsapp' | null>(null);
+  readonly chatSent = signal(false);
+
+  selectChatChannel(channel: 'messenger' | 'whatsapp'): void {
+    this.chatChannel.set(channel);
+    this.chatSent.set(false);
+  }
+
+  resetChatChannel(): void {
+    this.chatChannel.set(null);
+    this.chatSent.set(false);
+    this.questionText.set('');
+  }
+
+  onChatSend(): void {
+    if (!this.questionText().trim()) return;
+    this.chatSent.set(true);
+  }
+
+  readonly chatUrl = computed(() => {
+    const message = encodeURIComponent(this.questionText().trim());
+    return this.chatChannel() === 'whatsapp'
+      ? `https://wa.me/995598210210?text=${message}`
+      : `https://m.me/TeneUSB?text=${message}`;
+  });
+
   readonly relatedScrollState = signal(false);
 
   scrollRelatedLeft(el: HTMLElement) {

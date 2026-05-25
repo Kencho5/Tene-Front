@@ -117,32 +117,42 @@
               }
 
               <!-- Navigation arrows -->
-              @if (colorImages().length > 1) {
-              @if (canGoPrev()) {
+              @if (colorImages().length > 1) { @if (canGoPrev()) {
               <button
                 type="button"
                 (click)="goToPrevImage()"
-                class="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md backdrop-blur-sm transition-all hover:bg-white active:scale-95"
+                class="absolute top-1/2 left-2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md backdrop-blur-sm transition-all hover:bg-white active:scale-95"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path
+                    d="M15 18L9 12L15 6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
               </button>
-              }
-              @if (canGoNext()) {
+              } @if (canGoNext()) {
               <button
                 type="button"
                 (click)="goToNextImage()"
-                class="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md backdrop-blur-sm transition-all hover:bg-white active:scale-95"
+                class="absolute top-1/2 right-2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md backdrop-blur-sm transition-all hover:bg-white active:scale-95"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path
+                    d="M9 18L15 12L9 6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
               </button>
               }
 
               <!-- Dot indicators (mobile only) -->
-              <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 sm:hidden">
+              <div class="absolute right-0 bottom-3 left-0 flex justify-center gap-1.5 sm:hidden">
                 @for (image of colorImages(); track image.image_uuid) {
                 <span
                   class="h-1.5 w-1.5 rounded-full transition-colors duration-200"
@@ -191,10 +201,12 @@
           <!-- SEO: visually hidden but indexable synonyms / alt names -->
           @if (seoSearchTerms().length > 0) {
           <p class="sr-only">
-            ცნობილია აგრეთვე როგორც:
-            @for (term of seoSearchTerms(); track term; let isLast = $last) {
-              <span>{{ term }}</span>@if (!isLast) {<span>, </span>}
-            }
+            ცნობილია აგრეთვე როგორც: @for (term of seoSearchTerms(); track term; let isLast = $last)
+            {
+            <span>{{ term }}</span>
+            @if (!isLast) {
+            <span>,</span>
+            } }
           </p>
           }
 
@@ -216,18 +228,26 @@
           @if (!isCable()) {
           <div class="border-platinum-20/40 mt-5 border-t pt-5">
             @if (+product.data.discount === 0) {
-            <p class="text-platinum-100 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[26px]">
+            <p
+              class="text-platinum-100 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[26px]"
+            >
               {{ product.data.price }}₾
             </p>
             } @else {
             <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <p class="text-valencia-60 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[26px]">
+              <p
+                class="text-valencia-60 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[26px]"
+              >
                 -{{ product.data.discount | number }}%
               </p>
-              <p class="text-platinum-100 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[26px]">
+              <p
+                class="text-platinum-100 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[26px]"
+              >
                 {{ finalPrice() }}₾
               </p>
-              <p class="text-platinum-40 text-[14px] line-through whitespace-nowrap sm:text-sm">{{ product.data.price }}₾</p>
+              <p class="text-platinum-40 text-[14px] whitespace-nowrap line-through sm:text-sm">
+                {{ product.data.price }}₾
+              </p>
             </div>
             }
           </div>
@@ -235,7 +255,11 @@
 
           <!-- ─── Color ─── -->
           <div class="border-platinum-20/40 mt-5 border-t pt-5">
-            <p class="text-platinum-90 text-[17px] font-semibold tracking-wide uppercase sm:text-[13px]">ფერი</p>
+            <p
+              class="text-platinum-90 text-[17px] font-semibold tracking-wide uppercase sm:text-[13px]"
+            >
+              ფერი
+            </p>
             <div class="mt-3 flex flex-wrap gap-2">
               @for (color of availableColors(); track color) {
               <button
@@ -256,7 +280,9 @@
           <!-- ─── Cable configurator ─── -->
           @if (isCable()) {
           <div class="border-platinum-20/40 mt-5 border-t pt-5">
-            <p class="text-platinum-90 text-[17px] font-semibold tracking-wide uppercase sm:text-[15px]">
+            <p
+              class="text-platinum-90 text-[17px] font-semibold tracking-wide uppercase sm:text-[15px]"
+            >
               ვატაჟი
             </p>
             <div class="mt-3 flex gap-2">
@@ -279,10 +305,14 @@
 
           <div class="border-platinum-20/40 mt-5 border-t pt-5">
             <div class="flex items-baseline justify-between gap-3">
-              <p class="text-platinum-90 text-[17px] font-semibold tracking-wide uppercase sm:text-[15px]">
+              <p
+                class="text-platinum-90 text-[17px] font-semibold tracking-wide uppercase sm:text-[15px]"
+              >
                 სიგრძე · {{ cableLengths()[selectedLengthIdx()] }} სმ
               </p>
-              <p class="text-platinum-100 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[32px]">
+              <p
+                class="text-platinum-100 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[32px]"
+              >
                 {{ finalPrice() }}₾
               </p>
             </div>
@@ -290,7 +320,9 @@
                  system as the ruler/numbers below. Native input overlays for dragging. -->
             <div class="relative mt-3 h-12">
               <!-- track (gray) -->
-              <div class="bg-platinum-20 absolute top-1/2 right-0 left-0 h-[12px] -translate-y-1/2 rounded-sm"></div>
+              <div
+                class="bg-platinum-20 absolute top-1/2 right-0 left-0 h-[12px] -translate-y-1/2 rounded-sm"
+              ></div>
               <!-- fill (green) -->
               <div
                 class="bg-green-60 absolute top-1/2 left-0 h-[12px] -translate-y-1/2 rounded-sm"
@@ -329,26 +361,25 @@
                 class="bg-platinum-60 absolute top-0 h-2 w-px"
                 [style.left.%]="(i / (cableLengths().length - 1)) * 100"
               ></div>
-              @if (!isLast) {
-              @for (m of [1, 2, 3, 4]; track m) {
+              @if (!isLast) { @for (m of [1, 2, 3, 4]; track m) {
               <div
                 class="bg-platinum-30 absolute top-0 h-1 w-px"
                 [style.left.%]="((i + m / 5) / (cableLengths().length - 1)) * 100"
               ></div>
-              }
-              }
-              }
+              } } }
             </div>
             <!-- numbers -->
             <div class="relative mt-0.5 h-4 select-none">
               @for (len of cableLengths(); track len; let i = $index) {
               <span
-                class="absolute top-0 -translate-x-1/2 text-[11px] sm:text-[12px] transition-colors"
+                class="absolute top-0 -translate-x-1/2 text-[11px] transition-colors sm:text-[12px]"
                 [style.left.%]="(i / (cableLengths().length - 1)) * 100"
                 [class.text-green-70]="selectedLengthIdx() === i"
                 [class.font-semibold]="selectedLengthIdx() === i"
                 [class.text-platinum-40]="selectedLengthIdx() !== i"
-              >{{ len }}</span>
+              >
+                {{ len }}
+              </span>
               }
             </div>
           </div>
@@ -357,7 +388,9 @@
           <!-- ─── Categories ─── -->
           @if (product.data.categories && product.data.categories.length > 0) {
           <div class="border-platinum-20/40 mt-5 border-t pt-5">
-            <p class="text-platinum-90 text-[15px] font-semibold tracking-wide uppercase sm:text-[13px]">
+            <p
+              class="text-platinum-90 text-[15px] font-semibold tracking-wide uppercase sm:text-[13px]"
+            >
               კატეგორიები
             </p>
             <div class="mt-3 flex flex-wrap gap-1.5">
@@ -395,7 +428,9 @@
                     />
                   </svg>
                 </button>
-                <span class="text-platinum-100 text-[15px] font-semibold sm:text-sm">{{ quantity() }}</span>
+                <span class="text-platinum-100 text-[15px] font-semibold sm:text-sm">
+                  {{ quantity() }}
+                </span>
                 <button
                   type="button"
                   (click)="updateProductCount(+1)"
@@ -475,8 +510,132 @@
                   stroke-linecap="round"
                 />
               </svg>
-              <p class="text-valencia-60 text-[14px] font-medium sm:text-[13px]">პროდუქტი არ არის მარაგში</p>
+              <p class="text-valencia-60 text-[14px] font-medium sm:text-[13px]">
+                პროდუქტი არ არის მარაგში
+              </p>
             </div>
+            }
+          </div>
+
+          <!-- ─── Ask a question ─── -->
+          <div class="border-platinum-20/40 mt-5 border-t pt-5">
+            <p
+              class="text-platinum-90 text-[15px] font-semibold tracking-wide uppercase sm:text-[13px]"
+            >
+              გაქვს კითხვა?
+            </p>
+
+            @if (chatChannel() === null) {
+            <!-- Step 1: choose channel -->
+            <div class="mt-3 flex gap-2">
+              <button
+                type="button"
+                (click)="selectChatChannel('messenger')"
+                class="border-platinum-20 hover:border-green-60/40 hover:bg-green-10 flex h-11 flex-1 items-center justify-center gap-2 rounded-lg border text-[14px] font-semibold transition-all duration-200 sm:text-[13px]"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                  class="shrink-0"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M12 23.2423C18.6274 23.2423 24 18.0393 24 11.6211C24 5.20296 18.6274 0 12 0C5.37258 0 0 5.20296 0 11.6211C0 15.1119 1.58925 18.2431 4.10526 20.3734V22.725C4.10526 23.6442 5.04147 24.2606 5.8762 23.8912L8.48583 22.736C9.59727 23.0652 10.7773 23.2423 12 23.2423Z"
+                    fill="#0084FF"
+                  />
+                  <path
+                    d="M8.88701 8.91332L5.11723 14.0689C4.71304 14.6217 5.43994 15.2858 5.99334 14.8693L9.21228 12.4469C9.53993 12.2003 9.99922 12.197 10.3307 12.4388L13.1935 14.5272C13.7425 14.9277 14.5272 14.8125 14.9269 14.2727L18.8805 8.93407C19.2905 8.3804 18.558 7.71094 18.0038 8.13284L14.6006 10.7236C14.2729 10.9731 13.8112 10.9777 13.4782 10.7347L10.6247 8.6531C10.0733 8.25092 9.28503 8.36897 8.88701 8.91332Z"
+                    fill="white"
+                  />
+                </svg>
+                Messenger
+              </button>
+              <button
+                type="button"
+                (click)="selectChatChannel('whatsapp')"
+                class="border-platinum-20 hover:border-green-60/40 hover:bg-green-10 flex h-11 flex-1 items-center justify-center gap-2 rounded-lg border text-[14px] font-semibold transition-all duration-200 sm:text-[13px]"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  class="shrink-0 text-[#25D366]"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01m-7.01 15.24c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.26 8.26 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c.02 4.54-3.68 8.23-8.22 8.23m4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43s.17-.25.25-.41c.08-.17.04-.31-.02-.43s-.56-1.34-.76-1.84c-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07s.89 2.4 1.01 2.56c.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18s-.22-.16-.47-.28"
+                  />
+                </svg>
+                WhatsApp
+              </button>
+            </div>
+            } @else if (chatSent()) {
+            <!-- Step 3: success -->
+            <div
+              class="border-green-20 bg-green-10/50 mt-3 flex items-center gap-2.5 rounded-lg border px-3 py-3"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="shrink-0">
+                <path
+                  d="M9.5 12.5L11.5 14.5L15 10M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                  stroke="#1aa44a"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <p class="text-green-70 text-[14px] font-medium sm:text-[13px]">
+                შეკითხვა გაგზავნილია
+              </p>
+            </div>
+            <button
+              type="button"
+              (click)="resetChatChannel()"
+              class="text-platinum-40 hover:text-platinum-60 mt-2 text-[13px] transition-colors"
+            >
+              ახალი შეკითხვის დასმა
+            </button>
+            } @else {
+            <!-- Step 2: type message + send -->
+            <button
+              type="button"
+              (click)="resetChatChannel()"
+              class="text-platinum-40 hover:text-platinum-60 mt-3 flex items-center gap-1 text-[13px] transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M15 18L9 12L15 6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              {{ chatChannel() === 'messenger' ? 'Messenger' : 'WhatsApp' }}
+            </button>
+            <textarea
+              [value]="questionText()"
+              (input)="questionText.set($any($event.target).value)"
+              rows="2"
+              placeholder="დაწერეთ თქვენი შეკითხვა..."
+              class="border-platinum-20 focus:border-green-60/60 text-platinum-100 placeholder:text-platinum-40 mt-2 w-full resize-none rounded-lg border px-3 py-2.5 text-[14px] transition-colors outline-none sm:text-[13px]"
+            ></textarea>
+            <a
+              [href]="chatUrl()"
+              target="_blank"
+              rel="noopener noreferrer"
+              (click)="onChatSend()"
+              [class.pointer-events-none]="!questionText().trim()"
+              [class.opacity-40]="!questionText().trim()"
+              class="bg-green-60 hover:bg-green-70 active:bg-green-80 mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-lg text-[14px] font-semibold text-white transition-all duration-200 sm:text-[13px]"
+            >
+              გაგზავნა
+            </a>
             }
           </div>
         </div>
@@ -537,7 +696,9 @@
               } @else {
               <span class="hidden sm:block"></span>
               }
-              <span class="text-platinum-50 text-[14px] sm:text-[13px]">{{ decodeHtml(item.name) }}</span>
+              <span class="text-platinum-50 text-[14px] sm:text-[13px]">
+                {{ decodeHtml(item.name) }}
+              </span>
               <span class="text-platinum-100 text-[14px] font-medium sm:text-[13px]">
                 {{ decodeHtml(item.value) }}
               </span>
@@ -584,10 +745,11 @@
       <!-- SEO: hidden semantic keyword list for crawlers -->
       @if (seoKeywords().length > 0) {
       <p class="sr-only">
-        საკვანძო სიტყვები:
-        @for (kw of seoKeywords(); track kw; let isLast = $last) {
-          <span>{{ kw }}</span>@if (!isLast) {<span>, </span>}
-        }
+        საკვანძო სიტყვები: @for (kw of seoKeywords(); track kw; let isLast = $last) {
+        <span>{{ kw }}</span>
+        @if (!isLast) {
+        <span>,</span>
+        } }
       </p>
       }
 
@@ -600,7 +762,7 @@
             appDragScroll
             #relatedScrollContainer
             (scroll)="onRelatedScroll(relatedScrollContainer)"
-            class="hide-scrollbar -mx-4 flex snap-x snap-proximity gap-4 overflow-x-auto scroll-pl-4 px-4 py-2 lg:mx-0 lg:scroll-pl-1 lg:px-1 lg:py-2"
+            class="hide-scrollbar -mx-4 flex snap-x snap-proximity scroll-pl-4 gap-4 overflow-x-auto px-4 py-2 lg:mx-0 lg:scroll-pl-1 lg:px-1 lg:py-2"
             style="scrollbar-width: none; -ms-overflow-style: none"
           >
             @if (relatedProducts.isLoading()) { @for (i of [1, 2, 3, 4, 5, 6]; track i) {
@@ -618,7 +780,12 @@
             class="bg-green-10 shadow-low hover:bg-green-20 absolute top-1/2 left-0 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-all lg:flex"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="rotate-180">
-              <path d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4" stroke="#068C0B" stroke-width="1.5" stroke-linecap="round"/>
+              <path
+                d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4"
+                stroke="#068C0B"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
             </svg>
           </button>
           }
@@ -629,11 +796,18 @@
             class="bg-green-10 shadow-low hover:bg-green-20 absolute top-1/2 right-0 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-all lg:flex"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4" stroke="#068C0B" stroke-width="1.5" stroke-linecap="round"/>
+              <path
+                d="M14.5 6.5L19.8728 11.8716C19.9576 11.9549 20 12.0641 20 12.1733M14.5 17.5L19.8728 12.475C19.9576 12.3917 20 12.2825 20 12.1733M20 12.1733H4"
+                stroke="#068C0B"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
             </svg>
           </button>
 
-          <div class="pointer-events-none absolute top-0 right-0 bottom-0 hidden w-20 bg-linear-to-l from-white to-transparent lg:block"></div>
+          <div
+            class="pointer-events-none absolute top-0 right-0 bottom-0 hidden w-20 bg-linear-to-l from-white to-transparent lg:block"
+          ></div>
         </div>
       </div>
       }
