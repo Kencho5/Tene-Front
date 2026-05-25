@@ -4,8 +4,6 @@ import { calculateDiscount } from '@utils/discountedPrice';
 
 const CART_STORAGE_KEY = 'tene_cart';
 
-export const FREE_SHIPPING_THRESHOLD = 100;
-
 function sameCableConfig(
   a: CartItem['cableConfig'],
   b: CartItem['cableConfig'],
@@ -43,18 +41,6 @@ export class CartService {
       return total + price * item.quantity;
     }, 0);
   });
-
-  readonly qualifiesForFreeShipping = computed(
-    () => this.totalPrice() >= FREE_SHIPPING_THRESHOLD,
-  );
-
-  readonly freeShippingRemaining = computed(() =>
-    Math.max(0, FREE_SHIPPING_THRESHOLD - this.totalPrice()),
-  );
-
-  readonly freeShippingProgress = computed(() =>
-    Math.min(100, (this.totalPrice() / FREE_SHIPPING_THRESHOLD) * 100),
-  );
 
   readonly totalDiscount = computed(() => {
     return this.items().reduce((total, item) => {

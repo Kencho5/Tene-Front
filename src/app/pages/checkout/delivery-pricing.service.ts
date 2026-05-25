@@ -12,7 +12,6 @@ export interface DeliveryPricingInputs {
   city: Signal<string>;
   deliveryTime: Signal<string>;
   deliveryType: Signal<string>;
-  qualifiesForFreeShipping: Signal<boolean>;
 }
 
 export interface DeliveryOption {
@@ -46,7 +45,6 @@ export class DeliveryPricingService {
     });
 
     const priceForTime = (time: DeliveryTime, city: string): number => {
-      if (inputs.qualifiesForFreeShipping()) return 0;
       if (HIGH_MOUNTAIN_CITIES.has(city)) return DELIVERY_PRICES.highMountain;
       if (city && city !== 'tbilisi') return DELIVERY_PRICES.outsideTbilisi;
       return time === 'same_day' ? DELIVERY_PRICES.sameDay : DELIVERY_PRICES.nextDay;

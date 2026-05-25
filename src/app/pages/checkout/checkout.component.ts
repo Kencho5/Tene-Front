@@ -89,7 +89,6 @@ export class CheckoutComponent {
     city: this.selectedAddressCity,
     deliveryTime: computed(() => this.checkoutForm.delivery_time().value()),
     deliveryType: computed(() => this.checkoutForm.delivery_type().value()),
-    qualifiesForFreeShipping: this.cartService.qualifiesForFreeShipping,
   });
 
   readonly sameDayAvailable = this.pricing.sameDayAvailable;

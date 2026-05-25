@@ -11,7 +11,6 @@ import { SharedModule } from '@shared/shared.module';
 export class PriceSummaryComponent {
   readonly title = input<string>('გადახდა');
   readonly showTitle = input<boolean>(true);
-  readonly showFreeShipping = input<boolean>(true);
   readonly showDelivery = input<boolean>(true);
   readonly deliveryPrice = input<number>(12);
   readonly showCheckoutButton = input<boolean>(true);
