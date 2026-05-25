@@ -458,4 +458,38 @@ export class CheckoutComponent {
     }
     this.checkoutForm.address().value.set(String(address.id));
   }
+
+  readonly isAddressDeleteModalOpen = signal(false);
+  readonly deletingAddress = signal<AddressData | null>(null);
+
+  openDeleteModal(address: AddressData) {
+    this.deletingAddress.set(address);
+    this.isAddressDeleteModalOpen.set(true);
+  }
+
+  closeAddressDeleteModal() {
+    this.isAddressDeleteModalOpen.set(false);
+    this.deletingAddress.set(null);
+  }
+
+  confirmAddressDelete() {
+    const address = this.deletingAddress();
+    if (!address?.id) return;
+
+    this.addressService.deleteAddress(address.id).subscribe({
+      next: () => {
+        this.toastService.add('წარმატებული', 'მისამართი წარმატებით წაიშალა', 3000, 'success');
+        this.addresses.update((addrs) => addrs.filter((a) => a.id !== address.id));
+        if (this.checkoutForm.address().value() === String(address.id)) {
+          const next = this.addresses()[0];
+          this.checkoutForm.address().value.set(next ? String(next.id) : '');
+        }
+        this.closeAddressDeleteModal();
+      },
+      error: () => {
+        this.toastService.add('შეცდომა', 'მისამართის წაშლა ვერ მოხერხდა', 5000, 'error');
+        this.closeAddressDeleteModal();
+      },
+    });
+  }
 }
