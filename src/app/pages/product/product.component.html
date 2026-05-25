@@ -327,12 +327,12 @@
               ></div>
               <!-- fill (green) -->
               <div
-                class="bg-green-60 absolute top-1/2 left-0 h-[12px] -translate-y-1/2 rounded-sm"
+                class="bg-green-60 absolute top-1/2 left-0 h-[12px] -translate-y-1/2 rounded-sm transition-[width] duration-150 ease-out"
                 [style.width.%]="cableLengths().length > 1 ? (selectedLengthIdx() / (cableLengths().length - 1)) * 100 : 0"
               ></div>
               <!-- arrow -->
               <svg
-                class="text-dolly-40 pointer-events-none absolute top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2"
+                class="text-dolly-40 pointer-events-none absolute top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 transition-[left] duration-150 ease-out"
                 [style.left.%]="cableLengths().length > 1 ? (selectedLengthIdx() / (cableLengths().length - 1)) * 100 : 0"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 32 32"
