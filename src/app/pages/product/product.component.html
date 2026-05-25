@@ -286,26 +286,41 @@
                 {{ finalPrice() }}₾
               </p>
             </div>
-            <input
-              type="range"
-              min="0"
-              [max]="cableLengths().length - 1"
-              step="1"
-              [value]="selectedLengthIdx()"
-              (input)="onLengthSliderChange($event)"
-              class="accent-green-60 mt-3 w-full
-                [&::-webkit-slider-thumb]:appearance-none
-                [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6
-                [&::-webkit-slider-thumb]:rounded-full
-                [&::-webkit-slider-thumb]:bg-green-60
-                [&::-webkit-slider-thumb]:shadow
-                [&::-webkit-slider-thumb]:cursor-pointer
-                [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:w-6
-                [&::-moz-range-thumb]:rounded-full
-                [&::-moz-range-thumb]:bg-green-60 [&::-moz-range-thumb]:border-0
-                sm:[&::-webkit-slider-thumb]:h-4 sm:[&::-webkit-slider-thumb]:w-4
-                sm:[&::-moz-range-thumb]:h-4 sm:[&::-moz-range-thumb]:w-4"
-            />
+            <!-- Custom slider: track + fill + arrow share the same 0–100% coordinate
+                 system as the ruler/numbers below. Native input overlays for dragging. -->
+            <div class="relative mt-3 h-12">
+              <!-- track (gray) -->
+              <div class="bg-platinum-20 absolute top-1/2 right-0 left-0 h-[12px] -translate-y-1/2 rounded-sm"></div>
+              <!-- fill (green) -->
+              <div
+                class="bg-green-60 absolute top-1/2 left-0 h-[12px] -translate-y-1/2 rounded-sm"
+                [style.width.%]="cableLengths().length > 1 ? (selectedLengthIdx() / (cableLengths().length - 1)) * 100 : 0"
+              ></div>
+              <!-- arrow -->
+              <svg
+                class="text-dolly-40 pointer-events-none absolute top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2"
+                [style.left.%]="cableLengths().length > 1 ? (selectedLengthIdx() / (cableLengths().length - 1)) * 100 : 0"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 32 32"
+              >
+                <path
+                  fill="currentColor"
+                  stroke="#eace09"
+                  stroke-width="1.5"
+                  d="M8.037 11.166 14.5 22.36c.825 1.43 2.175 1.43 3 0l6.463-11.195c.826-1.43.15-2.598-1.5-2.598H9.537c-1.65 0-2.326 1.17-1.5 2.6z"
+                />
+              </svg>
+              <!-- invisible native range for interaction -->
+              <input
+                type="range"
+                min="0"
+                [max]="cableLengths().length - 1"
+                step="1"
+                [value]="selectedLengthIdx()"
+                (input)="onLengthSliderChange($event)"
+                class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+              />
+            </div>
             <!-- Ruler -->
             <div class="relative mt-1 h-3 select-none">
               <!-- ticks -->
@@ -328,7 +343,7 @@
             <div class="relative mt-0.5 h-4 select-none">
               @for (len of cableLengths(); track len; let i = $index) {
               <span
-                class="absolute top-0 -translate-x-1/2 text-[11px] sm:text-[10px] transition-colors"
+                class="absolute top-0 -translate-x-1/2 text-[11px] sm:text-[12px] transition-colors"
                 [style.left.%]="(i / (cableLengths().length - 1)) * 100"
                 [class.text-green-70]="selectedLengthIdx() === i"
                 [class.font-semibold]="selectedLengthIdx() === i"
