@@ -201,6 +201,13 @@ export const routes: Routes = [
           import('./pages/admin/orders/admin-orders.component').then((m) => m.AdminOrdersComponent),
       },
       {
+        path: 'payment-link',
+        loadComponent: () =>
+          import('./pages/admin/payment-link/admin-payment-link.component').then(
+            (m) => m.AdminPaymentLinkComponent,
+          ),
+      },
+      {
         path: 'brands',
         canActivate: [adminOnlyGuard],
         loadComponent: () =>

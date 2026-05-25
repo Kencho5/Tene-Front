@@ -33,6 +33,7 @@ export class AdminLayoutComponent {
     { label: 'კატეგორიები', route: '/admin/categories', icon: 'categories' },
     { label: 'კაბელის ტიპები', route: '/admin/cable-types', icon: 'cable-specs' },
     { label: 'შეკვეთები', route: '/admin/orders', icon: 'orders' },
+    { label: 'გადახდის ბმული', route: '/admin/payment-link', icon: 'payment-link' },
     { label: 'მომხმარებლები', route: '/admin/users', icon: 'users' },
     { label: 'ანალიტიკა', route: '/admin/analytics', icon: 'analytics' },
     { label: 'ტასკები', route: '/admin/tasks', icon: 'tasks' },
@@ -42,7 +43,9 @@ export class AdminLayoutComponent {
     if (this.authService.isAdmin()) {
       return this.allNavItems;
     }
-    return this.allNavItems.filter((item) => item.route === '/admin/orders');
+    return this.allNavItems.filter(
+      (item) => item.route === '/admin/orders' || item.route === '/admin/payment-link',
+    );
   });
 
   toggleSidebar(): void {

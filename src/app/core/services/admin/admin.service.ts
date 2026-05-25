@@ -43,6 +43,10 @@ import {
   TaskUpdatePayload,
 } from '@core/interfaces/admin/tasks.interface';
 import { HttpParams } from '@angular/common/http';
+import {
+  PaymentLinkRequest,
+  PaymentLinkResponse,
+} from '@core/interfaces/admin/payment-link.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -143,6 +147,10 @@ export class AdminService {
   // Order Management
   searchOrders(params: string): Observable<OrderSearchResponse> {
     return this.http.get<OrderSearchResponse>(`/admin/orders?${params}`);
+  }
+
+  createPaymentLink(payload: PaymentLinkRequest): Observable<PaymentLinkResponse> {
+    return this.http.post<PaymentLinkResponse>('/admin/orders/payment-link', payload);
   }
 
   // User Management
