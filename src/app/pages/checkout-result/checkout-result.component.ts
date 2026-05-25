@@ -141,4 +141,16 @@ export class CheckoutResultComponent {
   formatAmount(amount: number): string {
     return (amount / 100).toFixed(2);
   }
+
+  formatDate(date: string): string {
+    const parsed = new Date(date);
+    if (isNaN(parsed.getTime())) return date;
+    return new Intl.DateTimeFormat('ka-GE', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(parsed);
+  }
 }
