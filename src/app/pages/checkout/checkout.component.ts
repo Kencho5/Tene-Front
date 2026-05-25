@@ -34,6 +34,8 @@ import { DeliveryPricingService } from './delivery-pricing.service';
 
 type StepKey = 'contact' | 'delivery' | 'review' | 'payment';
 
+const CHECKOUT_STORAGE_KEY = 'checkout_form';
+
 interface StepInfo {
   key: StepKey;
   label: string;
@@ -140,7 +142,7 @@ export class CheckoutComponent {
     };
   })();
 
-  readonly checkoutModel = signal<CheckoutFields>({
+  private readonly defaultModel: CheckoutFields = {
     customer_type: 'individual',
     individual: {
       name: this.initialUserInfo.name,
@@ -160,7 +162,27 @@ export class CheckoutComponent {
     delivery_type: 'delivery',
     delivery_time: '',
     comment: '',
-  });
+  };
+
+  readonly checkoutModel = signal<CheckoutFields>(this.loadPersistedModel());
+
+  private loadPersistedModel(): CheckoutFields {
+    if (typeof localStorage === 'undefined') return this.defaultModel;
+    try {
+      const raw = localStorage.getItem(CHECKOUT_STORAGE_KEY);
+      if (!raw) return this.defaultModel;
+      const saved = JSON.parse(raw) as Partial<CheckoutFields>;
+      return {
+        ...this.defaultModel,
+        ...saved,
+        individual: { ...this.defaultModel.individual, ...saved.individual },
+        company: { ...this.defaultModel.company, ...saved.company },
+        address: '',
+      };
+    } catch {
+      return this.defaultModel;
+    }
+  }
 
   readonly checkoutForm = form(this.checkoutModel, (fieldPath) => {
     required(fieldPath.customer_type, { message: 'პირის არჩევა აუცილებელია' });
@@ -214,6 +236,16 @@ export class CheckoutComponent {
     effect(() => {
       if (!this.sameDayAvailable() && this.checkoutForm.delivery_time().value() === 'same_day') {
         this.checkoutForm.delivery_time().value.set('');
+      }
+    });
+
+    effect(() => {
+      const model = this.checkoutModel();
+      if (typeof localStorage === 'undefined') return;
+      try {
+        localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(model));
+      } catch {
+        // ignore
       }
     });
 
@@ -410,6 +442,9 @@ export class CheckoutComponent {
         }),
       )
       .subscribe((response) => {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.removeItem(CHECKOUT_STORAGE_KEY);
+        }
         if (guest && typeof localStorage !== 'undefined') {
           try {
             const stored = JSON.parse(localStorage.getItem('guest_orders') ?? '[]');
