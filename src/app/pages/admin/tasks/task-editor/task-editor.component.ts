@@ -122,14 +122,8 @@ export class TaskEditorComponent implements OnInit {
     if (!existing || this.markingDone() || existing.state === 'done') return;
 
     this.markingDone.set(true);
-    const payload: TaskUpdatePayload = {
-      title: existing.title,
-      description: existing.description,
-      state: 'done',
-      priority: existing.priority,
-    };
     this.adminService
-      .updateTask(existing.id, payload)
+      .updateTaskState(existing.id, 'done')
       .pipe(
         tap(() => this.toastService.add('წარმატება', 'დავალება შესრულდა', 2500, 'success')),
         catchError((err) => {

@@ -16,16 +16,36 @@
         @switch (mode()) { @case ('view') { დავალების ნახვა } @case ('create') { ახალი დავალება }
         @default { დავალების რედაქტირება } }
       </h2>
-      <button
-        type="button"
-        (click)="close()"
-        aria-label="დახურვა"
-        class="text-platinum-50 hover:bg-platinum-10 hover:text-platinum-100 flex h-8 w-8 items-center justify-center rounded-lg transition-colors"
-      >
-        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l8 8M6 14l8-8" />
-        </svg>
-      </button>
+      <div class="flex items-center gap-1.5">
+        @if (canMarkDone()) {
+        <button
+          type="button"
+          (click)="markDone()"
+          [disabled]="markingDone()"
+          aria-label="მონიშნე შესრულებულად"
+          title="მონიშნე შესრულებულად"
+          class="text-green-70 hover:bg-green-10 flex h-8 w-8 items-center justify-center rounded-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          @if (markingDone()) {
+          <app-spinner [size]="16" textColor="text-green-70/40" fillColor="fill-green-70" />
+          } @else {
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          }
+        </button>
+        }
+        <button
+          type="button"
+          (click)="close()"
+          aria-label="დახურვა"
+          class="text-platinum-50 hover:bg-platinum-10 hover:text-platinum-100 flex h-8 w-8 items-center justify-center rounded-lg transition-colors"
+        >
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l8 8M6 14l8-8" />
+          </svg>
+        </button>
+      </div>
     </div>
 
     <!-- Body -->
@@ -299,23 +319,6 @@
       >
         დახურვა
       </button>
-      @if (canMarkDone()) {
-      <button
-        type="button"
-        (click)="markDone()"
-        [disabled]="markingDone()"
-        class="border-green-60 text-green-70 hover:bg-green-10 inline-flex h-10 items-center justify-center gap-2 rounded-lg border px-5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        @if (markingDone()) {
-        <app-spinner [size]="16" textColor="text-green-70/40" fillColor="fill-green-70" />
-        } @else {
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-        }
-        შესრულებულია
-      </button>
-      }
       <button
         type="button"
         (click)="switchToEdit()"
