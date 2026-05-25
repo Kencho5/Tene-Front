@@ -149,7 +149,9 @@
       >
         <button
           type="button"
-          (click)="expandedParentId.set(expandedParentId() === category.id ? null! : category.id)"
+          (click)="category.children.length > 0
+                ? expandedParentId.set(expandedParentId() === category.id ? null! : category.id)
+                : (setParam('parent_category_id', '' + category.id) || isCategoryExpanded.set(false))"
           class="flex w-full cursor-pointer items-center gap-3 px-3 py-2.5 transition-colors duration-150"
           [class]="expandedParentId() === category.id
                 ? 'bg-green-20 text-platinum-100'
