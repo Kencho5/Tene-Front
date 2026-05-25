@@ -18,7 +18,7 @@ export const HIGH_MOUNTAIN_CITIES: ReadonlySet<string> = new Set([
 ]);
 
 export const CHECKOUT_STRINGS = {
-  sameDayUnavailableSuffix: '(შესაძლებელია მხოლოდ თბილისში, 17:30-მდე გაფორმებულ შეკვეთებზე)',
+  sameDayUnavailableSuffix: '(შესაძლებელია 17:30-მდე გაფორმებულ შეკვეთებზე)',
   sameDayOutsideTbilisi: 'ხელმისაწვდომია მხოლოდ თბილისში',
   sameDayPastCutoff: 'ხელმისაწვდომია 17:30-მდე',
   sameDayLabelPrefix: '1 საათში მიწოდება',
