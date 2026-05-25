@@ -171,8 +171,8 @@ export class AdminOrdersComponent {
     return this.expandedOrderId() === order.id;
   }
 
-  formatItemAmount(amount: number): string {
-    return amount.toFixed(2);
+  formatItemAmount(amount: number | string): string {
+    return Number(amount).toFixed(2);
   }
 
   getProductRoute(item: OrderItem): string {
