@@ -4,10 +4,10 @@ import { OutsideClickDirective } from '@core/directives/outside-click.directive'
 import { SharedModule } from '@shared/shared.module';
 
 const PRIORITY_META: Record<TaskPriority, { label: string; classes: string }> = {
-  low: { label: 'დაბალი', classes: 'bg-platinum-10 text-platinum-60' },
-  medium: { label: 'საშუალო', classes: 'bg-blue-50 text-blue-700' },
-  high: { label: 'მაღალი', classes: 'bg-amber-50 text-amber-700' },
-  urgent: { label: 'სასწრაფო', classes: 'bg-valencia-10 text-valencia-60' },
+  low: { label: 'დაბალი', classes: 'bg-platinum-10 text-platinum-60 border border-platinum-30/60' },
+  medium: { label: 'საშუალო', classes: 'bg-blue-50 text-blue-700 border border-blue-200/70' },
+  high: { label: 'მაღალი', classes: 'bg-amber-50 text-amber-700 border border-amber-200/70' },
+  urgent: { label: 'სასწრაფო', classes: 'bg-valencia-10 text-valencia-60 border border-valencia-30/60' },
 };
 
 const STATE_LABELS: Record<TaskState, string> = {

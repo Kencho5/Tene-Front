@@ -26,15 +26,15 @@
 
 @theme {
   --color-green-10: #f4faf5;
-  --color-green-20: #def1e0;
-  --color-green-30: #bae0bf;
-  --color-green-40: #92cb9b;
-  --color-green-50: #61b873;
-  --color-green-60: #1aa44a;
-  --color-green-70: #10883c;
-  --color-green-80: #066e2e;
-  --color-green-90: #0b5a26;
-  --color-green-100: #012209;
+  --color-green-20: #e1f5e4;
+  --color-green-30: #beecc6;
+  --color-green-40: #95dfa4;
+  --color-green-50: #67d283;
+  --color-green-60: #20c45f;
+  --color-green-70: #0fa44d;
+  --color-green-80: #17843f;
+  --color-green-90: #09471f;
+  --color-green-100: #002a0e;
 
   --color-cream-10: #fefbec;
   --color-cream-20: #fedec8;
@@ -107,6 +107,8 @@
   --color-success: #059669;
   --color-warning: #d97706;
   --color-info: #0284c7;
+
+  --color-hairline: #ecf1f7;
 
   --font-heading: Mark-Geo;
   --font-body: NotoSans-Geo;

@@ -28,7 +28,7 @@
     <div class="flex flex-col gap-2 sm:flex-row">
       <div class="flex min-w-0 flex-1 gap-2">
         <div
-          class="bg-platinum-10 flex h-10 shrink-0 items-center gap-0.5 rounded-lg p-1 text-xs font-medium"
+          class="bg-platinum-10 flex h-11 shrink-0 items-center gap-0.5 rounded-lg p-1 text-xs font-medium"
         >
           <button
             type="button"
@@ -77,7 +77,7 @@
             [value]="searchQuery()"
             (input)="onSearchInput($event)"
             [placeholder]="searchType() === 'id' ? 'ძიება ID-ით...' : 'ძიება სახელით...'"
-            class="border-platinum-20 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-40 h-10 w-full rounded-lg border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
+            class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-lg border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
           />
           @if (searchQuery()) {
           <button
@@ -109,7 +109,7 @@
             searchPlaceholder="ძიება..."
             notFoundText="კატეგორია ვერ მოიძებნა"
             [items]="categoryItems()"
-            [customClass]="'!h-[40px] !rounded-lg text-sm'"
+            [customClass]="'!rounded-lg text-sm'"
           />
         </div>
 
@@ -120,7 +120,7 @@
             (selectedValueChange)="onSortChange($event)"
             placeholder="სორტირება"
             [items]="sortOptions"
-            [customClass]="'h-[40px]'"
+            [customClass]="'!rounded-lg text-sm'"
           />
         </div>
 
@@ -137,7 +137,7 @@
             (selectedValueChange)="onStatusChange($event)"
             placeholder="სტატუსი"
             [items]="statusOptions"
-            [customClass]="'h-[40px]'"
+            [customClass]="'!rounded-lg text-sm'"
           />
         </div>
       </div>
@@ -149,7 +149,7 @@
     @if (searchResponse.isLoading()) {
     <div class="space-y-3">
       @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
-      <div class="border-platinum-20 flex gap-3 rounded-lg border bg-white p-3">
+      <div class="flex gap-3 rounded-xl bg-platinum-10/60 p-4">
         <div class="bg-platinum-10 h-24 w-24 shrink-0 animate-pulse rounded-lg"></div>
         <div class="min-w-0 flex-1 space-y-2">
           <div class="bg-platinum-10 h-4 w-3/4 animate-pulse rounded-sm"></div>
@@ -161,7 +161,7 @@
       }
     </div>
     } @else if (products().length === 0) {
-    <div class="border-platinum-20 rounded-lg border bg-white px-4 py-16 text-center">
+    <div class="rounded-xl bg-platinum-10/60 px-4 py-16 text-center">
       <div class="flex flex-col items-center gap-2">
         <svg width="44" height="44" viewBox="0 0 48 48" fill="none" class="text-platinum-30">
           <path
@@ -187,13 +187,13 @@
     <div class="space-y-3">
       @for (product of products(); track product.data.id) {
       <div
-        class="border-platinum-20 flex gap-3 rounded-lg border bg-white p-3 transition-colors"
+        class="border-hairline flex gap-3.5 rounded-xl border bg-white p-4 transition-colors"
         [class.opacity-45]="!product.data.enabled"
       >
         <div class="flex shrink-0 flex-col items-center gap-1.5">
           <a [routerLink]="getProductLink(product)">
             @if (getProductImage(product)) {
-            <div class="border-platinum-20 h-24 w-24 overflow-hidden rounded-lg border">
+            <div class="border-hairline h-24 w-24 overflow-hidden rounded-lg border">
               <img
                 [src]="getProductImage(product)"
                 [alt]="product.data.name"
@@ -202,7 +202,7 @@
             </div>
             } @else {
             <div
-              class="border-platinum-20 bg-platinum-10 flex h-24 w-24 items-center justify-center rounded-lg border"
+              class="border-hairline bg-platinum-10 flex h-24 w-24 items-center justify-center rounded-lg border"
             >
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" class="text-platinum-30">
                 <path
@@ -219,7 +219,7 @@
           <div class="flex w-24 gap-1">
             <a
               [routerLink]="['/admin/products', product.data.id, 'edit']"
-              class="border-platinum-20 text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex h-8 flex-1 items-center justify-center rounded-md border transition-colors"
+              class="border-hairline text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex h-8 flex-1 items-center justify-center rounded-md border transition-colors"
               aria-label="რედაქტირება"
             >
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
@@ -235,7 +235,7 @@
             <button
               type="button"
               (click)="openDeleteModal(product.data.id)"
-              class="border-platinum-20 text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex h-8 flex-1 items-center justify-center rounded-md border transition-colors"
+              class="border-hairline text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex h-8 flex-1 items-center justify-center rounded-md border transition-colors"
               aria-label="წაშლა"
             >
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
@@ -260,23 +260,23 @@
         <div class="min-w-0 flex-1">
           <a
             [routerLink]="getProductLink(product)"
-            class="text-platinum-100 hover:text-green-70 block text-sm font-medium transition-colors"
+            class="text-platinum-100 hover:text-green-70 block text-sm font-medium leading-snug transition-colors"
           >
             {{ product.data.name }}
           </a>
-          <p class="text-platinum-40 mt-0.5 text-xs">ID: {{ product.data.id }}</p>
+          <p class="text-platinum-40 mt-1 text-xs">ID: {{ product.data.id }}</p>
           @if (product.categories && product.categories.length > 0) {
-          <div class="mt-1.5 flex flex-wrap gap-1">
+          <div class="mt-2 flex flex-wrap gap-1">
             @for (category of product.categories.slice(0, 2); track category.id) {
             <span
-              class="bg-platinum-10 text-platinum-60 inline-flex rounded-md px-1.5 py-0.5 text-[11px] font-medium"
+              class="border-platinum-30/60 bg-platinum-10 text-platinum-60 inline-flex rounded-full border px-2 py-0.5 text-[11px] font-medium"
             >
               {{ category.name }}
             </span>
             }
           </div>
           }
-          <div class="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+          <div class="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
             @if (product.data.discount > 0) {
             <span class="text-platinum-100 text-sm font-semibold">
               {{ product.data.price * (1 - product.data.discount / 100) | number: "1.2-2" }} ₾
@@ -314,11 +314,11 @@
   </div>
 
   <!-- Table (sm+) -->
-  <div class="border-platinum-20 hidden overflow-visible rounded-lg border bg-white sm:block">
+  <div class="hidden overflow-visible rounded-xl bg-white sm:block">
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
-          <tr class="border-platinum-20 border-b">
+          <tr class="border-hairline border-b">
             <th
               class="text-platinum-50 px-4 py-3 text-left text-xs font-medium tracking-wider uppercase"
             >
@@ -353,7 +353,7 @@
         </thead>
         <tbody>
           @if (searchResponse.isLoading()) { @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
-          <tr class="border-platinum-20 border-b last:border-b-0">
+          <tr class="border-hairline border-b last:border-b-0">
             <td class="px-4 py-3.5">
               <div class="flex items-center gap-3">
                 <div class="bg-platinum-10 h-11 w-11 animate-pulse rounded-lg"></div>
@@ -415,7 +415,7 @@
           </tr>
           } @else { @for (product of products(); track product.data.id) {
           <tr
-            class="border-platinum-20 hover:bg-platinum-10/50 border-b transition-colors last:border-b-0"
+            class="border-hairline hover:bg-platinum-10/50 border-b transition-colors last:border-b-0"
             [class.opacity-45]="!product.data.enabled"
           >
             <!-- Product -->
@@ -423,7 +423,7 @@
               <div class="flex items-center gap-3">
                 @if (getProductImage(product)) {
                 <div
-                  class="border-platinum-20 h-11 w-11 shrink-0 overflow-hidden rounded-lg border"
+                  class="border-hairline h-11 w-11 shrink-0 overflow-hidden rounded-lg border"
                 >
                   <img
                     [src]="getProductImage(product)"
@@ -433,7 +433,7 @@
                 </div>
                 } @else {
                 <div
-                  class="border-platinum-20 bg-platinum-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border"
+                  class="border-hairline bg-platinum-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border"
                 >
                   <svg
                     width="20"
@@ -470,7 +470,7 @@
               <div class="flex flex-wrap gap-1.5">
                 @for ( category of product.categories.slice(0, 2); track category.id ) {
                 <span
-                  class="bg-platinum-10 text-platinum-70 inline-flex rounded-md px-2 py-0.5 text-xs font-medium"
+                  class="border-platinum-30/60 bg-platinum-10 text-platinum-70 inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium"
                 >
                   {{ category.name }}
                 </span>

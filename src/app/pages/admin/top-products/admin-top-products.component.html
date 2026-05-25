@@ -3,9 +3,7 @@
   <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div>
       <h1 class="text-platinum-100 text-xl font-semibold">ტოპ პროდუქტები</h1>
-      <p class="text-platinum-50 mt-0.5 text-sm">
-        არჩეული {{ selected().length }} პროდუქტი · რიგი ემთხვევა ჩვენების თანმიმდევრობას
-      </p>
+      <p class="text-platinum-50 mt-0.5 text-sm">არჩეულია {{ selected().length }} პროდუქტი</p>
     </div>
 
     <div class="flex items-center gap-2">
@@ -13,7 +11,7 @@
         type="button"
         (click)="reset()"
         [disabled]="!isDirty() || saving()"
-        class="border-platinum-20 text-platinum-70 hover:bg-platinum-10 rounded-lg border bg-white px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+        class="border-hairline text-platinum-70 hover:bg-platinum-10 rounded-lg border bg-white px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
       >
         გაუქმება
       </button>
@@ -29,7 +27,7 @@
   </div>
 
   <!-- Add product search -->
-  <div class="border-platinum-20 rounded-lg border bg-white p-4">
+  <div class="border-hairline rounded-xl border bg-white p-4">
     <h2 class="text-platinum-90 mb-3 text-sm font-medium">პროდუქტის დამატება</h2>
     <div class="relative">
       <svg
@@ -52,7 +50,7 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         placeholder="ძიება პროდუქტის სახელით..."
-        class="border-platinum-20 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-40 h-10 w-full rounded-lg border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
+        class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-lg border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
       />
       @if (searchQuery()) {
       <button
@@ -73,7 +71,7 @@
     </div>
 
     @if (searchTerm()) {
-    <div class="border-platinum-20 mt-3 max-h-72 overflow-y-auto rounded-md border">
+    <div class="border-hairline mt-3 max-h-72 overflow-y-auto rounded-lg border">
       @if (searchResource.isLoading()) {
       <div class="text-platinum-50 p-4 text-center text-sm">იძებნება...</div>
       } @else if (searchResults().length === 0) {
@@ -82,7 +80,7 @@
       <button
         type="button"
         (click)="addProduct(product)"
-        class="border-platinum-20 hover:bg-platinum-10 flex w-full items-center gap-3 border-b px-3 py-2 text-left transition-colors last:border-b-0"
+        class="border-hairline hover:bg-platinum-10 flex w-full items-center gap-3 border-b px-3 py-2 text-left transition-colors last:border-b-0"
       >
         <div class="bg-platinum-10 h-10 w-10 shrink-0 overflow-hidden rounded-md">
           @if (getImage(product)) {
@@ -105,8 +103,8 @@
   </div>
 
   <!-- Selected list -->
-  <div class="border-platinum-20 rounded-lg border bg-white">
-    <div class="border-platinum-20 border-b px-4 py-3">
+  <div class="border-hairline rounded-xl border bg-white">
+    <div class="border-hairline border-b px-4 py-3">
       <h2 class="text-platinum-90 text-sm font-medium">აქტიური სია</h2>
     </div>
 
@@ -124,7 +122,7 @@
     } @else {
     <ul>
       @for (product of selected(); track product.data.id; let i = $index, count = $count) {
-      <li class="border-platinum-20 flex items-center gap-3 border-b px-3 py-2.5 last:border-b-0">
+      <li class="border-hairline flex items-center gap-3 border-b px-3 py-2.5 last:border-b-0">
         <span class="text-platinum-50 w-6 shrink-0 text-center text-xs font-semibold">
           {{ i + 1 }}
         </span>

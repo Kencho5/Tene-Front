@@ -2,7 +2,7 @@
   <button
     [class]="customClass()"
     type="button"
-    class="flex h-[44px] w-full items-center justify-between rounded-xl border border-platinum-20 bg-white px-3.5 py-2.5 text-platinum-100 transition-colors focus:outline-hidden"
+    class="flex h-[44px] w-full items-center justify-between rounded-xl border border-hairline bg-white px-3.5 py-2.5 text-platinum-100 transition-colors focus:outline-hidden"
     [ngClass]="{
       'border-valencia-50 hover:border-valencia-50 focus:border-valencia-50 focus:ring-1 focus:ring-valencia-50':
         error(),
@@ -36,10 +36,10 @@
   @if (opened()) {
     <div
       (outsideClick)="opened.set(false)"
-      class="absolute z-10 mt-1 w-full min-w-[100px] max-w-full rounded-xl border border-platinum-20 bg-white text-sm shadow-md"
+      class="absolute z-10 mt-1 w-full min-w-[100px] max-w-full rounded-xl border border-hairline bg-white text-sm shadow-md"
     >
       <!-- Search input -->
-      <div class="flex items-center border-b border-platinum-20 px-3 py-2">
+      <div class="flex items-center border-b border-hairline px-3 py-2">
         <svg
           class="h-4 w-4 shrink-0 text-platinum-50"
           xmlns="http://www.w3.org/2000/svg"

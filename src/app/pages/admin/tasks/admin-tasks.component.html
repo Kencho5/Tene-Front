@@ -13,7 +13,6 @@
           (selectedValueChange)="onPriorityChange($event)"
           placeholder="პრიორიტეტი"
           [items]="priorityOptions"
-          [customClass]="'h-[40px]'"
         />
       </div>
 
@@ -39,7 +38,7 @@
   <div class="grid grid-cols-1 items-start gap-4 md:grid-cols-2 xl:grid-cols-4">
     @for (col of columns; track col.state) {
     <div
-      class="bg-platinum-10/40 border-platinum-20 flex flex-col rounded-xl border"
+      class="bg-platinum-10/40 border-hairline flex flex-col rounded-xl border"
       [class.min-h-[300px]]="!collapsed()[col.state]"
     >
       <!-- Column header -->
@@ -48,7 +47,7 @@
         (click)="toggleCollapse(col.state)"
         class="hover:bg-platinum-10/60 flex w-full shrink-0 items-center justify-between px-3 py-2.5 text-left transition-colors"
         [class.border-b]="!collapsed()[col.state]"
-        [class.border-platinum-20]="!collapsed()[col.state]"
+        [class.border-hairline]="!collapsed()[col.state]"
       >
         <div class="flex items-center gap-2">
           <svg
@@ -96,7 +95,7 @@
       <div class="flex-1 space-y-2 overflow-y-auto p-2.5">
         @if (resources[col.state].isLoading()) {
         @for (s of [1,2,3]; track s) {
-        <div class="border-platinum-20 h-24 animate-pulse rounded-lg border bg-white"></div>
+        <div class="border-hairline h-24 animate-pulse rounded-xl border bg-white"></div>
         }
         } @else {
         @for (task of tasksFor(col.state); track task.id) {
@@ -115,7 +114,7 @@
 
       @if (totalFor(col.state) > pageSize) {
       <div
-        class="border-platinum-20 flex shrink-0 items-center justify-between border-t px-3 py-2"
+        class="border-hairline flex shrink-0 items-center justify-between border-t px-3 py-2"
       >
         <span class="text-platinum-50 text-[11px]">
           {{ pageInfo(col.state).from }}–{{ pageInfo(col.state).to }} / {{ pageInfo(col.state).total }}

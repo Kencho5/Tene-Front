@@ -1,11 +1,11 @@
 <div
   (click)="onCardClick()"
-  class="border-platinum-20 group relative cursor-pointer rounded-lg border bg-white p-3 transition-all hover:border-platinum-30 hover:shadow-sm"
+  class="border-hairline group relative cursor-pointer rounded-xl border bg-white p-3.5 transition-all hover:border-platinum-30 hover:shadow-low"
 >
   <!-- Top row: priority + menu -->
-  <div class="mb-2 flex items-center justify-between">
+  <div class="mb-2.5 flex items-center justify-between">
     <span
-      class="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide"
+      class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide"
       [class]="priorityMeta().classes"
     >
       {{ priorityMeta().label }}
@@ -26,7 +26,7 @@
         </button>
 
         @if (stateOpen()) {
-        <div class="border-platinum-20 absolute right-0 top-7 z-30 w-36 overflow-hidden rounded-lg border bg-white shadow-lg">
+        <div class="border-hairline absolute right-0 top-7 z-30 w-36 overflow-hidden rounded-xl border bg-white shadow-low">
           @for (s of states; track s) {
           <button
             type="button"
@@ -63,7 +63,7 @@
         </button>
 
         @if (menuOpen()) {
-        <div class="border-platinum-20 absolute right-0 top-7 z-30 w-36 overflow-hidden rounded-lg border bg-white shadow-lg">
+        <div class="border-hairline absolute right-0 top-7 z-30 w-36 overflow-hidden rounded-xl border bg-white shadow-low">
           <button
             type="button"
             (click)="onEdit($event)"
@@ -97,20 +97,20 @@
 
   <!-- Description -->
   @if (task().description) {
-  <p class="text-platinum-50 mt-1 line-clamp-2 text-xs leading-relaxed">
+  <p class="text-platinum-50 mt-1.5 line-clamp-2 text-xs leading-relaxed">
     {{ task().description }}
   </p>
   }
 
   <!-- Media preview thumb -->
   @if (firstImage()) {
-  <div class="border-platinum-20 mt-2.5 h-24 overflow-hidden rounded-md border bg-platinum-10">
+  <div class="border-hairline mt-3 h-24 overflow-hidden rounded-lg border bg-platinum-10">
     <img [src]="firstImage()!.url" [alt]="task().title" class="h-full w-full object-cover" />
   </div>
   }
 
   <!-- Footer: id + media counts -->
-  <div class="text-platinum-40 mt-2.5 flex items-center justify-between text-[11px]">
+  <div class="text-platinum-40 mt-3 flex items-center justify-between text-[11px]">
     <span>#{{ task().id }}</span>
 
     @if (mediaCount() > 0) {

@@ -31,7 +31,7 @@
         type="text"
         readonly
         [value]="url"
-        class="border-platinum-20 text-platinum-100 h-[44px] w-full flex-1 rounded-xl border bg-white px-3.5 py-2.5 text-sm focus:outline-hidden"
+        class="border-hairline text-platinum-100 h-[44px] w-full flex-1 rounded-xl border bg-white px-3.5 py-2.5 text-sm focus:outline-hidden"
       />
       <button
         type="button"
@@ -53,7 +53,7 @@
   } @else {
   <form (submit)="onSubmit($event)" novalidate class="space-y-5">
     <!-- Customer -->
-    <div class="border-platinum-20 rounded-lg border bg-white p-5">
+    <div class="border-hairline rounded-xl border bg-white p-5">
       <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
         მომხმარებელი
       </h2>
@@ -107,7 +107,7 @@
     </div>
 
     <!-- Contact & delivery -->
-    <div class="border-platinum-20 rounded-lg border bg-white p-5">
+    <div class="border-hairline rounded-xl border bg-white p-5">
       <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
         კონტაქტი და მიწოდება
       </h2>
@@ -171,7 +171,7 @@
     </div>
 
     <!-- Items -->
-    <div class="border-platinum-20 rounded-lg border bg-white p-5">
+    <div class="border-hairline rounded-xl border bg-white p-5">
       <div class="mb-4 flex items-center justify-between">
         <h2 class="text-platinum-50 text-sm font-semibold tracking-wider uppercase">პროდუქტები</h2>
         @if (total() > 0) {
@@ -202,7 +202,7 @@
             [value]="searchQuery()"
             (input)="onSearchInput($event)"
             placeholder="ძიება პროდუქტის სახელით ან ID-ით..."
-            class="border-platinum-20 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-40 h-10 w-full rounded-lg border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
+            class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-lg border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
           />
           @if (searchQuery()) {
           <button
@@ -223,7 +223,7 @@
         </div>
 
         @if (searchTerm()) {
-        <div class="border-platinum-20 mt-3 max-h-72 overflow-y-auto rounded-md border">
+        <div class="border-hairline mt-3 max-h-72 overflow-y-auto rounded-lg border">
           @if (searchResource.isLoading()) {
           <div class="text-platinum-50 p-4 text-center text-sm">იძებნება...</div>
           } @else if (searchResults().length === 0) {
@@ -232,7 +232,7 @@
           <button
             type="button"
             (click)="addProduct(product)"
-            class="border-platinum-20 hover:bg-platinum-10 flex w-full items-center gap-3 border-b px-3 py-2 text-left transition-colors last:border-b-0"
+            class="border-hairline hover:bg-platinum-10 flex w-full items-center gap-3 border-b px-3 py-2 text-left transition-colors last:border-b-0"
           >
             <div class="bg-platinum-10 h-10 w-10 shrink-0 overflow-hidden rounded-md">
               @if (getImage(product)) {
@@ -257,7 +257,7 @@
       @if (paymentLinkForm.items().value().length > 0) {
       <div class="space-y-3">
         @for (item of paymentLinkForm.items().value(); track $index; let i = $index) {
-        <div class="border-platinum-20 rounded-lg border p-3">
+        <div class="border-hairline rounded-xl border p-3">
           <div class="grid items-start gap-3 sm:grid-cols-12">
             <div class="sm:col-span-4">
               <app-input
@@ -300,7 +300,7 @@
               <button
                 type="button"
                 (click)="removeItem(i)"
-                class="border-platinum-20 text-platinum-50 hover:border-valencia-50 hover:text-valencia-50 flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl border transition-colors"
+                class="border-hairline text-platinum-50 hover:border-valencia-50 hover:text-valencia-50 flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl border transition-colors"
                 aria-label="წაშლა"
               >
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
@@ -319,7 +319,7 @@
       </div>
       } @else {
       <p
-        class="border-platinum-20 text-platinum-50 rounded-lg border border-dashed py-6 text-center text-sm"
+        class="border-hairline text-platinum-50 rounded-lg border border-dashed py-6 text-center text-sm"
       >
         პროდუქტები არ არის დამატებული
       </p>

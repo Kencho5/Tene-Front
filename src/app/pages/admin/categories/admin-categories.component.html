@@ -48,7 +48,7 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         placeholder="ძიება კატეგორიის სახელით ან ID-ით..."
-        class="h-10 w-full rounded-lg border border-platinum-20 bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-40"
+        class="h-11 w-full rounded-lg border border-hairline bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-30"
       />
       @if (searchQuery()) {
         <button
@@ -75,17 +75,16 @@
         (selectedValueChange)="onStatusChange($event)"
         placeholder="სტატუსი"
         [items]="statusOptions"
-        [customClass]="'h-[40px]'"
       />
     </div>
   </div>
 
   <!-- Table -->
-  <div class="overflow-visible rounded-lg border border-platinum-20 bg-white">
+  <div class="overflow-visible rounded-xl bg-white">
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
-          <tr class="border-b border-platinum-20">
+          <tr class="border-b border-hairline">
             <th
               class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50"
             >
@@ -116,7 +115,7 @@
         <tbody>
           @if (allCategories.isLoading()) {
             @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
-              <tr class="border-b border-platinum-20 last:border-b-0">
+              <tr class="border-b border-hairline last:border-b-0">
                 <td class="px-4 py-3.5">
                   <div class="flex items-center gap-3">
                     <div class="h-11 w-11 animate-pulse rounded-lg bg-platinum-10"></div>
@@ -170,7 +169,7 @@
           } @else {
             @for (category of categories(); track category.id) {
               <tr
-                class="border-b border-platinum-20 transition-colors last:border-b-0 hover:bg-platinum-10/50"
+                class="border-b border-hairline transition-colors last:border-b-0 hover:bg-platinum-10/50"
                 [class.opacity-45]="!category.enabled"
                 [class.bg-green-10/30]="category.depth === 0"
               >
@@ -183,7 +182,7 @@
                         @for (level of [].constructor(category.depth); track $index) {
                           @if ($index === category.depth - 1) {
                             <div class="relative h-11 w-5">
-                              <div class="absolute left-0 top-0 h-6 w-5 border-b-2 border-l-2 border-platinum-20 rounded-bl-lg"></div>
+                              <div class="absolute left-0 top-0 h-6 w-5 border-b-2 border-l-2 border-hairline rounded-bl-lg"></div>
                             </div>
                           } @else {
                             <div class="relative h-11 w-5">
@@ -199,7 +198,7 @@
                       <div
                         class="h-11 w-11 shrink-0 overflow-hidden rounded-lg border"
                         [class.border-green-60]="category.depth === 0"
-                        [class.border-platinum-20]="category.depth > 0"
+                        [class.border-hairline]="category.depth > 0"
                       >
                         <img
                           [src]="category.image_url"
@@ -213,7 +212,7 @@
                         [class.border-green-60]="category.depth === 0"
                         [class.bg-green-10]="category.depth === 0"
                         [class.text-green-60]="category.depth === 0"
-                        [class.border-platinum-20]="category.depth > 0"
+                        [class.border-hairline]="category.depth > 0"
                         [class.bg-platinum-10]="category.depth > 0"
                         [class.text-platinum-40]="category.depth > 0"
                       >
@@ -264,7 +263,7 @@
                 <td class="hidden px-4 py-3 lg:table-cell">
                   @if (category.parent_id) {
                     <span
-                      class="inline-flex rounded-md bg-platinum-10 px-2 py-0.5 text-xs font-medium text-platinum-70"
+                      class="border-platinum-30/60 inline-flex rounded-full border bg-platinum-10 px-2.5 py-0.5 text-xs font-medium text-platinum-70"
                     >
                       ID: {{ category.parent_id }}
                     </span>
