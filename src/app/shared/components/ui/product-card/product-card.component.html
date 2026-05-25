@@ -1,6 +1,6 @@
 <a
   [routerLink]="['/products', productSlug(), product().data.id]"
-  class="group border-platinum-10 flex h-full w-full min-w-0 flex-row gap-3 border-b pb-4 sm:flex-col sm:gap-0 sm:border-0 sm:pb-0"
+  class="group border-hairline flex h-full w-full min-w-0 flex-row gap-3 border-b pb-4 sm:flex-col sm:gap-0 sm:border-0 sm:pb-0"
 >
   <!-- Image -->
   <div
@@ -55,7 +55,7 @@
     @if (product().data.brand_name) {
     <div class="mt-2">
       <span
-        class="bg-platinum-10 text-platinum-70 inline-block rounded-md px-2 py-0.5 text-[12px] font-semibold tracking-wide uppercase sm:text-[11px]"
+        class="border-platinum-30/60 bg-platinum-10 text-platinum-70 inline-flex items-center rounded-full border px-2.5 py-0.5 text-[12px] font-semibold tracking-wide uppercase sm:text-[11px]"
       >
         {{ product().data.brand_name }}
       </span>

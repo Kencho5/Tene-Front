@@ -2,10 +2,10 @@
   <div class="container">
     <h1 class="text-xl md:text-4xl">შეკვეთის გაფორმება</h1>
 
-    <div class="bg-ink-20 my-4 h-px md:my-6"></div>
+    <div class="bg-hairline my-4 h-px md:my-6"></div>
 
     <div class="container flex flex-col justify-between gap-6 xl:flex-row">
-      <div class="sm:border-ink-20 flex-1 sm:rounded-xl sm:border sm:bg-white sm:px-6 sm:py-6">
+      <div class="sm:border-hairline flex-1 sm:rounded-xl sm:border sm:bg-white sm:px-6 sm:py-6">
         <!-- Stepper -->
         <div class="mb-4 sm:mb-6">
           <div class="flex items-center justify-between">
@@ -20,7 +20,7 @@
                 class="flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] text-sm font-medium transition-all"
                 [ngClass]="{
                   'bg-green-60 border-green-60 text-white shadow-low': i <= currentStepIndex(),
-                  'border-ink-20 text-ink-40 bg-white': i > currentStepIndex(),
+                  'border-hairline text-ink-40 bg-white': i > currentStepIndex(),
                 }"
               >
                 @if (i < currentStepIndex()) {
@@ -46,7 +46,7 @@
               </span>
             </button>
             @if (!$last) {
-            <div class="bg-ink-20 mx-1 h-px flex-1 sm:mx-2">
+            <div class="bg-hairline mx-1 h-px flex-1 sm:mx-2">
               <div
                 class="bg-green-60 h-full transition-all duration-300"
                 [style.width.%]="i < currentStepIndex() ? 100 : 0"
@@ -56,7 +56,7 @@
           </div>
         </div>
 
-        <div class="bg-ink-20 mb-6 h-px"></div>
+        <div class="bg-hairline mb-6 h-px"></div>
 
         <form (submit)="handleCheckout($event)" novalidate>
           <!-- Step 1: Contact -->
@@ -232,7 +232,7 @@
                 [formField]="checkoutForm.guest_details"
                 placeholder="დამატებითი დეტალები (სართული, ბინა, კოდი...)"
                 rows="2"
-                class="border-platinum-20 focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] px-4 py-3 text-sm transition-colors outline-none"
+                class="border-hairline focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] px-4 py-3 text-sm transition-colors outline-none"
               ></textarea>
             </div>
             } @else if (loading().addresses) {
@@ -274,7 +274,7 @@
                 [ngClass]="{
                   'border-green-60 bg-green-10/40 shadow-low': selected,
                   'border-valencia-50 bg-white': !selected && hasError,
-                  'border-ink-20 bg-white': !selected && !hasError,
+                  'border-hairline bg-white': !selected && !hasError,
                 }"
                 class="group relative flex w-full cursor-pointer flex-col overflow-hidden rounded-2xl border-[1.5px] transition-colors duration-200 ease-out"
               >
@@ -359,7 +359,7 @@
                 </div>
 
                 @if (address.details) {
-                <div class="bg-ink-20 mx-4 h-px"></div>
+                <div class="bg-hairline mx-4 h-px"></div>
                 <div class="text-ink-50 px-4 py-3 text-left text-sm">{{ address.details }}</div>
                 }
               </div>
@@ -400,7 +400,7 @@
             </button>
             }
 
-            <div class="bg-ink-20 my-4 h-px"></div>
+            <div class="bg-hairline my-4 h-px"></div>
 
             @if (submitted() && checkoutForm.delivery_time().invalid()) {
             <span #errorAnchor></span>
@@ -449,7 +449,7 @@
             </div>
             } } @else {
             <div
-              class="border-ink-20 bg-surface-10 flex flex-col gap-3 rounded-xl border-[1.5px] p-4"
+              class="border-hairline bg-surface-10 flex flex-col gap-3 rounded-xl border-[1.5px] p-4"
             >
               <div class="flex items-center gap-3">
                 <div
@@ -474,7 +474,7 @@
                   <span class="text-ink-80 font-medium">თბილისი, სოხუმის ქუჩა 4/6ა</span>
                 </div>
               </div>
-              <div class="bg-ink-20 h-px"></div>
+              <div class="bg-hairline h-px"></div>
               <div class="text-ink-50 flex flex-col gap-1 text-sm">
                 <div class="flex items-center gap-2">
                   <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
@@ -523,7 +523,7 @@
               </div>
             </div>
 
-            <div class="border-ink-20 relative rounded-xl border-[1.5px] border-dashed bg-white">
+            <div class="border-platinum-30/70 relative rounded-xl border-[1.5px] border-dashed bg-white">
               <span
                 class="bg-surface-10 absolute top-1/2 -left-2 h-4 w-4 -translate-y-1/2 rounded-full"
               ></span>
@@ -543,7 +543,7 @@
                   რედაქტირება
                 </button>
               </div>
-              <div class="border-ink-20 border-t border-dashed px-4 py-3 text-sm">
+              <div class="border-platinum-30/70 border-t border-dashed px-4 py-3 text-sm">
                 <dl class="space-y-1.5">
                   @if (checkoutForm.customer_type().value() === 'individual') {
                   <div class="flex justify-between gap-3">
@@ -584,12 +584,12 @@
 
               <div class="relative">
                 <span
-                  class="bg-surface-10 absolute top-1/2 -left-2 h-4 w-4 -translate-y-1/2 rounded-full"
+                  class="bg-white absolute top-1/2 -left-2 h-4 w-4 -translate-y-1/2 rounded-full"
                 ></span>
                 <span
-                  class="bg-surface-10 absolute top-1/2 -right-2 h-4 w-4 -translate-y-1/2 rounded-full"
+                  class="bg-white absolute top-1/2 -right-2 h-4 w-4 -translate-y-1/2 rounded-full"
                 ></span>
-                <div class="border-ink-20 border-t border-dashed"></div>
+                <div class="border-platinum-30/70 border-t border-dashed"></div>
               </div>
 
               <div class="flex items-center justify-between px-4 py-3">
@@ -602,7 +602,7 @@
                   რედაქტირება
                 </button>
               </div>
-              <div class="border-ink-20 border-t border-dashed px-4 py-3 text-sm">
+              <div class="border-platinum-30/70 border-t border-dashed px-4 py-3 text-sm">
                 <dl class="space-y-1.5">
                   @if (checkoutForm.delivery_type().value() === 'pickup') {
                   <div class="flex justify-between gap-3">
@@ -662,7 +662,7 @@
                 [formField]="checkoutForm.comment"
                 placeholder="სურვილის შემთხვევაში ჩაწერეთ კომენტარი რა გაითვალისწინოს ჩვენმა ოპერატორმა"
                 rows="3"
-                class="border-ink-20 focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] bg-white px-4 py-3 text-sm transition-colors outline-none"
+                class="border-hairline focus:border-green-60 w-full resize-none rounded-xl border-[1.5px] bg-white px-4 py-3 text-sm transition-colors outline-none"
               ></textarea>
             </div>
           </div>
@@ -695,12 +695,12 @@
 
           <!-- Step navigation -->
           @if (currentStep() !== 'payment') {
-          <div class="border-ink-20 mt-8 flex items-center justify-between gap-4 border-t pt-6">
+          <div class="border-hairline mt-8 flex items-center justify-between gap-4 border-t pt-6">
             <button
               type="button"
               (click)="goBack()"
               [disabled]="isFirstStep()"
-              class="border-ink-20 text-ink-70 hover:bg-ink-10 inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] px-6 py-3 font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40"
+              class="border-hairline text-ink-70 hover:bg-ink-10 inline-flex h-[44px] items-center justify-center gap-2 rounded-full border-[1.5px] px-6 py-3 font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40"
             >
               <svg
                 class="h-4 w-4"

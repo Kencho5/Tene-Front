@@ -3,10 +3,10 @@
     clickable() ? ['/products', productSlug(), item().product.id] : null
   "
   [class.pointer-events-none]="!clickable()"
-  class="border-platinum-10 relative flex w-full gap-3 rounded-xl border bg-white p-3 sm:gap-4 sm:p-4"
+  class="border-hairline relative flex w-full gap-3.5 rounded-xl border bg-white p-3.5 transition-colors hover:border-platinum-30 sm:gap-4 sm:p-4"
 >
   <div
-    class="bg-surface-10 border-platinum-10 relative flex aspect-square w-[88px] shrink-0 items-center justify-center overflow-hidden rounded-lg border sm:w-[112px]"
+    class="bg-surface-10 border-hairline relative flex aspect-square w-[88px] shrink-0 items-center justify-center overflow-hidden rounded-lg border sm:w-[112px]"
   >
     <app-image
       [src]="
@@ -38,7 +38,7 @@
 
       @if (index() !== null) {
         <span
-          class="bg-surface-10 text-platinum-70 border-platinum-10 -mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-semibold sm:h-8 sm:w-8 sm:text-[13px]"
+          class="bg-surface-10 text-platinum-70 border-hairline -mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-semibold sm:h-8 sm:w-8 sm:text-[13px]"
         >
           {{ index()! + 1 }}
         </span>
@@ -68,7 +68,7 @@
             <p class="text-platinum-40 text-[12px] line-through sm:text-[13px]">
               {{ cartService.calculateTotalPrice(item().product.price, item().quantity) | number: "1.2-2" }} ₾
             </p>
-            <span class="bg-valencia-10 text-valencia-60 rounded px-1.5 py-0.5 text-[11px] font-bold leading-none">
+            <span class="border-valencia-30/60 bg-valencia-10 text-valencia-60 inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-bold leading-none">
               -{{ item().product.discount | number }}%
             </span>
           </div>
@@ -77,7 +77,7 @@
 
       @if (showQuantityControls()) {
         <div
-          class="border-platinum-20 flex h-[34px] shrink-0 items-center rounded-full border sm:h-[38px]"
+          class="border-hairline flex h-[34px] shrink-0 items-center rounded-full border sm:h-[38px]"
         >
           @if (item().quantity > 1) {
             <button

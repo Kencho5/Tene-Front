@@ -266,6 +266,15 @@ export class SearchComponent {
     return categories.filter((category) => category.name.toLowerCase().includes(search));
   });
 
+  onAccordionParentClick(category: CategoryTreeNode): void {
+    if (category.children.length > 0) {
+      this.expandedParentId.set(this.expandedParentId() === category.id ? null! : category.id);
+    } else {
+      this.setParam('parent_category_id', '' + category.id);
+      this.isCategoryExpanded.set(false);
+    }
+  }
+
   setParam(key: string, value: string | undefined, debounce = 0): void {
     if (debounce > 0) {
       clearTimeout(this.debounceTimer);

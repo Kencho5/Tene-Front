@@ -1,5 +1,5 @@
 <div
-  class="flex flex-col gap-4 border-t border-platinum-20 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-0"
+  class="flex flex-col gap-4 border-t border-hairline py-4 sm:flex-row sm:items-center sm:justify-between sm:px-0"
 >
   <!-- Left: Results info & per page selector -->
   <div class="flex items-center justify-between gap-3 sm:justify-start">
@@ -23,7 +23,7 @@
       [disabled]="currentPage() === 1"
       [class.opacity-50]="currentPage() === 1"
       [class.cursor-not-allowed]="currentPage() === 1"
-      class="flex h-9 w-9 items-center justify-center rounded-xl border border-platinum-20 text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent"
+      class="flex h-9 w-9 items-center justify-center rounded-xl border border-hairline text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent"
       aria-label="წინა გვერდი"
     >
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -54,7 +54,7 @@
             [class.text-white]="currentPage() === pageNum"
             [class.border-green-60]="currentPage() === pageNum"
             [class.text-platinum-60]="currentPage() !== pageNum"
-            [class.border-platinum-20]="currentPage() !== pageNum"
+            [class.border-hairline]="currentPage() !== pageNum"
             [class.hover:bg-platinum-10]="currentPage() !== pageNum"
             class="flex h-8 w-8 items-center justify-center rounded-xl border text-xs font-medium transition-colors sm:h-9 sm:w-9 sm:text-sm"
           >
@@ -71,7 +71,7 @@
       [disabled]="currentPage() === totalPages()"
       [class.opacity-50]="currentPage() === totalPages()"
       [class.cursor-not-allowed]="currentPage() === totalPages()"
-      class="flex h-9 w-9 items-center justify-center rounded-xl border border-platinum-20 text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent"
+      class="flex h-9 w-9 items-center justify-center rounded-xl border border-hairline text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent"
       aria-label="შემდეგი გვერდი"
     >
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

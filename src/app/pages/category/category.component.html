@@ -33,7 +33,7 @@
       @for (child of childCategories(); track child.id) {
       <a
         [routerLink]="['/category', child.slug]"
-        class="border-platinum-20 hover:border-green-60 hover:text-green-70 flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors"
+        class="border-hairline hover:border-green-60 hover:text-green-70 flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors"
       >
         @if (child.image_url) {
         <img [src]="child.image_url" [alt]="child.name" class="h-5 w-5 object-contain" />

@@ -33,7 +33,7 @@
       @for (cat of brandCategories(); track cat.id) {
       <a
         [routerLink]="['/category', cat.slug]"
-        class="border-platinum-20 hover:border-green-60 hover:text-green-70 rounded-full border px-4 py-2 text-sm transition-colors"
+        class="border-hairline hover:border-green-60 hover:text-green-70 rounded-full border px-4 py-2 text-sm transition-colors"
       >
         {{ cat.name }}
         <span class="text-platinum-40 text-xs">({{ cat.count }})</span>

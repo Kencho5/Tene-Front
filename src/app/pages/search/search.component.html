@@ -1,6 +1,6 @@
 <!-- Parent Categories Bar (card chips) -->
 @if (categoryTree.value().length > 0) {
-<div class="border-platinum-20 border-b bg-white">
+<div class="border-hairline border-b bg-white">
   <div class="container px-4 xl:px-8">
     <div class="relative">
       <nav
@@ -63,7 +63,7 @@
 
     <!-- Child sub-bar: shown when parent selected -->
     @if (selectedParent() && selectedParent()!.children.length > 0) {
-    <div class="border-platinum-20 border-t" animate.enter="slide-down-enter 200ms ease-out">
+    <div class="border-hairline border-t" animate.enter="slide-down-enter 200ms ease-out">
       <div class="relative">
         <nav
           appDragScroll
@@ -76,7 +76,7 @@
             class="flex shrink-0 cursor-pointer items-center gap-2 rounded-full border py-1 pr-4 pl-1 text-xs font-medium transition-all duration-150"
             [class]="hasValue('child_category_id', '' + child.id)
                   ? 'border-green-60 bg-green-60 text-white'
-                  : 'border-platinum-20 bg-white text-platinum-70 hover:border-green-60 hover:text-green-70'"
+                  : 'border-hairline bg-white text-platinum-70 hover:border-green-60 hover:text-green-70'"
           >
             <span
               class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
@@ -124,7 +124,7 @@
         type="button"
         (click)="isCategoryExpanded.set(false)"
         aria-label="დახურვა"
-        class="border-platinum-20 hover:bg-platinum-10 flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors"
+        class="border-hairline hover:bg-platinum-10 flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
           <path
@@ -145,13 +145,11 @@
         class="overflow-hidden rounded-2xl border-2 bg-white transition-all duration-200"
         [class.shadow-low]="expandedParentId() === category.id"
         [class.border-green-60/40]="expandedParentId() === category.id"
-        [class.border-platinum-20/70]="expandedParentId() !== category.id"
+        [class.border-hairline]="expandedParentId() !== category.id"
       >
         <button
           type="button"
-          (click)="category.children.length > 0
-                ? expandedParentId.set(expandedParentId() === category.id ? null! : category.id)
-                : (setParam('parent_category_id', '' + category.id) || isCategoryExpanded.set(false))"
+          (click)="onAccordionParentClick(category)"
           class="flex w-full cursor-pointer items-center gap-3 px-3 py-2.5 transition-colors duration-150"
           [class]="expandedParentId() === category.id
                 ? 'bg-green-20 text-platinum-100'
@@ -192,7 +190,7 @@
         </button>
         @if (expandedParentId() === category.id && category.children.length > 0) {
         <div
-          class="border-platinum-20/60 flex flex-wrap gap-1.5 border-t bg-green-10 px-3 py-3"
+          class="border-hairline flex flex-wrap gap-1.5 border-t bg-green-10 px-3 py-3"
           animate.enter="slide-down-enter 200ms ease-out"
         >
           @for (child of category.children; track child.id) {
@@ -202,7 +200,7 @@
             class="cursor-pointer rounded-full border px-3.5 py-2 text-[14px] font-medium transition-all duration-150"
             [class]="hasValue('child_category_id', '' + child.id)
                       ? 'border-green-60 bg-green-60 text-white'
-                      : 'border-platinum-20 bg-platinum-10/50 text-platinum-70'"
+                      : 'border-hairline bg-platinum-10/50 text-platinum-70'"
           >
             <span class="truncate">{{ child.name }}</span>
           </button>
@@ -253,7 +251,7 @@
       </div>
 
       <!-- Children grid -->
-      <div class="border-platinum-20 min-h-[200px] flex-1 border-l pl-6">
+      <div class="border-hairline min-h-[200px] flex-1 border-l pl-6">
         @for (category of categoryTree.value(); track category.id) { @if (expandedParentId() ===
         category.id && category.children.length > 0) {
         <div
@@ -311,7 +309,7 @@
     <!-- FILTERS SIDEBAR (Walmart-style collapsible sections) -->
     <aside
       [class.hidden]="!isFilterOpen()"
-      class="shadow-low md:border-platinum-20/60 fixed inset-x-0 bottom-0 z-40 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-white p-6 sm:z-30 md:relative md:z-10 md:block md:max-h-none md:w-[240px] md:shrink-0 md:overflow-visible md:rounded-none md:border-r md:p-0 md:pr-5 md:shadow-none lg:w-[260px] lg:pr-6"
+      class="shadow-low md:border-hairline fixed inset-x-0 bottom-0 z-40 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-white p-6 sm:z-30 md:relative md:z-10 md:block md:max-h-none md:w-[240px] md:shrink-0 md:overflow-visible md:rounded-none md:border-r md:p-0 md:pr-5 md:shadow-none lg:w-[260px] lg:pr-6"
     >
       <!-- Mobile header -->
       <div class="mb-4 flex items-center justify-between md:hidden">
@@ -347,7 +345,7 @@
       </div>
 
       <!-- Price Section -->
-      <div class="border-platinum-20 border-b py-4 md:pt-0">
+      <div class="border-hairline border-b py-4 md:pt-0">
         <p class="text-platinum-100 mb-3 text-sm font-bold">ფასი</p>
         <div class="flex items-center gap-2">
           <div class="relative flex-1">
@@ -362,7 +360,7 @@
                 )
               "
               placeholder="დან"
-              class="border-platinum-20 focus:border-green-60 w-full rounded-lg border px-3 py-2 text-sm outline-hidden transition-colors"
+              class="border-hairline focus:border-green-60 w-full rounded-lg border px-3 py-2 text-sm outline-hidden transition-colors"
             />
           </div>
           <span class="text-platinum-40">—</span>
@@ -374,14 +372,14 @@
                 setParam('price_to', $any($event.target).value || undefined, 400)
               "
               placeholder="მდე"
-              class="border-platinum-20 focus:border-green-60 w-full rounded-lg border px-3 py-2 text-sm outline-hidden transition-colors"
+              class="border-hairline focus:border-green-60 w-full rounded-lg border px-3 py-2 text-sm outline-hidden transition-colors"
             />
           </div>
         </div>
       </div>
 
       <!-- Categories Section -->
-      <div class="border-platinum-20 border-b py-4">
+      <div class="border-hairline border-b py-4">
         <p class="text-platinum-100 mb-3 text-sm font-bold">კატეგორია</p>
 
         @if (facets.isLoading()) {
@@ -401,7 +399,7 @@
             [value]="categorySearch()"
             (input)="categorySearch.set($any($event.target).value)"
             placeholder="ძიება..."
-            class="border-platinum-20 focus:border-green-60 w-full rounded-lg border py-2 pr-3 pl-8 text-sm outline-hidden transition-colors"
+            class="border-hairline focus:border-green-60 w-full rounded-lg border py-2 pr-3 pl-8 text-sm outline-hidden transition-colors"
           />
           <svg
             width="16"
@@ -480,7 +478,7 @@
       </div>
 
       <!-- Sale Type Section -->
-      <div class="border-platinum-20 border-b py-4">
+      <div class="border-hairline border-b py-4">
         <p class="text-platinum-100 mb-3 text-sm font-bold">აქციის ტიპი</p>
         <div class="space-y-1">
           <label
@@ -546,7 +544,7 @@
       </div>
 
       <!-- Brands Section -->
-      <div class="border-platinum-20 border-b py-4">
+      <div class="border-hairline border-b py-4">
         <p class="text-platinum-100 mb-3 text-sm font-bold">ბრენდი</p>
 
         @if (facets.isLoading()) {
@@ -566,7 +564,7 @@
             [value]="brandSearch()"
             (input)="brandSearch.set($any($event.target).value)"
             placeholder="ძიება..."
-            class="border-platinum-20 focus:border-green-60 w-full rounded-lg border py-2 pr-3 pl-8 text-sm outline-hidden transition-colors"
+            class="border-hairline focus:border-green-60 w-full rounded-lg border py-2 pr-3 pl-8 text-sm outline-hidden transition-colors"
           />
           <svg
             width="16"
@@ -697,7 +695,7 @@
               </svg>
             </span>
             <span
-              class="border-platinum-20 h-4 w-4 shrink-0 rounded-full border"
+              class="border-hairline h-4 w-4 shrink-0 rounded-full border"
               [style.background-color]="color.value.toLowerCase()"
             ></span>
             <span class="text-platinum-70 flex-1 truncate text-sm">
@@ -723,7 +721,7 @@
       </div>
 
       <!-- Desktop clear button -->
-      <div class="border-platinum-20 hidden border-t pt-4 md:block">
+      <div class="border-hairline hidden border-t pt-4 md:block">
         <button
           type="button"
           (click)="clearAll()"
@@ -759,7 +757,7 @@
           (input)="setParam('query', $any($event.target).value || undefined, 300)"
           placeholder="პროდუქტის ძიება..."
           aria-label="პროდუქტის ძიება"
-          class="border-platinum-20 bg-platinum-10 placeholder:text-platinum-40 h-11 w-full rounded-xl border pl-10 text-sm outline-hidden transition-all focus:border-green-50 focus:bg-white focus:ring-2 focus:ring-green-50/20"
+          class="border-hairline bg-platinum-10 placeholder:text-platinum-40 h-11 w-full rounded-xl border pl-10 text-sm outline-hidden transition-all focus:border-green-50 focus:bg-white focus:ring-2 focus:ring-green-50/20"
           [class.pr-10]="params()['query']"
           [class.pr-4]="!params()['query']"
         />
@@ -808,7 +806,7 @@
           <button
             type="button"
             (click)="isFilterOpen.set(true)"
-            class="border-platinum-20 text-platinum-70 hover:bg-platinum-10 flex h-[42px] shrink-0 items-center gap-2 rounded-xl border px-3 text-sm font-medium transition-colors md:hidden"
+            class="border-hairline text-platinum-70 hover:bg-platinum-10 flex h-[42px] shrink-0 items-center gap-2 rounded-xl border px-3 text-sm font-medium transition-colors md:hidden"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
