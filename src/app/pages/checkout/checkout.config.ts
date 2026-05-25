@@ -1,7 +1,7 @@
 export type DeliveryTime = 'same_day' | 'next_day';
 
 export const DELIVERY_PRICES = {
-  sameDay: 12,
+  sameDay: 15,
   nextDay: 6,
   outsideTbilisi: 8.5,
   highMountain: 13.5,
@@ -21,7 +21,7 @@ export const CHECKOUT_STRINGS = {
   sameDayUnavailableSuffix: '(შესაძლებელია მხოლოდ თბილისში, 17:30-მდე გაფორმებულ შეკვეთებზე)',
   sameDayOutsideTbilisi: 'ხელმისაწვდომია მხოლოდ თბილისში',
   sameDayPastCutoff: 'ხელმისაწვდომია 17:30-მდე',
-  sameDayLabelPrefix: 'დღეს დღის ბოლომდე',
+  sameDayLabelPrefix: '1 საათში მიწოდება',
   nextDayLabelPrefix: 'მომდევნო სამუშაო დღეს',
   free: 'უფასო',
   highMountainNotice:
