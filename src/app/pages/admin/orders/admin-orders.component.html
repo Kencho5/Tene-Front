@@ -210,8 +210,8 @@
                         </div>
                       }
                     }
-                    <div class="min-w-[220px] flex-1">
-                      <p class="text-sm font-medium text-platinum-100 lg:truncate">
+                    <div class="min-w-0 flex-1 lg:min-w-[220px]">
+                      <p class="truncate text-sm font-medium text-platinum-100">
                         {{ order.items[0]?.product_name ?? "შეკვეთა" }}
                       </p>
                       <p class="truncate text-xs text-platinum-50">
@@ -302,7 +302,7 @@
               <!-- Expanded detail row -->
               @if (isExpanded(order)) {
                 <tr class="border-b border-platinum-20 last:border-b-0">
-                  <td colspan="5" class="px-4 py-4 bg-platinum-10/30">
+                  <td colspan="5" class="px-3 py-4 bg-platinum-10/30 sm:px-4">
                     <div class="grid grid-cols-1 gap-3 lg:grid-cols-3">
 
                       <!-- Left: Customer & Delivery -->
@@ -312,33 +312,33 @@
                         </div>
                         <div class="space-y-2.5 px-4 py-3">
                           @if (order.customer_type !== 'company') {
-                            <div class="flex items-baseline justify-between gap-4">
+                            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                               <span class="shrink-0 text-xs text-platinum-50">სახელი</span>
-                              <span class="text-right text-sm font-medium text-platinum-100">{{ order.customer_name }} {{ order.customer_surname }}</span>
+                              <span class="text-sm font-medium text-platinum-100 sm:text-right">{{ order.customer_name }} {{ order.customer_surname }}</span>
                             </div>
                           } @else {
-                            <div class="flex items-baseline justify-between gap-4">
+                            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                               <span class="shrink-0 text-xs text-platinum-50">ორგანიზაცია</span>
-                              <span class="text-right text-sm font-medium text-platinum-100">{{ order.organization_name }}</span>
+                              <span class="text-sm font-medium text-platinum-100 sm:text-right">{{ order.organization_name }}</span>
                             </div>
                             @if (order.organization_code) {
-                              <div class="flex items-baseline justify-between gap-4">
+                              <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                                 <span class="shrink-0 text-xs text-platinum-50">კოდი</span>
-                                <span class="text-right text-sm font-medium text-platinum-100">{{ order.organization_code }}</span>
+                                <span class="text-sm font-medium text-platinum-100 sm:text-right">{{ order.organization_code }}</span>
                               </div>
                             }
                           }
-                          <div class="flex items-baseline justify-between gap-4">
+                          <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                             <span class="shrink-0 text-xs text-platinum-50">ტიპი</span>
-                            <span class="text-right text-sm font-medium text-platinum-100">{{ customerLabel(order.customer_type) }}</span>
+                            <span class="text-sm font-medium text-platinum-100 sm:text-right">{{ customerLabel(order.customer_type) }}</span>
                           </div>
-                          <div class="flex items-baseline justify-between gap-4">
+                          <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                             <span class="shrink-0 text-xs text-platinum-50">ელ-ფოსტა</span>
-                            <span class="text-right text-sm font-medium text-platinum-100 break-all">{{ order.email }}</span>
+                            <span class="text-sm font-medium text-platinum-100 break-all sm:text-right">{{ order.email }}</span>
                           </div>
-                          <div class="flex items-baseline justify-between gap-4">
+                          <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                             <span class="shrink-0 text-xs text-platinum-50">ტელეფონი</span>
-                            <span class="text-right text-sm font-medium text-platinum-100">{{ order.phone_number }}</span>
+                            <span class="text-sm font-medium text-platinum-100 sm:text-right">{{ order.phone_number }}</span>
                           </div>
                         </div>
                       </div>
@@ -349,40 +349,40 @@
                           <p class="text-xs font-semibold uppercase tracking-wide text-platinum-50">მიწოდება & შეკვეთა</p>
                         </div>
                         <div class="space-y-2.5 px-4 py-3">
-                          <div class="flex items-baseline justify-between gap-4">
+                          <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                             <span class="shrink-0 text-xs text-platinum-50">შეკვეთის ID</span>
-                            <span class="text-right text-xs font-medium text-platinum-100 truncate max-w-[180px]">{{ order.order_id }}</span>
+                            <span class="text-xs font-medium text-platinum-100 break-all sm:truncate sm:max-w-[180px] sm:text-right">{{ order.order_id }}</span>
                           </div>
-                          <div class="flex items-baseline justify-between gap-4">
+                          <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                             <span class="shrink-0 text-xs text-platinum-50">თარიღი</span>
-                            <span class="text-right text-sm font-medium text-platinum-100">{{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}</span>
+                            <span class="text-sm font-medium text-platinum-100 sm:text-right">{{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}</span>
                           </div>
-                          <div class="flex items-baseline justify-between gap-4">
+                          <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                             <span class="shrink-0 text-xs text-platinum-50">მიწოდება</span>
-                            <span class="text-right text-sm font-medium text-platinum-100">{{ deliveryTypeLabel(order.delivery_type) }}</span>
+                            <span class="text-sm font-medium text-platinum-100 sm:text-right">{{ deliveryTypeLabel(order.delivery_type) }}</span>
                           </div>
                           @if (order.delivery_time) {
-                            <div class="flex items-baseline justify-between gap-4">
+                            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                               <span class="shrink-0 text-xs text-platinum-50">დრო</span>
-                              <span class="text-right text-sm font-medium text-platinum-100">{{ deliveryTimeLabel(order.delivery_time) }}</span>
+                              <span class="text-sm font-medium text-platinum-100 sm:text-right">{{ deliveryTimeLabel(order.delivery_time) }}</span>
                             </div>
                           }
                           @if (order.city) {
-                            <div class="flex items-baseline justify-between gap-4">
+                            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                               <span class="shrink-0 text-xs text-platinum-50">ქალაქი</span>
-                              <span class="text-right text-sm font-medium text-platinum-100">{{ order.city }}</span>
+                              <span class="text-sm font-medium text-platinum-100 sm:text-right">{{ order.city }}</span>
                             </div>
                           }
                           @if (order.address) {
-                            <div class="flex items-baseline justify-between gap-4">
+                            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                               <span class="shrink-0 text-xs text-platinum-50">მისამართი</span>
-                              <span class="text-right text-sm font-medium text-platinum-100">{{ order.address }}</span>
+                              <span class="text-sm font-medium text-platinum-100 break-words sm:text-right">{{ order.address }}</span>
                             </div>
                           }
                           @if (order.details) {
-                            <div class="flex items-baseline justify-between gap-4">
+                            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                               <span class="shrink-0 text-xs text-platinum-50">დეტალები</span>
-                              <span class="text-right text-sm font-medium text-platinum-100">{{ order.details }}</span>
+                              <span class="text-sm font-medium text-platinum-100 break-words sm:text-right">{{ order.details }}</span>
                             </div>
                           }
                         </div>

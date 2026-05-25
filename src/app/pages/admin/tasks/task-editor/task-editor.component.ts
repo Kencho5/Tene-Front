@@ -113,6 +113,36 @@ export class TaskEditorComponent implements OnInit {
     this.modeChange.emit('edit');
   }
 
+  readonly markingDone = signal(false);
+
+  readonly canMarkDone = computed(() => this.task() !== null && this.task()!.state !== 'done');
+
+  markDone(): void {
+    const existing = this.task();
+    if (!existing || this.markingDone() || existing.state === 'done') return;
+
+    this.markingDone.set(true);
+    const payload: TaskUpdatePayload = {
+      title: existing.title,
+      description: existing.description,
+      state: 'done',
+      priority: existing.priority,
+    };
+    this.adminService
+      .updateTask(existing.id, payload)
+      .pipe(
+        tap(() => this.toastService.add('წარმატება', 'დავალება შესრულდა', 2500, 'success')),
+        catchError((err) => {
+          this.toastService.add('შეცდომა', err.error?.error || 'ვერ განახლდა', 3000, 'error');
+          return of(null);
+        }),
+        finalize(() => this.markingDone.set(false)),
+      )
+      .subscribe((res) => {
+        if (res) this.saved.emit();
+      });
+  }
+
   readonly errorMessage = computed(() => {
     const errors = this.taskForm().errorSummary();
     return errors.length > 0 ? errors[0].message || 'შეავსეთ ველები' : '';
