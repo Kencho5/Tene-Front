@@ -11,6 +11,11 @@ interface NavItem {
   icon: string;
 }
 
+interface NavSection {
+  title: string;
+  items: NavItem[];
+}
+
 @Component({
   selector: 'app-admin-layout',
   imports: [SharedModule, SpinnerComponent],
@@ -26,26 +31,46 @@ export class AdminLayoutComponent {
   readonly isSidebarOpen = signal(true);
   readonly isMobileSidebarOpen = signal(false);
 
-  private readonly allNavItems: NavItem[] = [
-    { label: 'პროდუქტები', route: '/admin/products', icon: 'products' },
-    { label: 'ტოპ პროდუქტები', route: '/admin/top-products', icon: 'top-products' },
-    { label: 'ბრენდები', route: '/admin/brands', icon: 'brands' },
-    { label: 'კატეგორიები', route: '/admin/categories', icon: 'categories' },
-    { label: 'კაბელის ტიპები', route: '/admin/cable-types', icon: 'cable-specs' },
-    { label: 'შეკვეთები', route: '/admin/orders', icon: 'orders' },
-    { label: 'გადახდის ბმული', route: '/admin/payment-link', icon: 'payment-link' },
-    { label: 'მომხმარებლები', route: '/admin/users', icon: 'users' },
-    { label: 'ანალიტიკა', route: '/admin/analytics', icon: 'analytics' },
-    { label: 'ტასკები', route: '/admin/tasks', icon: 'tasks' },
+  private readonly allSections: NavSection[] = [
+    {
+      title: 'ვაჭრობა',
+      items: [
+        { label: 'შეკვეთები', route: '/admin/orders', icon: 'orders' },
+        { label: 'გადახდის ბმული', route: '/admin/payment-link', icon: 'payment-link' },
+        { label: 'მომხმარებლები', route: '/admin/users', icon: 'users' },
+      ],
+    },
+    {
+      title: 'კატალოგი',
+      items: [
+        { label: 'პროდუქტები', route: '/admin/products', icon: 'products' },
+        { label: 'ტოპ პროდუქტები', route: '/admin/top-products', icon: 'top-products' },
+        { label: 'ბრენდები', route: '/admin/brands', icon: 'brands' },
+        { label: 'კატეგორიები', route: '/admin/categories', icon: 'categories' },
+        { label: 'კაბელის ტიპები', route: '/admin/cable-types', icon: 'cable-specs' },
+      ],
+    },
+    {
+      title: 'სამუშაო',
+      items: [
+        { label: 'ანალიტიკა', route: '/admin/analytics', icon: 'analytics' },
+        { label: 'ტასკები', route: '/admin/tasks', icon: 'tasks' },
+      ],
+    },
   ];
 
-  readonly navItems = computed(() => {
+  readonly navSections = computed<NavSection[]>(() => {
     if (this.authService.isAdmin()) {
-      return this.allNavItems;
+      return this.allSections;
     }
-    return this.allNavItems.filter(
-      (item) => item.route === '/admin/orders' || item.route === '/admin/payment-link',
-    );
+    return this.allSections
+      .map((section) => ({
+        ...section,
+        items: section.items.filter(
+          (item) => item.route === '/admin/orders' || item.route === '/admin/payment-link',
+        ),
+      }))
+      .filter((section) => section.items.length > 0);
   });
 
   toggleSidebar(): void {
