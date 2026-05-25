@@ -66,19 +66,32 @@ export class DeliveryPricingService {
       return CHECKOUT_STRINGS.outsideTbilisiNotice;
     });
 
+    const nextDayLabelPrefix = computed(() => {
+      const city = inputs.city();
+      if (HIGH_MOUNTAIN_CITIES.has(city)) return CHECKOUT_STRINGS.highMountainLabelPrefix;
+      if (city && city !== 'tbilisi') return CHECKOUT_STRINGS.outsideTbilisiLabelPrefix;
+      return CHECKOUT_STRINGS.nextDayLabelPrefix;
+    });
+
     const deliveryTimeOptions = computed<DeliveryOption[]>(() => {
-      const available = sameDayAvailable();
-      const sameDayBase = `${CHECKOUT_STRINGS.sameDayLabelPrefix} - ${formatGel(sameDayPrice())}`;
-      const sameDayLabel = available
-        ? sameDayBase
-        : `${sameDayBase} ${CHECKOUT_STRINGS.sameDayUnavailableSuffix}`;
-      return [
-        { value: 'same_day', label: sameDayLabel, disabled: !available },
-        {
-          value: 'next_day',
-          label: `${CHECKOUT_STRINGS.nextDayLabelPrefix} - ${formatGel(nextDayPrice())}`,
-        },
-      ];
+      const city = inputs.city();
+      const outsideTbilisi = !!city && city !== 'tbilisi';
+      const options: DeliveryOption[] = [];
+
+      if (!outsideTbilisi) {
+        const available = sameDayAvailable();
+        const sameDayBase = `${CHECKOUT_STRINGS.sameDayLabelPrefix} - ${formatGel(sameDayPrice())}`;
+        const sameDayLabel = available
+          ? sameDayBase
+          : `${sameDayBase} ${CHECKOUT_STRINGS.sameDayUnavailableSuffix}`;
+        options.push({ value: 'same_day', label: sameDayLabel, disabled: !available });
+      }
+
+      options.push({
+        value: 'next_day',
+        label: `${nextDayLabelPrefix()} - ${formatGel(nextDayPrice())}`,
+      });
+      return options;
     });
 
     return {
@@ -89,6 +102,7 @@ export class DeliveryPricingService {
       deliveryPrice,
       deliveryNotice,
       deliveryTimeOptions,
+      nextDayLabelPrefix,
     };
   }
 }

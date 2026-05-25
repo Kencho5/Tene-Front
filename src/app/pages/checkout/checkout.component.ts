@@ -98,6 +98,7 @@ export class CheckoutComponent {
   readonly sameDayPrice = this.pricing.sameDayPrice;
   readonly nextDayPrice = this.pricing.nextDayPrice;
   readonly deliveryTimeOptions = this.pricing.deliveryTimeOptions;
+  readonly nextDayLabelPrefix = this.pricing.nextDayLabelPrefix;
 
   readonly checkoutLoading = signal(false);
 
