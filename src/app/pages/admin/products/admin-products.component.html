@@ -419,7 +419,7 @@
             [class.opacity-45]="!product.data.enabled"
           >
             <!-- Product -->
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 max-w-[420px]">
               <div class="flex items-center gap-3">
                 @if (getProductImage(product)) {
                 <div
@@ -455,7 +455,7 @@
                 <div class="min-w-0 flex-1">
                   <a
                     [routerLink]="getProductLink(product)"
-                    class="text-platinum-100 hover:text-green-70 block truncate text-sm font-medium transition-colors"
+                    class="text-platinum-100 hover:text-green-70 block break-words text-sm font-medium transition-colors"
                   >
                     {{ product.data.name }}
                   </a>
