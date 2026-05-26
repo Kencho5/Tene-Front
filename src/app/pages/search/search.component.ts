@@ -20,6 +20,7 @@ import { SharedModule } from '@shared/shared.module';
 import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
 import { ProductFacets, ProductSearchResponse } from '@core/interfaces/products.interface';
 import { getColorLabel } from '@utils/colors';
+import { isProductId } from '@utils/product-id';
 import { map } from 'rxjs';
 
 @Component({
@@ -178,6 +179,19 @@ export class SearchComponent {
     stream: ({ params }) => this.productsService.searchProduct(params),
   });
 
+  readonly searchTerm = computed(() => this.params()['id'] ?? this.params()['query'] ?? '');
+
+  setSearchTerm(value: string): void {
+    const term = value.trim();
+    if (!term) {
+      this.updateParams({ query: undefined, id: undefined, offset: undefined });
+      return;
+    }
+    const useId = isProductId(term);
+    this.setParam(useId ? 'id' : 'query', value, 300);
+    this.setParam(useId ? 'query' : 'id', undefined);
+  }
+
   readonly products = computed(() => this.searchResponse.value().products);
   readonly totalProducts = computed(() => this.searchResponse.value().total);
   readonly limit = computed(() => Number(this.params()['limit']) || 12);
@@ -320,10 +334,13 @@ export class SearchComponent {
   }
 
   clearAll(): void {
-    const query = this.params()['query'];
+    const { query, id } = this.params();
+    const preserved: Record<string, string> = {};
+    if (query) preserved['query'] = query;
+    if (id) preserved['id'] = id;
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: query ? { query } : undefined,
+      queryParams: Object.keys(preserved).length ? preserved : undefined,
     });
   }
 

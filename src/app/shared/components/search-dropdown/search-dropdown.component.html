@@ -102,7 +102,7 @@
 
             <a
               routerLink="/search"
-              [queryParams]="{ query: query() }"
+              [queryParams]="searchLinkParams()"
               (click)="close()"
               class="flex h-11 items-center justify-center rounded-xl bg-green-10 text-sm font-semibold text-green-70 transition-colors hover:bg-green-20"
             >
