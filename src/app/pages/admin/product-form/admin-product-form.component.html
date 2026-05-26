@@ -28,12 +28,19 @@
         />
 
         <!-- Product Name -->
-        <app-input
+        <textarea
           [formField]="productForm.name"
-          [error]="submitted() && productForm.name().invalid()"
-          type="text"
+          rows="2"
           placeholder="პროდუქტის სახელი *"
-        />
+          [ngClass]="{
+            'border-valencia-50 hover:border-valencia-50 focus:border-valencia-50 focus:ring-1 focus:ring-valencia-50':
+              submitted() && productForm.name().invalid(),
+            'focus:border-platinum-30 focus:ring-1 focus:ring-platinum-40': !(
+              submitted() && productForm.name().invalid()
+            ),
+          }"
+          class="border-hairline text-platinum-100 placeholder:text-platinum-40 w-full resize-none rounded-lg border bg-white px-3.5 py-2.5 text-sm break-words focus:outline-hidden"
+        ></textarea>
 
         <!-- Description -->
         <textarea
@@ -397,14 +404,14 @@
                 [class.text-platinum-40]="metaTitleLength() <= 60"
               >{{ metaTitleLength() }} / 60</span>
             </div>
-            <input
-              type="text"
+            <textarea
+              rows="2"
               [value]="productModel().meta_title"
               (input)="productModel.update(m => ({ ...m, meta_title: $any($event.target).value }))"
               maxlength="120"
               placeholder="მაგ: Apple iPhone 15 Pro Max 256GB | Tene"
-              class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-lg border px-3.5 text-sm outline-hidden transition-colors"
-            />
+              class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full resize-none rounded-lg border px-3.5 py-2.5 text-sm break-words outline-hidden transition-colors"
+            ></textarea>
           </div>
 
           <!-- Meta Description -->
