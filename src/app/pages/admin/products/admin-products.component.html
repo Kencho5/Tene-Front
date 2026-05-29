@@ -216,10 +216,10 @@
             </div>
             }
           </a>
-          <div class="flex w-24 gap-1">
+          <div class="mt-auto flex w-24 gap-1">
             <a
               [routerLink]="['/admin/products', product.data.id, 'edit']"
-              class="border-hairline text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex h-8 flex-1 items-center justify-center rounded-md border transition-colors"
+              class="border-hairline text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex h-9 flex-1 items-center justify-center rounded-md border transition-colors"
               aria-label="რედაქტირება"
             >
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
@@ -235,7 +235,7 @@
             <button
               type="button"
               (click)="openDeleteModal(product.data.id)"
-              class="border-hairline text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex h-8 flex-1 items-center justify-center rounded-md border transition-colors"
+              class="border-hairline text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex h-9 flex-1 items-center justify-center rounded-md border transition-colors"
               aria-label="წაშლა"
             >
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
@@ -257,7 +257,7 @@
             </button>
           </div>
         </div>
-        <div class="min-w-0 flex-1">
+        <div class="flex min-w-0 flex-1 flex-col">
           <a
             [routerLink]="getProductLink(product)"
             class="text-platinum-100 hover:text-green-70 block text-sm font-medium leading-snug transition-colors"
@@ -292,6 +292,25 @@
             <span class="text-valencia-60 text-xs font-medium">0 მარაგი</span>
             }
           </div>
+          <button
+            type="button"
+            (click)="toggleProductStatus(product.data.id, product.data.enabled)"
+            class="border-hairline text-platinum-60 hover:bg-platinum-10 mt-3 flex h-9 w-full items-center justify-between gap-2 rounded-md border px-3 text-xs font-medium transition-colors"
+            [attr.aria-label]="product.data.enabled ? 'გამორთვა' : 'ჩართვა'"
+          >
+            <span>{{ product.data.enabled ? "ჩართულია" : "გამორთულია" }}</span>
+            <span
+              class="relative inline-flex h-[18px] w-8 shrink-0 items-center rounded-full transition-colors"
+              [class.bg-green-60]="product.data.enabled"
+              [class.bg-platinum-30]="!product.data.enabled"
+            >
+              <span
+                class="inline-block h-3 w-3 transform rounded-full bg-white shadow-xs transition-transform"
+                [class.translate-x-[17px]]="product.data.enabled"
+                [class.translate-x-[3px]]="!product.data.enabled"
+              ></span>
+            </span>
+          </button>
         </div>
       </div>
       }
