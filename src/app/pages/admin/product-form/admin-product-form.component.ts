@@ -215,7 +215,7 @@ export class AdminProductFormComponent {
           response_data.categories &&
           response_data.categories.length > 0
         ) {
-          this.selectedCategoryIds.set([response_data.categories[0].id]);
+          this.selectedCategoryIds.set(response_data.categories.map((c) => c.id));
         }
       });
   }
@@ -246,7 +246,7 @@ export class AdminProductFormComponent {
     this.faqs.set(seo?.faqs ?? []);
     this.discountMode.set('percent');
     if (this.categoryOptions().length > 0 && categories.length > 0) {
-      this.selectedCategoryIds.set([categories[0].id]);
+      this.selectedCategoryIds.set(categories.map((c) => c.id));
     }
 
     if (product.specifications) {
@@ -607,39 +607,22 @@ export class AdminProductFormComponent {
     );
   }
 
-  toggleCategory(categoryId: string): void {
-    const id = Number(categoryId);
-    this.selectedCategoryIds.update((ids) => {
-      if (ids.includes(id)) {
-        return ids.filter((i) => i !== id);
-      } else {
-        return [...ids, id];
-      }
-    });
-  }
-
-  isCategorySelected(categoryId: string): boolean {
-    return this.selectedCategoryIds().includes(Number(categoryId));
-  }
-
-  getSelectedCategoryValue(): string | undefined {
-    const selectedIds = this.selectedCategoryIds();
-    if (selectedIds.length === 0) return undefined;
-
-    const categoryId = selectedIds[0];
+  readonly selectedCategories = computed(() => {
     const options = this.categoryOptions();
-
-    const option = options.find((opt) => opt.value.split(':')[1] === String(categoryId));
-
-    return option?.value;
-  }
+    return this.selectedCategoryIds().map((id) => {
+      const option = options.find((opt) => opt.value.split(':')[1] === String(id));
+      return { id, label: option?.label ?? String(id) };
+    });
+  });
 
   onCategoryChange(categoryId: string | undefined): void {
-    if (categoryId) {
-      this.selectedCategoryIds.set([Number(categoryId)]);
-    } else {
-      this.selectedCategoryIds.set([]);
-    }
+    if (!categoryId) return;
+    const id = Number(categoryId);
+    this.selectedCategoryIds.update((ids) => (ids.includes(id) ? ids : [...ids, id]));
+  }
+
+  removeCategory(categoryId: number): void {
+    this.selectedCategoryIds.update((ids) => ids.filter((i) => i !== categoryId));
   }
 
   getSelectedBrandValue(): string | undefined {

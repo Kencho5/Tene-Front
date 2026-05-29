@@ -57,17 +57,36 @@
           class="border-hairline text-platinum-100 placeholder:text-platinum-40 w-full resize-none rounded-lg border bg-white px-3.5 py-2.5 text-sm focus:outline-hidden"
         ></textarea>
 
-        <!-- Category -->
+        <!-- Categories -->
         <div>
-          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">კატეგორია</label>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">კატეგორიები</label>
           <app-combobox
-            [selectedValue]="getSelectedCategoryValue()"
+            [selectedValue]="undefined"
             (selectedValueChange)="onCategoryChange($event)"
             [items]="categoryOptions()"
-            placeholder="აირჩიეთ კატეგორია"
+            placeholder="დაამატეთ კატეგორია"
             searchPlaceholder="ძიება..."
             notFoundText="კატეგორია ვერ მოიძებნა"
           />
+          @if (selectedCategories().length > 0) {
+          <div class="mt-2 flex flex-wrap gap-1.5">
+            @for (cat of selectedCategories(); track cat.id) {
+            <span class="bg-green-10 text-green-70 inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium">
+              {{ cat.label }}
+              <button
+                type="button"
+                (click)="removeCategory(cat.id)"
+                class="hover:text-valencia-60 transition-colors"
+                [attr.aria-label]="'წაშლა: ' + cat.label"
+              >
+                <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+                  <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </span>
+            }
+          </div>
+          }
         </div>
 
         <!-- Brand -->
