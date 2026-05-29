@@ -54,6 +54,7 @@ export class AdminLayoutComponent {
       title: 'სამუშაო',
       items: [
         { label: 'ანალიტიკა', route: '/admin/analytics', icon: 'analytics' },
+        { label: 'ჩექაუთის სესიები', route: '/admin/checkout-sessions', icon: 'analytics' },
         { label: 'ტასკები', route: '/admin/tasks', icon: 'tasks' },
       ],
     },

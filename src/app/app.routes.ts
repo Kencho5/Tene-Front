@@ -208,6 +208,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'checkout-sessions',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/checkout-sessions/admin-checkout-sessions.component').then(
+            (m) => m.AdminCheckoutSessionsComponent,
+          ),
+      },
+      {
         path: 'brands',
         canActivate: [adminOnlyGuard],
         loadComponent: () =>

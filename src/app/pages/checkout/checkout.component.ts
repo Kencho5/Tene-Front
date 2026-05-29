@@ -7,6 +7,7 @@ import {
   ElementRef,
   inject,
   signal,
+  untracked,
   viewChildren,
 } from '@angular/core';
 import { NgClass } from '@angular/common';
@@ -31,10 +32,15 @@ import { AddressFormModalComponent } from '@shared/components/address-form-modal
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { DeliveryPricingService } from './delivery-pricing.service';
+import {
+  CheckoutAnalyticsEvent,
+  CheckoutAnalyticsService,
+} from '@core/services/checkout-analytics.service';
 
 type StepKey = 'contact' | 'delivery' | 'review' | 'payment';
 
 const CHECKOUT_STORAGE_KEY = 'checkout_form';
+const CHECKOUT_SESSION_KEY = 'checkout_session_id';
 
 interface StepInfo {
   key: StepKey;
@@ -57,6 +63,9 @@ interface StepInfo {
   ],
   templateUrl: './checkout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(focusout)': 'onFieldBlur()',
+  },
 })
 export class CheckoutComponent {
   readonly cartService = inject(CartService);
@@ -66,6 +75,7 @@ export class CheckoutComponent {
   readonly addressService = inject(AddressService);
   readonly authService = inject(AuthService);
   private readonly deliveryPricing = inject(DeliveryPricingService);
+  private readonly analytics = inject(CheckoutAnalyticsService);
 
   readonly isGuest = computed(() => !this.authService.isAuthenticated());
   readonly georgianCities = georgianCities;
@@ -166,6 +176,27 @@ export class CheckoutComponent {
 
   readonly checkoutModel = signal<CheckoutFields>(this.loadPersistedModel());
 
+  private isNewSession = false;
+  private readonly sessionId = this.resolveSessionId();
+  private fieldSnapshot = new Map<string, string>();
+
+  private resolveSessionId(): string {
+    const generate = () =>
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+    if (typeof localStorage === 'undefined') return generate();
+
+    const existing = localStorage.getItem(CHECKOUT_SESSION_KEY);
+    if (existing) return existing;
+
+    const id = generate();
+    localStorage.setItem(CHECKOUT_SESSION_KEY, id);
+    this.isNewSession = true;
+    return id;
+  }
+
   private loadPersistedModel(): CheckoutFields {
     if (typeof localStorage === 'undefined') return this.defaultModel;
     try {
@@ -231,6 +262,19 @@ export class CheckoutComponent {
       if (this.cartService.items().length === 0) {
         this.router.navigate(['/cart']);
       }
+    });
+
+    if (this.isNewSession) {
+      this.emit('session_start');
+    }
+    this.onFieldBlur();
+
+    effect(() => {
+      this.currentStepIndex();
+      untracked(() => {
+        this.onFieldBlur();
+        this.emit('step_view');
+      });
     });
 
     effect(() => {
@@ -442,8 +486,10 @@ export class CheckoutComponent {
         }),
       )
       .subscribe((response) => {
+        this.emit('purchase', { order_id: response.order_id });
         if (typeof localStorage !== 'undefined') {
           localStorage.removeItem(CHECKOUT_STORAGE_KEY);
+          localStorage.removeItem(CHECKOUT_SESSION_KEY);
         }
         if (guest && typeof localStorage !== 'undefined') {
           try {
@@ -525,6 +571,52 @@ export class CheckoutComponent {
         this.toastService.add('შეცდომა', 'მისამართის წაშლა ვერ მოხერხდა', 5000, 'error');
         this.closeAddressDeleteModal();
       },
+    });
+  }
+
+  onFieldBlur(): void {
+    const next = this.flattenModel(this.checkoutModel());
+    for (const [field, value] of next) {
+      if (this.fieldSnapshot.get(field) !== value) {
+        this.emit('field_change', { field, value });
+      }
+    }
+    this.fieldSnapshot = next;
+  }
+
+  private flattenModel(model: CheckoutFields): Map<string, string> {
+    const entries = new Map<string, string>([
+      ['customer_type', model.customer_type],
+      ['individual.name', model.individual.name],
+      ['individual.surname', model.individual.surname],
+      ['company.organization_type', model.company.organization_type],
+      ['company.organization_name', model.company.organization_name],
+      ['company.organization_code', model.company.organization_code],
+      ['email', model.email],
+      ['phone_number', model.phone_number],
+      ['address', model.address],
+      ['guest_city', model.guest_city],
+      ['guest_address', model.guest_address],
+      ['guest_details', model.guest_details],
+      ['delivery_type', model.delivery_type],
+      ['delivery_time', model.delivery_time],
+      ['comment', model.comment],
+    ]);
+    return entries;
+  }
+
+  private emit(
+    type: CheckoutAnalyticsEvent['type'],
+    extra: Partial<Pick<CheckoutAnalyticsEvent, 'field' | 'value' | 'order_id'>> = {},
+  ): void {
+    this.analytics.send({
+      session_id: this.sessionId,
+      type,
+      step: this.currentStep(),
+      step_index: this.currentStepIndex(),
+      is_guest: this.isGuest(),
+      timestamp: Date.now(),
+      ...extra,
     });
   }
 }

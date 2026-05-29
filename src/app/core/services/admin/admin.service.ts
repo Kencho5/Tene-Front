@@ -47,6 +47,7 @@ import {
   PaymentLinkRequest,
   PaymentLinkResponse,
 } from '@core/interfaces/admin/payment-link.interface';
+import { CheckoutSessionSearchResponse } from '@core/interfaces/admin/checkout-sessions.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -151,6 +152,10 @@ export class AdminService {
 
   createPaymentLink(payload: PaymentLinkRequest): Observable<PaymentLinkResponse> {
     return this.http.post<PaymentLinkResponse>('/admin/orders/payment-link', payload);
+  }
+
+  searchCheckoutSessions(params: string): Observable<CheckoutSessionSearchResponse> {
+    return this.http.get<CheckoutSessionSearchResponse>(`/admin/checkout-sessions?${params}`);
   }
 
   // User Management
