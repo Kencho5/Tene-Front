@@ -155,6 +155,7 @@ export interface Order {
   address: string;
   city: string;
   details: string;
+  comment: string | null;
   delivery_type: string;
   delivery_time: string;
   checkout_url: string | null;
