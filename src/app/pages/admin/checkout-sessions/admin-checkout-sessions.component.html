@@ -169,23 +169,69 @@
       </button>
 
       @if (isExpanded(session)) {
-      <div class="border-hairline bg-platinum-10/30 border-t px-4 py-4">
+      <div class="border-hairline bg-platinum-10/30 space-y-4 border-t px-4 py-4">
         @if (session.order_id) {
-        <p class="text-platinum-50 mb-3 text-xs">
-          შეკვეთა:
-          <span class="text-platinum-80 font-mono">{{ session.order_id }}</span>
-        </p>
-        } @if (fieldEntries(session).length > 0) {
-        <dl class="divide-hairline divide-y">
-          @for (entry of fieldEntries(session); track entry.label) {
-          <div class="flex justify-between gap-3 py-2 text-sm">
-            <dt class="text-platinum-50 shrink-0">{{ entry.label }}</dt>
-            <dd class="text-platinum-90 text-right break-all">{{ entry.value }}</dd>
-          </div>
-          }
-        </dl>
+        <div class="border-hairline flex items-center justify-between gap-3 rounded-lg border bg-white px-3 py-2.5">
+          <span class="text-platinum-50 text-xs font-medium">შეკვეთა</span>
+          <span class="text-platinum-90 font-mono text-xs break-all">{{ session.order_id }}</span>
+        </div>
+        } @if (fieldGroupsFor(session); as groups) { @if (groups.length > 0) {
+        @for (group of groups; track group.title) {
+        <section>
+          <h3
+            class="text-platinum-40 mb-2 text-[11px] font-semibold tracking-wide uppercase"
+          >
+            {{ group.title }}
+          </h3>
+          <dl class="border-hairline divide-hairline divide-y overflow-hidden rounded-lg border bg-white">
+            @for (entry of group.entries; track entry.label) {
+            <div class="px-3 py-2.5">
+              <dt class="text-platinum-50 text-[11px]">{{ entry.label }}</dt>
+              <dd class="text-platinum-90 mt-0.5 text-sm break-words">{{ entry.value }}</dd>
+            </div>
+            }
+          </dl>
+        </section>
+        }
         } @else {
         <p class="text-platinum-50 text-sm">მონაცემები არ შეუყვანია</p>
+        } }
+
+        @if (session.cart && session.cart.length > 0) {
+        <section>
+          <h3 class="text-platinum-40 mb-2 text-[11px] font-semibold tracking-wide uppercase">
+            პროდუქტები ({{ session.cart.length }})
+          </h3>
+          <ul class="border-hairline divide-hairline divide-y overflow-hidden rounded-lg border bg-white">
+            @for (item of session.cart; track $index) {
+            <li class="flex items-center gap-3 px-3 py-2.5">
+              <div
+                class="bg-surface-10 border-hairline flex aspect-square w-12 shrink-0 items-center justify-center overflow-hidden rounded-md border"
+              >
+                <img
+                  [src]="cartImageUrl(item)"
+                  [alt]="item.name"
+                  width="48"
+                  height="48"
+                  loading="lazy"
+                  class="h-full w-full object-contain p-1"
+                />
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-platinum-90 truncate text-sm">{{ item.name }}</p>
+                <p class="text-platinum-50 mt-0.5 text-xs">
+                  {{ item.color }}
+                  @if (item.cable_config) {
+                  · {{ item.cable_config.watts }}W / {{ item.cable_config.length_cm }}სმ
+                  }
+                </p>
+                <p class="text-platinum-40 font-mono text-[11px]">{{ item.product_id }}</p>
+              </div>
+              <span class="text-platinum-70 shrink-0 text-sm tabular-nums">×{{ item.quantity }}</span>
+            </li>
+            }
+          </ul>
+        </section>
         }
       </div>
       }

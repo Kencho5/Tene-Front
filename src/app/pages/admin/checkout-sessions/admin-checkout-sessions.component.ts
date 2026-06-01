@@ -8,6 +8,7 @@ import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.compo
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
 import { AdminService } from '@core/services/admin/admin.service';
+import { getProductImageUrl } from '@utils/product-image-url';
 
 @Component({
   selector: 'app-admin-checkout-sessions',
@@ -103,6 +104,10 @@ export class AdminCheckoutSessionsComponent {
     return this.valueLabels[field]?.[value] ?? value;
   }
 
+  cartImageUrl(item: { product_id: string; image_uuid: string; image_extension: string }): string {
+    return getProductImageUrl(item.product_id, item.image_uuid, item.image_extension);
+  }
+
   displayName(session: CheckoutSession): string {
     const f = session.fields;
     const company = f['company.organization_name'];
@@ -112,13 +117,48 @@ export class AdminCheckoutSessionsComponent {
     return session.is_guest ? 'სტუმარი' : `User #${session.user_id}`;
   }
 
-  fieldEntries(session: CheckoutSession): { label: string; value: string }[] {
-    return Object.entries(session.fields)
-      .filter(([field, value]) => value !== '' && !this.hiddenFields.has(field))
-      .map(([field, value]) => ({
-        label: this.fieldLabel(field),
-        value: this.fieldValue(field, value),
-      }));
+  private readonly fieldGroups: { title: string; fields: string[] }[] = [
+    {
+      title: 'კონტაქტი',
+      fields: [
+        'individual.name',
+        'individual.surname',
+        'company.organization_name',
+        'company.organization_code',
+        'email',
+        'phone_number',
+      ],
+    },
+    {
+      title: 'მიწოდება',
+      fields: [
+        'delivery_type',
+        'delivery_time',
+        'address',
+        'guest_city',
+        'guest_address',
+        'guest_details',
+      ],
+    },
+    {
+      title: 'დამატებითი',
+      fields: ['comment'],
+    },
+  ];
+
+  fieldGroupsFor(session: CheckoutSession): { title: string; entries: { label: string; value: string }[] }[] {
+    const fields = session.fields;
+    return this.fieldGroups
+      .map((group) => ({
+        title: group.title,
+        entries: group.fields
+          .filter((field) => fields[field] && !this.hiddenFields.has(field))
+          .map((field) => ({
+            label: this.fieldLabel(field),
+            value: this.fieldValue(field, fields[field]),
+          })),
+      }))
+      .filter((group) => group.entries.length > 0);
   }
 
   readonly steps: { key: CheckoutStepKey; label: string }[] = [

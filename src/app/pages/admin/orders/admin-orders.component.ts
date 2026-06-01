@@ -162,9 +162,16 @@ export class AdminOrdersComponent {
   }
 
   toggleExpand(order: Order): void {
-    this.expandedOrderId.set(
-      this.expandedOrderId() === order.id ? null : order.id,
-    );
+    const willExpand = this.expandedOrderId() !== order.id;
+    this.expandedOrderId.set(willExpand ? order.id : null);
+
+    if (willExpand) {
+      setTimeout(() => {
+        document
+          .getElementById(`order-${order.id}`)
+          ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
   }
 
   isExpanded(order: Order): boolean {

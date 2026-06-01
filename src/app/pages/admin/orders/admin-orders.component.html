@@ -91,7 +91,7 @@
     } @else {
       <div class="space-y-3">
         @for (order of orders(); track order.id) {
-          <div class="overflow-hidden rounded-xl border border-hairline bg-white">
+          <div [id]="'order-' + order.id" class="scroll-mt-4 overflow-hidden rounded-xl border border-hairline bg-white">
             <!-- Card header -->
             <button
               type="button"
@@ -408,7 +408,8 @@
           } @else {
             @for (order of orders(); track order.id) {
               <tr
-                class="border-b border-hairline cursor-pointer transition-colors last:border-b-0 hover:bg-platinum-10/50"
+                [id]="'order-' + order.id"
+                class="border-b border-hairline cursor-pointer scroll-mt-4 transition-colors last:border-b-0 hover:bg-platinum-10/50"
                 [class.bg-platinum-10/30]="isExpanded(order)"
                 (click)="toggleExpand(order)"
               >

@@ -1,4 +1,4 @@
-import { CheckoutStepKey } from '@core/services/checkout-analytics.service';
+import { CheckoutCartItem, CheckoutStepKey } from '@core/services/checkout-analytics.service';
 
 export type CheckoutEventType = 'session_start' | 'field_change' | 'step_view' | 'purchase';
 
@@ -29,6 +29,7 @@ export interface CheckoutSession {
   event_count: number;
   last_activity_at: string;
   fields: Record<string, string>;
+  cart: CheckoutCartItem[] | null;
   events: CheckoutSessionEvent[];
 }
 

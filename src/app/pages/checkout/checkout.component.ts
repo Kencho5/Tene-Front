@@ -35,6 +35,7 @@ import { DeliveryPricingService } from './delivery-pricing.service';
 import {
   CheckoutAnalyticsEvent,
   CheckoutAnalyticsService,
+  CheckoutCartItem,
 } from '@core/services/checkout-analytics.service';
 
 type StepKey = 'contact' | 'delivery' | 'review' | 'payment';
@@ -179,6 +180,7 @@ export class CheckoutComponent {
   private isNewSession = false;
   private readonly sessionId = this.resolveSessionId();
   private fieldSnapshot = new Map<string, string>();
+  private lastCartSnapshot = '';
 
   private resolveSessionId(): string {
     const generate = () =>
@@ -267,20 +269,25 @@ export class CheckoutComponent {
     if (this.isNewSession) {
       this.emit('session_start');
     }
-    this.onFieldBlur();
+    this.fieldSnapshot = this.flattenModel(this.checkoutModel());
 
     effect(() => {
       this.currentStepIndex();
-      untracked(() => {
-        this.onFieldBlur();
-        this.emit('step_view');
-      });
+      untracked(() => this.emit('step_view'));
     });
 
     effect(() => {
       if (!this.sameDayAvailable() && this.checkoutForm.delivery_time().value() === 'same_day') {
         this.checkoutForm.delivery_time().value.set('');
       }
+    });
+
+    effect(() => {
+      const cart = this.cartItems();
+      const serialized = JSON.stringify(cart);
+      if (serialized === this.lastCartSnapshot) return;
+      this.lastCartSnapshot = serialized;
+      untracked(() => this.emit('cart_snapshot', { cart }));
     });
 
     effect(() => {
@@ -328,7 +335,9 @@ export class CheckoutComponent {
           this.addresses.set(addresses);
           this.loading.update((state) => ({ ...state, addresses: false }));
           if (addresses.length > 0 && !this.checkoutForm.address().value()) {
-            this.checkoutForm.address().value.set(String(addresses[0].id));
+            const id = String(addresses[0].id);
+            this.checkoutForm.address().value.set(id);
+            this.fieldSnapshot.set('address', id);
           }
         });
     }
@@ -458,19 +467,7 @@ export class CheckoutComponent {
       delivery_type: model.delivery_type,
       delivery_time: model.delivery_time,
       ...(model.comment ? { comment: model.comment } : {}),
-      items: this.cartService.items().map((item) => ({
-        product_id: item.product.id,
-        quantity: item.quantity,
-        color: item.selectedColor,
-        ...(item.cableConfig
-          ? {
-              cable_config: {
-                watts: item.cableConfig.watts,
-                length_cm: item.cableConfig.lengthCm,
-              },
-            }
-          : {}),
-      })),
+      items: this.cartItems(),
     };
 
     this.checkoutLoading.set(true);
@@ -605,9 +602,28 @@ export class CheckoutComponent {
     return entries;
   }
 
+  private readonly cartItems = computed<CheckoutCartItem[]>(() =>
+    this.cartService.items().map((item) => ({
+      product_id: item.product.id,
+      name: item.product.name,
+      image_uuid: item.selectedImageId,
+      image_extension: item.selectedImageExtension,
+      quantity: item.quantity,
+      color: item.selectedColor,
+      ...(item.cableConfig
+        ? {
+            cable_config: {
+              watts: item.cableConfig.watts,
+              length_cm: item.cableConfig.lengthCm,
+            },
+          }
+        : {}),
+    })),
+  );
+
   private emit(
     type: CheckoutAnalyticsEvent['type'],
-    extra: Partial<Pick<CheckoutAnalyticsEvent, 'field' | 'value' | 'order_id'>> = {},
+    extra: Partial<Pick<CheckoutAnalyticsEvent, 'field' | 'value' | 'order_id' | 'cart'>> = {},
   ): void {
     this.analytics.send({
       session_id: this.sessionId,
