@@ -7,6 +7,8 @@ import {
   effect,
   ChangeDetectionStrategy,
   PLATFORM_ID,
+  viewChild,
+  ElementRef,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { SharedModule } from '@shared/shared.module';
@@ -142,13 +144,35 @@ export class ProductComponent {
       .sort((a, b) => a - b);
   });
 
-  readonly selectedLengthIdx = signal<number>(0);
+  readonly selectedLengthIdx = signal<number | null>(null);
+
+  readonly lengthError = signal<boolean>(false);
+
+  readonly lengthSection = viewChild<ElementRef<HTMLElement>>('lengthSection');
+
+  readonly sliderLengths = computed<number[]>(() => [0, ...this.cableLengths()]);
+
+  readonly sliderIdx = computed<number>(() => {
+    const idx = this.selectedLengthIdx();
+    return idx === null ? 0 : idx + 1;
+  });
+
+  readonly hasSelectedLength = computed<boolean>(() => this.selectedLengthIdx() !== null);
 
   readonly selectedVariant = computed<CableVariant | null>(() => {
     const watts = this.selectedWatts();
     const lengths = this.cableLengths();
     const idx = this.selectedLengthIdx();
+    if (watts === null || lengths.length === 0 || idx === null) return null;
+    const length = lengths[Math.min(idx, lengths.length - 1)];
+    return this.cableVariants().find((v) => v.watts === watts && v.length_cm === length) ?? null;
+  });
+
+  readonly priceVariant = computed<CableVariant | null>(() => {
+    const watts = this.selectedWatts();
+    const lengths = this.cableLengths();
     if (watts === null || lengths.length === 0) return null;
+    const idx = this.selectedLengthIdx() ?? 0;
     const length = lengths[Math.min(idx, lengths.length - 1)];
     return this.cableVariants().find((v) => v.watts === watts && v.length_cm === length) ?? null;
   });
@@ -269,8 +293,8 @@ export class ProductComponent {
     const product = this.product();
     if (!product) return 0;
 
-    const cable = this.cableConfig();
-    if (cable) return cable.price;
+    const variant = this.priceVariant();
+    if (variant) return Number(variant.price);
 
     const originalPrice = product.data.price;
     const discountPercent = product.data.discount;
@@ -286,22 +310,27 @@ export class ProductComponent {
   });
 
   readonly displayWarranty = computed(() => {
-    const cable = this.cableConfig();
-    if (cable) return cable.warranty;
+    const variant = this.priceVariant();
+    if (variant) return variant.warranty_months === 1 ? '1 თვე' : `${variant.warranty_months} თვე`;
     return this.product()?.data.warranty ?? '';
   });
 
   setWatts(w: number): void {
     if (this.selectedWatts() === w) return;
+    const prevIdx = this.selectedLengthIdx();
     const prevLengths = this.cableLengths();
-    const prevLength = prevLengths[this.selectedLengthIdx()];
     this.selectedWatts.set(w);
+    if (prevIdx === null) {
+      this.selectedLengthIdx.set(null);
+      return;
+    }
+    const prevLength = prevLengths[prevIdx];
     const nextLengths = this.cableVariants()
       .filter((v) => v.watts === w)
       .map((v) => v.length_cm)
       .sort((a, b) => a - b);
     if (nextLengths.length === 0) {
-      this.selectedLengthIdx.set(0);
+      this.selectedLengthIdx.set(null);
       return;
     }
     const exactIdx = nextLengths.indexOf(prevLength);
@@ -321,13 +350,15 @@ export class ProductComponent {
     this.selectedLengthIdx.set(closestIdx);
   }
 
-  setLengthIdx(idx: number): void {
+  setLengthIdx(idx: number | null): void {
     this.selectedLengthIdx.set(idx);
+    this.lengthError.set(false);
   }
 
   onLengthSliderChange(event: Event): void {
     const value = +(event.target as HTMLInputElement).value;
-    this.selectedLengthIdx.set(value);
+    this.selectedLengthIdx.set(value === 0 ? null : value - 1);
+    this.lengthError.set(false);
   }
 
   readonly colorImages = computed(() => {
@@ -404,12 +435,7 @@ export class ProductComponent {
         .map((v) => v.length_cm)
         .sort((a, b) => a - b);
       const lenIdx = lengths.indexOf(lenParam);
-      if (lenIdx !== -1) {
-        this.selectedLengthIdx.set(lenIdx);
-      } else {
-        const defaultIdx = lengths.indexOf(20);
-        this.selectedLengthIdx.set(defaultIdx !== -1 ? defaultIdx : 0);
-      }
+      this.selectedLengthIdx.set(lenIdx !== -1 ? lenIdx : null);
     });
 
     // Sync variant -> URL (replaceUrl to avoid history pollution)
@@ -419,7 +445,7 @@ export class ProductComponent {
       const watts = this.selectedWatts();
       const lengths = this.cableLengths();
       const idx = this.selectedLengthIdx();
-      if (watts === null || lengths.length === 0) return;
+      if (watts === null || lengths.length === 0 || idx === null) return;
       const len = lengths[Math.min(idx, lengths.length - 1)];
       const cur = this.queryParams();
       if (Number(cur.get('w')) === watts && Number(cur.get('len')) === len) return;
@@ -577,6 +603,12 @@ export class ProductComponent {
     const imageId = this.selectedImageId();
 
     if (!productData || !color || !imageId) return;
+
+    if (this.isCable() && !this.hasSelectedLength()) {
+      this.lengthError.set(true);
+      this.lengthSection()?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
 
     const selectedImage = productData.images.find((img) => img.image_uuid === imageId);
     if (!selectedImage) return;

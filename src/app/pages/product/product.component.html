@@ -305,12 +305,18 @@
             </div>
           </div>
 
-          <div class="border-hairline mt-5 border-t pt-5">
+          <div #lengthSection class="border-hairline mt-5 border-t pt-5">
             <div class="flex items-baseline justify-between gap-3">
               <p
-                class="text-platinum-90 text-[17px] font-semibold tracking-wide uppercase sm:text-[15px]"
+                class="text-[17px] font-semibold tracking-wide uppercase sm:text-[15px]"
+                [class.text-platinum-90]="hasSelectedLength()"
+                [class.text-valencia-60]="!hasSelectedLength()"
               >
-                სიგრძე · {{ cableLengths()[selectedLengthIdx()] }} სმ
+                @if (hasSelectedLength()) {
+                სიგრძე · {{ cableLengths()[selectedLengthIdx()!] }} სმ
+                } @else {
+                აირჩიეთ სიგრძე
+                }
               </p>
               <p
                 class="text-platinum-100 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[32px]"
@@ -327,13 +333,15 @@
               ></div>
               <!-- fill (green) -->
               <div
-                class="bg-green-60 absolute top-1/2 left-0 h-[12px] -translate-y-1/2 rounded-sm transition-[width] duration-150 ease-out"
-                [style.width.%]="cableLengths().length > 1 ? (selectedLengthIdx() / (cableLengths().length - 1)) * 100 : 0"
+                class="absolute top-1/2 left-0 h-[12px] -translate-y-1/2 rounded-sm transition-[width] duration-150 ease-out"
+                [class.bg-green-60]="hasSelectedLength()"
+                [class.bg-platinum-40]="!hasSelectedLength()"
+                [style.width.%]="sliderLengths().length > 1 ? (sliderIdx() / (sliderLengths().length - 1)) * 100 : 0"
               ></div>
               <!-- arrow -->
               <svg
                 class="text-dolly-40 pointer-events-none absolute top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 transition-[left] duration-150 ease-out"
-                [style.left.%]="cableLengths().length > 1 ? (selectedLengthIdx() / (cableLengths().length - 1)) * 100 : 0"
+                [style.left.%]="sliderLengths().length > 1 ? (sliderIdx() / (sliderLengths().length - 1)) * 100 : 0"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 32 32"
               >
@@ -348,9 +356,9 @@
               <input
                 type="range"
                 min="0"
-                [max]="cableLengths().length - 1"
+                [max]="sliderLengths().length - 1"
                 step="1"
-                [value]="selectedLengthIdx()"
+                [value]="sliderIdx()"
                 (input)="onLengthSliderChange($event)"
                 class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
               />
@@ -358,30 +366,32 @@
             <!-- Ruler -->
             <div class="relative mt-1 h-3 select-none">
               <!-- ticks -->
-              @for (len of cableLengths(); track len; let i = $index; let isLast = $last) {
+              @for (len of sliderLengths(); track $index; let i = $index; let isLast = $last) {
               <div
                 class="bg-platinum-60 absolute top-0 h-2 w-px"
-                [style.left.%]="(i / (cableLengths().length - 1)) * 100"
+                [style.left.%]="(i / (sliderLengths().length - 1)) * 100"
               ></div>
               @if (!isLast) { @for (m of [1, 2, 3, 4]; track m) {
               <div
                 class="bg-platinum-30 absolute top-0 h-1 w-px"
-                [style.left.%]="((i + m / 5) / (cableLengths().length - 1)) * 100"
+                [style.left.%]="((i + m / 5) / (sliderLengths().length - 1)) * 100"
               ></div>
               } } }
             </div>
             <!-- numbers -->
             <div class="relative mt-0.5 h-4 select-none">
-              @for (len of cableLengths(); track len; let i = $index) {
-              <span
-                class="absolute top-0 -translate-x-1/2 text-[11px] transition-colors sm:text-[12px]"
-                [style.left.%]="(i / (cableLengths().length - 1)) * 100"
-                [class.text-green-70]="selectedLengthIdx() === i"
-                [class.font-semibold]="selectedLengthIdx() === i"
-                [class.text-platinum-40]="selectedLengthIdx() !== i"
+              @for (len of sliderLengths(); track $index; let i = $index) {
+              <button
+                type="button"
+                (click)="setLengthIdx(i === 0 ? null : i - 1)"
+                class="absolute top-0 -translate-x-1/2 cursor-pointer px-1 text-[11px] transition-colors sm:text-[12px]"
+                [style.left.%]="(i / (sliderLengths().length - 1)) * 100"
+                [class.text-green-70]="hasSelectedLength() && selectedLengthIdx() === i - 1"
+                [class.font-semibold]="hasSelectedLength() && selectedLengthIdx() === i - 1"
+                [class.text-platinum-40]="!hasSelectedLength() || selectedLengthIdx() !== i - 1"
               >
-                {{ len }}
-              </span>
+                {{ i === 0 ? '0' : len }}
+              </button>
               }
             </div>
           </div>
@@ -411,6 +421,11 @@
 
           <!-- ─── Add to Cart ─── -->
           <div class="border-hairline mt-5 border-t pt-5">
+            @if (lengthError()) {
+            <p class="text-valencia-60 mb-3 text-[13px] font-medium">
+              გთხოვთ აირჩიოთ კაბელის სიგრძე
+            </p>
+            }
             <div class="flex items-center gap-3">
               <!-- Qty -->
               <div
