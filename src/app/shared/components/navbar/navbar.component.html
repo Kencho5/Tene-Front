@@ -1,6 +1,6 @@
 <header class="fixed top-0 z-40 w-full">
   <!-- Main brand band -->
-  <div class="bg-green-60 text-white">
+  <div class="bg-green-70 text-white">
     <div class="container mx-auto flex h-[60px] items-center gap-3 px-4 lg:h-20 lg:gap-6 xl:px-8">
       <!-- Menu button (mobile only) -->
       <button
@@ -102,7 +102,7 @@
             </svg>
             @if (cartService.itemCount() > 0) {
             <span
-              class="bg-valencia-50 absolute -top-1.5 -right-2 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-bold text-white"
+              class="bg-dolly-40 absolute -top-1.5 left-3.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[11px] font-bold text-green-100"
             >
               {{ cartService.itemCount() }}
             </span>
@@ -153,7 +153,7 @@
 <div class="fixed inset-0 z-50 lg:hidden">
   <aside class="absolute inset-0 flex h-full w-full flex-col bg-white">
     <!-- Header -->
-    <div class="bg-green-60 flex h-[60px] shrink-0 items-center justify-between px-4 text-white">
+    <div class="bg-green-70 flex h-[60px] shrink-0 items-center justify-between px-4 text-white">
       <span class="text-base font-semibold">მენიუ</span>
       <button
         type="button"
