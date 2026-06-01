@@ -1,0 +1,123 @@
+<div class="relative w-full" (outsideClick)="close()">
+  <form (submit)="$event.preventDefault(); submit()" class="flex w-full">
+    <div class="relative flex w-full items-center">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        class="text-platinum-40 pointer-events-none absolute left-4"
+        aria-hidden="true"
+      >
+        <path
+          d="M20 20L16.1333 16.1333M18.2222 11.1111C18.2222 15.0385 15.0385 18.2222 11.1111 18.2222C7.18375 18.2222 4 15.0385 4 11.1111C4 7.18375 7.18375 4 11.1111 4C15.0385 4 18.2222 7.18375 18.2222 11.1111Z"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+
+      <input
+        #searchInput
+        type="text"
+        [value]="query()"
+        (input)="updateQuery($event.target.value)"
+        (focus)="focused.set(true)"
+        placeholder="მოძებნე ტენეში..."
+        aria-label="პროდუქტის ძიება"
+        class="text-platinum-100 placeholder:text-platinum-40 focus:ring-green-60 h-11 w-full rounded-lg bg-white pr-28 pl-11 text-[15px] shadow-sm outline-hidden transition-shadow focus:ring-2"
+      />
+
+      <button
+        type="submit"
+        class="bg-green-60 hover:bg-green-70 absolute right-1.5 flex h-8 items-center gap-1.5 rounded-md px-4 text-sm font-semibold text-white transition-colors"
+      >
+        ძიება
+      </button>
+    </div>
+  </form>
+
+  @if (showPanel()) {
+  <div
+    role="dialog"
+    aria-label="ძიების შედეგი"
+    animate.enter="panel-enter"
+    class="border-hairline shadow-low absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-2xl border bg-white"
+  >
+    <div class="p-3">
+      @if (results.value()?.products?.length) {
+      <div class="flex flex-col gap-0.5">
+        @for (result of results.value()!.products; track result.data.id) {
+        <button
+          type="button"
+          (click)="openProduct(result)"
+          class="hover:bg-platinum-10 active:bg-platinum-20/60 flex items-center gap-3.5 rounded-xl px-2.5 py-2 transition-colors"
+        >
+          <div class="flex h-12 w-12 shrink-0 items-center justify-center">
+            <img
+              [src]="getImageSrc(result.data.id, result.images[0])"
+              [alt]="result.data.name"
+              width="48"
+              height="48"
+              loading="lazy"
+              class="h-full w-full object-contain opacity-0 transition-opacity duration-200"
+              (load)="$event.target.classList.remove('opacity-0')"
+            />
+          </div>
+
+          <div class="min-w-0 flex-1 text-left">
+            <p class="text-platinum-100 text-[15px] font-bold">{{ result.data.price }} ₾</p>
+            <h4 class="text-platinum-60 mt-0.5 line-clamp-1 text-[13px] leading-snug">
+              {{ result.data.name }}
+            </h4>
+          </div>
+        </button>
+        }
+      </div>
+
+      <a
+        routerLink="/search"
+        [queryParams]="searchLinkParams()"
+        (click)="close()"
+        class="bg-green-10 text-green-70 hover:bg-green-20 mt-2 flex h-11 items-center justify-center rounded-xl text-sm font-semibold transition-colors"
+      >
+        ყველა შედეგის ნახვა
+      </a>
+      } @else if (results.isLoading()) {
+      <div class="flex flex-col gap-0.5">
+        @for (skeleton of [1, 2, 3]; track skeleton) {
+        <div class="flex items-center gap-3.5 px-2.5 py-2">
+          <div class="shimmer h-12 w-12 shrink-0 rounded-lg"></div>
+          <div class="min-w-0 flex-1 space-y-2">
+            <div class="shimmer h-4 w-20 rounded-sm"></div>
+            <div class="shimmer h-3 w-3/4 rounded-sm"></div>
+          </div>
+        </div>
+        }
+      </div>
+      } @else {
+      <div class="flex flex-col items-center gap-3 py-8">
+        <svg
+          width="40"
+          height="40"
+          viewBox="0 0 24 24"
+          fill="none"
+          class="text-platinum-20"
+          aria-hidden="true"
+        >
+          <path
+            d="M20 20L16.1333 16.1333M18.2222 11.1111C18.2222 15.0385 15.0385 18.2222 11.1111 18.2222C7.18375 18.2222 4 15.0385 4 11.1111C4 7.18375 7.18375 4 11.1111 4C15.0385 4 18.2222 7.18375 18.2222 11.1111Z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <p class="text-platinum-50 text-sm">შედეგი ვერ მოიძებნა</p>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>

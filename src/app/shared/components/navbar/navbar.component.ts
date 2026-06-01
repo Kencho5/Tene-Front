@@ -1,27 +1,64 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { SharedModule } from '../../shared.module';
 import { navUrls } from '@utils/navUrls';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { CartService } from '@core/services/products/cart.service';
-import { SearchDropdownComponent } from '../search-dropdown/search-dropdown.component';
+import { CategoriesService } from '@core/services/categories/categories.service';
+import {
+  CategoryTreeNode,
+  CategoryTreeResponse,
+} from '@core/interfaces/categories.interface';
+import { SearchBarComponent } from '../search-bar/search-bar.component';
 
 @Component({
   selector: 'app-navbar',
-  imports: [SharedModule, SearchDropdownComponent],
+  imports: [SharedModule, SearchBarComponent],
   templateUrl: './navbar.component.html',
+  styles: `
+    @keyframes skeleton-shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .shimmer {
+      background: linear-gradient(90deg, rgba(255,255,255,0.12) 25%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.12) 75%);
+      background-size: 200% 100%;
+      animation: skeleton-shimmer 1.5s ease-in-out infinite;
+    }
+  `,
 })
 export class NavbarComponent {
   readonly authService = inject(AuthService);
   readonly cartService = inject(CartService);
+  private readonly categoriesService = inject(CategoriesService);
 
-  mobileMenuOpen = signal(false);
-  navUrls = navUrls;
+  readonly showCategories = input(false);
 
-  toggleMobileMenu() {
-    this.mobileMenuOpen.update((value) => !value);
+  readonly navUrls = navUrls.filter((nav) => nav.url !== 'coming-soon');
+  readonly menuOpen = signal(false);
+
+  toggleMenu() {
+    this.menuOpen.update((value) => !value);
   }
 
-  closeMobileMenu() {
-    this.mobileMenuOpen.set(false);
+  closeMenu() {
+    this.menuOpen.set(false);
   }
+
+  readonly categories = rxResource({
+    defaultValue: {} as CategoryTreeResponse,
+    params: () => true,
+    stream: () => this.categoriesService.getCategoryTree(),
+  });
+
+  readonly sortedCategories = computed<CategoryTreeNode[]>(() => {
+    const all = this.categories.value().categories ?? [];
+    const priorityIds = [2, 3, 9];
+    const priority = priorityIds
+      .map((id) => all.find((c) => c.id === id))
+      .filter(Boolean) as CategoryTreeNode[];
+    const rest = all.filter((c) => !priorityIds.includes(c.id));
+    return [...priority, ...rest];
+  });
 }

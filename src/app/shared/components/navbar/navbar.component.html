@@ -1,342 +1,269 @@
-<nav
-  class="border-hairline fixed top-0 z-40 h-[72px] w-full border-b bg-white lg:h-20"
->
-  <div class="container mx-auto flex h-full items-center justify-between px-4 xl:px-8">
-    <!-- Logo and Navigation Links -->
-    <div class="flex items-center gap-10">
-      <a routerLink="">
-        <img src="/logo.svg" alt="Logo" class="h-[38px] w-[90px] sm:h-[34px] sm:w-20" />
-      </a>
-
-      <!-- Desktop Navigation Links -->
-      <div
-        class="bg-platinum-10 text-platinum-50 hidden h-10 flex-nowrap items-center gap-1 rounded-full p-1 text-[13px] font-semibold xl:flex"
+<header class="fixed top-0 z-40 w-full">
+  <!-- Main brand band -->
+  <div class="bg-green-60 text-white">
+    <div class="container mx-auto flex h-[60px] items-center gap-3 px-4 lg:h-20 lg:gap-6 xl:px-8">
+      <!-- Menu button (mobile only) -->
+      <button
+        type="button"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        aria-label="მენიუ"
+        class="hover:bg-green-70 -ml-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-md transition-colors lg:hidden"
       >
-        <a
-          routerLink="/"
-          routerLinkActive="bg-white text-green-70 shadow-sm"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="hover:text-green-70 flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all"
-        >
-          <svg width="18" height="18" viewBox="0 0 1024 1024">
-            <path
-              fill="currentColor"
-              fill-rule="evenodd"
-              d="M464 144c8.837 0 16 7.163 16 16v304c0 8.836-7.163 16-16 16H160c-8.837 0-16-7.164-16-16V160c0-8.837 7.163-16 16-16zm-52 68H212v200h200zm493.333 87.686c6.248 6.248 6.248 16.379 0 22.627l-181.02 181.02c-6.248 6.248-16.378 6.248-22.627 0l-181.019-181.02c-6.248-6.248-6.248-16.379 0-22.627l181.02-181.02c6.248-6.248 16.378-6.248 22.627 0zm-84.853 11.313L713 203.52 605.52 311 713 418.48zM464 544c8.837 0 16 7.164 16 16v304c0 8.837-7.163 16-16 16H160c-8.837 0-16-7.163-16-16V560c0-8.836 7.163-16 16-16zm-52 68H212v200h200zm452-68c8.837 0 16 7.164 16 16v304c0 8.837-7.163 16-16 16H560c-8.837 0-16-7.163-16-16V560c0-8.836 7.163-16 16-16zm-52 68H612v200h200z"
-            />
-          </svg>
-
-          პროდუქცია
-        </a>
-        <!-- <a -->
-        <!--   routerLink="/products" -->
-        <!--   routerLinkActive="bg-white text-green-70 shadow-sm" -->
-        <!--   class="hover:text-green-70 flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all" -->
-        <!-- > -->
-        <!--   პროდუქტები -->
-        <!-- </a> -->
-        <a
-          routerLink="/bins"
-          routerLinkActive="bg-white text-green-70 shadow-sm"
-          class="hover:text-green-70 flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all"
-        >
-          ურნები
-        </a>
-        <a
-          routerLink="/coming-soon"
-          class="hover:text-green-70 flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all"
-        >
-          ტენე ქულები
-        </a>
-        <a
-          routerLink="/coming-soon"
-          class="hover:text-green-70 flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all"
-        >
-          გადადნობა
-        </a>
-        <a
-          routerLink="/coming-soon"
-          class="hover:text-green-70 flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all"
-        >
-          გამოიმუშავე თანხა
-        </a>
-
-        <!-- More Dropdown -->
-        <div class="group relative pr-2">
-          <button
-            class="hover:text-green-70 flex items-center rounded-full px-3 py-1.5 transition-all"
-          >
-            მეტი
-            <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fill-rule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
-          <!-- Dropdown Menu -->
-          <div
-            class="border-hairline text-platinum-90 shadow-low invisible absolute top-full left-0 z-50 mt-3 w-[260px] rounded-xl border bg-white p-1.5 text-sm opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100"
-          >
-            <a
-              routerLink="about"
-              class="hover:bg-platinum-10 flex items-center justify-between rounded-lg px-3 py-2.5 transition-colors"
-            >
-              <div class="flex items-center gap-3">
-                <div class="bg-green-10 flex h-9 w-9 items-center justify-center rounded-lg">
-                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                    <path
-                      d="M10 12.6666V9.79508M10 7.08325C10 7.08325 10.004 7.08325 10.0068 7.08325M16.6668 9.99992C16.6668 13.6818 13.6821 16.6666 10.0002 16.6666C6.31826 16.6666 3.33348 13.6818 3.33348 9.99992C3.33348 6.31802 6.31826 3.33325 10.0002 3.33325C13.6821 3.33325 16.6668 6.31802 16.6668 9.99992Z"
-                      stroke="#10883c"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-                ჩვენს შესახებ
-              </div>
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M7.5 15L12.24 10.59C12.59 10.26 12.59 9.74 12.24 9.41L7.5 5"
-                  stroke="#888"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </a>
-            <a
-              routerLink="/coming-soon"
-              class="hover:bg-platinum-10 flex items-center justify-between rounded-lg px-3 py-2.5 transition-colors"
-            >
-              <div class="flex items-center gap-3">
-                <div class="bg-green-10 flex h-9 w-9 items-center justify-center rounded-lg">
-                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                    <path
-                      d="M5 16.016C5 16.016 8.1 12.31 10 10.42C11.9 8.52 12.92 8.75 13.98 9.49C15.05 10.23 16.6 12.08 16.6 12.08M8.52 7.41C8.52 8.02 8.02 8.52 7.41 8.52C6.79 8.52 6.3 8.02 6.3 7.41C6.3 6.79 6.79 6.3 7.41 6.3C8.02 6.3 8.52 6.79 8.52 7.41ZM3.33 14.17C3.33 15.55 4.45 16.67 5.83 16.67H14.17C15.55 16.67 16.67 15.55 16.67 14.17V5.83C16.67 4.45 15.55 3.33 14.17 3.33H5.83C4.45 3.33 3.33 4.45 3.33 5.83V14.17Z"
-                      stroke="#10883c"
-                      stroke-width="1.5"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-                ბლოგები
-              </div>
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M7.5 15L12.24 10.59C12.59 10.26 12.59 9.74 12.24 9.41L7.5 5"
-                  stroke="#888"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </a>
-            <a
-              routerLink="/contact"
-              class="hover:bg-platinum-10 flex items-center justify-between rounded-lg px-3 py-2.5 transition-colors"
-            >
-              <div class="flex items-center gap-3">
-                <div class="bg-green-10 flex h-9 w-9 items-center justify-center rounded-lg">
-                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                    <path
-                      d="M7.26 13.09C4.38 10.46 3.62 7.73 3.47 6.03C3.37 4.99 4.19 4.19 5.22 4.03L6.41 3.84C7.58 3.66 8.69 4.44 8.91 5.6L9.1 6.61C9.18 7.07 8.93 7.52 8.5 7.69C8 7.88 7.75 8.44 8.01 8.91C8.31 9.47 8.78 10.19 9.4 10.76C10.01 11.32 10.78 11.72 11.36 11.98C11.85 12.19 12.38 11.9 12.53 11.38C12.66 10.94 13.09 10.64 13.55 10.69L14.57 10.79C15.75 10.9 16.63 11.94 16.55 13.12L16.47 14.32C16.4 15.36 15.68 16.25 14.63 16.24C12.92 16.24 10.14 15.73 7.26 13.09Z"
-                      stroke="#10883c"
-                      stroke-width="1.5"
-                    />
-                  </svg>
-                </div>
-                კონტაქტი
-              </div>
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M7.5 15L12.24 10.59C12.59 10.26 12.59 9.74 12.24 9.41L7.5 5"
-                  stroke="#888"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="flex items-center gap-1 xl:gap-3">
-      <!-- Search -->
-      @defer {
-      <app-search-dropdown />
-      }
-
-      <!-- Cart Icon -->
-      <a
-        class="hover:bg-platinum-10 relative flex h-10 w-10 items-center justify-center rounded-full transition-colors"
-        routerLink="/cart"
-      >
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
-            d="M16.0898 12C16.0898 11.4477 15.6421 11 15.0898 11C14.5375 11 14.0898 11.4477 14.0898 12H15.0898H16.0898ZM11.8898 15.2V16.2V15.2ZM9.68979 12C9.68979 11.4477 9.24207 11 8.68979 11C8.1375 11 7.68979 11.4477 7.68979 12H8.68979H9.68979ZM19.8735 8.57826L20.8313 8.29091V8.29091L19.8735 8.57826ZM4.00001 9.4403L5.00001 9.4403V9.4403H4.00001ZM4.12653 8.57827L3.1687 8.29092L4.12653 8.57827ZM4 17L5 17V17L4 17ZM19.1414 6.13795L18.1836 6.4253L19.1414 6.13795ZM4.85862 6.13796L5.81644 6.42531L4.85862 6.13796ZM15.0898 12H14.0898C14.0898 12.5835 13.858 13.1431 13.4454 13.5556L14.1525 14.2627L14.8596 14.9698C15.6473 14.1822 16.0898 13.1139 16.0898 12H15.0898ZM14.1525 14.2627L13.4454 13.5556C13.0328 13.9682 12.4733 14.2 11.8898 14.2V15.2V16.2C13.0037 16.2 14.072 15.7575 14.8596 14.9698L14.1525 14.2627ZM11.8898 15.2V14.2C11.3063 14.2 10.7467 13.9682 10.3342 13.5556L9.62705 14.2627L8.91994 14.9698C9.70759 15.7575 10.7759 16.2 11.8898 16.2V15.2ZM9.62705 14.2627L10.3342 13.5556C9.92157 13.1431 9.68979 12.5835 9.68979 12H8.68979H7.68979C7.68979 13.1139 8.13229 14.1822 8.91994 14.9698L9.62705 14.2627ZM4 9V10H19.7796V9V8H4V9ZM4.12653 8.57827L5.08436 8.86561L5.81644 6.42531L4.85862 6.13796L3.90079 5.85062L3.1687 8.29092L4.12653 8.57827ZM19.1414 6.13795L18.1836 6.4253L18.9157 8.86561L19.8735 8.57826L20.8313 8.29091L20.0992 5.8506L19.1414 6.13795ZM19.8735 8.57826L18.9157 8.86561C18.9716 9.05205 19 9.24566 19 9.44031H20H21C21 9.05101 20.9432 8.66379 20.8313 8.29091L19.8735 8.57826ZM4.00001 9.4403H5.00001C5.00001 9.24566 5.02843 9.05205 5.08436 8.86561L4.12653 8.57827L3.1687 8.29092C3.05684 8.6638 3.00001 9.05101 3.00001 9.4403H4.00001ZM4 17L3 17C3 19.2091 4.79086 21 7 21V20V19C5.89543 19 5 18.1046 5 17L4 17ZM20 17H19C19 18.1046 18.1046 19 17 19V20V21C19.2092 21 21 19.2091 21 17H20ZM16.2679 4V5C17.1511 5 17.9298 5.57933 18.1836 6.4253L19.1414 6.13795L20.0992 5.8506C19.5916 4.15867 18.0343 3 16.2679 3V4ZM7.7321 4V3C5.96566 3 4.40837 4.15868 3.90079 5.85062L4.85862 6.13796L5.81644 6.42531C6.07023 5.57934 6.84888 5 7.7321 5V4ZM20 9.44031H19V17H20H21V9.44031H20ZM4 17L5 17L5.00001 9.4403L4.00001 9.4403L3.00001 9.4403L3 17L4 17ZM7.7321 4V5H16.2679V4V3H7.7321V4ZM17 20V19H7V20V21H17V20Z"
-            fill="#212121"
+            d="M3 6H21M3 12H21M3 18H21"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
           />
         </svg>
+      </button>
 
-        @if (cartService.itemCount() > 0) {
-        <span
-          class="bg-valencia-50 absolute top-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-semibold text-white"
-        >
-          {{ cartService.itemCount() }}
-        </span>
-        }
+      <!-- Logo -->
+      <a routerLink="" class="shrink-0">
+        <img
+          src="/logo.svg"
+          alt="Logo"
+          class="h-7 w-[68px] brightness-0 invert lg:h-[34px] lg:w-20"
+        />
       </a>
 
-      <!-- User/Auth -->
-      <div>
+      <!-- Search (desktop only, inline center) -->
+      <div class="hidden min-w-0 flex-1 lg:block">
+        <app-search-bar />
+      </div>
+
+      <!-- Actions -->
+      <div class="ml-auto flex shrink-0 items-center gap-0.5 lg:ml-0 lg:gap-1">
+        <!-- Account -->
         @if (authService.isAuthenticated()) {
         <a
           routerLink="profile"
-          class="hover:bg-platinum-10 flex h-10 w-10 items-center justify-center rounded-full transition-colors"
+          class="hover:bg-green-70 flex h-10 items-center justify-center gap-2 rounded-md px-2.5 transition-colors lg:px-3"
+          aria-label="პროფილი"
         >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path
-              d="M17.2356 20C17.8451 20 18.4071 19.6713 18.7059 19.1401V19.1401C19.0219 18.5784 18.9872 17.8849 18.5194 17.4417C17.5128 16.488 15.3978 15 12 15C8.60834 15 6.59708 16.4827 5.6541 17.4365C5.20946 17.8863 5.19264 18.5647 5.50271 19.1159C5.80123 19.6506 6.36323 20 6.97292 20H17.2356Z"
-              stroke="#212121"
+              d="M17.2356 20C17.8451 20 18.4071 19.6713 18.7059 19.1401C19.0219 18.5784 18.9872 17.8849 18.5194 17.4417C17.5128 16.488 15.3978 15 12 15C8.60834 15 6.59708 16.4827 5.6541 17.4365C5.20946 17.8863 5.19264 18.5647 5.50271 19.1159C5.80123 19.6506 6.36323 20 6.97292 20H17.2356Z"
+              stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
             <path
               d="M12.1111 11.1111C14.0748 11.1111 15.6667 9.51924 15.6667 7.55556C15.6667 5.59188 14.0748 4 12.1111 4C10.1474 4 8.55556 5.59188 8.55556 7.55556C8.55556 9.51924 10.1474 11.1111 12.1111 11.1111Z"
-              stroke="#212121"
+              stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
           </svg>
+          <span class="hidden text-sm font-semibold lg:inline">პროფილი</span>
         </a>
         } @else {
         <a
           routerLink="/auth/login"
-          class="bg-green-60 hover:bg-green-70 hidden h-9 items-center rounded-full px-4 text-sm font-semibold text-white transition-colors xl:flex"
+          class="hover:bg-green-70 flex h-10 items-center justify-center gap-2 rounded-md px-2.5 transition-colors lg:px-3"
+          aria-label="შესვლა"
         >
-          შესვლა
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M17.2356 20C17.8451 20 18.4071 19.6713 18.7059 19.1401C19.0219 18.5784 18.9872 17.8849 18.5194 17.4417C17.5128 16.488 15.3978 15 12 15C8.60834 15 6.59708 16.4827 5.6541 17.4365C5.20946 17.8863 5.19264 18.5647 5.50271 19.1159C5.80123 19.6506 6.36323 20 6.97292 20H17.2356Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M12.1111 11.1111C14.0748 11.1111 15.6667 9.51924 15.6667 7.55556C15.6667 5.59188 14.0748 4 12.1111 4C10.1474 4 8.55556 5.59188 8.55556 7.55556C8.55556 9.51924 10.1474 11.1111 12.1111 11.1111Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span class="hidden text-sm font-semibold lg:inline">შესვლა</span>
         </a>
         }
-      </div>
 
-      <!-- Hamburger Menu (Mobile only) -->
-      <button
-        class="hover:bg-platinum-10 flex h-10 w-10 items-center justify-center rounded-full transition-colors xl:hidden"
-        (click)="toggleMobileMenu()"
-        [attr.aria-label]="mobileMenuOpen() ? 'Close menu' : 'Open menu'"
-      >
-        @if (mobileMenuOpen()) {
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+        <!-- Cart -->
+        <a
+          routerLink="/cart"
+          class="hover:bg-green-70 relative flex h-10 items-center justify-center gap-2 rounded-md px-2.5 transition-colors lg:px-3"
+          aria-label="კალათა"
         >
-          <path
-            d="M18 6L6 18M6 6L18 18"
-            stroke="#212121"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        } @else {
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M3 12H21M3 6H21M3 18H21"
-            stroke="#212121"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        }
-      </button>
+          <span class="relative flex">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M16.0898 12C16.0898 11.4477 15.6421 11 15.0898 11C14.5375 11 14.0898 11.4477 14.0898 12H16.0898ZM9.68979 12C9.68979 11.4477 9.24207 11 8.68979 11C8.1375 11 7.68979 11.4477 7.68979 12H9.68979ZM19.8735 8.57826L18.9157 8.86561L19.8735 8.57826ZM4.00001 9.4403H5.00001H4.00001ZM4.12653 8.57827L5.08436 8.86561L4.12653 8.57827ZM4 17H5H4ZM19.1414 6.13795L18.1836 6.4253L19.1414 6.13795ZM4.85862 6.13796L5.81644 6.42531L4.85862 6.13796ZM15.0898 12H14.0898C14.0898 12.5835 13.858 13.1431 13.4454 13.5556L14.8596 14.9698C15.6473 14.1822 16.0898 13.1139 16.0898 12H15.0898ZM14.1525 14.2627L13.4454 13.5556C13.0328 13.9682 12.4733 14.2 11.8898 14.2V16.2C13.0037 16.2 14.072 15.7575 14.8596 14.9698L14.1525 14.2627ZM11.8898 15.2V14.2C11.3063 14.2 10.7467 13.9682 10.3342 13.5556L8.91994 14.9698C9.70759 15.7575 10.7759 16.2 11.8898 16.2V15.2ZM9.62705 14.2627L10.3342 13.5556C9.92157 13.1431 9.68979 12.5835 9.68979 12H7.68979C7.68979 13.1139 8.13229 14.1822 8.91994 14.9698L9.62705 14.2627ZM4 9V10H19.7796V8H4V9ZM4.12653 8.57827L5.08436 8.86561L5.81644 6.42531L3.90079 5.85062L3.1687 8.29092L4.12653 8.57827ZM19.1414 6.13795L18.1836 6.4253L18.9157 8.86561L20.8313 8.29091L20.0992 5.8506L19.1414 6.13795ZM19.8735 8.57826L18.9157 8.86561C18.9716 9.05205 19 9.24566 19 9.44031H21C21 9.05101 20.9432 8.66379 20.8313 8.29091L19.8735 8.57826ZM4.00001 9.4403H5.00001C5.00001 9.24566 5.02843 9.05205 5.08436 8.86561L3.1687 8.29092C3.05684 8.6638 3.00001 9.05101 3.00001 9.4403H4.00001ZM4 17H5L5.00001 9.4403L3.00001 9.4403L3 17H4ZM20 9.44031H19V17H21V9.44031H20ZM7.7321 4V5H16.2679V3H7.7321V4ZM7.7321 4V3C5.96566 3 4.40837 4.15868 3.90079 5.85062L5.81644 6.42531C6.07023 5.57934 6.84888 5 7.7321 5V4ZM16.2679 4V5C17.1511 5 17.9298 5.57933 18.1836 6.4253L20.0992 5.8506C19.5916 4.15867 18.0343 3 16.2679 3V4ZM20 17H19C19 18.1046 18.1046 19 17 19V21C19.2092 21 21 19.2091 21 17H20ZM4 17H3C3 19.2091 4.79086 21 7 21V19C5.89543 19 5 18.1046 5 17H4ZM17 20V19H7V21H17V20Z"
+                fill="currentColor"
+              />
+            </svg>
+            @if (cartService.itemCount() > 0) {
+            <span
+              class="bg-valencia-50 absolute -top-1.5 -right-2 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-bold text-white"
+            >
+              {{ cartService.itemCount() }}
+            </span>
+            }
+          </span>
+          <span class="hidden text-sm font-semibold lg:inline">კალათა</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Search (mobile only, full-width second row) -->
+    <div class="px-4 pb-2.5 lg:hidden">
+      <app-search-bar />
     </div>
   </div>
-</nav>
 
-<!-- Mobile Menu -->
-@if (mobileMenuOpen()) {
-<div
-  class="fixed top-[72px] right-0 left-0 z-50 h-[calc(100vh-72px)] overflow-y-auto bg-white xl:hidden"
->
-  <div class="mb-14 flex h-full flex-col">
-    <!-- Mobile Menu Links -->
-    <nav class="flex-1 space-y-0.5 px-2 pt-2">
-      @for (navUrl of navUrls; track $index) {
-      <a
-        [routerLink]="navUrl.url"
-        [routerLinkActive]="navUrl.url === 'coming-soon' ? '' : 'bg-green-10 text-green-70'"
-        [routerLinkActiveOptions]="{ exact: true }"
-        (click)="closeMobileMenu()"
-        class="text-platinum-80 hover:bg-platinum-10 flex h-14 items-center justify-between gap-3 rounded-xl px-3 py-2 text-base font-semibold transition-colors"
+  <!-- Category strip (home page, desktop only, horizontal scroll) -->
+  @if (showCategories()) {
+  <div class="border-hairline text-platinum-70 hidden border-b bg-white lg:block">
+    <div class="relative container mx-auto">
+      <div
+        class="hide-scrollbar flex h-10 items-center gap-1 overflow-x-auto px-4 text-[13px] font-medium whitespace-nowrap lg:h-11 xl:px-8"
       >
-        <div class="flex items-center gap-3.5">
-          <div class="bg-green-10 flex h-9 w-9 items-center justify-center rounded-lg">
-            <img src="/assets/images/navbar/{{ navUrl.icon }}.svg" class="h-5 w-5" />
-          </div>
-
-          {{ navUrl.name }}
-        </div>
-
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+        @if (categories.isLoading()) { @for (skeleton of [1, 2, 3, 4, 5, 6]; track skeleton) {
+        <div class="bg-platinum-10 mx-2 h-3.5 w-20 shrink-0 animate-pulse rounded-full"></div>
+        } } @else { @for (category of sortedCategories(); track category.id) {
+        <a
+          routerLink="/search"
+          [queryParams]="{ parent_category_id: category.id }"
+          class="hover:text-green-70 hover:bg-green-10 shrink-0 rounded-md px-3 py-1.5 transition-colors"
         >
+          {{ category.name }}
+        </a>
+        } }
+      </div>
+
+      <!-- Right fade hint (scrollable) -->
+      <div
+        class="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-white to-transparent"
+      ></div>
+    </div>
+  </div>
+  }
+</header>
+
+<!-- Mobile slide-out menu -->
+@if (menuOpen()) {
+<div class="fixed inset-0 z-50 lg:hidden">
+  <aside class="absolute inset-0 flex h-full w-full flex-col bg-white">
+    <!-- Header -->
+    <div class="bg-green-60 flex h-[60px] shrink-0 items-center justify-between px-4 text-white">
+      <span class="text-base font-semibold">მენიუ</span>
+      <button
+        type="button"
+        (click)="closeMenu()"
+        class="hover:bg-green-70 flex h-9 w-9 items-center justify-center rounded-md transition-colors"
+        aria-label="დახურვა"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
-            d="M9 18L14.6854 12.7071C15.1049 12.3166 15.1049 11.6834 14.6854 11.2929L9 6"
-            stroke="#D1D1D1"
+            d="M18 6L6 18M6 6L18 18"
+            stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
           />
         </svg>
-      </a>
-      }
-    </nav>
+      </button>
+    </div>
 
-    <!-- Auth Buttons -->
-    <div class="border-hairline space-y-3 border-t px-4 pt-6">
+    <div class="flex-1 overflow-y-auto" style="scrollbar-width: none">
+      <!-- Site links -->
+      <nav class="space-y-0.5 p-2">
+        @for (navUrl of navUrls; track $index) {
+        <a
+          [routerLink]="navUrl.url"
+          [routerLinkActive]="navUrl.url === 'coming-soon' ? '' : 'bg-green-10 text-green-70'"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMenu()"
+          class="text-platinum-80 hover:bg-platinum-10 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors"
+        >
+          <div class="bg-green-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">
+            <img src="/assets/images/navbar/{{ navUrl.icon }}.svg" class="h-5 w-5" />
+          </div>
+          {{ navUrl.name }}
+        </a>
+        }
+      </nav>
+
+      <!-- Categories -->
+      <nav class="border-hairline space-y-0.5 border-t p-2">
+        <p class="text-platinum-40 px-3 pt-2 pb-1 text-xs font-semibold tracking-wider uppercase">
+          კატეგორიები
+        </p>
+        @if (categories.isLoading()) { @for (skeleton of [1, 2, 3, 4, 5, 6]; track skeleton) {
+        <div class="flex items-center gap-3 px-3 py-2.5">
+          <div class="bg-platinum-10 h-9 w-9 shrink-0 animate-pulse rounded-lg"></div>
+          <div class="bg-platinum-10 h-3.5 w-28 animate-pulse rounded-sm"></div>
+        </div>
+        } } @else { @for (category of sortedCategories(); track category.id) {
+        <a
+          routerLink="/search"
+          [queryParams]="{ parent_category_id: category.id }"
+          (click)="closeMenu()"
+          class="text-platinum-80 hover:bg-platinum-10 flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 transition-colors"
+        >
+          <div class="flex min-w-0 items-center gap-3">
+            <div
+              class="bg-platinum-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+            >
+              @if (category.image_url) {
+              <img
+                [src]="category.image_url"
+                [alt]="category.name"
+                loading="lazy"
+                class="h-6 w-6 object-contain opacity-0 transition-opacity duration-200"
+                (load)="$event.target.classList.remove('opacity-0')"
+              />
+              }
+            </div>
+            <span class="truncate text-sm font-medium">{{ category.name }}</span>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M9 18L14.6854 12.7071C15.1049 12.3166 15.1049 11.6834 14.6854 11.2929L9 6"
+              stroke="#D1D1D1"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </a>
+        } }
+      </nav>
+    </div>
+
+    <!-- Auth footer -->
+    <div class="border-hairline space-y-3 border-t p-4">
+      @if (authService.isAuthenticated()) {
+      <a
+        routerLink="profile"
+        (click)="closeMenu()"
+        class="bg-green-60 hover:bg-green-70 inline-flex h-11 w-full items-center justify-center rounded-full px-6 font-medium text-white transition-colors"
+      >
+        პროფილი
+      </a>
+      } @else {
       <a
         routerLink="/auth/register"
-        class="bg-green-60 hover:bg-green-70 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-white transition-colors"
+        (click)="closeMenu()"
+        class="bg-green-60 hover:bg-green-70 inline-flex h-11 w-full items-center justify-center rounded-full px-6 font-medium text-white transition-colors"
       >
         რეგისტრაცია
       </a>
       <a
         routerLink="/auth/login"
-        class="border-green-60 text-green-70 hover:bg-green-10 inline-flex w-full items-center justify-center gap-2 rounded-full border-[1.5px] px-6 py-3 font-medium transition-colors"
+        (click)="closeMenu()"
+        class="border-green-60 text-green-70 hover:bg-green-10 inline-flex w-full items-center justify-center rounded-full border-[1.5px] px-6 py-3 font-medium transition-colors"
       >
         ავტორიზაცია
       </a>
+      }
     </div>
-  </div>
+  </aside>
 </div>
 }

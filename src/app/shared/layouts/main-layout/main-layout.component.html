@@ -1,7 +1,12 @@
-<app-navbar />
+<app-navbar [showCategories]="isHome()" />
 
 <main
-  class="relative mt-[72px] min-h-[calc(100vh-72px)] flex-1 sm:mt-20 sm:min-h-[calc(100vh-80px)]"
+  class="relative mt-[114px] min-h-[calc(100vh-114px)] flex-1"
+  [ngClass]="
+    isHome()
+      ? 'lg:mt-[124px] lg:min-h-[calc(100vh-124px)]'
+      : 'lg:mt-20 lg:min-h-[calc(100vh-80px)]'
+  "
 >
   @if (!this.loadingService.loading()) {
     <router-outlet />
