@@ -31,7 +31,7 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         placeholder="ძიება შეკვეთის ID-ით..."
-        class="h-11 w-full rounded-lg border border-hairline bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-30"
+        class="h-11 w-full rounded-xl border border-hairline bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-30"
       />
       @if (searchQuery()) {
         <button
@@ -67,7 +67,7 @@
     @if (searchResponse.isLoading()) {
       <div class="space-y-3">
         @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
-          <div class="flex gap-3 rounded-xl bg-platinum-10/60 p-3">
+          <div class="flex gap-3 rounded-2xl bg-platinum-10/60 p-3">
             <div class="h-16 w-16 shrink-0 animate-pulse rounded-lg bg-platinum-10"></div>
             <div class="min-w-0 flex-1 space-y-2">
               <div class="h-4 w-3/4 animate-pulse rounded-sm bg-platinum-10"></div>
@@ -78,7 +78,7 @@
         }
       </div>
     } @else if (orders().length === 0) {
-      <div class="rounded-xl bg-platinum-10/60 px-4 py-16 text-center">
+      <div class="rounded-2xl bg-platinum-10/60 px-4 py-16 text-center">
         <div class="flex flex-col items-center gap-2">
           <svg width="44" height="44" viewBox="0 0 48 48" fill="none" class="text-platinum-30">
             <path d="M42 30V18L24 9L6 18V30L24 39L42 30Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -91,7 +91,7 @@
     } @else {
       <div class="space-y-3">
         @for (order of orders(); track order.id) {
-          <div [id]="'order-' + order.id" class="scroll-mt-4 overflow-hidden rounded-xl border border-hairline bg-white">
+          <div [id]="'order-' + order.id" class="scroll-mt-4 overflow-hidden rounded-2xl border border-hairline bg-white">
             <!-- Card header -->
             <button
               type="button"
@@ -154,7 +154,7 @@
             @if (isExpanded(order)) {
               <div class="space-y-3 border-t border-hairline bg-platinum-10/30 p-4">
                 <!-- Customer -->
-                <div class="rounded-xl border border-hairline bg-white">
+                <div class="rounded-2xl border border-hairline bg-white">
                   <div class="border-b border-hairline px-3.5 py-2.5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-green-70">მომხმარებელი</p>
                   </div>
@@ -192,7 +192,7 @@
                 </div>
 
                 <!-- Delivery & Order -->
-                <div class="rounded-xl border border-hairline bg-white">
+                <div class="rounded-2xl border border-hairline bg-white">
                   <div class="border-b border-hairline px-3.5 py-2.5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-green-70">მიწოდება & შეკვეთა</p>
                   </div>
@@ -243,7 +243,7 @@
                 </div>
 
                 <!-- Products -->
-                <div class="rounded-xl border border-hairline bg-white">
+                <div class="rounded-2xl border border-hairline bg-white">
                   <div class="border-b border-hairline px-3.5 py-2.5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-green-70">პროდუქტები ({{ order.items.length }})</p>
                   </div>
@@ -313,7 +313,7 @@
   </div>
 
   <!-- Table (sm+) -->
-  <div class="hidden overflow-visible rounded-xl bg-white sm:block">
+  <div class="hidden overflow-visible rounded-2xl bg-white sm:block">
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
@@ -556,7 +556,7 @@
                     <div class="grid grid-cols-1 gap-3 lg:grid-cols-3">
 
                       <!-- Left: Customer & Delivery -->
-                      <div class="rounded-xl border border-hairline bg-white">
+                      <div class="rounded-2xl border border-hairline bg-white">
                         <div class="border-b border-hairline px-4 py-2.5">
                           <p class="text-xs font-semibold uppercase tracking-wide text-green-70">მომხმარებელი</p>
                         </div>
@@ -594,7 +594,7 @@
                       </div>
 
                       <!-- Middle: Delivery & Order info -->
-                      <div class="rounded-xl border border-hairline bg-white">
+                      <div class="rounded-2xl border border-hairline bg-white">
                         <div class="border-b border-hairline px-4 py-2.5">
                           <p class="text-xs font-semibold uppercase tracking-wide text-green-70">მიწოდება & შეკვეთა</p>
                         </div>
@@ -645,7 +645,7 @@
                       </div>
 
                       <!-- Right: Products -->
-                      <div class="rounded-xl border border-hairline bg-white">
+                      <div class="rounded-2xl border border-hairline bg-white">
                         <div class="border-b border-hairline px-4 py-2.5">
                           <p class="text-xs font-semibold uppercase tracking-wide text-green-70">პროდუქტები ({{ order.items.length }})</p>
                         </div>

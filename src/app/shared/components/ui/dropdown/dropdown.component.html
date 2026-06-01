@@ -40,7 +40,7 @@
   @if (opened()) {
     <div
       (outsideClick)="opened.set(false)"
-      class="absolute z-50 mt-1 w-full min-w-[100px] max-w-full rounded-xl border border-hairline bg-white text-sm shadow-md"
+      class="absolute z-50 mt-1 w-full min-w-[100px] max-w-full rounded-2xl border border-hairline bg-white text-sm shadow-md"
     >
       <div class="max-h-60 space-y-1 overflow-y-auto p-2">
         @for (item of items(); track item.value) {

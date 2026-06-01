@@ -5,7 +5,7 @@
     <div class="bg-hairline my-4 h-px md:my-6"></div>
 
     <div class="container flex flex-col justify-between gap-6 xl:flex-row">
-      <div class="sm:border-hairline flex-1 sm:rounded-xl sm:border sm:bg-white sm:px-6 sm:py-6">
+      <div class="sm:border-hairline flex-1 sm:rounded-2xl sm:border sm:bg-white sm:px-6 sm:py-6">
         <!-- Stepper -->
         <div class="mb-4 sm:mb-6">
           <div class="flex items-center justify-between">
@@ -433,7 +433,7 @@
 
             @if (deliveryNotice(); as notice) {
             <div
-              class="border-cream-30/40 bg-cream-10 text-cream-80 flex items-start gap-2 rounded-xl border px-4 py-3 text-sm"
+              class="border-cream-30/40 bg-cream-10 text-cream-80 flex items-start gap-2 rounded-2xl border px-4 py-3 text-sm"
             >
               <svg
                 class="mt-0.5 h-4 w-4 shrink-0"
@@ -449,7 +449,7 @@
             </div>
             } } @else {
             <div
-              class="border-hairline bg-surface-10 flex flex-col gap-3 rounded-xl border-[1.5px] p-4"
+              class="border-hairline bg-surface-10 flex flex-col gap-3 rounded-2xl border-[1.5px] p-4"
             >
               <div class="flex items-center gap-3">
                 <div
@@ -523,7 +523,7 @@
               </div>
             </div>
 
-            <div class="border-platinum-30/70 relative rounded-xl border-[1.5px] border-dashed bg-white">
+            <div class="border-platinum-30/70 relative rounded-2xl border-[1.5px] border-dashed bg-white">
               <span
                 class="bg-surface-10 absolute top-1/2 -left-2 h-4 w-4 -translate-y-1/2 rounded-full"
               ></span>
@@ -714,14 +714,13 @@
               უკან
             </button>
 
-            @if (!isLastStep()) {
+            @if (currentStep() !== 'review') {
             <button
               type="button"
               (click)="goNext()"
               class="bg-green-60 hover:bg-green-70 inline-flex h-[44px] items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-white transition-colors duration-200"
             >
-              {{ currentStep() === 'review' ? 'დადასტურება' : 'შემდეგი' }} @if (currentStep() !==
-              'review') {
+              შემდეგი
               <svg
                 class="h-4 w-4"
                 viewBox="0 0 20 20"
@@ -731,31 +730,6 @@
               >
                 <path d="M8 5l5 5-5 5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
-              }
-            </button>
-            } @else {
-            <button
-              type="submit"
-              [disabled]="checkoutLoading()"
-              class="bg-green-60 hover:bg-green-70 hidden h-[44px] items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-white transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60 sm:inline-flex"
-            >
-              @if (checkoutLoading()) {
-              <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                ></circle>
-                <path
-                  class="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                ></path>
-              </svg>
-              იტვირთება... } @else { დადასტურება }
             </button>
             }
           </div>
@@ -768,7 +742,6 @@
         [checkoutLoading]="checkoutLoading()"
         [deliveryPrice]="deliveryPrice()"
         [showCheckoutButton]="currentStep() === 'review'"
-        [mobileOnlyCheckoutButton]="true"
         [checkoutButtonText]="'დადასტურება'"
         (checkout)="goNext()"
       />

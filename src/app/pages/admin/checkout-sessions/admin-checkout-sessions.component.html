@@ -26,7 +26,7 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         placeholder="ძიება Session ID ან User ID-ით..."
-        class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-lg border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
+        class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
       />
       @if (searchQuery()) {
       <button
@@ -68,20 +68,20 @@
   @if (loading()) {
   <div class="space-y-3">
     @for (skeleton of [1, 2, 3, 4, 5, 6]; track skeleton) {
-    <div class="bg-platinum-10/60 space-y-2 rounded-xl p-4">
+    <div class="bg-platinum-10/60 space-y-2 rounded-2xl p-4">
       <div class="bg-platinum-10 h-4 w-1/3 animate-pulse rounded-sm"></div>
       <div class="bg-platinum-10 h-3 w-1/4 animate-pulse rounded-sm"></div>
     </div>
     }
   </div>
   } @else if (sessions().length === 0) {
-  <div class="bg-platinum-10/60 rounded-xl px-4 py-16 text-center">
+  <div class="bg-platinum-10/60 rounded-2xl px-4 py-16 text-center">
     <p class="text-platinum-70 text-sm font-medium">სესიები არ მოიძებნა</p>
   </div>
   } @else {
   <div class="space-y-3">
     @for (session of sessions(); track session.session_id) {
-    <div class="border-hairline overflow-hidden rounded-xl border bg-white">
+    <div class="border-hairline overflow-hidden rounded-2xl border bg-white">
       <button
         type="button"
         (click)="toggleExpand(session)"
@@ -171,7 +171,7 @@
       @if (isExpanded(session)) {
       <div class="border-hairline bg-platinum-10/30 space-y-4 border-t px-4 py-4">
         @if (session.order_id) {
-        <div class="border-hairline flex items-center justify-between gap-3 rounded-lg border bg-white px-3 py-2.5">
+        <div class="border-hairline flex items-center justify-between gap-3 rounded-2xl border bg-white px-3 py-2.5">
           <span class="text-platinum-50 text-xs font-medium">შეკვეთა</span>
           <span class="text-platinum-90 font-mono text-xs break-all">{{ session.order_id }}</span>
         </div>
@@ -183,7 +183,7 @@
           >
             {{ group.title }}
           </h3>
-          <dl class="border-hairline divide-hairline divide-y overflow-hidden rounded-lg border bg-white">
+          <dl class="border-hairline divide-hairline divide-y overflow-hidden rounded-2xl border bg-white">
             @for (entry of group.entries; track entry.label) {
             <div class="px-3 py-2.5">
               <dt class="text-platinum-50 text-[11px]">{{ entry.label }}</dt>
@@ -202,11 +202,11 @@
           <h3 class="text-platinum-40 mb-2 text-[11px] font-semibold tracking-wide uppercase">
             პროდუქტები ({{ session.cart.length }})
           </h3>
-          <ul class="border-hairline divide-hairline divide-y overflow-hidden rounded-lg border bg-white">
+          <ul class="border-hairline divide-hairline divide-y overflow-hidden rounded-2xl border bg-white">
             @for (item of session.cart; track $index) {
             <li class="flex items-center gap-3 px-3 py-2.5">
               <div
-                class="bg-surface-10 border-hairline flex aspect-square w-12 shrink-0 items-center justify-center overflow-hidden rounded-md border"
+                class="bg-surface-10 border-hairline flex aspect-square w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border"
               >
                 <img
                   [src]="cartImageUrl(item)"

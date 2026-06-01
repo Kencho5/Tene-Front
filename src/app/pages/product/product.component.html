@@ -292,7 +292,7 @@
               <button
                 type="button"
                 (click)="setWatts(w)"
-                class="h-12 rounded-lg border px-5 text-[15px] font-semibold transition-all duration-200 sm:h-10 sm:px-4 sm:text-[15px]"
+                class="h-12 rounded-full border px-5 text-[15px] font-semibold transition-all duration-200 sm:h-10 sm:px-4 sm:text-[15px]"
                 [ngClass]="
                   selectedWatts() === w
                     ? 'border-green-60 bg-green-10 text-green-70'
@@ -429,7 +429,7 @@
             <div class="flex items-center gap-3">
               <!-- Qty -->
               <div
-                class="border-hairline flex h-12 w-[120px] shrink-0 items-center justify-between rounded-lg border sm:h-11 sm:w-[108px]"
+                class="border-hairline flex h-12 w-[120px] shrink-0 items-center justify-between rounded-full border sm:h-11 sm:w-[108px]"
               >
                 <button
                   type="button"
@@ -469,7 +469,7 @@
               <button
                 type="button"
                 [disabled]="selectedImageQuantity() === 0"
-                class="shadow-low flex h-12 flex-1 items-center justify-center gap-2 rounded-lg text-[16px] font-semibold tracking-wide uppercase transition-all duration-200 sm:h-11 sm:gap-1.5 sm:text-[15px]"
+                class="shadow-low flex h-12 flex-1 items-center justify-center gap-2 rounded-full text-[16px] font-semibold tracking-wide uppercase transition-all duration-200 sm:h-11 sm:gap-1.5 sm:text-[15px]"
                 [ngClass]="selectedImageQuantity() === 0
                   ? 'bg-platinum-10 text-platinum-40 cursor-not-allowed'
                   : 'bg-green-60 text-white hover:bg-green-70 active:bg-green-80 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]'"
@@ -492,7 +492,7 @@
           <!-- ─── Trust badges ─── -->
           <div class="mt-5 space-y-2">
             <div
-              class="border-green-20 bg-green-10/50 flex items-center gap-2.5 rounded-lg border px-3 py-2.5"
+              class="border-green-20 bg-green-10/50 flex items-center gap-2.5 rounded-2xl border px-3 py-2.5"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="shrink-0">
                 <path
@@ -517,7 +517,7 @@
 
             @if (selectedImageQuantity() === 0) {
             <div
-              class="border-valencia-20 bg-valencia-10/50 flex items-center gap-2.5 rounded-lg border px-3 py-2.5"
+              class="border-valencia-20 bg-valencia-10/50 flex items-center gap-2.5 rounded-2xl border px-3 py-2.5"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="shrink-0">
                 <path
@@ -535,7 +535,7 @@
           </div>
 
           <!-- ─── Ask a question ─── -->
-          <div class="border-hairline mt-5 rounded-xl border bg-platinum-10/40 p-4 sm:p-5">
+          <div class="border-hairline mt-5 rounded-2xl border bg-platinum-10/40 p-4 sm:p-5">
             <p
               class="text-platinum-90 text-[15px] font-semibold tracking-wide uppercase sm:text-[13px]"
             >
@@ -548,7 +548,7 @@
               <button
                 type="button"
                 (click)="selectChatChannel('messenger')"
-                class="border-hairline hover:border-green-60/40 hover:bg-green-10 flex h-11 flex-1 items-center justify-center gap-2 rounded-lg border bg-white text-[14px] font-semibold transition-all duration-200 sm:text-[13px]"
+                class="border-hairline hover:border-green-60/40 hover:bg-green-10 flex h-11 flex-1 items-center justify-center gap-2 rounded-full border bg-white text-[14px] font-semibold transition-all duration-200 sm:text-[13px]"
               >
                 <svg
                   width="20"
@@ -574,7 +574,7 @@
               <button
                 type="button"
                 (click)="selectChatChannel('whatsapp')"
-                class="border-hairline hover:border-green-60/40 hover:bg-green-10 flex h-11 flex-1 items-center justify-center gap-2 rounded-lg border bg-white text-[14px] font-semibold transition-all duration-200 sm:text-[13px]"
+                class="border-hairline hover:border-green-60/40 hover:bg-green-10 flex h-11 flex-1 items-center justify-center gap-2 rounded-full border bg-white text-[14px] font-semibold transition-all duration-200 sm:text-[13px]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -595,7 +595,7 @@
             } @else if (chatSent()) {
             <!-- Step 3: success -->
             <div
-              class="border-green-20 bg-green-10/50 mt-3 flex items-center gap-2.5 rounded-lg border px-3 py-3"
+              class="border-green-20 bg-green-10/50 mt-3 flex items-center gap-2.5 rounded-2xl border px-3 py-3"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="shrink-0">
                 <path
@@ -640,7 +640,7 @@
               (input)="questionText.set($any($event.target).value)"
               rows="2"
               placeholder="დაწერეთ თქვენი შეკითხვა..."
-              class="border-hairline focus:border-green-60/60 text-platinum-100 placeholder:text-platinum-40 mt-2 w-full resize-none rounded-lg border px-3 py-2.5 text-[14px] transition-colors outline-none sm:text-[13px]"
+              class="border-hairline focus:border-green-60/60 text-platinum-100 placeholder:text-platinum-40 mt-2 w-full resize-none rounded-xl border px-3 py-2.5 text-[14px] transition-colors outline-none sm:text-[13px]"
             ></textarea>
             <a
               [href]="chatUrl()"
@@ -649,7 +649,7 @@
               (click)="onChatSend()"
               [class.pointer-events-none]="!questionText().trim()"
               [class.opacity-40]="!questionText().trim()"
-              class="bg-green-60 hover:bg-green-70 active:bg-green-80 mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-lg text-[14px] font-semibold text-white transition-all duration-200 sm:text-[13px]"
+              class="bg-green-60 hover:bg-green-70 active:bg-green-80 mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-full text-[14px] font-semibold text-white transition-all duration-200 sm:text-[13px]"
             >
               გაგზავნა
             </a>

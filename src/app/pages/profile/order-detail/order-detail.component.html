@@ -3,7 +3,7 @@
   <div class="flex items-center gap-3">
     <a
       routerLink="/profile/orders"
-      class="border-hairline text-platinum-60 hover:bg-platinum-10 hover:text-platinum-100 flex items-center justify-center rounded-lg border bg-white p-2 transition-colors"
+      class="border-hairline text-platinum-60 hover:bg-platinum-10 hover:text-platinum-100 flex items-center justify-center rounded-full border bg-white p-2 transition-colors"
     >
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path
@@ -21,7 +21,7 @@
   @if (order.isLoading()) {
   <!-- Skeleton -->
   <div class="space-y-4">
-    <div class="border-hairline space-y-4 rounded-xl border bg-white p-6">
+    <div class="border-hairline space-y-4 rounded-2xl border bg-white p-6">
       <div class="bg-platinum-20 h-5 w-40 animate-pulse rounded-sm"></div>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         @for (s of [1,2,3,4,5,6]; track s) {
@@ -32,7 +32,7 @@
         }
       </div>
     </div>
-    <div class="border-hairline space-y-4 rounded-xl border bg-white p-6">
+    <div class="border-hairline space-y-4 rounded-2xl border bg-white p-6">
       <div class="bg-platinum-20 h-5 w-32 animate-pulse rounded-sm"></div>
       @for (s of [1,2,3]; track s) {
       <div class="border-platinum-10 flex items-center gap-4 border-b py-3 last:border-0">
@@ -48,7 +48,7 @@
   </div>
 
   } @else if (order.error()) {
-  <div class="border-hairline rounded-xl border bg-white px-4 py-16 text-center">
+  <div class="border-hairline rounded-2xl border bg-white px-4 py-16 text-center">
     <div class="flex flex-col items-center gap-3">
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none" class="text-valencia-40">
         <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2" />
@@ -78,11 +78,11 @@
 
   <!-- Status banner -->
   <div
-    class="border-hairline flex items-center justify-between space-y-1 rounded-xl border bg-white px-5 py-4"
+    class="border-hairline flex items-center justify-between space-y-1 rounded-2xl border bg-white px-5 py-4"
   >
     @switch (o.status) { @case ("approved") {
     <span
-      class="bg-green-10 text-green-70 inline-flex items-center rounded-md px-3 py-1 text-sm font-medium"
+      class="bg-green-10 text-green-70 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
     >
       {{ statusLabel(o.status) }}
     </span>
@@ -115,7 +115,7 @@
   </div>
 
   <!-- Order info grid -->
-  <div class="border-hairline space-y-4 rounded-xl border bg-white p-5">
+  <div class="border-hairline space-y-4 rounded-2xl border bg-white p-5">
     <h2 class="text-platinum-50 text-sm font-semibold tracking-wide uppercase">
       შეკვეთის ინფორმაცია
     </h2>
@@ -191,7 +191,7 @@
           [href]="o.checkout_url"
           target="_blank"
           rel="noopener"
-          class="bg-green-70 hover:bg-green-80 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
+          class="bg-green-70 hover:bg-green-80 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white transition-colors"
         >
           გადახდის გვერდი
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -210,7 +210,7 @@
   </div>
 
   <!-- Items -->
-  <div class="border-hairline space-y-1 rounded-xl border bg-white p-5">
+  <div class="border-hairline space-y-1 rounded-2xl border bg-white p-5">
     <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wide uppercase">
       პროდუქტები ({{ o.items.length }})
     </h2>

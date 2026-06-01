@@ -1,6 +1,6 @@
 <div
   (click)="onCardClick()"
-  class="border-hairline group relative cursor-pointer rounded-xl border bg-white p-3.5 transition-all hover:border-platinum-30 hover:shadow-low"
+  class="border-hairline group relative cursor-pointer rounded-2xl border bg-white p-3.5 transition-all hover:border-platinum-30 hover:shadow-low"
 >
   <!-- Top row: priority + menu -->
   <div class="mb-2.5 flex items-center justify-between">
@@ -17,7 +17,7 @@
         <button
           type="button"
           (click)="toggleState($event)"
-          class="text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex h-6 w-6 items-center justify-center rounded-md transition-colors"
+          class="text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex h-6 w-6 items-center justify-center rounded-full transition-colors"
           aria-label="სტატუსის შეცვლა"
         >
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
@@ -26,7 +26,7 @@
         </button>
 
         @if (stateOpen()) {
-        <div class="border-hairline absolute right-0 top-7 z-30 w-36 overflow-hidden rounded-xl border bg-white shadow-low">
+        <div class="border-hairline absolute right-0 top-7 z-30 w-36 overflow-hidden rounded-2xl border bg-white shadow-low">
           @for (s of states; track s) {
           <button
             type="button"
@@ -52,7 +52,7 @@
         <button
           type="button"
           (click)="toggleMenu($event)"
-          class="text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex h-6 w-6 items-center justify-center rounded-md transition-colors"
+          class="text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex h-6 w-6 items-center justify-center rounded-full transition-colors"
           aria-label="მენიუ"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -63,7 +63,7 @@
         </button>
 
         @if (menuOpen()) {
-        <div class="border-hairline absolute right-0 top-7 z-30 w-36 overflow-hidden rounded-xl border bg-white shadow-low">
+        <div class="border-hairline absolute right-0 top-7 z-30 w-36 overflow-hidden rounded-2xl border bg-white shadow-low">
           <button
             type="button"
             (click)="onEdit($event)"
@@ -104,7 +104,7 @@
 
   <!-- Media preview thumb -->
   @if (firstImage()) {
-  <div class="border-hairline mt-3 h-24 overflow-hidden rounded-lg border bg-platinum-10">
+  <div class="border-hairline mt-3 h-24 overflow-hidden rounded-2xl border bg-platinum-10">
     <img [src]="firstImage()!.url" [alt]="task().title" class="h-full w-full object-cover" />
   </div>
   }

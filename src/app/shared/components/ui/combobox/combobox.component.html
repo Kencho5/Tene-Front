@@ -36,7 +36,7 @@
   @if (opened()) {
     <div
       (outsideClick)="opened.set(false)"
-      class="absolute z-10 mt-1 w-full min-w-[100px] max-w-full rounded-xl border border-hairline bg-white text-sm shadow-md"
+      class="absolute z-10 mt-1 w-full min-w-[100px] max-w-full rounded-2xl border border-hairline bg-white text-sm shadow-md"
     >
       <!-- Search input -->
       <div class="flex items-center border-b border-hairline px-3 py-2">
@@ -65,7 +65,7 @@
 
         <button
           type="button"
-          class="shrink-0 rounded-md p-1 text-platinum-50 hover:bg-platinum-10 hover:text-platinum-100"
+          class="shrink-0 rounded-full p-1 text-platinum-50 hover:bg-platinum-10 hover:text-platinum-100"
           (click)="clearSearch()"
           [ngClass]="searchValue() ? 'visible' : 'hidden'"
         >

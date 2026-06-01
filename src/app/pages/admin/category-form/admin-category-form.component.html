@@ -18,7 +18,7 @@
   <!-- Form -->
   <form (submit)="onSubmit($event)" novalidate class="space-y-5">
     <!-- Basic Information Card -->
-    <div class="rounded-xl border border-hairline bg-white p-5">
+    <div class="rounded-2xl border border-hairline bg-white p-5">
       <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-platinum-50">
         ძირითადი ინფორმაცია
       </h2>
@@ -61,7 +61,7 @@
           [formField]="categoryForm.description"
           rows="4"
           placeholder="კატეგორიის დეტალური აღწერა (სურვილისამებრ)"
-          class="w-full resize-none rounded-lg border border-hairline bg-white px-3.5 py-2.5 text-sm text-platinum-100 placeholder:text-platinum-40 outline-hidden focus:border-platinum-30 focus:ring-1 focus:ring-platinum-40"
+          class="w-full resize-none rounded-2xl border border-hairline bg-white px-3.5 py-2.5 text-sm text-platinum-100 placeholder:text-platinum-40 outline-hidden focus:border-platinum-30 focus:ring-1 focus:ring-platinum-40"
         ></textarea>
 
         <!-- Category Image -->
@@ -75,7 +75,7 @@
               <img
                 [src]="imagePreview()"
                 alt="Category preview"
-                class="h-48 w-full rounded-lg border border-hairline object-cover"
+                class="h-48 w-full rounded-2xl border border-hairline object-cover"
               />
               <button
                 type="button"
@@ -96,7 +96,7 @@
           } @else {
             <label
               for="category-image"
-              class="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-hairline bg-platinum-10 px-6 py-8 transition-colors hover:border-green-60 hover:bg-green-10"
+              class="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-hairline bg-platinum-10 px-6 py-8 transition-colors hover:border-green-60 hover:bg-green-10"
             >
               <svg
                 width="40"
@@ -135,7 +135,7 @@
         />
 
         <!-- Enabled Toggle -->
-        <div class="flex items-center justify-between rounded-xl bg-platinum-10/50 p-4">
+        <div class="flex items-center justify-between rounded-2xl bg-platinum-10/50 p-4">
           <div>
             <p class="text-sm font-medium text-platinum-100">სტატუსი</p>
             <p class="text-xs text-platinum-50">
@@ -165,7 +165,7 @@
       <button
         type="button"
         (click)="cancel()"
-        class="rounded-lg border border-hairline px-5 py-2 text-sm font-medium text-platinum-60 transition-colors hover:bg-platinum-10"
+        class="rounded-full border border-hairline px-5 py-2 text-sm font-medium text-platinum-60 transition-colors hover:bg-platinum-10"
       >
         გაუქმება
       </button>
@@ -173,7 +173,7 @@
         type="submit"
         [disabled]="isLoading()"
         [class]="
-          'inline-flex items-center gap-1.5 rounded-lg px-5 py-2 text-sm font-medium text-white transition-colors ' +
+          'inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-medium text-white transition-colors ' +
           (isLoading()
             ? 'cursor-not-allowed bg-platinum-40'
             : 'bg-green-60 hover:bg-green-70')

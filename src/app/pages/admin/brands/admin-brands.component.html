@@ -8,7 +8,7 @@
 
     <a
       [routerLink]="['/admin/brands/new']"
-      class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-green-60 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70"
+      class="inline-flex items-center justify-center gap-1.5 rounded-full bg-green-60 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70"
     >
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
         <path
@@ -46,7 +46,7 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         placeholder="ძიება ბრენდის სახელით ან ID-ით..."
-        class="h-11 w-full rounded-lg border border-hairline bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-30"
+        class="h-11 w-full rounded-xl border border-hairline bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-30"
       />
       @if (searchQuery()) {
         <button
@@ -68,7 +68,7 @@
   </div>
 
   <!-- Table -->
-  <div class="overflow-visible rounded-xl bg-white">
+  <div class="overflow-visible rounded-2xl bg-white">
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
@@ -105,8 +105,8 @@
                 </td>
                 <td class="px-4 py-3.5">
                   <div class="flex justify-end gap-1">
-                    <div class="h-8 w-8 animate-pulse rounded-lg bg-platinum-10"></div>
-                    <div class="h-8 w-8 animate-pulse rounded-lg bg-platinum-10"></div>
+                    <div class="h-8 w-8 animate-pulse rounded-full bg-platinum-10"></div>
+                    <div class="h-8 w-8 animate-pulse rounded-full bg-platinum-10"></div>
                   </div>
                 </td>
               </tr>
@@ -171,7 +171,7 @@
                   <div class="flex items-center justify-end gap-1">
                     <a
                       [routerLink]="['/admin/brands', brand.id, 'edit']"
-                      class="flex items-center justify-center rounded-lg p-2 text-platinum-40 transition-colors hover:bg-platinum-10 hover:text-platinum-80"
+                      class="flex items-center justify-center rounded-full p-2 text-platinum-40 transition-colors hover:bg-platinum-10 hover:text-platinum-80"
                       aria-label="რედაქტირება"
                     >
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -187,7 +187,7 @@
                     <button
                       type="button"
                       (click)="openDeleteModal(brand.id)"
-                      class="flex items-center justify-center rounded-lg p-2 text-platinum-40 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
+                      class="flex items-center justify-center rounded-full p-2 text-platinum-40 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
                       aria-label="წაშლა"
                     >
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

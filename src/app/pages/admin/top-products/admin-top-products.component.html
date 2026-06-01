@@ -11,7 +11,7 @@
         type="button"
         (click)="reset()"
         [disabled]="!isDirty() || saving()"
-        class="border-hairline text-platinum-70 hover:bg-platinum-10 rounded-lg border bg-white px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+        class="border-hairline text-platinum-70 hover:bg-platinum-10 rounded-full border bg-white px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
       >
         გაუქმება
       </button>
@@ -19,7 +19,7 @@
         type="button"
         (click)="save()"
         [disabled]="!isDirty() || saving()"
-        class="bg-green-60 hover:bg-green-70 inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+        class="bg-green-60 hover:bg-green-70 inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
       >
         @if (saving()) { შენახვა... } @else { შენახვა }
       </button>
@@ -27,7 +27,7 @@
   </div>
 
   <!-- Add product search -->
-  <div class="border-hairline rounded-xl border bg-white p-4">
+  <div class="border-hairline rounded-2xl border bg-white p-4">
     <h2 class="text-platinum-90 mb-3 text-sm font-medium">პროდუქტის დამატება</h2>
     <div class="relative">
       <svg
@@ -50,7 +50,7 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         placeholder="ძიება პროდუქტის სახელით..."
-        class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-lg border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
+        class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
       />
       @if (searchQuery()) {
       <button
@@ -71,7 +71,7 @@
     </div>
 
     @if (searchTerm()) {
-    <div class="border-hairline mt-3 max-h-72 overflow-y-auto rounded-lg border">
+    <div class="border-hairline mt-3 max-h-72 overflow-y-auto rounded-2xl border">
       @if (searchResource.isLoading()) {
       <div class="text-platinum-50 p-4 text-center text-sm">იძებნება...</div>
       } @else if (searchResults().length === 0) {
@@ -82,7 +82,7 @@
         (click)="addProduct(product)"
         class="border-hairline hover:bg-platinum-10 flex w-full items-center gap-3 border-b px-3 py-2 text-left transition-colors last:border-b-0"
       >
-        <div class="bg-platinum-10 h-10 w-10 shrink-0 overflow-hidden rounded-md">
+        <div class="bg-platinum-10 h-10 w-10 shrink-0 overflow-hidden rounded-2xl">
           @if (getImage(product)) {
           <img
             [src]="getImage(product)"
@@ -103,7 +103,7 @@
   </div>
 
   <!-- Selected list -->
-  <div class="border-hairline rounded-xl border bg-white">
+  <div class="border-hairline rounded-2xl border bg-white">
     <div class="border-hairline border-b px-4 py-3">
       <h2 class="text-platinum-90 text-sm font-medium">აქტიური სია</h2>
     </div>
@@ -111,7 +111,7 @@
     @if (topResource.isLoading()) {
     <div class="space-y-2 p-4">
       @for (s of [1,2,3,4]; track s) {
-      <div class="bg-platinum-10 h-14 animate-pulse rounded-md"></div>
+      <div class="bg-platinum-10 h-14 animate-pulse rounded-2xl"></div>
       }
     </div>
     } @else if (selected().length === 0) {
@@ -127,7 +127,7 @@
           {{ i + 1 }}
         </span>
 
-        <div class="bg-platinum-10 h-12 w-12 shrink-0 overflow-hidden rounded-md">
+        <div class="bg-platinum-10 h-12 w-12 shrink-0 overflow-hidden rounded-2xl">
           @if (getImage(product)) {
           <img
             [src]="getImage(product)"
@@ -147,7 +147,7 @@
             type="button"
             (click)="moveUp(i)"
             [disabled]="i === 0"
-            class="text-platinum-50 hover:bg-platinum-10 hover:text-platinum-90 flex h-8 w-8 items-center justify-center rounded-lg transition-colors disabled:cursor-not-allowed disabled:opacity-30"
+            class="text-platinum-50 hover:bg-platinum-10 hover:text-platinum-90 flex h-8 w-8 items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-30"
             aria-label="ზემოთ"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -164,7 +164,7 @@
             type="button"
             (click)="moveDown(i)"
             [disabled]="i === count - 1"
-            class="text-platinum-50 hover:bg-platinum-10 hover:text-platinum-90 flex h-8 w-8 items-center justify-center rounded-lg transition-colors disabled:cursor-not-allowed disabled:opacity-30"
+            class="text-platinum-50 hover:bg-platinum-10 hover:text-platinum-90 flex h-8 w-8 items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-30"
             aria-label="ქვემოთ"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -180,7 +180,7 @@
           <button
             type="button"
             (click)="removeProduct(product.data.id)"
-            class="text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex h-8 w-8 items-center justify-center rounded-lg transition-colors"
+            class="text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex h-8 w-8 items-center justify-center rounded-full transition-colors"
             aria-label="წაშლა"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

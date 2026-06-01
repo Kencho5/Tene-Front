@@ -13,7 +13,7 @@
 
   <!-- Form -->
   <form (submit)="onSubmit(); $event.preventDefault()" novalidate class="space-y-5">
-    <div class="rounded-xl border border-hairline bg-white p-5">
+    <div class="rounded-2xl border border-hairline bg-white p-5">
       <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-platinum-50">
         მომხმარებლის ინფორმაცია
       </h2>
@@ -53,14 +53,14 @@
       <button
         type="button"
         (click)="cancel()"
-        class="rounded-lg border border-hairline px-5 py-2 text-sm font-medium text-platinum-60 transition-colors hover:bg-platinum-10"
+        class="rounded-full border border-hairline px-5 py-2 text-sm font-medium text-platinum-60 transition-colors hover:bg-platinum-10"
       >
         გაუქმება
       </button>
       <button
         type="submit"
         [disabled]="isSubmitting()"
-        class="inline-flex items-center gap-1.5 rounded-lg bg-green-60 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70 disabled:cursor-not-allowed disabled:opacity-50"
+        class="inline-flex items-center gap-1.5 rounded-full bg-green-60 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70 disabled:cursor-not-allowed disabled:opacity-50"
       >
         @if (isSubmitting()) {
           <span>შენახვა...</span>

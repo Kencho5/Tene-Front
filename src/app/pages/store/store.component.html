@@ -16,7 +16,7 @@
   <!-- Store Info Cards -->
   <div class="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     <!-- Delivery Info -->
-    <div class="border-hairline rounded-xl border p-5">
+    <div class="border-hairline rounded-2xl border p-5">
       <div class="mb-2 flex items-center gap-2">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-green-60">
           <path
@@ -33,7 +33,7 @@
     </div>
 
     <!-- Online Shopping -->
-    <div class="border-hairline rounded-xl border p-5">
+    <div class="border-hairline rounded-2xl border p-5">
       <div class="mb-2 flex items-center gap-2">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-green-60">
           <path
@@ -81,7 +81,7 @@
 
   <!-- Other Cities -->
   @if (otherCities().length > 0) {
-  <div class="border-hairline rounded-xl border p-6">
+  <div class="border-hairline rounded-2xl border p-6">
     <h2 class="text-platinum-100 mb-4 text-base font-bold">სხვა ქალაქები</h2>
     <div class="flex flex-wrap gap-2">
       @for (otherCity of otherCities(); track otherCity.slug) {
