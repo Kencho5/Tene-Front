@@ -41,7 +41,7 @@
         @if (authService.isAuthenticated()) {
         <a
           routerLink="/profile"
-          class="hover:bg-green-70 flex h-10 items-center justify-center gap-2 rounded-full px-2.5 transition-colors lg:px-3"
+          class="hover:bg-green-70 flex h-10 items-center justify-center gap-2 rounded-full px-2.5 transition-[background-color] lg:px-3"
           aria-label="პროფილი"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -65,7 +65,7 @@
         } @else {
         <a
           routerLink="/auth/login"
-          class="hover:bg-green-70 flex h-10 items-center justify-center gap-2 rounded-full px-2.5 transition-colors lg:px-3"
+          class="hover:bg-green-70 flex h-10 items-center justify-center gap-2 rounded-full px-2.5 transition-[background-color] lg:px-3"
           aria-label="შესვლა"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -91,7 +91,7 @@
         <!-- Cart -->
         <a
           routerLink="/cart"
-          class="hover:bg-green-70 relative flex h-10 items-center justify-center gap-2 rounded-full px-2.5 transition-colors lg:px-3"
+          class="hover:bg-green-70 relative flex h-10 items-center justify-center gap-2 rounded-full px-2.5 transition-[background-color] lg:px-3"
           aria-label="კალათა"
         >
           <span class="relative flex">
