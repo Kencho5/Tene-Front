@@ -1,23 +1,8 @@
 <div class="relative w-full" (outsideClick)="close()">
   <form (submit)="$event.preventDefault(); submit()" class="flex w-full">
-    <div class="relative flex w-full items-center">
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        class="text-platinum-40 pointer-events-none absolute left-4"
-        aria-hidden="true"
-      >
-        <path
-          d="M20 20L16.1333 16.1333M18.2222 11.1111C18.2222 15.0385 15.0385 18.2222 11.1111 18.2222C7.18375 18.2222 4 15.0385 4 11.1111C4 7.18375 7.18375 4 11.1111 4C15.0385 4 18.2222 7.18375 18.2222 11.1111Z"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-
+    <div
+      class="focus-within:ring-dolly-50 flex w-full overflow-hidden rounded-full shadow-sm focus-within:ring-2"
+    >
       <input
         #searchInput
         type="text"
@@ -26,14 +11,23 @@
         (focus)="focused.set(true)"
         placeholder="მოძებნე ტენეში..."
         aria-label="პროდუქტის ძიება"
-        class="text-platinum-100 placeholder:text-platinum-40 focus:ring-green-60 h-11 w-full rounded-full bg-white pr-28 pl-11 text-[15px] shadow-sm outline-hidden transition-shadow focus:ring-2"
+        class="text-platinum-100 placeholder:text-platinum-40 h-11 w-full bg-white px-4 text-[15px] outline-hidden"
       />
 
       <button
         type="submit"
-        class="bg-dolly-50 hover:bg-dolly-60 text-platinum-100 absolute right-1.5 flex h-8 items-center gap-1.5 rounded-full px-4 text-sm font-semibold transition-colors"
+        aria-label="ძიება"
+        class="bg-dolly-50 text-platinum-100 flex h-11 w-12 shrink-0 items-center justify-center transition-opacity hover:opacity-90"
       >
-        ძიება
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M20 20L16.1333 16.1333M18.2222 11.1111C18.2222 15.0385 15.0385 18.2222 11.1111 18.2222C7.18375 18.2222 4 15.0385 4 11.1111C4 7.18375 7.18375 4 11.1111 4C15.0385 4 18.2222 7.18375 18.2222 11.1111Z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       </button>
     </div>
   </form>
