@@ -4,7 +4,7 @@
 >
   <!-- Image -->
   <div
-    class="bg-platinum-10/40 relative flex w-[45%] max-w-[190px] shrink-0 items-center justify-center self-stretch overflow-hidden p-3 sm:aspect-square sm:w-full sm:max-w-none sm:self-auto sm:p-7"
+    class="bg-platinum-10/40 relative flex w-[45%] max-w-[190px] shrink-0 items-center justify-center self-stretch overflow-hidden p-3 sm:aspect-square sm:w-full sm:max-w-none sm:self-auto sm:p-5"
     [class.grayscale]="primaryImageQuantity() === 0"
     [class.opacity-40]="primaryImageQuantity() === 0"
   >
@@ -51,7 +51,7 @@
   </div>
 
   <!-- Info -->
-  <div class="flex min-w-0 flex-1 flex-col p-3 sm:p-5 sm:pt-4">
+  <div class="flex min-w-0 flex-1 flex-col p-3 sm:p-4 sm:pt-3">
     @if (product().data.brand_name) {
     <span class="text-platinum-50 mb-1.5 text-[12px] font-semibold tracking-wide uppercase">
       {{ product().data.brand_name }}
@@ -59,7 +59,7 @@
     }
 
     <p
-      class="text-platinum-90 group-hover:text-green-70 line-clamp-3 text-[15px] leading-snug font-medium transition-colors sm:line-clamp-2 sm:min-h-[2.7em] sm:text-[15px]"
+      class="text-platinum-90 group-hover:text-green-70 line-clamp-3 text-[15px] leading-snug font-medium transition-colors sm:line-clamp-3 sm:min-h-[4.05em] sm:text-[14px]"
     >
       {{ product().data.name }}
     </p>
@@ -67,7 +67,7 @@
     <div class="mt-3 sm:mt-auto sm:pt-4">
       @if (product().data.discount > 0) {
       <div class="flex items-baseline gap-2">
-        <p class="text-platinum-100 text-[24px] leading-none font-bold sm:text-[22px]">
+        <p class="text-platinum-100 text-[24px] leading-none font-bold sm:text-[20px]">
           {{ formatPrice(discountedPrice()) }} ₾
         </p>
         <p class="text-platinum-40 text-[15px] line-through sm:text-[14px]">
@@ -90,7 +90,7 @@
         </span>
       </div>
       } } @else {
-      <p class="text-platinum-100 text-[24px] leading-none font-bold sm:text-[22px]">
+      <p class="text-platinum-100 text-[24px] leading-none font-bold sm:text-[20px]">
         {{ formatPrice(product().data.price) }} ₾
       </p>
       }
