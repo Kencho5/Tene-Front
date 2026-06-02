@@ -779,14 +779,14 @@
             appDragScroll
             #relatedScrollContainer
             (scroll)="onRelatedScroll(relatedScrollContainer)"
-            class="hide-scrollbar -mx-4 flex snap-x snap-proximity scroll-pl-4 gap-4 overflow-x-auto px-4 py-2 lg:mx-0 lg:scroll-pl-1 lg:px-1 lg:py-2"
+            class="hide-scrollbar -mx-4 flex snap-x snap-proximity scroll-pl-4 gap-4 overflow-x-auto px-4 py-2 lg:mx-0 lg:scroll-pl-1 lg:py-2 lg:pr-20 lg:pl-1"
             style="scrollbar-width: none; -ms-overflow-style: none"
           >
             @if (relatedProducts.isLoading()) { @for (i of [1, 2, 3, 4, 5, 6]; track i) {
-            <app-product-card-skeleton class="w-[340px] shrink-0 snap-start" />
+            <app-product-card-skeleton class="w-[260px] shrink-0 snap-start" />
             } } @else { @for (relatedProduct of relatedProducts.value(); track
             relatedProduct.data.id) {
-            <app-product-card class="w-[340px] shrink-0 snap-start" [product]="relatedProduct" />
+            <app-product-card class="w-[260px] shrink-0 snap-start" [product]="relatedProduct" />
             } }
           </div>
 
