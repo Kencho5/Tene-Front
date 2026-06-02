@@ -40,7 +40,7 @@
         <!-- Account -->
         @if (authService.isAuthenticated()) {
         <a
-          routerLink="profile"
+          routerLink="/profile"
           class="hover:bg-green-70 flex h-10 items-center justify-center gap-2 rounded-full px-2.5 transition-colors lg:px-3"
           aria-label="პროფილი"
         >
@@ -147,7 +147,6 @@
     </div>
   </div>
   }
-
 </header>
 
 <!-- Menu (full-screen slide-out on mobile, anchored dropdown on desktop) -->
@@ -156,59 +155,64 @@
 <div class="fixed inset-0 z-40" (click)="closeMenu()"></div>
 
 <div
-  class="container fixed inset-0 z-50 mx-auto flex flex-col px-0 lg:pointer-events-none lg:inset-x-0 lg:top-20 lg:bottom-auto lg:px-4 xl:px-8"
+  class="fixed inset-0 z-50 container mx-auto flex flex-col px-0 lg:pointer-events-none lg:inset-x-0 lg:top-20 lg:bottom-auto lg:px-4 xl:px-8"
 >
   <div
     (click)="$event.stopPropagation()"
     class="flex h-full flex-col bg-white lg:pointer-events-auto lg:h-auto lg:max-h-[calc(100vh-96px)] lg:w-80 lg:overflow-hidden lg:rounded-2xl lg:shadow-2xl"
   >
     <!-- Header (mobile only) -->
-  <div
-    class="bg-green-60 flex h-[60px] shrink-0 items-center justify-between px-4 text-white lg:hidden"
-  >
-    <span class="text-base font-semibold">მენიუ</span>
-    <button
-      type="button"
-      (click)="closeMenu()"
-      class="hover:bg-green-70 flex h-9 w-9 items-center justify-center rounded-full transition-colors"
-      aria-label="დახურვა"
+    <div
+      class="bg-green-60 flex h-[60px] shrink-0 items-center justify-between px-4 text-white lg:hidden"
     >
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-      </svg>
-    </button>
-  </div>
+      <span class="text-base font-semibold">მენიუ</span>
+      <button
+        type="button"
+        (click)="closeMenu()"
+        class="hover:bg-green-70 flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+        aria-label="დახურვა"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M18 6L6 18M6 6L18 18"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+    </div>
 
     <div class="hide-scrollbar flex-1 overflow-y-auto">
-    <app-menu-content (linkClick)="closeMenu()" />
-  </div>
+      <app-menu-content (linkClick)="closeMenu()" />
+    </div>
 
-  <!-- Auth footer (mobile only) -->
-  <div class="border-hairline space-y-3 border-t p-4 lg:hidden">
-    @if (authService.isAuthenticated()) {
-    <a
-      routerLink="profile"
-      (click)="closeMenu()"
-      class="bg-green-60 hover:bg-green-70 inline-flex h-11 w-full items-center justify-center rounded-full px-6 font-medium text-white transition-colors"
-    >
-      პროფილი
-    </a>
-    } @else {
-    <a
-      routerLink="/auth/register"
-      (click)="closeMenu()"
-      class="bg-green-60 hover:bg-green-70 inline-flex h-11 w-full items-center justify-center rounded-full px-6 font-medium text-white transition-colors"
-    >
-      რეგისტრაცია
-    </a>
-    <a
-      routerLink="/auth/login"
-      (click)="closeMenu()"
-      class="border-green-60 text-green-70 hover:bg-green-10 inline-flex w-full items-center justify-center rounded-full border-[1.5px] px-6 py-3 font-medium transition-colors"
-    >
-      ავტორიზაცია
-    </a>
-    }
+    <!-- Auth footer (mobile only) -->
+    <div class="border-hairline space-y-3 border-t p-4 lg:hidden">
+      @if (authService.isAuthenticated()) {
+      <a
+        routerLink="profile"
+        (click)="closeMenu()"
+        class="bg-green-60 hover:bg-green-70 inline-flex h-11 w-full items-center justify-center rounded-full px-6 font-medium text-white transition-colors"
+      >
+        პროფილი
+      </a>
+      } @else {
+      <a
+        routerLink="/auth/register"
+        (click)="closeMenu()"
+        class="bg-green-60 hover:bg-green-70 inline-flex h-11 w-full items-center justify-center rounded-full px-6 font-medium text-white transition-colors"
+      >
+        რეგისტრაცია
+      </a>
+      <a
+        routerLink="/auth/login"
+        (click)="closeMenu()"
+        class="border-green-60 text-green-70 hover:bg-green-10 inline-flex w-full items-center justify-center rounded-full border-[1.5px] px-6 py-3 font-medium transition-colors"
+      >
+        ავტორიზაცია
+      </a>
+      }
     </div>
   </div>
 </div>

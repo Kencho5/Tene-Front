@@ -70,6 +70,30 @@ export class OrderDetailComponent {
     }
   }
 
+  statusClass(status: string): string {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-10 text-green-70';
+      case 'declined':
+      case 'expired':
+        return 'bg-valencia-10 text-valencia-60';
+      default:
+        return 'bg-platinum-10 text-platinum-60';
+    }
+  }
+
+  statusDotClass(status: string): string {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-60';
+      case 'declined':
+      case 'expired':
+        return 'bg-valencia-50';
+      default:
+        return 'bg-platinum-40';
+    }
+  }
+
   getProductRoute(item: OrderItem): string {
     return `/products/${generateProductSlug(item.product_name)}/${item.product_id}`;
   }

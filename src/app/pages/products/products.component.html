@@ -28,7 +28,7 @@
         appDragScroll
         #scrollContainer
         (scroll)="onScroll(scrollContainer, 'categories')"
-        class="hide-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:gap-4 lg:mx-0 lg:px-0"
+        class="hide-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:gap-4 lg:mx-0 lg:pr-20 lg:pl-0"
         style="scrollbar-width: none; -ms-overflow-style: none"
       >
         @for (category of topLevelCategories(); track category.id) {
@@ -132,11 +132,11 @@
         appDragScroll
         #productsScrollContainer
         (scroll)="onScroll(productsScrollContainer, 'products')"
-        class="hide-scrollbar -mx-4 flex snap-x snap-proximity scroll-pl-4 flex-col gap-4 overflow-x-auto px-4 py-2 sm:flex-row lg:mx-0 lg:scroll-pl-1 lg:px-1 lg:py-2"
+        class="hide-scrollbar -mx-4 flex snap-x snap-proximity scroll-pl-4 flex-col gap-4 overflow-x-auto px-4 py-2 sm:flex-row lg:mx-0 lg:scroll-pl-1 lg:py-2 lg:pr-20 lg:pl-1"
         style="scrollbar-width: none; -ms-overflow-style: none"
       >
         @for (product of products(); track product.data.id) {
-        <app-product-card class="w-[340px] shrink-0 snap-start" [product]="product" />
+        <app-product-card class="w-[260px] shrink-0 snap-start" [product]="product" />
         }
       </div>
 

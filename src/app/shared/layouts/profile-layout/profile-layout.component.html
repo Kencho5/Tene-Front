@@ -1,11 +1,13 @@
 <app-navbar />
 
-<div
-  class="container relative mt-[114px] flex min-h-[calc(100vh-114px)] flex-1 flex-col items-start gap-10 px-4 py-10 lg:mt-20 lg:min-h-[calc(100vh-80px)] lg:flex-row xl:px-0"
->
-  <app-profile-sidebar />
+<div class="bg-surface-10 mt-[114px] min-h-[calc(100vh-114px)] lg:mt-20 lg:min-h-[calc(100vh-80px)]">
+  <div class="container flex flex-col items-start gap-5 px-4 lg:flex-row lg:gap-8 lg:py-10 xl:px-0">
+    <aside class="w-full lg:sticky lg:top-24 lg:w-[260px] lg:shrink-0">
+      <app-profile-sidebar />
+    </aside>
 
-  <div class="flex w-full min-h-0 flex-1">
-    <router-outlet />
+    <main class="flex w-full min-h-0 flex-1 pb-8 lg:pb-0">
+      <router-outlet />
+    </main>
   </div>
 </div>
