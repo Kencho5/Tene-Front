@@ -42,6 +42,14 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender,
   },
   {
+    path: 'blog',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'blog/:slug',
+    renderMode: RenderMode.Server,
+  },
+  {
     path: '404',
     renderMode: RenderMode.Server,
     status: 404,

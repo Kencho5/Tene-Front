@@ -54,6 +54,24 @@ async function fetchAllProducts(): Promise<any[]> {
   return allProducts;
 }
 
+async function fetchAllBlogs(): Promise<any[]> {
+  const limit = 100;
+  let offset = 0;
+  let allBlogs: any[] = [];
+
+  while (true) {
+    const res = await fetch(`${API_BASE_URL}/blogs?limit=${limit}&offset=${offset}`);
+    const data = await res.json();
+    const blogs = data.blogs || [];
+    allBlogs = allBlogs.concat(blogs);
+
+    if (blogs.length < limit || allBlogs.length >= data.total) break;
+    offset += limit;
+  }
+
+  return allBlogs;
+}
+
 function buildSitemap(entries: SitemapEntry[]): string {
   const currentDate = new Date().toISOString().split('T')[0];
 
@@ -82,6 +100,7 @@ async function main() {
     { url: '/bins', priority: '0.7', changefreq: 'weekly' },
     { url: '/contact', priority: '0.4', changefreq: 'monthly' },
     { url: '/about', priority: '0.4', changefreq: 'monthly' },
+    { url: '/blog', priority: '0.7', changefreq: 'daily' },
   ];
 
   // Store pages
@@ -127,6 +146,18 @@ async function main() {
       });
     }
     console.log(`  ${products.length} products`);
+
+    // Blogs (published, paginated)
+    const blogs = await fetchAllBlogs();
+    for (const blog of blogs) {
+      if (!blog.slug) continue;
+      entries.push({
+        url: `/blog/${blog.slug}`,
+        priority: '0.6',
+        changefreq: 'weekly',
+      });
+    }
+    console.log(`  ${blogs.length} blogs`);
   } catch (err) {
     console.error('Warning: Failed to fetch dynamic data from API:', err);
     console.log('  Generating sitemap with static pages only');

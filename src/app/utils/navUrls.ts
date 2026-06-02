@@ -32,7 +32,7 @@ export const navUrls: NavUrl[] = [
     icon: 'about',
   },
   {
-    url: 'coming-soon',
+    url: 'blog',
     name: 'ბლოგი',
     icon: 'blog',
   },

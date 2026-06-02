@@ -1,7 +1,6 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, HostListener, inject, input, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { SharedModule } from '../../shared.module';
-import { navUrls } from '@utils/navUrls';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { CartService } from '@core/services/products/cart.service';
 import { CategoriesService } from '@core/services/categories/categories.service';
@@ -10,10 +9,11 @@ import {
   CategoryTreeResponse,
 } from '@core/interfaces/categories.interface';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
+import { MenuContentComponent } from './menu-content/menu-content.component';
 
 @Component({
   selector: 'app-navbar',
-  imports: [SharedModule, SearchBarComponent],
+  imports: [SharedModule, SearchBarComponent, MenuContentComponent],
   templateUrl: './navbar.component.html',
   styles: `
     @keyframes skeleton-shimmer {
@@ -35,14 +35,19 @@ export class NavbarComponent {
 
   readonly showCategories = input(false);
 
-  readonly navUrls = navUrls.filter((nav) => nav.url !== 'coming-soon');
   readonly menuOpen = signal(false);
 
-  toggleMenu() {
+  toggleMenu(event: Event) {
+    event.stopPropagation();
     this.menuOpen.update((value) => !value);
   }
 
   closeMenu() {
+    this.menuOpen.set(false);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape() {
     this.menuOpen.set(false);
   }
 

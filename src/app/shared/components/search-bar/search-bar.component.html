@@ -31,7 +31,7 @@
 
       <button
         type="submit"
-        class="bg-green-60 hover:bg-green-70 absolute right-1.5 flex h-8 items-center gap-1.5 rounded-full px-4 text-sm font-semibold text-white transition-colors"
+        class="bg-dolly-50 hover:bg-dolly-60 text-platinum-100 absolute right-1.5 flex h-8 items-center gap-1.5 rounded-full px-4 text-sm font-semibold transition-colors"
       >
         ძიება
       </button>
@@ -86,7 +86,7 @@
       </a>
       } @else if (results.isLoading()) {
       <div class="flex flex-col gap-0.5">
-        @for (skeleton of [1, 2, 3]; track skeleton) {
+        @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
         <div class="flex items-center gap-3.5 px-2.5 py-2">
           <div class="shimmer h-12 w-12 shrink-0 rounded-lg"></div>
           <div class="min-w-0 flex-1 space-y-2">

@@ -799,6 +799,7 @@
               [selectedValue]="params()['sort_by']"
               (selectedValueChange)="setParam('sort_by', $event)"
               placeholder="სორტირება"
+              customClass="!h-[42px] !rounded-full"
               [items]="sortOptions"
             />
           </div>
@@ -824,7 +825,7 @@
 
       <!-- Product Grid -->
       <div
-        class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 sm:gap-y-8 lg:grid-cols-3 xl:grid-cols-4"
+        class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 sm:gap-y-8 lg:grid-cols-3"
       >
         @if (searchResponse.isLoading()) { @for (skeleton of [1, 2, 3, 4, 5, 6, 7, 8]; track
         skeleton) {

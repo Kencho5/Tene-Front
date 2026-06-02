@@ -70,7 +70,7 @@
       </a>
     </div>
 
-    <div class="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4 xl:grid-cols-4">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 xl:grid-cols-4">
       @if (searchResponse.isLoading()) { @for (s of [1,2,3,4,5,6,7,8]; track s) {
       <app-product-card-skeleton />
       } } @else { @for (product of products(); track product.data.id) {

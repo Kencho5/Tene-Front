@@ -9,6 +9,7 @@ import { routes } from './app.routes';
 import {
   provideClientHydration,
   withEventReplay,
+  withHttpTransferCacheOptions,
 } from '@angular/platform-browser';
 import {
   provideHttpClient,
@@ -23,7 +24,10 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withComponentInputBinding()),
-    provideClientHydration(withEventReplay()),
+    provideClientHydration(
+      withEventReplay(),
+      withHttpTransferCacheOptions({ includePostRequests: false }),
+    ),
     provideHttpClient(
       withFetch(),
       withInterceptors([apiInterceptor, tokenInterceptor]),

@@ -340,7 +340,7 @@
               ></div>
               <!-- arrow -->
               <svg
-                class="text-dolly-40 pointer-events-none absolute top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 transition-[left] duration-150 ease-out"
+                class="text-dolly-50 pointer-events-none absolute top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 transition-[left] duration-150 ease-out"
                 [style.left.%]="sliderLengths().length > 1 ? (sliderIdx() / (sliderLengths().length - 1)) * 100 : 0"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 32 32"
@@ -472,7 +472,7 @@
                 class="shadow-low flex h-12 flex-1 items-center justify-center gap-2 rounded-full text-[16px] font-semibold tracking-wide uppercase transition-all duration-200 sm:h-11 sm:gap-1.5 sm:text-[15px]"
                 [ngClass]="selectedImageQuantity() === 0
                   ? 'bg-platinum-10 text-platinum-40 cursor-not-allowed'
-                  : 'bg-green-60 text-white hover:bg-green-70 active:bg-green-80 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]'"
+                  : 'bg-dolly-50 text-platinum-100 hover:bg-dolly-60 active:bg-dolly-60 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]'"
                 (click)="addToCart()"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
