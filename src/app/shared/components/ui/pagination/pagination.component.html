@@ -23,7 +23,7 @@
       [disabled]="currentPage() === 1"
       [class.opacity-50]="currentPage() === 1"
       [class.cursor-not-allowed]="currentPage() === 1"
-      class="flex h-9 w-9 items-center justify-center rounded-xl border border-hairline text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent"
+      class="flex h-11 w-11 items-center justify-center rounded-xl border border-hairline text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent sm:h-9 sm:w-9"
       aria-label="წინა გვერდი"
     >
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -37,13 +37,11 @@
       </svg>
     </button>
 
-    <!-- Page numbers -->
-    <div class="flex items-center gap-1">
-      @for (pageNum of pageNumbers(); track $index) {
+    <!-- Page numbers (mobile) -->
+    <div class="flex items-center gap-1 sm:hidden">
+      @for (pageNum of mobilePageNumbers(); track $index) {
         @if (pageNum === -1) {
-          <span
-            class="flex h-8 w-8 items-center justify-center text-sm text-platinum-40 sm:h-9 sm:w-9"
-          >
+          <span class="flex h-11 w-11 items-center justify-center text-sm text-platinum-40">
             ...
           </span>
         } @else {
@@ -56,7 +54,32 @@
             [class.text-platinum-60]="currentPage() !== pageNum"
             [class.border-hairline]="currentPage() !== pageNum"
             [class.hover:bg-platinum-10]="currentPage() !== pageNum"
-            class="flex h-8 w-8 items-center justify-center rounded-xl border text-xs font-medium transition-colors sm:h-9 sm:w-9 sm:text-sm"
+            class="flex h-11 w-11 items-center justify-center rounded-xl border text-sm font-medium transition-colors"
+          >
+            {{ pageNum }}
+          </button>
+        }
+      }
+    </div>
+
+    <!-- Page numbers (desktop) -->
+    <div class="hidden items-center gap-1 sm:flex">
+      @for (pageNum of pageNumbers(); track $index) {
+        @if (pageNum === -1) {
+          <span class="flex h-9 w-9 items-center justify-center text-sm text-platinum-40">
+            ...
+          </span>
+        } @else {
+          <button
+            type="button"
+            (click)="goToPage(pageNum)"
+            [class.bg-green-60]="currentPage() === pageNum"
+            [class.text-white]="currentPage() === pageNum"
+            [class.border-green-60]="currentPage() === pageNum"
+            [class.text-platinum-60]="currentPage() !== pageNum"
+            [class.border-hairline]="currentPage() !== pageNum"
+            [class.hover:bg-platinum-10]="currentPage() !== pageNum"
+            class="flex h-9 w-9 items-center justify-center rounded-xl border text-sm font-medium transition-colors"
           >
             {{ pageNum }}
           </button>
@@ -71,7 +94,7 @@
       [disabled]="currentPage() === totalPages()"
       [class.opacity-50]="currentPage() === totalPages()"
       [class.cursor-not-allowed]="currentPage() === totalPages()"
-      class="flex h-9 w-9 items-center justify-center rounded-xl border border-hairline text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent"
+      class="flex h-11 w-11 items-center justify-center rounded-xl border border-hairline text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent sm:h-9 sm:w-9"
       aria-label="შემდეგი გვერდი"
     >
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
