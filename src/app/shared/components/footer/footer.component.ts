@@ -55,7 +55,7 @@ export class FooterComponent {
     ],
     კომპანია: [
       { label: 'ჩვენ შესახებ', route: '/coming-soon' },
-      { label: 'ბლოგი', route: '/coming-soon' },
+      { label: 'ბლოგი', route: '/blog' },
       { label: 'კონტაქტი', route: '/contact' },
     ],
   };

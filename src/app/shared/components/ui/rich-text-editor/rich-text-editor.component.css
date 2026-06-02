@@ -1,0 +1,117 @@
+:host {
+  display: block;
+}
+
+.rte-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.85rem;
+  height: 1.85rem;
+  padding: 0 0.4rem;
+  border-radius: 0.5rem;
+  color: #4a4a4a;
+  cursor: pointer;
+  transition: background-color 0.12s, color 0.12s;
+}
+.rte-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.rte-btn.is-active {
+  background-color: #111;
+  color: #fff;
+}
+
+.rte-content {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.rte-content.rte-dragover {
+  outline: 2px dashed #16a34a;
+  outline-offset: -4px;
+  background-color: rgba(22, 163, 74, 0.04);
+}
+
+::ng-deep .rte-content .ProseMirror div[data-youtube-video] {
+  max-width: 100%;
+}
+::ng-deep .rte-content .ProseMirror div[data-youtube-video] iframe {
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border-radius: 0.5rem;
+  border: 0;
+}
+
+/* ProseMirror editable area (children are created at runtime by Tiptap) */
+::ng-deep .rte-content .ProseMirror {
+  min-height: 320px;
+  padding: 0.875rem 1rem;
+  outline: none;
+  line-height: 1.7;
+  color: #1a1a1a;
+  font-size: 0.95rem;
+}
+::ng-deep .rte-content .ProseMirror:focus {
+  outline: none;
+}
+::ng-deep .rte-content .ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+::ng-deep .rte-content .ProseMirror h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+::ng-deep .rte-content .ProseMirror h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+::ng-deep .rte-content .ProseMirror ul,
+::ng-deep .rte-content .ProseMirror ol {
+  padding-left: 1.4rem;
+}
+::ng-deep .rte-content .ProseMirror ul {
+  list-style: disc;
+}
+::ng-deep .rte-content .ProseMirror ol {
+  list-style: decimal;
+}
+::ng-deep .rte-content .ProseMirror blockquote {
+  border-left: 3px solid #d4d4d4;
+  padding-left: 1rem;
+  color: #555;
+}
+::ng-deep .rte-content .ProseMirror a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+::ng-deep .rte-content .ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+::ng-deep .rte-content .ProseMirror pre {
+  background: #f4f4f5;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+  overflow-x: auto;
+}
+::ng-deep .rte-content .ProseMirror code {
+  background: #f4f4f5;
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.3rem;
+  font-size: 0.85em;
+}
+/* Placeholder when empty */
+::ng-deep .rte-content .ProseMirror.is-editor-empty:first-child::before,
+::ng-deep .rte-content .ProseMirror p.is-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: #6d6d6d;
+  pointer-events: none;
+}

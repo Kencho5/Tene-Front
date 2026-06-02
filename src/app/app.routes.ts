@@ -77,6 +77,15 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/about/about.component').then((m) => m.AboutComponent),
       },
       {
+        path: 'blog',
+        loadComponent: () => import('./pages/blog/blog.component').then((m) => m.BlogComponent),
+      },
+      {
+        path: 'blog/:slug',
+        loadComponent: () =>
+          import('./pages/blog-post/blog-post.component').then((m) => m.BlogPostComponent),
+      },
+      {
         path: 'coming-soon',
         loadComponent: () =>
           import('./pages/coming-soon/coming-soon.component').then((m) => m.ComingSoonComponent),
@@ -299,6 +308,28 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin/cable-variant-form/admin-cable-variant-form.component').then(
             (m) => m.AdminCableVariantFormComponent,
+          ),
+      },
+      {
+        path: 'blogs',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/blogs/admin-blogs.component').then((m) => m.AdminBlogsComponent),
+      },
+      {
+        path: 'blogs/new',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/blog-form/admin-blog-form.component').then(
+            (m) => m.AdminBlogFormComponent,
+          ),
+      },
+      {
+        path: 'blogs/:id/edit',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/blog-form/admin-blog-form.component').then(
+            (m) => m.AdminBlogFormComponent,
           ),
       },
       {

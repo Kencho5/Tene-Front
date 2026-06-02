@@ -1,0 +1,135 @@
+<div class="container px-4 py-6 xl:px-8">
+  <app-breadcrumb [items]="breadcrumbs" [showBackButton]="false" />
+
+  <!-- Page header -->
+  <header class="mx-auto mt-6 mb-10 max-w-3xl text-center">
+    <p class="mb-2 text-sm font-medium uppercase tracking-[0.18em] text-green-60">Tene ბლოგი</p>
+    <h1 class="text-3xl font-bold tracking-tight text-platinum-100 sm:text-4xl md:text-5xl">
+      სიახლეები და გზამკვლევები
+    </h1>
+    <p class="mx-auto mt-3 max-w-xl text-platinum-50">
+      რჩევები, მიმოხილვები და ისტორიები ტექნოლოგიების სამყაროდან.
+    </p>
+  </header>
+
+  @if (response.isLoading() && blogs().length === 0) {
+    <!-- Skeleton -->
+    <div class="mb-12 grid gap-6 lg:grid-cols-2">
+      <div class="aspect-[16/10] animate-pulse rounded-3xl bg-platinum-10"></div>
+      <div class="flex flex-col justify-center gap-3">
+        <div class="h-4 w-24 animate-pulse rounded bg-platinum-10"></div>
+        <div class="h-8 w-3/4 animate-pulse rounded bg-platinum-10"></div>
+        <div class="h-4 w-full animate-pulse rounded bg-platinum-10"></div>
+        <div class="h-4 w-2/3 animate-pulse rounded bg-platinum-10"></div>
+      </div>
+    </div>
+    <div class="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+      @for (s of [1, 2, 3, 4, 5, 6]; track s) {
+        <div class="flex flex-col gap-3">
+          <div class="aspect-[16/10] animate-pulse rounded-2xl bg-platinum-10"></div>
+          <div class="h-4 w-20 animate-pulse rounded bg-platinum-10"></div>
+          <div class="h-6 w-5/6 animate-pulse rounded bg-platinum-10"></div>
+          <div class="h-4 w-full animate-pulse rounded bg-platinum-10"></div>
+        </div>
+      }
+    </div>
+  } @else if (blogs().length === 0) {
+    <div class="flex flex-col items-center gap-3 py-24 text-center">
+      <svg width="52" height="52" viewBox="0 0 48 48" fill="none" class="text-platinum-30">
+        <path d="M40 8H8C5.79086 8 4 9.79086 4 12V36C4 38.2091 5.79086 40 8 40H40C42.2091 40 44 38.2091 44 36V12C44 9.79086 42.2091 8 40 8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M16 20L24 28L32 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <p class="text-lg font-semibold text-platinum-80">ჯერ სტატიები არ არის</p>
+      <p class="text-sm text-platinum-50">მალე დავამატებთ ახალ მასალებს.</p>
+    </div>
+  } @else {
+    <!-- Featured (latest) post -->
+    @if (featured(); as post) {
+      <a
+        [routerLink]="['/blog', post.slug]"
+        class="group mb-14 grid items-center gap-6 lg:grid-cols-2 lg:gap-10"
+      >
+        <div class="relative aspect-[16/10] overflow-hidden rounded-3xl bg-platinum-10">
+          @if (post.thumbnail) {
+            <img
+              [src]="post.thumbnail.url"
+              [alt]="post.title"
+              class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            />
+          }
+        </div>
+        <div>
+          <div class="mb-3 flex items-center gap-2 text-xs font-medium text-green-60">
+            <span class="rounded-full bg-green-10 px-3 py-1 uppercase tracking-wide">რჩეული</span>
+            <span class="text-platinum-40">{{ formatDate(post.published_at) }}</span>
+          </div>
+          <h2 class="text-2xl font-bold leading-tight text-platinum-100 transition-colors group-hover:text-green-70 sm:text-3xl">
+            {{ post.title }}
+          </h2>
+          @if (post.excerpt) {
+            <p class="mt-3 line-clamp-3 text-platinum-60">{{ post.excerpt }}</p>
+          }
+          <div class="mt-5 flex items-center gap-2 text-sm font-medium text-platinum-80">
+            <span>წაიკითხე</span>
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" class="transition-transform group-hover:translate-x-1">
+              <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span class="ml-2 text-platinum-40">{{ readingTime(post) }} წთ წასაკითხი</span>
+          </div>
+        </div>
+      </a>
+    }
+
+    <!-- Grid -->
+    @if (rest().length > 0) {
+      <div class="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        @for (post of rest(); track post.id) {
+          <a [routerLink]="['/blog', post.slug]" class="group flex flex-col">
+            <div class="relative aspect-[16/10] overflow-hidden rounded-2xl bg-platinum-10">
+              @if (post.thumbnail) {
+                <img
+                  [src]="post.thumbnail.url"
+                  [alt]="post.title"
+                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                  loading="lazy"
+                />
+              }
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-xs text-platinum-40">
+              <span>{{ formatDate(post.published_at) }}</span>
+              <span class="h-1 w-1 rounded-full bg-platinum-30"></span>
+              <span>{{ readingTime(post) }} წთ</span>
+            </div>
+            <h3 class="mt-2 text-lg font-semibold leading-snug text-platinum-100 transition-colors group-hover:text-green-70">
+              {{ post.title }}
+            </h3>
+            @if (post.excerpt) {
+              <p class="mt-2 line-clamp-2 text-sm text-platinum-50">{{ post.excerpt }}</p>
+            }
+          </a>
+        }
+      </div>
+    }
+
+    <!-- Load more -->
+    @if (hasMore()) {
+      <div class="mt-14 flex justify-center">
+        <button
+          type="button"
+          (click)="loadMore()"
+          [disabled]="loadingMore()"
+          class="inline-flex items-center gap-2 rounded-full border border-hairline-strong px-6 py-3 text-sm font-medium text-platinum-80 transition-colors hover:bg-platinum-10 disabled:opacity-60"
+        >
+          @if (loadingMore()) {
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="animate-spin">
+              <path d="M8 2V4M8 12V14M14 8H12M4 8H2M12.2426 3.75736L10.8284 5.17157M5.17157 10.8284L3.75736 12.2426M12.2426 12.2426L10.8284 10.8284M5.17157 5.17157L3.75736 3.75736" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            იტვირთება...
+          } @else {
+            მეტის ნახვა
+          }
+        </button>
+      </div>
+    }
+  }
+</div>

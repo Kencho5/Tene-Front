@@ -48,6 +48,15 @@ import {
   PaymentLinkResponse,
 } from '@core/interfaces/admin/payment-link.interface';
 import { CheckoutSessionSearchResponse } from '@core/interfaces/admin/checkout-sessions.interface';
+import {
+  BlogCreatePayload,
+  BlogListParams,
+  BlogListResponse,
+  BlogMediaPresignedResponse,
+  BlogMediaUploadItem,
+  BlogUpdatePayload,
+  BlogWithMedia,
+} from '@core/interfaces/admin/blogs.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -309,5 +318,51 @@ export class AdminService {
 
   deleteTaskMedia(id: number, mediaUuid: string): Observable<HttpStatusCode> {
     return this.http.delete<HttpStatusCode>(`/admin/tasks/${id}/media/${mediaUuid}`);
+  }
+
+  // Blog Management
+  listBlogs(params: BlogListParams = {}): Observable<BlogListResponse> {
+    let httpParams = new HttpParams();
+    if (params.status) httpParams = httpParams.set('status', params.status);
+    if (params.limit != null) httpParams = httpParams.set('limit', String(params.limit));
+    if (params.offset != null) httpParams = httpParams.set('offset', String(params.offset));
+    return this.http.get<BlogListResponse>('/admin/blogs', { params: httpParams });
+  }
+
+  getBlog(id: number): Observable<BlogWithMedia> {
+    return this.http.get<BlogWithMedia>(`/admin/blogs/${id}`);
+  }
+
+  createBlog(payload: BlogCreatePayload): Observable<BlogWithMedia> {
+    return this.http.post<BlogWithMedia>('/admin/blogs', payload);
+  }
+
+  updateBlog(id: number, payload: BlogUpdatePayload): Observable<BlogWithMedia> {
+    return this.http.put<BlogWithMedia>(`/admin/blogs/${id}`, payload);
+  }
+
+  deleteBlog(id: number): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/blogs/${id}`);
+  }
+
+  getBlogMediaPresignedUrls(
+    id: number,
+    items: BlogMediaUploadItem[],
+  ): Observable<BlogMediaPresignedResponse> {
+    return this.http.put<BlogMediaPresignedResponse>(`/admin/blogs/${id}/media`, { items });
+  }
+
+  deleteBlogMedia(id: number, mediaUuid: string): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/blogs/${id}/media/${mediaUuid}`);
+  }
+
+  setBlogMediaThumbnail(
+    id: number,
+    mediaUuid: string,
+    isThumbnail: boolean,
+  ): Observable<BlogWithMedia> {
+    return this.http.patch<BlogWithMedia>(`/admin/blogs/${id}/media/${mediaUuid}/thumbnail`, {
+      is_thumbnail: isThumbnail,
+    });
   }
 }

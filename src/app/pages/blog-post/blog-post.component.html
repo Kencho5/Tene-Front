@@ -1,0 +1,61 @@
+<div class="container px-4 py-6 xl:px-8">
+  <app-breadcrumb [items]="breadcrumbs()" [showBackButton]="true" />
+
+  @if (post.isLoading()) {
+    <div class="mx-auto mt-6 max-w-3xl">
+      <div class="h-4 w-28 animate-pulse rounded bg-platinum-10"></div>
+      <div class="mt-4 h-10 w-5/6 animate-pulse rounded bg-platinum-10"></div>
+      <div class="mt-3 h-10 w-2/3 animate-pulse rounded bg-platinum-10"></div>
+      <div class="mt-8 aspect-[16/9] animate-pulse rounded-3xl bg-platinum-10"></div>
+      <div class="mt-8 space-y-3">
+        @for (s of [1, 2, 3, 4, 5, 6]; track s) {
+          <div class="h-4 w-full animate-pulse rounded bg-platinum-10"></div>
+        }
+      </div>
+    </div>
+  } @else if (blog(); as post) {
+    <article class="mx-auto mt-4 max-w-3xl">
+      <!-- Header -->
+      <header class="mb-8 text-center">
+        <div class="mb-4 flex items-center justify-center gap-2 text-sm text-platinum-50">
+          <time>{{ formatDate(post.published_at) }}</time>
+          <span class="h-1 w-1 rounded-full bg-platinum-30"></span>
+          <span>{{ readingTime(post) }} წთ წასაკითხი</span>
+        </div>
+        <h1 class="text-3xl font-bold leading-tight tracking-tight text-platinum-100 sm:text-4xl md:text-[2.75rem]">
+          {{ post.title }}
+        </h1>
+        @if (post.excerpt) {
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-platinum-60">{{ post.excerpt }}</p>
+        }
+      </header>
+
+      <!-- Hero image -->
+      @if (post.thumbnail) {
+        <div class="mb-10 overflow-hidden rounded-3xl bg-platinum-10">
+          <img
+            [src]="post.thumbnail.url"
+            [alt]="post.title"
+            class="h-full w-full object-cover"
+          />
+        </div>
+      }
+
+      <!-- Body -->
+      <div class="blog-content" [innerHTML]="safeContent()"></div>
+
+      <!-- Footer -->
+      <footer class="mt-12 border-t border-hairline pt-6">
+        <a
+          routerLink="/blog"
+          class="inline-flex items-center gap-2 text-sm font-medium text-platinum-70 transition-colors hover:text-green-70"
+        >
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+            <path d="M16 10H4M9 5l-5 5 5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          ყველა სტატია
+        </a>
+      </footer>
+    </article>
+  }
+</div>
