@@ -136,7 +136,7 @@
         style="scrollbar-width: none; -ms-overflow-style: none"
       >
         @for (product of products(); track product.data.id) {
-        <app-product-card class="w-[260px] shrink-0 snap-start" [product]="product" />
+        <app-product-card class="w-full shrink-0 snap-start sm:w-[260px]" [product]="product" />
         }
       </div>
 
