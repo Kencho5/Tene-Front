@@ -1,0 +1,256 @@
+<div class="space-y-5">
+  <!-- Back -->
+  <button
+    type="button"
+    (click)="goBack()"
+    class="inline-flex items-center gap-1.5 text-sm font-medium text-platinum-50 transition-colors hover:text-platinum-100"
+  >
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    შეკვეთები
+  </button>
+
+  @if (orderResource.isLoading()) {
+    <!-- Skeleton -->
+    <div class="space-y-4">
+      <div class="h-8 w-48 animate-pulse rounded-lg bg-platinum-10"></div>
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div class="space-y-4 lg:col-span-2">
+          <div class="h-64 animate-pulse rounded-2xl bg-platinum-10"></div>
+          <div class="h-48 animate-pulse rounded-2xl bg-platinum-10"></div>
+        </div>
+        <div class="h-72 animate-pulse rounded-2xl bg-platinum-10"></div>
+      </div>
+    </div>
+  } @else if (!order()) {
+    <!-- Not found -->
+    <div class="rounded-2xl border border-hairline bg-white px-4 py-16 text-center">
+      <div class="flex flex-col items-center gap-2">
+        <svg width="44" height="44" viewBox="0 0 48 48" fill="none" class="text-platinum-30">
+          <path d="M42 30V18L24 9L6 18V30L24 39L42 30Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 18L24 27L42 18M24 39V27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="text-sm font-medium text-platinum-70">შეკვეთა ვერ მოიძებნა</p>
+        <button type="button" (click)="goBack()" class="text-xs font-medium text-green-70 hover:underline">
+          დაბრუნდი შეკვეთებში
+        </button>
+      </div>
+    </div>
+  } @else if (order(); as order) {
+    <!-- Header -->
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <div class="flex items-center gap-3">
+          <h1 class="text-xl font-semibold text-platinum-100">შეკვეთა #{{ order.id }}</h1>
+          @switch (order.status) {
+            @case ("approved") {
+              <span class="inline-flex items-center rounded-full border border-green-30/70 bg-green-10 px-2.5 py-0.5 text-xs font-medium text-green-70">{{ statusLabel(order.status) }}</span>
+            }
+            @case ("declined") {
+              <span class="inline-flex items-center rounded-full border border-valencia-30/60 bg-valencia-10 px-2.5 py-0.5 text-xs font-medium text-valencia-60">{{ statusLabel(order.status) }}</span>
+            }
+            @case ("expired") {
+              <span class="inline-flex items-center rounded-full border border-valencia-30/60 bg-valencia-10 px-2.5 py-0.5 text-xs font-medium text-valencia-60">{{ statusLabel(order.status) }}</span>
+            }
+            @default {
+              <span class="inline-flex items-center rounded-full border border-platinum-30/60 bg-platinum-10 px-2.5 py-0.5 text-xs font-medium text-platinum-70">{{ statusLabel(order.status) }}</span>
+            }
+          }
+        </div>
+        <p class="mt-1 text-sm text-platinum-50">
+          {{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <!-- Left column -->
+      <div class="space-y-4 lg:col-span-2">
+        <!-- Items -->
+        <div class="rounded-2xl border border-hairline bg-white">
+          <div class="border-b border-hairline px-4 py-3">
+            <p class="text-xs font-semibold uppercase tracking-wide text-green-70">
+              პროდუქტები ({{ order.items.length }})
+            </p>
+          </div>
+          <div class="divide-y divide-hairline">
+            @for (item of order.items; track item.id) {
+              <div class="flex items-center gap-3.5 px-4 py-3.5">
+                @if (getItemImageUrl(item); as imgUrl) {
+                  <a [routerLink]="getProductRoute(item)" class="shrink-0">
+                    <div class="h-14 w-14 overflow-hidden rounded-lg border border-hairline">
+                      <img [src]="imgUrl" [alt]="item.product_name" class="h-full w-full object-cover"/>
+                    </div>
+                  </a>
+                } @else {
+                  <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-hairline bg-platinum-10">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-platinum-40">
+                      <path d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                }
+                <div class="min-w-0 flex-1">
+                  <a [routerLink]="getProductRoute(item)" class="block text-sm font-medium text-platinum-100 hover:text-green-70 hover:underline">
+                    {{ item.product_name }}
+                  </a>
+                  <p class="mt-0.5 text-xs text-platinum-50">
+                    {{ item.quantity }} ცალი × {{ formatItemAmount(item.price_at_purchase) }}
+                  </p>
+                  @if (item.cable_config) {
+                    <p class="mt-1 inline-flex items-center gap-1 rounded-md bg-green-10 px-1.5 py-0.5 text-[11px] font-semibold text-green-70">
+                      {{ item.cable_config.watts }}W · {{ item.cable_config.length_cm }} სმ
+                    </p>
+                  }
+                </div>
+                <span class="shrink-0 text-sm font-semibold text-platinum-100">
+                  {{ formatItemAmount(item.price_at_purchase * item.quantity) }}
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Customer -->
+        <div class="rounded-2xl border border-hairline bg-white">
+          <div class="border-b border-hairline px-4 py-3">
+            <p class="text-xs font-semibold uppercase tracking-wide text-green-70">მომხმარებელი</p>
+          </div>
+          <dl class="grid grid-cols-1 gap-x-6 gap-y-3 px-4 py-4 sm:grid-cols-2">
+            @if (order.customer_type !== 'company') {
+              <div>
+                <dt class="text-xs text-platinum-50">სახელი</dt>
+                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.customer_name }} {{ order.customer_surname }}</dd>
+              </div>
+            } @else {
+              <div>
+                <dt class="text-xs text-platinum-50">ორგანიზაცია</dt>
+                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.organization_name }}</dd>
+              </div>
+              @if (order.organization_code) {
+                <div>
+                  <dt class="text-xs text-platinum-50">კოდი</dt>
+                  <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.organization_code }}</dd>
+                </div>
+              }
+            }
+            <div>
+              <dt class="text-xs text-platinum-50">ტიპი</dt>
+              <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ customerLabel(order.customer_type) }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs text-platinum-50">ელ-ფოსტა</dt>
+              <dd class="mt-0.5 break-all text-sm font-medium text-platinum-100">{{ order.email }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs text-platinum-50">ტელეფონი</dt>
+              <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.phone_number }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Delivery -->
+        <div class="rounded-2xl border border-hairline bg-white">
+          <div class="border-b border-hairline px-4 py-3">
+            <p class="text-xs font-semibold uppercase tracking-wide text-green-70">მიწოდება</p>
+          </div>
+          <dl class="grid grid-cols-1 gap-x-6 gap-y-3 px-4 py-4 sm:grid-cols-2">
+            <div>
+              <dt class="text-xs text-platinum-50">ტიპი</dt>
+              <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ deliveryTypeLabel(order.delivery_type) }}</dd>
+            </div>
+            @if (order.delivery_time) {
+              <div>
+                <dt class="text-xs text-platinum-50">დრო</dt>
+                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ deliveryTimeLabel(order.delivery_time) }}</dd>
+              </div>
+            }
+            @if (order.city) {
+              <div>
+                <dt class="text-xs text-platinum-50">ქალაქი</dt>
+                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.city }}</dd>
+              </div>
+            }
+            @if (order.address) {
+              <div class="sm:col-span-2">
+                <dt class="text-xs text-platinum-50">მისამართი</dt>
+                <dd class="mt-0.5 break-words text-sm font-medium text-platinum-100">{{ order.address }}</dd>
+              </div>
+            }
+            @if (order.details) {
+              <div class="sm:col-span-2">
+                <dt class="text-xs text-platinum-50">დეტალები</dt>
+                <dd class="mt-0.5 break-words text-sm font-medium text-platinum-100">{{ order.details }}</dd>
+              </div>
+            }
+          </dl>
+        </div>
+
+        <!-- Comment & images -->
+        @if (order.comment || (order.comment_images && order.comment_images.length > 0)) {
+          <div class="rounded-2xl border border-hairline bg-white">
+            <div class="border-b border-hairline px-4 py-3">
+              <p class="text-xs font-semibold uppercase tracking-wide text-green-70">კომენტარი</p>
+            </div>
+            <div class="space-y-4 px-4 py-4">
+              @if (order.comment) {
+                <p class="break-words text-sm text-platinum-100">{{ order.comment }}</p>
+              }
+              @if (order.comment_images && order.comment_images.length > 0) {
+                <div class="flex flex-wrap gap-2.5">
+                  @for (image of order.comment_images; track image.image_uuid) {
+                    <button
+                      type="button"
+                      (click)="openCommentImages(order.comment_images!, image.image_uuid)"
+                      class="h-20 w-20 overflow-hidden rounded-xl border border-hairline transition-opacity hover:opacity-80"
+                    >
+                      <img [src]="image.url" alt="" class="h-full w-full object-cover" loading="lazy"/>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Right column: summary -->
+      <div class="lg:col-span-1">
+        <div class="rounded-2xl border border-hairline bg-white lg:sticky lg:top-4">
+          <div class="border-b border-hairline px-4 py-3">
+            <p class="text-xs font-semibold uppercase tracking-wide text-green-70">ჯამი</p>
+          </div>
+          <div class="space-y-2.5 px-4 py-4">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-platinum-50">ქვეჯამი</span>
+              <span class="text-sm font-medium text-platinum-100">{{ formatItemAmount(subtotal()) }} {{ order.currency }}</span>
+            </div>
+            <div class="mt-1 flex items-center justify-between border-t border-hairline pt-3">
+              <span class="text-sm font-medium text-platinum-70">სულ</span>
+              <span class="text-base font-bold text-platinum-100">{{ formatAmount(order.amount) }} {{ order.currency }}</span>
+            </div>
+          </div>
+          <div class="space-y-2.5 border-t border-hairline px-4 py-4">
+            <div class="flex items-center justify-between gap-3">
+              <span class="shrink-0 text-xs text-platinum-50">შეკვეთის ID</span>
+              <span class="truncate text-xs font-medium text-platinum-100">{{ order.order_id }}</span>
+            </div>
+            <div class="flex items-center justify-between gap-3">
+              <span class="shrink-0 text-xs text-platinum-50">თარიღი</span>
+              <span class="text-xs font-medium text-platinum-100">{{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comment images lightbox -->
+    <app-lightbox
+      [isOpen]="lightboxOpen()"
+      [images]="lightboxImages()"
+      [activeImageId]="lightboxActiveId()"
+      (closed)="closeCommentImages()"
+      (activeImageChanged)="onCommentImageChange($event)"
+    />
+  }
+</div>

@@ -13,8 +13,9 @@ import {
 import { NgClass } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { email, FormField, form, hidden, required, submit } from '@angular/forms/signals';
-import { catchError, EMPTY, of } from 'rxjs';
+import { catchError, EMPTY, forkJoin, mergeMap, Observable, of, switchMap } from 'rxjs';
 import { CheckoutFields, CheckoutRequest } from '@core/interfaces/products.interface';
+import { CompressImageService } from '@core/services/compress-image.service';
 import { organizationTypes } from '@utils/organizationTypes';
 import { CartService } from '@core/services/products/cart.service';
 import { OrderService } from '@core/services/order.service';
@@ -42,6 +43,15 @@ type StepKey = 'contact' | 'delivery' | 'review' | 'payment';
 
 const CHECKOUT_STORAGE_KEY = 'checkout_form';
 const CHECKOUT_SESSION_KEY = 'checkout_session_id';
+
+const COMMENT_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+const MAX_COMMENT_IMAGES = 5;
+
+interface PendingCommentImage {
+  id: string;
+  file: File;
+  previewUrl: string;
+}
 
 interface StepInfo {
   key: StepKey;
@@ -77,6 +87,7 @@ export class CheckoutComponent {
   readonly authService = inject(AuthService);
   private readonly deliveryPricing = inject(DeliveryPricingService);
   private readonly analytics = inject(CheckoutAnalyticsService);
+  private readonly compressImageService = inject(CompressImageService);
 
   readonly isGuest = computed(() => !this.authService.isAuthenticated());
   readonly georgianCities = georgianCities;
@@ -114,6 +125,13 @@ export class CheckoutComponent {
   readonly nextDayLabelPrefix = this.pricing.nextDayLabelPrefix;
 
   readonly checkoutLoading = signal(false);
+
+  readonly commentImages = signal<PendingCommentImage[]>([]);
+  readonly commentImageAccept = COMMENT_IMAGE_TYPES.join(',');
+  readonly maxCommentImages = MAX_COMMENT_IMAGES;
+  readonly canAddCommentImages = computed(
+    () => this.commentImages().length < MAX_COMMENT_IMAGES,
+  );
 
   readonly organizationTypes = organizationTypes;
 
@@ -450,31 +468,33 @@ export class CheckoutComponent {
     const resolvedCity = guest ? model.guest_city : (selectedAddress?.city ?? '');
     const resolvedDetails = guest ? model.guest_details : (selectedAddress?.details ?? '');
 
-    const request: CheckoutRequest = {
-      customer_type: model.customer_type,
-      ...(isIndividual
-        ? { name: model.individual.name, surname: model.individual.surname }
-        : {
-            organization_type: model.company.organization_type,
-            organization_name: model.company.organization_name,
-            organization_code: model.company.organization_code,
-          }),
-      email: model.email,
-      phone_number: model.phone_number,
-      address: resolvedAddress,
-      city: resolvedCity,
-      details: resolvedDetails,
-      delivery_type: model.delivery_type,
-      delivery_time: model.delivery_time,
-      ...(model.comment ? { comment: model.comment } : {}),
-      items: this.cartItems(),
-    };
-
     this.checkoutLoading.set(true);
 
-    this.orderService
-      .checkout(request)
+    this.uploadCommentImages()
       .pipe(
+        switchMap((imageUuids) => {
+          const request: CheckoutRequest = {
+            customer_type: model.customer_type,
+            ...(isIndividual
+              ? { name: model.individual.name, surname: model.individual.surname }
+              : {
+                  organization_type: model.company.organization_type,
+                  organization_name: model.company.organization_name,
+                  organization_code: model.company.organization_code,
+                }),
+            email: model.email,
+            phone_number: model.phone_number,
+            address: resolvedAddress,
+            city: resolvedCity,
+            details: resolvedDetails,
+            delivery_type: model.delivery_type,
+            delivery_time: model.delivery_time,
+            ...(model.comment ? { comment: model.comment } : {}),
+            ...(imageUuids.length > 0 ? { comment_image_uuids: imageUuids } : {}),
+            items: this.cartItems(),
+          };
+          return this.orderService.checkout(request);
+        }),
         catchError((error) => {
           const message = error?.error?.message || 'შეკვეთის გაფორმება ვერ მოხერხდა';
           this.toastService.add('შეცდომა', message, 5000, 'error');
@@ -569,6 +589,84 @@ export class CheckoutComponent {
         this.closeAddressDeleteModal();
       },
     });
+  }
+
+  onCommentImagesPicked(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) this.addCommentImages(Array.from(input.files));
+    input.value = '';
+  }
+
+  private async addCommentImages(files: File[]): Promise<void> {
+    for (const file of files) {
+      if (this.commentImages().length >= MAX_COMMENT_IMAGES) {
+        this.toastService.add(
+          'შეცდომა',
+          `მაქსიმუმ ${MAX_COMMENT_IMAGES} სურათის ატვირთვაა შესაძლებელი`,
+          3000,
+          'error',
+        );
+        break;
+      }
+
+      if (!COMMENT_IMAGE_TYPES.includes(file.type)) {
+        this.toastService.add(
+          'შეცდომა',
+          `მხოლოდ სურათებია დაშვებული: ${file.name}`,
+          3000,
+          'error',
+        );
+        continue;
+      }
+
+      let finalFile = file;
+      try {
+        finalFile = await this.compressImageService.compressImage(
+          file,
+          0.7,
+          2000,
+          2000,
+          'image/webp',
+        );
+      } catch {
+        this.toastService.add('შეცდომა', 'სურათის შეკუმშვა ვერ მოხერხდა', 3000, 'error');
+        continue;
+      }
+
+      this.commentImages.update((images) => [
+        ...images,
+        {
+          id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+          file: finalFile,
+          previewUrl: URL.createObjectURL(finalFile),
+        },
+      ]);
+    }
+  }
+
+  removeCommentImage(id: string): void {
+    const item = this.commentImages().find((image) => image.id === id);
+    if (item) URL.revokeObjectURL(item.previewUrl);
+    this.commentImages.update((images) => images.filter((image) => image.id !== id));
+  }
+
+  private uploadCommentImages(): Observable<string[]> {
+    const images = this.commentImages();
+    if (images.length === 0) return of([]);
+
+    return this.orderService
+      .getCommentImagePresignedUrls(images.map((image) => ({ content_type: image.file.type })))
+      .pipe(
+        mergeMap((res) =>
+          forkJoin(
+            res.images.map((entry, idx) =>
+              this.orderService
+                .uploadToS3(entry.upload_url, images[idx].file)
+                .pipe(switchMap(() => of(entry.image_uuid))),
+            ),
+          ),
+        ),
+      );
   }
 
   onFieldBlur(): void {

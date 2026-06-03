@@ -123,6 +123,7 @@ export interface CheckoutRequest {
   delivery_type: string;
   delivery_time: string;
   comment?: string;
+  comment_image_uuids?: string[];
   items: {
     product_id: string;
     quantity: number;
@@ -134,6 +135,18 @@ export interface CheckoutRequest {
 export interface CheckoutResponse {
   order_id: string;
   checkout_url: string;
+}
+
+export interface CommentImageUploadItem {
+  content_type: string;
+}
+
+export interface CommentImagePresignedResponse {
+  images: Array<{
+    image_uuid: string;
+    upload_url: string;
+    public_url: string;
+  }>;
 }
 
 export interface Order {
@@ -156,12 +169,18 @@ export interface Order {
   city: string;
   details: string;
   comment: string | null;
+  comment_images?: OrderCommentImage[];
   delivery_type: string;
   delivery_time: string;
   checkout_url: string | null;
   created_at: string;
   updated_at: string;
   items: OrderItem[];
+}
+
+export interface OrderCommentImage {
+  image_uuid: string;
+  url: string;
 }
 
 export interface OrderItem {

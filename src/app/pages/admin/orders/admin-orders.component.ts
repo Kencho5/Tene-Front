@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -14,7 +13,6 @@ import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.compo
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
 import { getProductImageUrl } from '@utils/product-image-url';
-import { generateProductSlug } from '@utils/slug';
 import { AdminService } from '@core/services/admin/admin.service';
 
 @Component({
@@ -30,7 +28,6 @@ export class AdminOrdersComponent {
   private debounceTimer?: number;
 
   readonly searchQuery = signal('');
-  readonly expandedOrderId = signal<number | null>(null);
 
   readonly statusOptions: ComboboxItems[] = [
     { label: 'ყველა', value: 'all' },
@@ -109,9 +106,7 @@ export class AdminOrdersComponent {
     });
   }
 
-  statusLabel(
-    status: string,
-  ): string {
+  statusLabel(status: string): string {
     switch (status) {
       case 'approved':
         return 'დადასტურებული';
@@ -161,55 +156,12 @@ export class AdminOrdersComponent {
     this.updateQueryParams({ limit: value || '12', offset: 0 });
   }
 
-  toggleExpand(order: Order): void {
-    const willExpand = this.expandedOrderId() !== order.id;
-    this.expandedOrderId.set(willExpand ? order.id : null);
-
-    if (willExpand) {
-      setTimeout(() => {
-        document
-          .getElementById(`order-${order.id}`)
-          ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    }
-  }
-
-  isExpanded(order: Order): boolean {
-    return this.expandedOrderId() === order.id;
-  }
-
-  formatItemAmount(amount: number | string): string {
-    return Number(amount).toFixed(2);
-  }
-
-  getProductRoute(item: OrderItem): string {
-    return `/products/${generateProductSlug(item.product_name)}/${item.product_id}`;
+  openOrder(order: Order): void {
+    this.router.navigate(['/admin/orders', order.id]);
   }
 
   customerLabel(type: string): string {
     return type === 'company' ? 'იურიდიული პირი' : 'ფიზიკური პირი';
-  }
-
-  deliveryTypeLabel(type: string): string {
-    switch (type) {
-      case 'delivery':
-        return 'მიტანა';
-      case 'pickup':
-        return 'გატანა';
-      default:
-        return type;
-    }
-  }
-
-  deliveryTimeLabel(time: string): string {
-    switch (time) {
-      case 'same_day':
-        return 'იმავე დღეს';
-      case 'next_day':
-        return 'მეორე დღეს';
-      default:
-        return time;
-    }
   }
 
   private updateQueryParams(
