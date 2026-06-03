@@ -758,6 +758,27 @@ export class ProductComponent {
     return this.product()?.seo?.meta_keywords?.filter((k) => k?.trim()) ?? [];
   });
 
+  readonly deliveryOpen = signal(false);
+
+  readonly deliveryOptions = [
+    { title: 'თბილისი · 1 საათში', detail: '9:00–17:30 · ყოველდღე კვირის გარდა', price: 15 },
+    {
+      title: 'თბილისი · იმავე დღეს',
+      detail: 'შეკვეთა 00:00–11:00 · ყოველდღე კვირის გარდა',
+      price: 6,
+    },
+    {
+      title: 'თბილისი · მომდევნო დღეს',
+      detail: 'შეკვეთა 11:00–00:00 · ყოველდღე კვირის გარდა',
+      price: 6,
+    },
+    { title: 'რეგიონები · 2–3 დღეში', detail: 'საქართველოს მასშტაბით', price: 6 },
+  ];
+
+  toggleDelivery(): void {
+    this.deliveryOpen.update((v) => !v);
+  }
+
   readonly questionText = signal('');
   readonly chatChannel = signal<'messenger' | 'whatsapp' | null>(null);
   readonly chatSent = signal(false);
