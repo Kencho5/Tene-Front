@@ -28,7 +28,7 @@
         type="text"
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
-        placeholder="ძიება შეკვეთის ID-ით..."
+        placeholder="ძიება ID-ით, სახელით ან გვარით..."
         class="h-11 w-full rounded-xl border border-hairline bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-30"
       />
       @if (searchQuery()) {
@@ -175,8 +175,8 @@
   </div>
 
   <!-- Table (sm+) -->
-  <div class="hidden overflow-hidden rounded-2xl border border-hairline bg-white sm:block">
-    <div class="overflow-x-auto">
+  <div class="hidden rounded-2xl border border-hairline bg-white sm:block">
+    <div class="overflow-x-auto rounded-t-2xl">
       <table class="w-full">
         <thead>
           <tr class="border-b border-hairline">

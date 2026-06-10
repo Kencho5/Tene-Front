@@ -27,7 +27,9 @@ export class AdminOrdersComponent {
   private readonly adminService = inject(AdminService);
   private debounceTimer?: number;
 
-  readonly searchQuery = signal('');
+  readonly searchQuery = signal(
+    (this.route.snapshot.queryParams['search'] as string) ?? '',
+  );
 
   readonly statusOptions: ComboboxItems[] = [
     { label: 'ყველა', value: 'all' },
@@ -129,10 +131,8 @@ export class AdminOrdersComponent {
 
     clearTimeout(this.debounceTimer);
     this.debounceTimer = window.setTimeout(() => {
-      const isNumeric = /^\d+$/.test(value);
       this.updateQueryParams({
-        id: isNumeric ? value : undefined,
-        user_id: undefined,
+        search: value.trim() || undefined,
         offset: 0,
       });
     }, 400);
@@ -144,7 +144,7 @@ export class AdminOrdersComponent {
 
   clearSearch(): void {
     this.searchQuery.set('');
-    this.updateQueryParams({ id: undefined, offset: 0 });
+    this.updateQueryParams({ search: undefined, offset: 0 });
   }
 
   onPageChange(page: number): void {
