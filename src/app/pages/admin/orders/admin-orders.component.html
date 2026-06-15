@@ -150,10 +150,11 @@
     } @else {
       <div class="space-y-3">
         @for (order of orders(); track order.id) {
+          <div class="rounded-2xl border border-hairline bg-white p-4">
           <button
             type="button"
             (click)="openOrder(order)"
-            class="flex w-full items-start gap-3.5 rounded-2xl border border-hairline bg-white p-4 text-left transition-colors hover:bg-platinum-10/50"
+            class="flex w-full items-start gap-3.5 text-left"
           >
             @if (order.items.length > 0 && getItemImageUrl(order.items[0]); as imgUrl) {
               <div class="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-hairline">
@@ -189,24 +190,10 @@
               <p class="mt-1 text-xs text-platinum-50">
                 {{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}
               </p>
-              <div class="mt-2.5 flex flex-wrap items-center gap-2">
+              <div class="mt-2.5">
                 <span class="text-sm font-semibold text-platinum-100">
                   {{ formatAmount(order.amount) }} {{ order.currency }}
                 </span>
-                @switch (order.status) {
-                  @case ("approved") {
-                    <span class="inline-flex items-center rounded-full border border-green-30/70 bg-green-10 px-2.5 py-0.5 text-xs font-medium text-green-70">{{ statusLabel(order.status) }}</span>
-                  }
-                  @case ("declined") {
-                    <span class="inline-flex items-center rounded-full border border-valencia-30/60 bg-valencia-10 px-2.5 py-0.5 text-xs font-medium text-valencia-60">{{ statusLabel(order.status) }}</span>
-                  }
-                  @case ("expired") {
-                    <span class="inline-flex items-center rounded-full border border-valencia-30/60 bg-valencia-10 px-2.5 py-0.5 text-xs font-medium text-valencia-60">{{ statusLabel(order.status) }}</span>
-                  }
-                  @default {
-                    <span class="inline-flex items-center rounded-full border border-platinum-30/60 bg-platinum-10 px-2.5 py-0.5 text-xs font-medium text-platinum-70">{{ statusLabel(order.status) }}</span>
-                  }
-                }
               </div>
             </div>
             <svg
@@ -216,6 +203,18 @@
               <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
+
+          <!-- Status -->
+          <div class="mt-3 border-t border-hairline pt-3">
+            <app-dropdown
+              [selectedValue]="order.status"
+              (selectedValueChange)="onOrderStatusChange(order, $event)"
+              [items]="orderStatusOptions"
+              [disabled]="isUpdatingStatus(order.id)"
+              placeholder="სტატუსი"
+            />
+          </div>
+          </div>
         }
       </div>
     }
@@ -361,22 +360,18 @@
                 </td>
 
                 <!-- Status -->
-                <td class="whitespace-nowrap px-4 py-3">
+                <td class="px-4 py-3" (click)="$event.stopPropagation()">
                   <div class="flex justify-end">
-                    @switch (order.status) {
-                      @case ("approved") {
-                        <span class="inline-flex items-center rounded-full border border-green-30/70 bg-green-10 px-2.5 py-0.5 text-xs font-medium text-green-70">{{ statusLabel(order.status) }}</span>
-                      }
-                      @case ("declined") {
-                        <span class="inline-flex items-center rounded-full border border-valencia-30/60 bg-valencia-10 px-2.5 py-0.5 text-xs font-medium text-valencia-60">{{ statusLabel(order.status) }}</span>
-                      }
-                      @case ("expired") {
-                        <span class="inline-flex items-center rounded-full border border-valencia-30/60 bg-valencia-10 px-2.5 py-0.5 text-xs font-medium text-valencia-60">{{ statusLabel(order.status) }}</span>
-                      }
-                      @default {
-                        <span class="inline-flex items-center rounded-full border border-platinum-30/60 bg-platinum-10 px-2.5 py-0.5 text-xs font-medium text-platinum-70">{{ statusLabel(order.status) }}</span>
-                      }
-                    }
+                    <div class="w-[210px]">
+                      <app-dropdown
+                        [selectedValue]="order.status"
+                        (selectedValueChange)="onOrderStatusChange(order, $event)"
+                        [items]="orderStatusOptions"
+                        [disabled]="isUpdatingStatus(order.id)"
+                        [fixedPanel]="true"
+                        placeholder="სტატუსი"
+                      />
+                    </div>
                   </div>
                 </td>
               </tr>

@@ -54,6 +54,12 @@ export class OrdersComponent {
         return 'უარყოფილი';
       case 'expired':
         return 'ვადაგასული';
+      case 'prepared':
+        return 'მომზადებულია';
+      case 'shipped':
+        return 'გაგზავნილია';
+      case 'finance_cleared':
+        return 'დადასტურებული';
     }
   }
 

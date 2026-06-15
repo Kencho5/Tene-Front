@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpStatusCode } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
+  Order,
   OrderSearchResponse,
   ProductResponse,
   ProductSearchResponse,
@@ -157,6 +158,10 @@ export class AdminService {
   // Order Management
   searchOrders(params: string): Observable<OrderSearchResponse> {
     return this.http.get<OrderSearchResponse>(`/admin/orders?${params}`);
+  }
+
+  updateOrderStatus(id: number, status: string): Observable<Order> {
+    return this.http.patch<Order>(`/admin/orders/${id}/status`, { status });
   }
 
   exportOrders(params: string): Observable<Blob> {

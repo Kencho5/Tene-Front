@@ -149,11 +149,21 @@ export interface CommentImagePresignedResponse {
   }>;
 }
 
+export type OrderStatus =
+  | 'pending'
+  | 'approved'
+  | 'declined'
+  | 'expired'
+  | 'processing'
+  | 'prepared'
+  | 'shipped'
+  | 'finance_cleared';
+
 export interface Order {
   id: number;
   user_id: number;
   order_id: string;
-  status: 'pending' | 'approved' | 'declined' | 'expired' | 'processing';
+  status: OrderStatus;
   payment_id: number | null;
   amount: number;
   currency: string;

@@ -8,7 +8,11 @@ import {
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
-import { Order, OrderItem } from '@core/interfaces/products.interface';
+import {
+  Order,
+  OrderItem,
+  OrderStatus,
+} from '@core/interfaces/products.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
@@ -38,7 +42,18 @@ export class AdminOrdersComponent {
     { label: 'მუშავდება', value: 'processing' },
     { label: 'უარყოფილი', value: 'declined' },
     { label: 'ვადაგასული', value: 'expired' },
+    { label: 'მომზადებულია', value: 'prepared' },
+    { label: 'გაგზავნილია', value: 'shipped' },
+    { label: 'ფინანში გატარებულია', value: 'finance_cleared' },
   ];
+
+  readonly orderStatusOptions: ComboboxItems[] = this.statusOptions.filter(
+    (o) => o.value !== 'all',
+  );
+
+  readonly updatingStatus = signal<ReadonlySet<number>>(new Set());
+
+  private readonly statusOverrides = signal<Record<number, OrderStatus>>({});
 
   readonly params = toSignal(this.route.queryParams, {
     initialValue: {} as Params,
@@ -57,7 +72,16 @@ export class AdminOrdersComponent {
 
   readonly isExporting = signal(false);
 
-  readonly orders = computed(() => this.searchResponse.value().orders);
+  readonly orders = computed(() => {
+    const overrides = this.statusOverrides();
+    return this.searchResponse
+      .value()
+      .orders.map((order) =>
+        overrides[order.id]
+          ? { ...order, status: overrides[order.id] }
+          : order,
+      );
+  });
   readonly totalOrders = computed(() => this.searchResponse.value().total);
   readonly totalAmount = computed(() => this.searchResponse.value().total_amount);
 
@@ -134,6 +158,12 @@ export class AdminOrdersComponent {
         return 'უარყოფილი';
       case 'expired':
         return 'ვადაგასული';
+      case 'prepared':
+        return 'მომზადებულია';
+      case 'shipped':
+        return 'გაგზავნილია';
+      case 'finance_cleared':
+        return 'ფინანში გატარებულია';
       default:
         return status;
     }
@@ -154,6 +184,37 @@ export class AdminOrdersComponent {
 
   onStatusChange(value: string | undefined): void {
     this.updateQueryParams({ status: value ?? 'approved', offset: 0 });
+  }
+
+  isUpdatingStatus(orderId: number): boolean {
+    return this.updatingStatus().has(orderId);
+  }
+
+  onOrderStatusChange(order: Order, status: string | undefined): void {
+    if (!status || status === order.status || this.isUpdatingStatus(order.id)) {
+      return;
+    }
+
+    this.updatingStatus.update((set) => new Set(set).add(order.id));
+
+    this.adminService.updateOrderStatus(order.id, status).subscribe({
+      next: (updated) => {
+        this.statusOverrides.update((m) => ({
+          ...m,
+          [order.id]: updated.status,
+        }));
+        this.clearUpdating(order.id);
+      },
+      error: () => this.clearUpdating(order.id),
+    });
+  }
+
+  private clearUpdating(orderId: number): void {
+    this.updatingStatus.update((set) => {
+      const next = new Set(set);
+      next.delete(orderId);
+      return next;
+    });
   }
 
   onFromDateChange(event: Event): void {

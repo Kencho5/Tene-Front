@@ -1,7 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   computed,
+  inject,
   input,
   model,
   output,
@@ -24,10 +26,16 @@ export class DropdownComponent {
   readonly customClass = input<string>('');
   readonly items = input.required<ComboboxItems[]>();
   readonly disabled = input<boolean>(false);
+  readonly fixedPanel = input<boolean>(false);
 
   readonly selectedValueChange = output<string>();
 
+  private readonly host = inject(ElementRef<HTMLElement>);
+
   readonly opened = signal<boolean>(false);
+  readonly panelTop = signal<number>(0);
+  readonly panelLeft = signal<number>(0);
+  readonly panelWidth = signal<number>(0);
 
   readonly itemLabel = computed(() => {
     return (
@@ -35,6 +43,22 @@ export class DropdownComponent {
       ''
     );
   });
+
+  toggle(): void {
+    if (this.disabled()) return;
+    const next = !this.opened();
+    if (next && this.fixedPanel()) this.updatePanelPosition();
+    this.opened.set(next);
+  }
+
+  private updatePanelPosition(): void {
+    const trigger = this.host.nativeElement.querySelector('button');
+    if (!trigger) return;
+    const rect = trigger.getBoundingClientRect();
+    this.panelTop.set(rect.bottom + 4);
+    this.panelLeft.set(rect.left);
+    this.panelWidth.set(rect.width);
+  }
 
   selectItem(value: string): void {
     const item = this.items().find((i) => i.value === value);
