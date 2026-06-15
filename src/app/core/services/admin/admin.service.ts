@@ -159,6 +159,12 @@ export class AdminService {
     return this.http.get<OrderSearchResponse>(`/admin/orders?${params}`);
   }
 
+  exportOrders(params: string): Observable<Blob> {
+    return this.http.get(`/admin/orders/export?${params}`, {
+      responseType: 'blob',
+    });
+  }
+
   createPaymentLink(payload: PaymentLinkRequest): Observable<PaymentLinkResponse> {
     return this.http.post<PaymentLinkResponse>('/admin/orders/payment-link', payload);
   }

@@ -55,6 +55,8 @@ export class AdminOrdersComponent {
     stream: ({ params }) => this.adminService.searchOrders(params),
   });
 
+  readonly isExporting = signal(false);
+
   readonly orders = computed(() => this.searchResponse.value().orders);
   readonly totalOrders = computed(() => this.searchResponse.value().total);
   readonly totalAmount = computed(() => this.searchResponse.value().total_amount);
@@ -198,6 +200,31 @@ export class AdminOrdersComponent {
 
   onLimitChangeValue(value: string): void {
     this.updateQueryParams({ limit: value || '12', offset: 0 });
+  }
+
+  exportToExcel(): void {
+    if (this.isExporting()) return;
+    this.isExporting.set(true);
+
+    const p = { ...this.params() };
+    if (!p['status']) p['status'] = 'approved';
+    if (p['status'] === 'all') delete p['status'];
+    delete p['limit'];
+    delete p['offset'];
+    const params = new URLSearchParams(p).toString();
+
+    this.adminService.exportOrders(params).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'orders.xlsx';
+        a.click();
+        URL.revokeObjectURL(url);
+        this.isExporting.set(false);
+      },
+      error: () => this.isExporting.set(false),
+    });
   }
 
   openOrder(order: Order): void {
