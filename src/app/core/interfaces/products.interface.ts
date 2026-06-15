@@ -198,6 +198,7 @@ export interface OrderItem {
 export interface OrderSearchResponse {
   orders: Order[];
   total: number;
+  total_amount: number;
   limit: number;
   offset: number;
 }

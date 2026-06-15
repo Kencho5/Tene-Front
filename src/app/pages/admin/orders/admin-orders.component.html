@@ -2,7 +2,11 @@
   <!-- Header -->
   <div>
     <h1 class="text-xl font-semibold text-platinum-100">შეკვეთები</h1>
-    <p class="mt-0.5 text-sm text-platinum-50">სულ {{ totalOrders() }} შეკვეთა</p>
+    <p class="mt-0.5 text-sm text-platinum-50">
+      სულ {{ totalOrders() }} შეკვეთა
+      <span class="text-platinum-30">·</span>
+      <span class="font-medium text-platinum-70">{{ formatTotalAmount(totalAmount()) }} ₾</span>
+    </p>
   </div>
 
   <!-- Filters -->
@@ -44,6 +48,37 @@
               stroke-width="1.5"
               stroke-linecap="round"
             />
+          </svg>
+        </button>
+      }
+    </div>
+
+    <!-- Date Filters -->
+    <div class="flex items-center gap-2">
+      <input
+        type="date"
+        [value]="fromDate()"
+        (change)="onFromDateChange($event)"
+        [max]="toDate() || null"
+        class="h-11 rounded-xl border border-hairline bg-white px-3 text-sm text-platinum-100 outline-hidden transition-colors focus:border-platinum-30"
+      />
+      <span class="text-platinum-40">–</span>
+      <input
+        type="date"
+        [value]="toDate()"
+        (change)="onToDateChange($event)"
+        [min]="fromDate() || null"
+        class="h-11 rounded-xl border border-hairline bg-white px-3 text-sm text-platinum-100 outline-hidden transition-colors focus:border-platinum-30"
+      />
+      @if (fromDate() || toDate()) {
+        <button
+          type="button"
+          (click)="clearDates()"
+          class="text-platinum-40 transition-colors hover:text-platinum-70"
+          title="თარიღის გასუფთავება"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </button>
       }

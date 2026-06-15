@@ -45,7 +45,7 @@ export class AdminOrdersComponent {
   });
 
   readonly searchResponse = rxResource({
-    defaultValue: { orders: [], total: 0, limit: 0, offset: 0 },
+    defaultValue: { orders: [], total: 0, total_amount: 0, limit: 0, offset: 0 },
     params: () => {
       const p = { ...this.params() };
       if (!p['status']) p['status'] = 'approved';
@@ -57,6 +57,14 @@ export class AdminOrdersComponent {
 
   readonly orders = computed(() => this.searchResponse.value().orders);
   readonly totalOrders = computed(() => this.searchResponse.value().total);
+  readonly totalAmount = computed(() => this.searchResponse.value().total_amount);
+
+  readonly fromDate = signal(
+    this.toDateInput(this.route.snapshot.queryParams['from_date'] as string),
+  );
+  readonly toDate = signal(
+    this.toDateInput(this.route.snapshot.queryParams['to_date'] as string),
+  );
   readonly currentPage = computed(() => {
     const offset = Number(this.params()['offset']) || 0;
     const limit = Number(this.params()['limit']) || 12;
@@ -88,6 +96,10 @@ export class AdminOrdersComponent {
 
   formatAmount(amount: number): string {
     return (amount / 100).toFixed(2);
+  }
+
+  formatTotalAmount(amount: number): string {
+    return Math.round(amount / 100).toLocaleString('ka-GE');
   }
 
   formatDate(dateString: string): string {
@@ -140,6 +152,38 @@ export class AdminOrdersComponent {
 
   onStatusChange(value: string | undefined): void {
     this.updateQueryParams({ status: value ?? 'approved', offset: 0 });
+  }
+
+  onFromDateChange(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.fromDate.set(value);
+    this.updateQueryParams({
+      from_date: value ? `${value}T00:00:00Z` : undefined,
+      offset: 0,
+    });
+  }
+
+  onToDateChange(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.toDate.set(value);
+    this.updateQueryParams({
+      to_date: value ? `${value}T23:59:59Z` : undefined,
+      offset: 0,
+    });
+  }
+
+  clearDates(): void {
+    this.fromDate.set('');
+    this.toDate.set('');
+    this.updateQueryParams({
+      from_date: undefined,
+      to_date: undefined,
+      offset: 0,
+    });
+  }
+
+  private toDateInput(value: string | undefined): string {
+    return value ? value.slice(0, 10) : '';
   }
 
   clearSearch(): void {
