@@ -15,13 +15,19 @@ import {
 } from '@core/interfaces/products.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
+import {
+  LightboxComponent,
+  LightboxImage,
+} from '@shared/components/ui/lightbox/lightbox.component';
 import { SharedModule } from '@shared/shared.module';
 import { getProductImageUrl } from '@utils/product-image-url';
+import { generateProductSlug } from '@utils/slug';
+import { OrderCommentImage } from '@core/interfaces/products.interface';
 import { AdminService } from '@core/services/admin/admin.service';
 
 @Component({
   selector: 'app-admin-orders',
-  imports: [SharedModule, DropdownComponent, PaginationComponent],
+  imports: [SharedModule, DropdownComponent, PaginationComponent, LightboxComponent],
   templateUrl: './admin-orders.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -288,12 +294,79 @@ export class AdminOrdersComponent {
     });
   }
 
-  openOrder(order: Order): void {
-    this.router.navigate(['/admin/orders', order.id]);
+  readonly expandedId = signal<number | null>(null);
+
+  readonly lightboxOpen = signal(false);
+  readonly lightboxImages = signal<LightboxImage[]>([]);
+  readonly lightboxActiveId = signal<string | null>(null);
+
+  toggleOrder(order: Order): void {
+    this.expandedId.update((id) => (id === order.id ? null : order.id));
+  }
+
+  isExpanded(orderId: number): boolean {
+    return this.expandedId() === orderId;
+  }
+
+  subtotal(order: Order): number {
+    return order.items.reduce(
+      (sum, item) => sum + Number(item.price_at_purchase) * item.quantity,
+      0,
+    );
+  }
+
+  formatItemAmount(amount: number | string): string {
+    return Number(amount).toFixed(2);
+  }
+
+  getProductRoute(item: OrderItem): string {
+    return `/products/${generateProductSlug(item.product_name)}/${item.product_id}`;
   }
 
   customerLabel(type: string): string {
     return type === 'company' ? 'იურიდიული პირი' : 'ფიზიკური პირი';
+  }
+
+  deliveryTypeLabel(type: string): string {
+    switch (type) {
+      case 'delivery':
+        return 'მიტანა';
+      case 'pickup':
+        return 'გატანა';
+      default:
+        return type;
+    }
+  }
+
+  deliveryTimeLabel(time: string): string {
+    switch (time) {
+      case 'same_day':
+        return 'იმავე დღეს';
+      case 'next_day':
+        return 'მეორე დღეს';
+      default:
+        return time;
+    }
+  }
+
+  openCommentImages(images: OrderCommentImage[], activeId: string): void {
+    this.lightboxImages.set(
+      images.map((image) => ({
+        id: image.image_uuid,
+        src: image.url,
+        alt: 'კომენტარის სურათი',
+      })),
+    );
+    this.lightboxActiveId.set(activeId);
+    this.lightboxOpen.set(true);
+  }
+
+  closeCommentImages(): void {
+    this.lightboxOpen.set(false);
+  }
+
+  onCommentImageChange(imageId: string): void {
+    this.lightboxActiveId.set(imageId);
   }
 
   private updateQueryParams(
