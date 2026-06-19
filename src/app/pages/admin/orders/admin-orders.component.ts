@@ -24,6 +24,7 @@ import { getProductImageUrl } from '@utils/product-image-url';
 import { generateProductSlug } from '@utils/slug';
 import { OrderCommentImage } from '@core/interfaces/products.interface';
 import { AdminService } from '@core/services/admin/admin.service';
+import { AuthService } from '@core/services/auth/auth-service.service';
 
 @Component({
   selector: 'app-admin-orders',
@@ -35,6 +36,7 @@ export class AdminOrdersComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly adminService = inject(AdminService);
+  private readonly authService = inject(AuthService);
   private debounceTimer?: number;
 
   readonly searchQuery = signal(
@@ -196,8 +198,20 @@ export class AdminOrdersComponent {
     return this.updatingStatus().has(orderId);
   }
 
+  isStatusLocked(order: Order): boolean {
+    return (
+      this.authService.isOperator() &&
+      (order.status === 'expired' || order.status === 'pending')
+    );
+  }
+
   onOrderStatusChange(order: Order, status: string | undefined): void {
-    if (!status || status === order.status || this.isUpdatingStatus(order.id)) {
+    if (
+      !status ||
+      status === order.status ||
+      this.isUpdatingStatus(order.id) ||
+      this.isStatusLocked(order)
+    ) {
       return;
     }
 

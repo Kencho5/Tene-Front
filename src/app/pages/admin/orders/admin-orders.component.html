@@ -211,7 +211,7 @@
               [selectedValue]="order.status"
               (selectedValueChange)="onOrderStatusChange(order, $event)"
               [items]="orderStatusOptions"
-              [disabled]="isUpdatingStatus(order.id)"
+              [disabled]="isUpdatingStatus(order.id) || isStatusLocked(order)"
               placeholder="სტატუსი"
             />
           </div>
@@ -472,7 +472,7 @@
                         [selectedValue]="order.status"
                         (selectedValueChange)="onOrderStatusChange(order, $event)"
                         [items]="orderStatusOptions"
-                        [disabled]="isUpdatingStatus(order.id)"
+                        [disabled]="isUpdatingStatus(order.id) || isStatusLocked(order)"
                         [fixedPanel]="true"
                         placeholder="სტატუსი"
                       />
