@@ -218,6 +218,37 @@
                 </p>
                 }
               </div>
+              @if (isTbilisiSelected()) {
+              <div>
+                @if (submitted() && checkoutForm.guest_region().invalid()) {
+                <span #errorAnchor></span>
+                }
+                <app-combobox
+                  [(selectedValue)]="checkoutForm.guest_region().value"
+                  [items]="tbilisiRegions"
+                  [error]="submitted() && checkoutForm.guest_region().invalid()"
+                  placeholder="რაიონი"
+                  searchPlaceholder="ძებნა..."
+                  notFoundText="ვერ მოიძებნა"
+                />
+                @if (submitted() && checkoutForm.guest_region().invalid()) {
+                <p role="alert" class="text-valencia-50 mt-1.5 flex items-center gap-1 text-xs">
+                  <svg
+                    class="h-3.5 w-3.5 shrink-0"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    aria-hidden="true"
+                  >
+                    <circle cx="10" cy="10" r="8" />
+                    <path d="M10 6.5v4M10 13.5h.01" stroke-linecap="round" />
+                  </svg>
+                  {{ checkoutForm.guest_region().errors()[0]?.message }}
+                </p>
+                }
+              </div>
+              }
               @if (submitted() && checkoutForm.guest_address().invalid()) {
               <span #errorAnchor></span>
               }
@@ -309,7 +340,7 @@
                       [ngClass]="selected ? 'text-white' : 'text-ink-60'"
                       class="text-sm font-semibold tracking-wide transition-colors duration-200 ease-out"
                     >
-                      {{ cityLabel(address.city) }}
+                      {{ cityLabel(address.city) }}@if (address.region) {, {{ regionLabel(address.region) }}}
                     </span>
                   </div>
                   <div
@@ -625,6 +656,14 @@
                       {{ cityLabel(checkoutForm.guest_city().value()) }}
                     </dd>
                   </div>
+                  @if (checkoutForm.guest_region().value()) {
+                  <div class="flex justify-between gap-3">
+                    <dt class="text-ink-40">რაიონი</dt>
+                    <dd class="text-ink-70 text-right">
+                      {{ regionLabel(checkoutForm.guest_region().value()) }}
+                    </dd>
+                  </div>
+                  }
                   <div class="flex justify-between gap-3">
                     <dt class="text-ink-40">მისამართი</dt>
                     <dd class="text-ink-70 text-right">
@@ -643,6 +682,12 @@
                     <dt class="text-ink-40">მისამართი</dt>
                     <dd class="text-ink-70 text-right">{{ selectedAddressDisplay() }}</dd>
                   </div>
+                  @if (selectedAddressRegion()) {
+                  <div class="flex justify-between gap-3">
+                    <dt class="text-ink-40">რაიონი</dt>
+                    <dd class="text-ink-70 text-right">{{ regionLabel(selectedAddressRegion()) }}</dd>
+                  </div>
+                  }
                   }
                   <div class="flex justify-between gap-3">
                     <dt class="text-ink-40">დრო</dt>

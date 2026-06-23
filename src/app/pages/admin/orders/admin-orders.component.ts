@@ -1,18 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
-import {
-  Order,
-  OrderItem,
-  OrderStatus,
-} from '@core/interfaces/products.interface';
+import { Order, OrderItem, OrderStatus } from '@core/interfaces/products.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import {
@@ -39,9 +29,7 @@ export class AdminOrdersComponent {
   private readonly authService = inject(AuthService);
   private debounceTimer?: number;
 
-  readonly searchQuery = signal(
-    (this.route.snapshot.queryParams['search'] as string) ?? '',
-  );
+  readonly searchQuery = signal((this.route.snapshot.queryParams['search'] as string) ?? '');
 
   readonly statusOptions: ComboboxItems[] = [
     { label: 'ყველა', value: 'all' },
@@ -85,9 +73,7 @@ export class AdminOrdersComponent {
     return this.searchResponse
       .value()
       .orders.map((order) =>
-        overrides[order.id]
-          ? { ...order, status: overrides[order.id] }
-          : order,
+        overrides[order.id] ? { ...order, status: overrides[order.id] } : order,
       );
   });
   readonly totalOrders = computed(() => this.searchResponse.value().total);
@@ -96,9 +82,7 @@ export class AdminOrdersComponent {
   readonly fromDate = signal(
     this.toDateInput(this.route.snapshot.queryParams['from_date'] as string),
   );
-  readonly toDate = signal(
-    this.toDateInput(this.route.snapshot.queryParams['to_date'] as string),
-  );
+  readonly toDate = signal(this.toDateInput(this.route.snapshot.queryParams['to_date'] as string));
   readonly currentPage = computed(() => {
     const offset = Number(this.params()['offset']) || 0;
     const limit = Number(this.params()['limit']) || 12;
@@ -111,13 +95,9 @@ export class AdminOrdersComponent {
   readonly limit = computed(() => Number(this.params()['limit']) || 12);
   readonly offset = computed(() => Number(this.params()['offset']) || 0);
 
-  readonly showingFrom = computed(() =>
-    Math.min(this.offset() + 1, this.totalOrders()),
-  );
+  readonly showingFrom = computed(() => Math.min(this.offset() + 1, this.totalOrders()));
 
-  readonly showingTo = computed(() =>
-    Math.min(this.offset() + this.limit(), this.totalOrders()),
-  );
+  readonly showingTo = computed(() => Math.min(this.offset() + this.limit(), this.totalOrders()));
 
   getItemImageUrl(item: OrderItem): string | null {
     if (!item.product_image) return null;
@@ -200,8 +180,7 @@ export class AdminOrdersComponent {
 
   isStatusLocked(order: Order): boolean {
     return (
-      this.authService.isOperator() &&
-      (order.status === 'expired' || order.status === 'pending')
+      this.authService.isOperator() && (order.status === 'expired' || order.status === 'pending')
     );
   }
 
@@ -383,9 +362,7 @@ export class AdminOrdersComponent {
     this.lightboxActiveId.set(imageId);
   }
 
-  private updateQueryParams(
-    params: Record<string, string | number | undefined>,
-  ): void {
+  private updateQueryParams(params: Record<string, string | number | undefined>): void {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: params,

@@ -1,15 +1,18 @@
 import {
   Component,
   ChangeDetectionStrategy,
+  computed,
+  effect,
   inject,
   output,
   signal,
 } from '@angular/core';
-import { form, required, FormField } from '@angular/forms/signals';
+import { form, required, hidden, FormField } from '@angular/forms/signals';
 import { AddressData } from '@core/interfaces/address.interface';
 import { AddressService } from '@core/services/address.service';
 import { ToastService } from '@core/services/toast.service';
 import { georgianCities } from './georgian-cities';
+import { TBILISI_REGIONS } from '@pages/checkout/checkout.config';
 import { ModalComponent } from '@shared/components/ui/modal/modal.component';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
@@ -25,6 +28,7 @@ export class AddressFormModalComponent {
   private readonly toastService = inject(ToastService);
 
   readonly georgianCities = georgianCities;
+  readonly tbilisiRegions = TBILISI_REGIONS;
 
   readonly isOpen = signal(false);
   readonly isEditMode = signal(false);
@@ -34,24 +38,43 @@ export class AddressFormModalComponent {
 
   readonly addressModel = signal<AddressData>({
     city: '',
+    region: '',
     address: '',
     details: '',
   });
 
   readonly addressForm = form(this.addressModel, (fieldPath) => {
     required(fieldPath.city, { message: 'ქალაქი აუცილებელია' });
+    hidden(fieldPath.region, ({ valueOf }) => valueOf(fieldPath.city) !== 'tbilisi');
+    required(fieldPath.region, { message: 'რაიონი აუცილებელია' });
     required(fieldPath.address, { message: 'მისამართი აუცილებელია' });
   });
+
+  readonly isTbilisiSelected = computed(
+    () => this.addressForm.city().value() === 'tbilisi',
+  );
+
+  constructor() {
+    effect(() => {
+      if (
+        this.addressForm.city().value() !== 'tbilisi' &&
+        this.addressForm.region().value()
+      ) {
+        this.addressForm.region().value.set('');
+      }
+    });
+  }
 
   openForCreate() {
     this.isEditMode.set(false);
     this.editingAddressId.set(null);
+    this.addressModel.set({ city: '', region: '', address: '', details: '' });
     this.addressForm().reset();
     this.isOpen.set(true);
   }
 
   openForEdit(address: AddressData) {
-    this.addressModel.set(address);
+    this.addressModel.set({ ...address, region: address.region ?? '' });
     this.isEditMode.set(true);
     this.editingAddressId.set(address.id ?? null);
     this.isOpen.set(true);

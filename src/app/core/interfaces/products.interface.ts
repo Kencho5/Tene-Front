@@ -93,6 +93,7 @@ export interface CheckoutFields {
   phone_number: string;
   address: string;
   guest_city: string;
+  guest_region: string;
   guest_address: string;
   guest_details: string;
   delivery_type: string;
@@ -119,6 +120,7 @@ export interface CheckoutRequest {
   phone_number: string;
   address: string;
   city: string;
+  region?: string;
   details: string;
   delivery_type: string;
   delivery_time: string;

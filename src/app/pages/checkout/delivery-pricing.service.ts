@@ -6,10 +6,12 @@ import {
   HIGH_MOUNTAIN_CITIES,
   SAME_DAY_CUTOFF,
   formatGel,
+  tbilisiExpressPrice,
 } from './checkout.config';
 
 export interface DeliveryPricingInputs {
   city: Signal<string>;
+  region: Signal<string>;
   deliveryTime: Signal<string>;
   deliveryType: Signal<string>;
 }
@@ -44,19 +46,28 @@ export class DeliveryPricingService {
       return '';
     });
 
-    const priceForTime = (time: DeliveryTime, city: string): number => {
+    const priceForTime = (time: DeliveryTime, city: string, region: string): number => {
       if (HIGH_MOUNTAIN_CITIES.has(city)) return DELIVERY_PRICES.highMountain;
       if (city && city !== 'tbilisi') return DELIVERY_PRICES.outsideTbilisi;
-      return time === 'same_day' ? DELIVERY_PRICES.sameDay : DELIVERY_PRICES.nextDay;
+      if (time === 'same_day') return tbilisiExpressPrice(region);
+      return DELIVERY_PRICES.nextDay;
     };
 
-    const sameDayPrice = computed(() => priceForTime('same_day', inputs.city()));
-    const nextDayPrice = computed(() => priceForTime('next_day', inputs.city()));
+    const sameDayPrice = computed(() =>
+      priceForTime('same_day', inputs.city(), inputs.region()),
+    );
+    const nextDayPrice = computed(() =>
+      priceForTime('next_day', inputs.city(), inputs.region()),
+    );
 
     const deliveryPrice = computed(() => {
       if (inputs.deliveryType() === 'pickup') return 0;
       const time = inputs.deliveryTime() as DeliveryTime | '';
-      return priceForTime(time === 'same_day' ? 'same_day' : 'next_day', inputs.city());
+      return priceForTime(
+        time === 'same_day' ? 'same_day' : 'next_day',
+        inputs.city(),
+        inputs.region(),
+      );
     });
 
     const deliveryNotice = computed(() => {

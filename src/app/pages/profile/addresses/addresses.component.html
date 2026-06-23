@@ -60,7 +60,9 @@
 
         <div class="min-w-0 flex-1">
           <p class="text-platinum-100 text-sm font-medium">{{ address.address }}</p>
-          <p class="text-platinum-50 text-sm">{{ address.city }}</p>
+          <p class="text-platinum-50 text-sm">
+            {{ cityLabel(address.city) }}@if (address.region) {, {{ regionLabel(address.region) }}}
+          </p>
           @if (address.details) {
           <p class="text-platinum-50 mt-1 text-sm">{{ address.details }}</p>
           }

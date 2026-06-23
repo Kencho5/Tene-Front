@@ -15,6 +15,16 @@
       notFoundText="ქალაქი ვერ მოიძებნა"
     />
 
+    @if (isTbilisiSelected()) {
+    <app-combobox
+      [(selectedValue)]="addressForm.region().value"
+      [items]="tbilisiRegions"
+      placeholder="აირჩიეთ რაიონი"
+      searchPlaceholder="ძებნა..."
+      notFoundText="რაიონი ვერ მოიძებნა"
+    />
+    }
+
     <app-input
       [formField]="addressForm.address"
       type="text"

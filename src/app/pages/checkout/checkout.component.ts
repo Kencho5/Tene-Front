@@ -33,6 +33,7 @@ import { AddressFormModalComponent } from '@shared/components/address-form-modal
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { DeliveryPricingService } from './delivery-pricing.service';
+import { TBILISI_REGIONS } from './checkout.config';
 import {
   CheckoutAnalyticsEvent,
   CheckoutAnalyticsService,
@@ -91,9 +92,14 @@ export class CheckoutComponent {
 
   readonly isGuest = computed(() => !this.authService.isAuthenticated());
   readonly georgianCities = georgianCities;
+  readonly tbilisiRegions = TBILISI_REGIONS;
 
   cityLabel(value: string): string {
     return georgianCities.find((c) => c.value === value)?.label ?? value;
+  }
+
+  regionLabel(value: string): string {
+    return TBILISI_REGIONS.find((r) => r.value === value)?.label ?? value;
   }
 
   readonly timeAllowsSameDay = this.deliveryPricing.timeAllowsSameDay;
@@ -109,8 +115,17 @@ export class CheckoutComponent {
     return this.addresses().find((a) => String(a.id) === id)?.city ?? '';
   });
 
+  readonly selectedAddressRegion = computed(() => {
+    if (this.isGuest()) return this.checkoutForm.guest_region().value();
+    const id = this.checkoutForm.address().value();
+    return this.addresses().find((a) => String(a.id) === id)?.region ?? '';
+  });
+
+  readonly isTbilisiSelected = computed(() => this.selectedAddressCity() === 'tbilisi');
+
   private readonly pricing = this.deliveryPricing.create({
     city: this.selectedAddressCity,
+    region: this.selectedAddressRegion,
     deliveryTime: computed(() => this.checkoutForm.delivery_time().value()),
     deliveryType: computed(() => this.checkoutForm.delivery_type().value()),
   });
@@ -186,6 +201,7 @@ export class CheckoutComponent {
     phone_number: '',
     address: '',
     guest_city: '',
+    guest_region: '',
     guest_address: '',
     guest_details: '',
     delivery_type: 'delivery',
@@ -268,6 +284,15 @@ export class CheckoutComponent {
     required(fieldPath.guest_city, { message: 'ქალაქი აუცილებელია' });
 
     hidden(
+      fieldPath.guest_region,
+      ({ valueOf }) =>
+        valueOf(fieldPath.delivery_type) === 'pickup' ||
+        !this.isGuest() ||
+        valueOf(fieldPath.guest_city) !== 'tbilisi',
+    );
+    required(fieldPath.guest_region, { message: 'რაიონი აუცილებელია' });
+
+    hidden(
       fieldPath.guest_address,
       ({ valueOf }) => valueOf(fieldPath.delivery_type) === 'pickup' || !this.isGuest(),
     );
@@ -297,6 +322,15 @@ export class CheckoutComponent {
     effect(() => {
       if (!this.sameDayAvailable() && this.checkoutForm.delivery_time().value() === 'same_day') {
         this.checkoutForm.delivery_time().value.set('');
+      }
+    });
+
+    effect(() => {
+      if (
+        this.checkoutForm.guest_city().value() !== 'tbilisi' &&
+        this.checkoutForm.guest_region().value()
+      ) {
+        this.checkoutForm.guest_region().value.set('');
       }
     });
 
@@ -466,6 +500,7 @@ export class CheckoutComponent {
 
     const resolvedAddress = guest ? model.guest_address : (selectedAddress?.address ?? '');
     const resolvedCity = guest ? model.guest_city : (selectedAddress?.city ?? '');
+    const resolvedRegion = guest ? model.guest_region : (selectedAddress?.region ?? '');
     const resolvedDetails = guest ? model.guest_details : (selectedAddress?.details ?? '');
 
     this.checkoutLoading.set(true);
@@ -486,6 +521,7 @@ export class CheckoutComponent {
             phone_number: model.phone_number,
             address: resolvedAddress,
             city: resolvedCity,
+            ...(resolvedRegion ? { region: resolvedRegion } : {}),
             details: resolvedDetails,
             delivery_type: model.delivery_type,
             delivery_time: model.delivery_time,
@@ -498,6 +534,7 @@ export class CheckoutComponent {
         catchError((error) => {
           const message = error?.error?.message || 'შეკვეთის გაფორმება ვერ მოხერხდა';
           this.toastService.add('შეცდომა', message, 5000, 'error');
+          this.currentStepIndex.set(2);
           this.checkoutLoading.set(false);
           return EMPTY;
         }),
@@ -542,7 +579,11 @@ export class CheckoutComponent {
     if (f.delivery_type().value() === 'pickup') return false;
     if (f.delivery_time().invalid()) return true;
     if (this.isGuest()) {
-      return f.guest_city().invalid() || f.guest_address().invalid();
+      return (
+        f.guest_city().invalid() ||
+        f.guest_region().invalid() ||
+        f.guest_address().invalid()
+      );
     }
     return f.address().invalid();
   }
@@ -691,6 +732,7 @@ export class CheckoutComponent {
       ['phone_number', model.phone_number],
       ['address', model.address],
       ['guest_city', model.guest_city],
+      ['guest_region', model.guest_region],
       ['guest_address', model.guest_address],
       ['guest_details', model.guest_details],
       ['delivery_type', model.delivery_type],

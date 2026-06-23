@@ -1,3 +1,5 @@
+import { ComboboxItems } from '@core/interfaces/combobox.interface';
+
 export type DeliveryTime = 'same_day' | 'next_day';
 
 export const DELIVERY_PRICES = {
@@ -6,6 +8,28 @@ export const DELIVERY_PRICES = {
   outsideTbilisi: 6,
   highMountain: 8,
 } as const;
+
+export const TBILISI_DEFAULT_EXPRESS_PRICE = 25;
+
+export const TBILISI_REGION_EXPRESS_PRICE: Record<string, number> = {
+  'vake-saburtalo': 15,
+  'didube-chughureti': 15,
+  'dzveli-tbilisi': 15,
+  'isani-samgori': 25,
+  'gldani-nadzaladevi': 25,
+};
+
+export const TBILISI_REGIONS: ComboboxItems[] = [
+  { value: 'vake-saburtalo', label: 'ვაკე-საბურთალო' },
+  { value: 'didube-chughureti', label: 'დიდუბე-ჩუღურეთი' },
+  { value: 'dzveli-tbilisi', label: 'ძველი თბილისი' },
+  { value: 'isani-samgori', label: 'ისანი-სამგორი' },
+  { value: 'gldani-nadzaladevi', label: 'გლდანი-ნაძალადევი' },
+];
+
+export function tbilisiExpressPrice(region: string): number {
+  return TBILISI_REGION_EXPRESS_PRICE[region] ?? TBILISI_DEFAULT_EXPRESS_PRICE;
+}
 
 export const SAME_DAY_CUTOFF = { hour: 17, minute: 30 } as const;
 
