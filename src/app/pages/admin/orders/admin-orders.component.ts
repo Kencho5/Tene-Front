@@ -164,10 +164,18 @@ export class AdminOrdersComponent {
     clearTimeout(this.debounceTimer);
     this.debounceTimer = window.setTimeout(() => {
       this.updateQueryParams({
-        search: value.trim() || undefined,
+        search: this.normalizeSearch(value) || undefined,
         offset: 0,
       });
     }, 400);
+  }
+
+  private normalizeSearch(value: string): string {
+    const trimmed = value.trim();
+    if (/^[+\d][\d\s]*$/.test(trimmed)) {
+      return trimmed.replace(/\s+/g, '').replace(/^\+?995/, '');
+    }
+    return trimmed;
   }
 
   onStatusChange(value: string | undefined): void {
