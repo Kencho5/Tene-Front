@@ -234,6 +234,30 @@ export class AdminOrdersComponent {
     });
   }
 
+  readonly datePresets: { label: string; days: number }[] = [
+    { label: 'გუშინ', days: 1 },
+    { label: '1 კვირა', days: 7 },
+    { label: '10 დღე', days: 10 },
+    { label: '1 თვე', days: 30 },
+  ];
+
+  selectPreset(days: number): void {
+    const to = new Date();
+    const from = new Date();
+    from.setDate(from.getDate() - days);
+
+    const fromStr = this.toDateInput(from.toISOString());
+    const toStr = this.toDateInput(to.toISOString());
+
+    this.fromDate.set(fromStr);
+    this.toDate.set(toStr);
+    this.updateQueryParams({
+      from_date: `${fromStr}T00:00:00Z`,
+      to_date: `${toStr}T23:59:59Z`,
+      offset: 0,
+    });
+  }
+
   clearDates(): void {
     this.fromDate.set('');
     this.toDate.set('');

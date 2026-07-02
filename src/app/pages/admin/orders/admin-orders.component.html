@@ -75,6 +75,19 @@
 
     <!-- Filter cluster -->
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <!-- Date presets -->
+      <div class="grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap sm:items-center">
+        @for (preset of datePresets; track preset.days) {
+          <button
+            type="button"
+            (click)="selectPreset(preset.days)"
+            class="inline-flex h-11 items-center justify-center rounded-xl border border-hairline bg-white px-3 text-sm font-medium text-platinum-70 transition-colors hover:bg-platinum-10/60"
+          >
+            {{ preset.label }}
+          </button>
+        }
+      </div>
+
       <!-- Date range -->
       <div class="flex h-11 items-center gap-1.5 rounded-xl border border-hairline bg-white px-3">
         <svg width="15" height="15" viewBox="0 0 20 20" fill="none" class="shrink-0 text-platinum-40">
