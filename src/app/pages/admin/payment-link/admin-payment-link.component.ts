@@ -17,6 +17,7 @@ import { catchError, of } from 'rxjs';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ProductResponse } from '@core/interfaces/products.interface';
 import {
+  PaymentLinkCustomer,
   PaymentLinkFields,
   PaymentLinkItem,
   PaymentLinkRequest,
@@ -26,6 +27,7 @@ import { ToastService } from '@core/services/toast.service';
 import { getProductImageUrl } from '@utils/product-image-url';
 import { organizationTypes } from '@utils/organizationTypes';
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
+import { TBILISI_REGIONS } from '@pages/checkout/checkout.config';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
 import { InputComponent } from '@shared/components/ui/input/input.component';
@@ -43,6 +45,7 @@ export class AdminPaymentLinkComponent {
 
   readonly organizationTypes = organizationTypes;
   readonly georgianCities = georgianCities;
+  readonly tbilisiRegions = TBILISI_REGIONS;
 
   readonly customerTypeOptions: ComboboxItems[] = [
     { value: 'individual', label: 'ფიზიკური პირი' },
@@ -67,10 +70,12 @@ export class AdminPaymentLinkComponent {
     phone_number: '',
     address: '',
     city: '',
+    region: '',
     details: '',
     delivery_type: 'delivery',
     delivery_time: 'next_day',
     comment: '',
+    price: '',
     items: [],
   };
 
@@ -97,6 +102,13 @@ export class AdminPaymentLinkComponent {
     hidden(fieldPath.delivery_time, ({ valueOf }) => valueOf(fieldPath.delivery_type) === 'pickup');
     required(fieldPath.delivery_time, { message: 'მიწოდების დრო აუცილებელია' });
 
+    validate(fieldPath.price, ({ value }) => {
+      const price = parseFloat(value());
+      return isNaN(price) || price <= 0
+        ? minError(0, { message: 'თანხა უნდა იყოს 0-ზე მეტი' })
+        : null;
+    });
+
     validate(fieldPath.items, ({ value }) =>
       value().length === 0 ? requiredError({ message: 'დაამატეთ მინიმუმ ერთი პროდუქტი' }) : null,
     );
@@ -121,6 +133,8 @@ export class AdminPaymentLinkComponent {
   readonly copied = signal(false);
 
   readonly isPickup = computed(() => this.paymentLinkForm.delivery_type().value() === 'pickup');
+
+  readonly isTbilisi = computed(() => this.paymentLinkForm.city().value() === 'tbilisi');
 
   readonly errorMessage = computed(() => {
     const errors = this.paymentLinkForm().errorSummary();
@@ -225,33 +239,34 @@ export class AdminPaymentLinkComponent {
       price: parseFloat(item.price).toFixed(2),
     }));
 
-    const base = {
-      email: model.email.trim(),
-      phone_number: model.phone_number.trim(),
-      address: model.address.trim(),
-      city: model.city || null,
-      details: model.details.trim() || null,
-      delivery_type: model.delivery_type,
-      delivery_time: model.delivery_time,
-      comment: model.comment.trim() || null,
-      items,
-    };
-
-    const payload: PaymentLinkRequest =
+    const customer: PaymentLinkCustomer =
       model.customer_type === 'individual'
         ? {
             customer_type: 'individual',
             name: model.individual.name.trim(),
             surname: model.individual.surname.trim(),
-            ...base,
           }
         : {
             customer_type: 'company',
             organization_type: model.company.organization_type,
             organization_name: model.company.organization_name.trim(),
             organization_code: model.company.organization_code.trim(),
-            ...base,
           };
+
+    const payload: PaymentLinkRequest = {
+      customer,
+      email: model.email.trim(),
+      phone_number: model.phone_number.trim(),
+      address: model.address.trim(),
+      city: model.city || null,
+      region: model.city === 'tbilisi' ? model.region || null : null,
+      details: model.details.trim() || null,
+      delivery_type: model.delivery_type,
+      delivery_time: model.delivery_time,
+      comment: model.comment.trim() || null,
+      items,
+      price: parseFloat(model.price).toFixed(2),
+    };
 
     this.isLoading.set(true);
     this.checkoutUrl.set(null);

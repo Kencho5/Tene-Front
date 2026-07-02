@@ -6,32 +6,37 @@ export interface PaymentLinkItem {
   price: string;
 }
 
-interface PaymentLinkBase {
-  email: string;
-  phone_number: string;
-  address: string;
-  city: string | null;
-  details: string | null;
-  delivery_type: string;
-  delivery_time: string;
-  comment: string | null;
-  items: PaymentLinkItem[];
-}
-
-export interface PaymentLinkIndividualRequest extends PaymentLinkBase {
+export interface PaymentLinkIndividualCustomer {
   customer_type: 'individual';
   name: string;
   surname: string;
 }
 
-export interface PaymentLinkCompanyRequest extends PaymentLinkBase {
+export interface PaymentLinkCompanyCustomer {
   customer_type: 'company';
   organization_type: string;
   organization_name: string;
   organization_code: string;
 }
 
-export type PaymentLinkRequest = PaymentLinkIndividualRequest | PaymentLinkCompanyRequest;
+export type PaymentLinkCustomer =
+  | PaymentLinkIndividualCustomer
+  | PaymentLinkCompanyCustomer;
+
+export interface PaymentLinkRequest {
+  customer: PaymentLinkCustomer;
+  email: string;
+  phone_number: string;
+  address: string;
+  city: string | null;
+  region: string | null;
+  details: string | null;
+  delivery_type: string;
+  delivery_time: string;
+  comment: string | null;
+  items: PaymentLinkItem[];
+  price: string;
+}
 
 export interface PaymentLinkResponse {
   order_id: string;
@@ -61,9 +66,11 @@ export interface PaymentLinkFields {
   phone_number: string;
   address: string;
   city: string;
+  region: string;
   details: string;
   delivery_type: string;
   delivery_time: string;
   comment: string;
+  price: string;
   items: PaymentLinkItemFields[];
 }
