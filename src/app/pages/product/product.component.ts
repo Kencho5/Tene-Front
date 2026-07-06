@@ -37,6 +37,7 @@ import {
   LightboxImage,
 } from '@shared/components/ui/lightbox/lightbox.component';
 import { CableType, CableVariant } from '@core/interfaces/admin/cable-types.interface';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 type TabName = 'specifications' | 'description';
 
@@ -61,6 +62,7 @@ export class ProductComponent {
   private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly sanitizer = inject(DomSanitizer);
 
   readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
@@ -232,6 +234,67 @@ export class ProductComponent {
   readonly selectedImageQuantity = computed(() => {
     return this.displayImage()?.quantity ?? 0;
   });
+
+  readonly selectedVideoIndex = signal<number | null>(null);
+
+  readonly productVideos = computed(() => {
+    const videos = this.product()?.videos ?? [];
+    return videos
+      .map((v, index) => {
+        const embed = this.toEmbedUrl(v.platform, v.url);
+        const thumbnail = this.videoThumbnail(v.platform, v.url);
+        return embed
+          ? {
+              index,
+              platform: v.platform,
+              thumbnail,
+              embedUrl: this.sanitizer.bypassSecurityTrustResourceUrl(embed),
+            }
+          : null;
+      })
+      .filter((v) => v !== null);
+  });
+
+  readonly selectedVideo = computed(() => {
+    const idx = this.selectedVideoIndex();
+    if (idx === null) return null;
+    return this.productVideos().find((v) => v.index === idx) ?? null;
+  });
+
+  selectVideo(index: number): void {
+    this.selectedVideoIndex.set(index);
+  }
+
+  private videoThumbnail(platform: string, url: string): string | null {
+    if (platform === 'youtube') {
+      const id = this.extractYouTubeId(url);
+      return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
+    }
+    return null;
+  }
+
+  private toEmbedUrl(platform: string, url: string): string | null {
+    if (platform === 'youtube') {
+      const id = this.extractYouTubeId(url);
+      return id ? `https://www.youtube.com/embed/${id}` : null;
+    }
+    if (platform === 'facebook') {
+      return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false`;
+    }
+    return null;
+  }
+
+  private extractYouTubeId(url: string): string | null {
+    try {
+      const u = new URL(url);
+      if (u.hostname.includes('youtu.be')) return u.pathname.slice(1) || null;
+      if (u.pathname.startsWith('/embed/')) return u.pathname.split('/')[2] || null;
+      if (u.pathname.startsWith('/shorts/')) return u.pathname.split('/')[2] || null;
+      return u.searchParams.get('v');
+    } catch {
+      return null;
+    }
+  }
 
   readonly hasSpecifications = computed(() => {
     const product = this.product();
@@ -480,6 +543,7 @@ export class ProductComponent {
     if (this.selectedColor() === color) return;
 
     this.imageLoading.set(true);
+    this.selectedVideoIndex.set(null);
     this.selectedColor.set(color);
     this.quantity.set(1);
 
@@ -492,6 +556,7 @@ export class ProductComponent {
   }
 
   selectImage(imageId: string): void {
+    this.selectedVideoIndex.set(null);
     if (this.selectedImageId() === imageId) return;
     this.imageLoading.set(true);
     this.selectedImageId.set(imageId);

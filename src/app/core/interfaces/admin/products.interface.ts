@@ -27,6 +27,7 @@ export interface CreateProductPayload {
   discount?: number;
   discounted_price?: number;
   specifications: Record<string, Array<{ name: string; value: string }>>;
+  videos?: string[];
   brand_id: number | null;
   cable_type_id: number | null;
   warranty: string;

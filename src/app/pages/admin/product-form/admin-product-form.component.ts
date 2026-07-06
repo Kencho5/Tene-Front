@@ -12,7 +12,7 @@ import { ToastService } from '@core/services/toast.service';
 import { SharedModule } from '@shared/shared.module';
 import { InputComponent } from '@shared/components/ui/input/input.component';
 import { catchError, forkJoin, Observable, of, switchMap } from 'rxjs';
-import { Product, ProductCategory, ProductImage, ProductSeo } from '@core/interfaces/products.interface';
+import { Product, ProductCategory, ProductImage, ProductSeo, ProductVideo } from '@core/interfaces/products.interface';
 import {
   ProductFormData,
   CreateProductPayload,
@@ -78,6 +78,7 @@ export class AdminProductFormComponent {
   readonly metaKeywords = signal<string[]>([]);
   readonly searchTerms = signal<string[]>([]);
   readonly faqs = signal<FaqEntry[]>([]);
+  readonly videos = signal<string[]>([]);
   readonly keywordDraft = signal('');
   readonly searchTermDraft = signal('');
 
@@ -177,7 +178,13 @@ export class AdminProductFormComponent {
     effect(() => {
       const response = this.product();
       if (this.isEditMode() && response) {
-        this.loadProductData(response.data, response.images, response.categories, response.seo ?? null);
+        this.loadProductData(
+          response.data,
+          response.images,
+          response.categories,
+          response.seo ?? null,
+          response.videos ?? [],
+        );
       }
     });
   }
@@ -225,6 +232,7 @@ export class AdminProductFormComponent {
     productImages: ProductImage[],
     categories: ProductCategory[],
     seo: ProductSeo | null,
+    videos: ProductVideo[],
   ): void {
     this.productModel.set({
       id: product.id,
@@ -244,6 +252,7 @@ export class AdminProductFormComponent {
     this.metaKeywords.set(seo?.meta_keywords ?? []);
     this.searchTerms.set(seo?.search_terms ?? []);
     this.faqs.set(seo?.faqs ?? []);
+    this.videos.set(videos.map((v) => v.url));
     this.discountMode.set('percent');
     if (this.categoryOptions().length > 0 && categories.length > 0) {
       this.selectedCategoryIds.set(categories.map((c) => c.id));
@@ -474,6 +483,7 @@ export class AdminProductFormComponent {
       description: productData.description,
       price: Number(productData.price) || 0,
       specifications,
+      videos: this.videos().map((v) => v.trim()).filter(Boolean),
       brand_id: productData.brand_id ? Number(productData.brand_id) : null,
       cable_type_id: productData.cable_type_id ? Number(productData.cable_type_id) : null,
       warranty: productData.warranty,
@@ -719,6 +729,18 @@ export class AdminProductFormComponent {
 
   updateFaqAnswer(index: number, answer: string): void {
     this.faqs.update((list) => list.map((f, i) => (i === index ? { ...f, answer } : f)));
+  }
+
+  addVideo(): void {
+    this.videos.update((list) => [...list, '']);
+  }
+
+  removeVideo(index: number): void {
+    this.videos.update((list) => list.filter((_, i) => i !== index));
+  }
+
+  updateVideo(index: number, url: string): void {
+    this.videos.update((list) => list.map((v, i) => (i === index ? url : v)));
   }
 
   suggestSlug(): void {

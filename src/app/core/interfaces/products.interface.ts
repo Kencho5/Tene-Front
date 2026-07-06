@@ -20,6 +20,11 @@ export interface ProductSeo {
   no_index: boolean | null;
 }
 
+export interface ProductVideo {
+  platform: 'youtube' | 'facebook';
+  url: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -50,6 +55,7 @@ export interface ProductImage {
 export interface ProductResponse {
   data: Product;
   images: ProductImage[];
+  videos: ProductVideo[];
   categories: ProductCategory[];
   seo?: ProductSeo | null;
 }
