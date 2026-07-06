@@ -242,20 +242,63 @@ export class AdminOrdersComponent {
     });
   }
 
-  readonly datePresets: { label: string; days: number }[] = [
-    { label: 'გუშინ', days: 1 },
-    { label: '1 კვირა', days: 7 },
-    { label: '10 დღე', days: 10 },
-    { label: '1 თვე', days: 30 },
+  readonly datePresets: ComboboxItems[] = [
+    { label: 'დღეს', value: 'today' },
+    { label: 'გუშინ', value: 'yesterday' },
+    { label: 'გუშინწინ', value: 'day_before' },
+    { label: '7 დღის', value: 'last_7' },
+    { label: '10 დღის', value: 'last_10' },
+    { label: 'ამ თვის', value: 'this_month' },
+    { label: 'წინა თვის', value: 'last_month' },
   ];
 
-  selectPreset(days: number): void {
-    const to = new Date();
-    const from = new Date();
-    from.setDate(from.getDate() - days);
+  readonly selectedPreset = signal('');
 
-    const fromStr = this.toDateInput(from.toISOString());
-    const toStr = this.toDateInput(to.toISOString());
+  private localDateInput(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  selectPreset(value: string | undefined): void {
+    if (!value) return;
+    this.selectedPreset.set(value);
+
+    const today = new Date();
+    let from = new Date();
+    let to = new Date();
+
+    switch (value) {
+      case 'today':
+        break;
+      case 'yesterday':
+        from.setDate(today.getDate() - 1);
+        to.setDate(today.getDate() - 1);
+        break;
+      case 'day_before':
+        from.setDate(today.getDate() - 2);
+        to.setDate(today.getDate() - 2);
+        break;
+      case 'last_7':
+        from.setDate(today.getDate() - 7);
+        break;
+      case 'last_10':
+        from.setDate(today.getDate() - 10);
+        break;
+      case 'this_month':
+        from = new Date(today.getFullYear(), today.getMonth(), 1);
+        break;
+      case 'last_month':
+        from = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        to = new Date(today.getFullYear(), today.getMonth(), 0);
+        break;
+      default:
+        return;
+    }
+
+    const fromStr = this.localDateInput(from);
+    const toStr = this.localDateInput(to);
 
     this.fromDate.set(fromStr);
     this.toDate.set(toStr);
@@ -269,6 +312,7 @@ export class AdminOrdersComponent {
   clearDates(): void {
     this.fromDate.set('');
     this.toDate.set('');
+    this.selectedPreset.set('');
     this.updateQueryParams({
       from_date: undefined,
       to_date: undefined,
