@@ -52,57 +52,12 @@
   </div>
   } @else {
   <form (submit)="onSubmit($event)" novalidate class="space-y-5">
-    <!-- Customer -->
+    <!-- Amount -->
     <div class="border-hairline rounded-2xl border bg-white p-5">
-      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
-        მომხმარებელი
-      </h2>
-
-      <div class="flex flex-col gap-4">
-        <app-dropdown
-          [items]="customerTypeOptions"
-          [(selectedValue)]="paymentLinkForm.customer_type().value"
-          placeholder="პირის ტიპი"
-        />
-
-        @if (paymentLinkForm.customer_type().value() === "individual") {
-        <div class="grid gap-4 sm:grid-cols-2">
-          <app-input
-            [formField]="paymentLinkForm.individual.name"
-            [error]="submitted() && paymentLinkForm.individual.name().invalid()"
-            type="text"
-            placeholder="სახელი *"
-          />
-          <app-input
-            [formField]="paymentLinkForm.individual.surname"
-            [error]="submitted() && paymentLinkForm.individual.surname().invalid()"
-            type="text"
-            placeholder="გვარი *"
-          />
-        </div>
-        } @else {
-        <div class="grid gap-4 sm:grid-cols-2">
-          <app-dropdown
-            [items]="organizationTypes"
-            [(selectedValue)]="paymentLinkForm.company.organization_type().value"
-            placeholder="ორგანიზაციის ტიპი"
-          />
-          <app-input
-            [formField]="paymentLinkForm.company.organization_name"
-            [error]="submitted() && paymentLinkForm.company.organization_name().invalid()"
-            type="text"
-            placeholder="ორგანიზაციის სახელი *"
-          />
-          <div class="sm:col-span-2">
-            <app-input
-              [formField]="paymentLinkForm.company.organization_code"
-              [error]="submitted() && paymentLinkForm.company.organization_code().invalid()"
-              type="text"
-              placeholder="საიდენტიფიკაციო კოდი *"
-            />
-          </div>
-        </div>
-        }
+      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">თანხა</h2>
+      <div class="flex flex-col gap-1.5 sm:max-w-xs">
+        <label class="text-platinum-90 text-sm font-medium">ასაღები თანხა (₾)</label>
+        <app-input [formField]="paymentLinkForm.price" type="text" placeholder="0.00" />
       </div>
     </div>
 
@@ -113,253 +68,28 @@
       </h2>
 
       <div class="grid gap-4 sm:grid-cols-2">
-        <app-input
-          [formField]="paymentLinkForm.email"
-          [error]="submitted() && paymentLinkForm.email().invalid()"
-          type="email"
-          placeholder="ელ. ფოსტა *"
-        />
+        <app-input [formField]="paymentLinkForm.email" type="email" placeholder="ელ. ფოსტა" />
         <app-input
           [formField]="paymentLinkForm.phone_number"
-          [error]="submitted() && paymentLinkForm.phone_number().invalid()"
           type="tel"
-          placeholder="ტელეფონის ნომერი *"
+          placeholder="ტელეფონის ნომერი"
         />
-
-        <app-dropdown
-          [items]="deliveryTypeOptions"
-          [(selectedValue)]="paymentLinkForm.delivery_type().value"
-          placeholder="მიწოდების ტიპი"
-        />
-        <app-dropdown
-          [items]="deliveryTimeOptions"
-          [(selectedValue)]="paymentLinkForm.delivery_time().value"
-          placeholder="მიწოდების დრო"
-        />
-
-        @if (!isPickup()) {
-        <app-input
-          [formField]="paymentLinkForm.address"
-          [error]="submitted() && paymentLinkForm.address().invalid()"
-          type="text"
-          placeholder="მისამართი *"
-        />
-        <app-combobox
-          [items]="georgianCities"
-          [(selectedValue)]="paymentLinkForm.city().value"
-          placeholder="ქალაქი"
-          searchPlaceholder="მოძებნე ქალაქი"
-          notFoundText="ქალაქი ვერ მოიძებნა"
-        />
-        @if (isTbilisi()) {
         <div class="sm:col-span-2">
-          <app-combobox
-            [items]="tbilisiRegions"
-            [(selectedValue)]="paymentLinkForm.region().value"
-            placeholder="რაიონი"
-            searchPlaceholder="მოძებნე რაიონი"
-            notFoundText="რაიონი ვერ მოიძებნა"
-          />
-        </div>
-        }
-        <div class="sm:col-span-2">
-          <app-input
-            [formField]="paymentLinkForm.details"
-            type="text"
-            placeholder="დამატებითი დეტალები"
-          />
-        </div>
-        }
-
-        <div class="sm:col-span-2">
-          <app-input
-            [formField]="paymentLinkForm.comment"
-            type="text"
-            placeholder="კომენტარი"
-          />
+          <app-input [formField]="paymentLinkForm.address" type="text" placeholder="მისამართი" />
         </div>
       </div>
     </div>
 
-    <!-- Items -->
+    <!-- Comment -->
     <div class="border-hairline rounded-2xl border bg-white p-5">
-      <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-platinum-50 text-sm font-semibold tracking-wider uppercase">პროდუქტები</h2>
-        @if (total() > 0) {
-        <span class="text-platinum-90 text-sm font-medium">ჯამი: {{ total().toFixed(2) }} ₾</span>
-        }
-      </div>
-
-      <!-- Product search -->
-      <div class="mb-4">
-        <div class="relative">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 20 20"
-            fill="none"
-            class="text-platinum-40 pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-          >
-            <path
-              d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          <input
-            type="text"
-            [value]="searchQuery()"
-            (input)="onSearchInput($event)"
-            placeholder="ძიება პროდუქტის სახელით ან ID-ით..."
-            class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
-          />
-          @if (searchQuery()) {
-          <button
-            type="button"
-            (click)="clearSearch()"
-            class="text-platinum-40 hover:text-platinum-70 absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
-          >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M12 4L4 12M4 4L12 12"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-            </svg>
-          </button>
-          }
-        </div>
-
-        @if (searchTerm()) {
-        <div class="border-hairline mt-3 max-h-72 overflow-y-auto rounded-2xl border">
-          @if (searchResource.isLoading()) {
-          <div class="text-platinum-50 p-4 text-center text-sm">იძებნება...</div>
-          } @else if (searchResults().length === 0) {
-          <div class="text-platinum-50 p-4 text-center text-sm">პროდუქტი ვერ მოიძებნა</div>
-          } @else { @for (product of searchResults(); track product.data.id) {
-          <button
-            type="button"
-            (click)="addProduct(product)"
-            class="border-hairline hover:bg-platinum-10 flex w-full items-center gap-3 border-b px-3 py-2 text-left transition-colors last:border-b-0"
-          >
-            <div class="bg-platinum-10 h-10 w-10 shrink-0 overflow-hidden rounded-2xl">
-              @if (getImage(product)) {
-              <img
-                [src]="getImage(product)"
-                [alt]="product.data.name"
-                class="h-full w-full object-cover"
-              />
-              }
-            </div>
-            <div class="min-w-0 flex-1">
-              <p class="text-platinum-100 truncate text-sm font-medium">{{ product.data.name }}</p>
-              <p class="text-platinum-50 truncate text-xs">ID: {{ product.data.id }}</p>
-            </div>
-            <span class="text-green-60 shrink-0 text-sm font-medium">დამატება +</span>
-          </button>
-          } }
-        </div>
-        }
-      </div>
-
-      @if (paymentLinkForm.items().value().length > 0) {
-      <div class="space-y-3">
-        @for (item of paymentLinkForm.items().value(); track $index; let i = $index) {
-        <div class="border-hairline rounded-2xl border p-3">
-          <div class="grid items-start gap-3 sm:grid-cols-12">
-            <div class="sm:col-span-4">
-              <app-input
-                [formField]="paymentLinkForm.items[i].product_name"
-                [error]="submitted() && paymentLinkForm.items[i].product_name().invalid()"
-                type="text"
-                placeholder="პროდუქტის სახელი *"
-              />
-            </div>
-            <div class="sm:col-span-3">
-              <app-input
-                [formField]="paymentLinkForm.items[i].product_id"
-                [error]="submitted() && paymentLinkForm.items[i].product_id().invalid()"
-                type="text"
-                placeholder="Product ID *"
-              />
-            </div>
-            <div class="sm:col-span-2">
-              <app-input
-                [formField]="paymentLinkForm.items[i].color"
-                type="text"
-                placeholder="ფერი"
-              />
-            </div>
-            <div class="sm:col-span-1">
-              <app-input
-                [formField]="paymentLinkForm.items[i].quantity"
-                [error]="submitted() && paymentLinkForm.items[i].quantity().invalid()"
-                type="number"
-                placeholder="რაოდ."
-              />
-            </div>
-            <div class="flex items-start gap-2 sm:col-span-2">
-              <app-input
-                [formField]="paymentLinkForm.items[i].price"
-                [error]="submitted() && paymentLinkForm.items[i].price().invalid()"
-                type="text"
-                placeholder="ფასი *"
-              />
-              <button
-                type="button"
-                (click)="removeItem(i)"
-                class="border-hairline text-platinum-50 hover:border-valencia-50 hover:text-valencia-50 flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-full border transition-colors"
-                aria-label="წაშლა"
-              >
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M5 5L15 15M15 5L5 15"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-        }
-      </div>
-      } @else {
-      <p
-        class="border-hairline text-platinum-50 rounded-2xl border border-dashed py-6 text-center text-sm"
-      >
-        პროდუქტები არ არის დამატებული
-      </p>
-      }
-
-      <!-- Charged amount -->
-      <div class="border-hairline mt-4 border-t pt-4">
-        <div class="flex flex-col gap-1.5 sm:max-w-xs">
-          <label class="text-platinum-90 text-sm font-medium">
-            ასაღები თანხა (₾) *
-          </label>
-          <app-input
-            [formField]="paymentLinkForm.price"
-            [error]="submitted() && paymentLinkForm.price().invalid()"
-            type="text"
-            placeholder="0.00"
-          />
-          @if (total() > 0) {
-          <p class="text-platinum-50 text-xs">პროდუქტების ჯამი: {{ total().toFixed(2) }} ₾</p>
-          }
-        </div>
-      </div>
+      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
+        კომენტარი
+      </h2>
+      <app-input [formField]="paymentLinkForm.comment" type="text" placeholder="კომენტარი" />
     </div>
 
     <!-- Actions -->
     <div class="flex items-center justify-end gap-3">
-      @if (submitted() && errorMessage()) {
-      <p role="alert" class="text-valencia-50 mr-auto text-sm">{{ errorMessage() }}</p>
-      }
       <button
         type="submit"
         [disabled]="isLoading()"
