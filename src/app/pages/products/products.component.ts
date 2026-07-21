@@ -55,7 +55,7 @@ export class ProductsComponent implements OnInit {
       .map((id) => all.find((c) => c.id === id))
       .filter(Boolean) as CategoryTreeNode[];
     const rest = all.filter((c) => !priorityIds.includes(c.id));
-    return [...priority, ...rest].slice(0, 8);
+    return [...priority, ...rest];
   });
 
   readonly topProductsResource = rxResource({
