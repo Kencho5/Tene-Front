@@ -33,6 +33,7 @@ export class AdminOrdersComponent {
 
   readonly statusOptions: ComboboxItems[] = [
     { label: 'ყველა', value: 'all' },
+    { label: 'დადასტურებული + ფინა', value: 'approved,finance_cleared' },
     { label: 'დადასტურებული', value: 'approved' },
     { label: 'მოლოდინში', value: 'pending' },
     { label: 'მუშავდება', value: 'processing' },
@@ -44,7 +45,7 @@ export class AdminOrdersComponent {
   ];
 
   readonly orderStatusOptions: ComboboxItems[] = this.statusOptions.filter(
-    (o) => o.value !== 'all',
+    (o) => o.value !== 'all' && o.value !== 'approved,finance_cleared',
   );
 
   readonly updatingStatus = signal<ReadonlySet<number>>(new Set());
@@ -59,7 +60,7 @@ export class AdminOrdersComponent {
     defaultValue: { orders: [], total: 0, total_amount: 0, limit: 0, offset: 0 },
     params: () => {
       const p = { ...this.params() };
-      if (!p['status']) p['status'] = 'approved';
+      if (!p['status']) p['status'] = 'approved,finance_cleared';
       if (p['status'] === 'all') delete p['status'];
       return new URLSearchParams(p).toString();
     },
@@ -179,7 +180,7 @@ export class AdminOrdersComponent {
   }
 
   onStatusChange(value: string | undefined): void {
-    this.updateQueryParams({ status: value ?? 'approved', offset: 0 });
+    this.updateQueryParams({ status: value ?? 'approved,finance_cleared', offset: 0 });
   }
 
   isUpdatingStatus(orderId: number): boolean {
@@ -253,6 +254,13 @@ export class AdminOrdersComponent {
   ];
 
   readonly selectedPreset = signal('');
+
+  constructor() {
+    const qp = this.route.snapshot.queryParams;
+    if (!qp['from_date'] && !qp['to_date']) {
+      this.selectPreset('today');
+    }
+  }
 
   private localDateInput(date: Date): string {
     const y = date.getFullYear();
@@ -343,7 +351,7 @@ export class AdminOrdersComponent {
     this.isExporting.set(true);
 
     const p = { ...this.params() };
-    if (!p['status']) p['status'] = 'approved';
+    if (!p['status']) p['status'] = 'approved,finance_cleared';
     if (p['status'] === 'all') delete p['status'];
     delete p['limit'];
     delete p['offset'];
