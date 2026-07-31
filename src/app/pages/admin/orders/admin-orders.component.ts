@@ -229,7 +229,7 @@ export class AdminOrdersComponent {
     const value = (event.target as HTMLInputElement).value;
     this.fromDate.set(value);
     this.updateQueryParams({
-      from_date: value ? `${value}T00:00:00Z` : undefined,
+      from_date: value ? this.startOfLocalDay(value) : undefined,
       offset: 0,
     });
   }
@@ -238,7 +238,7 @@ export class AdminOrdersComponent {
     const value = (event.target as HTMLInputElement).value;
     this.toDate.set(value);
     this.updateQueryParams({
-      to_date: value ? `${value}T23:59:59Z` : undefined,
+      to_date: value ? this.endOfLocalDay(value) : undefined,
       offset: 0,
     });
   }
@@ -267,6 +267,14 @@ export class AdminOrdersComponent {
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const d = String(date.getDate()).padStart(2, '0');
     return `${y}-${m}-${d}`;
+  }
+
+  private startOfLocalDay(value: string): string {
+    return new Date(`${value}T00:00:00`).toISOString();
+  }
+
+  private endOfLocalDay(value: string): string {
+    return new Date(`${value}T23:59:59.999`).toISOString();
   }
 
   selectPreset(value: string | undefined): void {
@@ -311,8 +319,8 @@ export class AdminOrdersComponent {
     this.fromDate.set(fromStr);
     this.toDate.set(toStr);
     this.updateQueryParams({
-      from_date: `${fromStr}T00:00:00Z`,
-      to_date: `${toStr}T23:59:59Z`,
+      from_date: this.startOfLocalDay(fromStr),
+      to_date: this.endOfLocalDay(toStr),
       offset: 0,
     });
   }
@@ -329,7 +337,9 @@ export class AdminOrdersComponent {
   }
 
   private toDateInput(value: string | undefined): string {
-    return value ? value.slice(0, 10) : '';
+    if (!value) return '';
+    const date = new Date(value);
+    return isNaN(date.getTime()) ? value.slice(0, 10) : this.localDateInput(date);
   }
 
   clearSearch(): void {
