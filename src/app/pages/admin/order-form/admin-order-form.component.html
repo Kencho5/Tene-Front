@@ -1,0 +1,364 @@
+<div class="space-y-5">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-platinum-100 text-xl font-semibold">ახალი შეკვეთა</h1>
+      <p class="text-platinum-50 mt-0.5 text-sm">
+        შექმენით შეკვეთა ხელით — გადახდის ბმულის გარეშე
+      </p>
+    </div>
+  </div>
+
+  <form (submit)="onSubmit($event)" novalidate class="space-y-5">
+    <!-- Status -->
+    <div class="border-hairline rounded-2xl border bg-white p-5">
+      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">სტატუსი</h2>
+      <div class="sm:max-w-xs">
+        <app-dropdown
+          [(selectedValue)]="orderForm.status().value"
+          [items]="statusOptions"
+          placeholder="სტატუსი"
+        />
+      </div>
+    </div>
+
+    <!-- Customer -->
+    <div class="border-hairline rounded-2xl border bg-white p-5">
+      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
+        მომხმარებელი
+      </h2>
+
+      <div class="mb-4 sm:max-w-xs">
+        <app-dropdown
+          [(selectedValue)]="orderForm.customer_type().value"
+          [items]="customerTypeOptions"
+          placeholder="პირის ტიპი"
+        />
+      </div>
+
+      @if (isCompany()) {
+        <div class="grid gap-4 sm:grid-cols-3">
+          <app-combobox
+            [(selectedValue)]="orderForm.organization_type().value"
+            [items]="organizationTypes"
+            placeholder="ორგანიზაციის ტიპი"
+            searchPlaceholder="ძებნა..."
+            notFoundText="ვერ მოიძებნა"
+          />
+          <app-input
+            [formField]="orderForm.organization_name"
+            type="text"
+            placeholder="ორგანიზაციის სახელი"
+          />
+          <app-input
+            [formField]="orderForm.organization_code"
+            type="text"
+            placeholder="საიდენტიფიკაციო კოდი"
+          />
+        </div>
+      } @else {
+        <div class="grid gap-4 sm:grid-cols-2">
+          <app-input [formField]="orderForm.customer_name" type="text" placeholder="სახელი" />
+          <app-input [formField]="orderForm.customer_surname" type="text" placeholder="გვარი" />
+        </div>
+      }
+
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <app-input [formField]="orderForm.email" type="email" placeholder="ელ. ფოსტა" />
+        <app-input
+          [formField]="orderForm.phone_number"
+          [error]="submitted() && orderForm.phone_number().invalid()"
+          type="tel"
+          placeholder="ტელეფონის ნომერი *"
+        />
+      </div>
+    </div>
+
+    <!-- Delivery -->
+    <div class="border-hairline rounded-2xl border bg-white p-5">
+      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">მიწოდება</h2>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <app-dropdown
+          [(selectedValue)]="orderForm.delivery_type().value"
+          [items]="deliveryTypeOptions"
+          placeholder="მიწოდების ტიპი"
+        />
+        @if (isDelivery()) {
+          <app-dropdown
+            [(selectedValue)]="orderForm.delivery_time().value"
+            [items]="deliveryTimeOptions"
+            placeholder="მიწოდების დრო"
+          />
+        }
+      </div>
+
+      @if (isDelivery()) {
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+          <app-input [formField]="orderForm.city" type="text" placeholder="ქალაქი" />
+          <app-combobox
+            [(selectedValue)]="orderForm.region().value"
+            [items]="regionOptions"
+            placeholder="რაიონი"
+            searchPlaceholder="ძებნა..."
+            notFoundText="ვერ მოიძებნა"
+          />
+          <div class="sm:col-span-2">
+            <app-input [formField]="orderForm.address" type="text" placeholder="მისამართი" />
+          </div>
+          <div class="sm:col-span-2">
+            <app-input
+              [formField]="orderForm.details"
+              type="text"
+              placeholder="დამატებითი დეტალები (სადარბაზო, სართული)"
+            />
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Items -->
+    <div class="border-hairline rounded-2xl border bg-white p-5">
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-platinum-50 text-sm font-semibold tracking-wider uppercase">პროდუქტები</h2>
+        <button
+          type="button"
+          (click)="addCustomItem()"
+          class="bg-green-60 hover:bg-green-70 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-white transition-colors"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M8 3.33337V12.6667M3.33334 8.00004H12.6667"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          ხელით დამატება
+        </button>
+      </div>
+
+      <!-- Product search -->
+      <div class="relative">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 20 20"
+          fill="none"
+          class="text-platinum-40 pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
+        >
+          <path
+            d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <input
+          type="text"
+          [value]="searchQuery()"
+          (input)="onSearchInput($event)"
+          placeholder="პროდუქტის ძიება სახელით ან ID-ით..."
+          class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
+        />
+        @if (searchQuery()) {
+          <button
+            type="button"
+            (click)="clearSearch()"
+            class="text-platinum-40 hover:text-platinum-70 absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M12 4L4 12M4 4L12 12"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        }
+      </div>
+
+      @if (searchTerm()) {
+        <div class="border-hairline mt-2 overflow-hidden rounded-xl border">
+          @if (searchResource.isLoading()) {
+            <div class="text-platinum-50 p-4 text-center text-sm">იძებნება...</div>
+          } @else if (searchResults().length === 0) {
+            <div class="text-platinum-50 p-4 text-center text-sm">პროდუქტი ვერ მოიძებნა</div>
+          } @else {
+            @for (product of searchResults(); track product.data.id) {
+              <button
+                type="button"
+                (click)="addProduct(product)"
+                class="border-hairline hover:bg-platinum-10 flex w-full items-center gap-3 border-b px-3 py-2 text-left transition-colors last:border-b-0"
+              >
+                <div class="bg-platinum-10 h-10 w-10 shrink-0 overflow-hidden rounded-2xl">
+                  @if (getImage(product)) {
+                    <img
+                      [src]="getImage(product)"
+                      [alt]="product.data.name"
+                      class="h-full w-full object-cover"
+                    />
+                  }
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-platinum-100 truncate text-sm font-medium">
+                    {{ product.data.name }}
+                  </p>
+                  <p class="text-platinum-50 truncate text-xs">ID: {{ product.data.id }}</p>
+                </div>
+                <span class="text-green-60 text-sm font-medium">დამატება +</span>
+              </button>
+            }
+          }
+        </div>
+      }
+
+      <!-- Selected items -->
+      @if (items().length === 0) {
+        <div class="border-hairline mt-4 rounded-xl border border-dashed p-8 text-center">
+          <p class="text-platinum-70 text-sm font-medium">პროდუქტები არ არის დამატებული</p>
+          <p class="text-platinum-50 mt-1 text-xs">მოძებნეთ პროდუქტი ან დაამატეთ ხელით</p>
+        </div>
+      } @else {
+        <ul class="mt-4 space-y-3">
+          @for (item of items(); track $index) {
+            <li class="border-hairline rounded-xl border p-3">
+              <div class="flex items-start gap-3">
+                <div class="bg-platinum-10 h-12 w-12 shrink-0 overflow-hidden rounded-2xl">
+                  @if (item.image_url) {
+                    <img
+                      [src]="item.image_url"
+                      [alt]="item.product_name"
+                      class="h-full w-full object-cover"
+                    />
+                  }
+                </div>
+
+                <div class="grid min-w-0 flex-1 gap-3 sm:grid-cols-2">
+                  <input
+                    type="text"
+                    [value]="item.product_name"
+                    (input)="onItemNameInput($index, $event)"
+                    placeholder="პროდუქტის სახელი"
+                    class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-10 w-full rounded-xl border bg-white px-3 text-sm outline-hidden"
+                  />
+                  <input
+                    type="text"
+                    [value]="item.product_id"
+                    (input)="onItemProductIdInput($index, $event)"
+                    placeholder="პროდუქტის ID"
+                    class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-10 w-full rounded-xl border bg-white px-3 text-sm outline-hidden"
+                  />
+
+                  <app-combobox
+                    [selectedValue]="item.color"
+                    (selectedValueChange)="onItemColorChange($index, $event)"
+                    [items]="colorOptions"
+                    placeholder="ფერი"
+                    searchPlaceholder="ძებნა..."
+                    notFoundText="ვერ მოიძებნა"
+                  />
+
+                  <div class="flex gap-3">
+                    <div class="flex-1">
+                      <input
+                        type="number"
+                        min="1"
+                        [value]="item.quantity"
+                        (input)="onItemQuantityInput($index, $event)"
+                        placeholder="რაოდენობა"
+                        class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-10 w-full rounded-xl border bg-white px-3 text-sm outline-hidden"
+                      />
+                    </div>
+                    <div class="flex-1">
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        [value]="item.price"
+                        (input)="onItemPriceInput($index, $event)"
+                        placeholder="ფასი (₾)"
+                        class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-10 w-full rounded-xl border bg-white px-3 text-sm outline-hidden"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  (click)="removeItem($index)"
+                  class="text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors"
+                  [attr.aria-label]="'წაშლა'"
+                >
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+
+              <p class="text-platinum-50 mt-2 text-right text-xs">
+                ჯამი: {{ formatPrice(item.price * item.quantity) }} ₾
+              </p>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- Amount -->
+    <div class="border-hairline rounded-2xl border bg-white p-5">
+      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">თანხა</h2>
+      <div class="flex flex-col gap-1.5 sm:max-w-xs">
+        <label class="text-platinum-90 text-sm font-medium">ჯამური თანხა (₾)</label>
+        <app-input [formField]="orderForm.amount" type="text" placeholder="0.00" />
+        <p class="text-platinum-50 text-xs">
+          ცარიელი დატოვების შემთხვევაში დაითვლება პროდუქტების ჯამი:
+          <span class="text-platinum-70 font-medium">{{ formatPrice(itemsTotal()) }} ₾</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Comment -->
+    <div class="border-hairline rounded-2xl border bg-white p-5">
+      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
+        კომენტარი
+      </h2>
+      <app-input [formField]="orderForm.comment" type="text" placeholder="კომენტარი" />
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end gap-3">
+      <button
+        type="button"
+        (click)="cancel()"
+        class="border-hairline text-platinum-60 hover:bg-platinum-10 rounded-full border px-5 py-2 text-sm font-medium transition-colors"
+      >
+        გაუქმება
+      </button>
+      <button
+        type="submit"
+        [disabled]="isLoading()"
+        [class]="
+          'inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-medium text-white transition-colors ' +
+          (isLoading() ? 'cursor-not-allowed bg-platinum-40' : 'bg-green-60 hover:bg-green-70')
+        "
+      >
+        @if (isLoading()) {
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="animate-spin">
+            <path
+              d="M8 2V4M8 12V14M14 8H12M4 8H2M12.2426 3.75736L10.8284 5.17157M5.17157 10.8284L3.75736 12.2426M12.2426 12.2426L10.8284 10.8284M5.17157 5.17157L3.75736 3.75736"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span>მუშავდება...</span>
+        } @else {
+          <span>შეკვეთის შექმნა</span>
+        }
+      </button>
+    </div>
+  </form>
+</div>

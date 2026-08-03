@@ -49,6 +49,7 @@ import {
   PaymentLinkResponse,
 } from '@core/interfaces/admin/payment-link.interface';
 import { CheckoutSessionSearchResponse } from '@core/interfaces/admin/checkout-sessions.interface';
+import { CreateOrderRequest } from '@core/interfaces/admin/orders.interface';
 import {
   BlogCreatePayload,
   BlogListParams,
@@ -158,6 +159,10 @@ export class AdminService {
   // Order Management
   searchOrders(params: string): Observable<OrderSearchResponse> {
     return this.http.get<OrderSearchResponse>(`/admin/orders?${params}`);
+  }
+
+  createOrder(payload: CreateOrderRequest): Observable<Order> {
+    return this.http.post<Order>('/admin/orders', payload);
   }
 
   updateOrderStatus(id: number, status: string): Observable<Order> {

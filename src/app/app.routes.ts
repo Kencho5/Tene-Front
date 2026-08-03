@@ -210,6 +210,13 @@ export const routes: Routes = [
           import('./pages/admin/orders/admin-orders.component').then((m) => m.AdminOrdersComponent),
       },
       {
+        path: 'orders/new',
+        loadComponent: () =>
+          import('./pages/admin/order-form/admin-order-form.component').then(
+            (m) => m.AdminOrderFormComponent,
+          ),
+      },
+      {
         path: 'payment-link',
         loadComponent: () =>
           import('./pages/admin/payment-link/admin-payment-link.component').then(
