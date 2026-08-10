@@ -48,6 +48,18 @@ export class AdminOrdersComponent {
     (o) => o.value !== 'all' && o.value !== 'approved,finance_cleared',
   );
 
+  readonly sourceOptions: ComboboxItems[] = [
+    { label: 'საიტიდან', value: 'web' },
+    { label: 'ხელით დამატებული', value: 'admin' },
+  ];
+
+  readonly paymentMethodOptions: ComboboxItems[] = [
+    { label: 'ყველა', value: 'all' },
+    { label: 'ბარათი (POS)', value: 'pos' },
+    { label: 'ნაღდი', value: 'cash' },
+    { label: 'გადარიცხვა', value: 'transfer' },
+  ];
+
   readonly updatingStatus = signal<ReadonlySet<number>>(new Set());
 
   private readonly statusOverrides = signal<Record<number, OrderStatus>>({});
@@ -59,9 +71,7 @@ export class AdminOrdersComponent {
   readonly searchResponse = rxResource({
     defaultValue: { orders: [], total: 0, total_amount: 0, limit: 0, offset: 0 },
     params: () => {
-      const p = { ...this.params() };
-      if (!p['status']) p['status'] = 'approved,finance_cleared';
-      if (p['status'] === 'all') delete p['status'];
+      const p = this.normalizedParams();
       if (!p['limit']) p['limit'] = '12';
       if (!p['offset']) p['offset'] = '0';
       return new URLSearchParams(p).toString();
@@ -70,6 +80,20 @@ export class AdminOrdersComponent {
   });
 
   readonly isExporting = signal(false);
+
+  readonly source = computed(() => (this.params()['source'] as string) ?? 'web');
+  readonly isAdminSource = computed(() => this.source() === 'admin');
+  readonly paymentMethod = computed(() => (this.params()['payment_method'] as string) ?? 'all');
+  readonly columnCount = computed(() => (this.isAdminSource() ? 7 : 5));
+
+  private normalizedParams(): Record<string, string> {
+    const p = { ...this.params() } as Record<string, string>;
+    if (!p['status']) p['status'] = 'approved,finance_cleared';
+    if (p['status'] === 'all') delete p['status'];
+    if (!p['source']) p['source'] = 'web';
+    if (p['source'] === 'web' || p['payment_method'] === 'all') delete p['payment_method'];
+    return p;
+  }
 
   readonly orders = computed(() => {
     const overrides = this.statusOverrides();
@@ -179,6 +203,35 @@ export class AdminOrdersComponent {
       return trimmed.replace(/\s+/g, '').replace(/^\+?995/, '');
     }
     return trimmed;
+  }
+
+  onSourceChange(value: string): void {
+    if (value === this.source()) return;
+    this.updateQueryParams({
+      source: value,
+      payment_method: undefined,
+      offset: 0,
+    });
+  }
+
+  onPaymentMethodChange(value: string | undefined): void {
+    this.updateQueryParams({
+      payment_method: !value || value === 'all' ? undefined : value,
+      offset: 0,
+    });
+  }
+
+  paymentMethodLabel(method: string | null): string {
+    switch (method) {
+      case 'pos':
+        return 'ბარათი (POS)';
+      case 'cash':
+        return 'ნაღდი';
+      case 'transfer':
+        return 'გადარიცხვა';
+      default:
+        return '—';
+    }
   }
 
   onStatusChange(value: string | undefined): void {
@@ -362,9 +415,7 @@ export class AdminOrdersComponent {
     if (this.isExporting()) return;
     this.isExporting.set(true);
 
-    const p = { ...this.params() };
-    if (!p['status']) p['status'] = 'approved,finance_cleared';
-    if (p['status'] === 'all') delete p['status'];
+    const p = this.normalizedParams();
     delete p['limit'];
     delete p['offset'];
     const params = new URLSearchParams(p).toString();

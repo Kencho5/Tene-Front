@@ -13,11 +13,16 @@
     <!-- Status -->
     <div class="border-hairline rounded-2xl border bg-white p-5">
       <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">სტატუსი</h2>
-      <div class="sm:max-w-xs">
+      <div class="grid gap-4 sm:grid-cols-2">
         <app-dropdown
           [(selectedValue)]="orderForm.status().value"
           [items]="statusOptions"
           placeholder="სტატუსი"
+        />
+        <app-dropdown
+          [(selectedValue)]="orderForm.payment_method().value"
+          [items]="paymentMethodOptions"
+          placeholder="გადახდის ფორმა"
         />
       </div>
     </div>

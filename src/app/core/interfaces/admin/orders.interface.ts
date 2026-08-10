@@ -7,8 +7,11 @@ export interface CreateOrderItem {
   cable_config?: { watts: number; length_cm: number } | null;
 }
 
+export type PaymentMethod = 'pos' | 'cash' | 'transfer';
+
 export interface CreateOrderRequest {
   status?: string;
+  payment_method?: PaymentMethod;
   amount?: number;
   customer_type?: string;
   customer_name?: string;
@@ -56,4 +59,5 @@ export interface OrderFormFields {
   delivery_time: string;
   comment: string;
   amount: string;
+  payment_method: PaymentMethod;
 }

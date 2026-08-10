@@ -54,6 +54,12 @@ export class AdminOrderFormComponent {
     { label: 'ფინანში გატარებულია', value: 'finance_cleared' },
   ];
 
+  readonly paymentMethodOptions: ComboboxItems[] = [
+    { label: 'ბარათი (POS)', value: 'pos' },
+    { label: 'ნაღდი', value: 'cash' },
+    { label: 'გადარიცხვა', value: 'transfer' },
+  ];
+
   readonly customerTypeOptions: ComboboxItems[] = [
     { label: 'ფიზიკური პირი', value: 'individual' },
     { label: 'იურიდიული პირი', value: 'company' },
@@ -87,6 +93,7 @@ export class AdminOrderFormComponent {
     delivery_time: '',
     comment: '',
     amount: '',
+    payment_method: 'pos',
   };
 
   readonly orderModel = signal<OrderFormFields>(structuredClone(this.defaultModel));
@@ -266,6 +273,7 @@ export class AdminOrderFormComponent {
 
     const payload: CreateOrderRequest = {
       status: model.status,
+      payment_method: model.payment_method,
       amount: this.resolvedAmount(),
       customer_type: model.customer_type,
       email: model.email.trim(),

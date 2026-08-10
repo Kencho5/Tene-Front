@@ -194,6 +194,18 @@ export interface Order {
   created_at: string;
   updated_at: string;
   items: OrderItem[];
+  source: OrderSource;
+  created_by_user_id: number | null;
+  payment_method: 'pos' | 'cash' | 'transfer' | null;
+  created_by?: OrderCreator;
+}
+
+export type OrderSource = 'web' | 'admin';
+
+export interface OrderCreator {
+  id: number;
+  name: string;
+  email: string;
 }
 
 export interface OrderCommentImage {
