@@ -62,6 +62,8 @@ export class AdminOrdersComponent {
       const p = { ...this.params() };
       if (!p['status']) p['status'] = 'approved,finance_cleared';
       if (p['status'] === 'all') delete p['status'];
+      if (!p['limit']) p['limit'] = '12';
+      if (!p['offset']) p['offset'] = '0';
       return new URLSearchParams(p).toString();
     },
     stream: ({ params }) => this.adminService.searchOrders(params),
