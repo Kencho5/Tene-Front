@@ -18,6 +18,7 @@ import {
 } from '@angular/common/http';
 import { apiInterceptor } from '@core/interceptors/api.interceptor';
 import { tokenInterceptor } from '@core/interceptors/token.interceptor';
+import { authErrorInterceptor } from '@core/interceptors/auth-error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,7 +31,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideHttpClient(
       withFetch(),
-      withInterceptors([apiInterceptor, tokenInterceptor]),
+      withInterceptors([apiInterceptor, tokenInterceptor, authErrorInterceptor]),
     ),
   ],
 };
