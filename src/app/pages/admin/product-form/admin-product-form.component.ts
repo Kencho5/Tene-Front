@@ -51,6 +51,7 @@ interface ImageWithMetadata {
   quantity: number;
   uuid?: string;
   isExisting: boolean;
+  hasCustomVariant: boolean;
 }
 
 @Component({
@@ -71,6 +72,9 @@ export class AdminProductFormComponent {
   readonly submitted = signal(false);
   readonly isLoading = signal(false);
   readonly images = signal<ImageWithMetadata[]>([]);
+  readonly defaultColor = signal('');
+  readonly defaultQuantity = signal<number>(null as any);
+  readonly expandedImageIndex = signal<number | null>(null);
   readonly specifications = signal<SpecificationEntry[]>([]);
   readonly selectedCategoryIds = signal<number[]>([]);
   readonly categoryOptions = signal<ComboboxItems[]>([]);
@@ -120,13 +124,22 @@ export class AdminProductFormComponent {
 
   readonly imagePreviewUrls = computed(() => this.images().map((img) => img.previewUrl));
 
+  readonly resolvedImages = computed(() => {
+    const color = this.defaultColor();
+    const quantity = this.defaultQuantity();
+    return this.images().map((img) =>
+      img.hasCustomVariant ? img : { ...img, color, quantity },
+    );
+  });
+
   readonly imageMetadata = computed(() =>
-    this.images().map((img) => ({
+    this.resolvedImages().map((img) => ({
       color: img.color,
       is_primary: img.isPrimary,
       quantity: img.quantity,
       image_uuid: img.uuid,
       isExisting: img.isExisting,
+      hasCustomVariant: img.hasCustomVariant,
     })),
   );
 
@@ -269,6 +282,15 @@ export class AdminProductFormComponent {
     }
 
     if (productImages.length > 0) {
+      const baseColor = productImages[0].color || '';
+      const baseQuantity = productImages[0].quantity ?? 0;
+      const uniform = productImages.every(
+        (img) => (img.color || '') === baseColor && (img.quantity ?? 0) === baseQuantity,
+      );
+
+      this.defaultColor.set(uniform ? baseColor : '');
+      this.defaultQuantity.set(uniform ? baseQuantity : (null as any));
+
       const loadedImages: ImageWithMetadata[] = productImages.map((img) => ({
         previewUrl: getProductImageUrl(product.id, img.image_uuid, img.extension),
         color: img.color || '',
@@ -276,6 +298,7 @@ export class AdminProductFormComponent {
         quantity: img.quantity ?? 0,
         uuid: img.image_uuid,
         isExisting: true,
+        hasCustomVariant: !uniform,
       }));
       this.images.set(loadedImages);
     }
@@ -312,6 +335,7 @@ export class AdminProductFormComponent {
           isPrimary: isFirstBatch && index === 0,
           quantity: null as any,
           isExisting: false,
+          hasCustomVariant: false,
         };
         this.images.update((imgs) => [...imgs, newImage]);
       } catch (err) {
@@ -343,14 +367,48 @@ export class AdminProductFormComponent {
   }
 
   updateImageColor(index: number, color: string): void {
-    this.images.update((imgs) => imgs.map((img, i) => (i === index ? { ...img, color } : img)));
+    this.images.update((imgs) =>
+      imgs.map((img, i) =>
+        i === index ? { ...img, color, quantity: this.resolveQuantity(img), hasCustomVariant: true } : img,
+      ),
+    );
   }
 
   updateImageQuantity(index: number, quantity: number): void {
     this.images.update((imgs) =>
-      imgs.map((img, i) => (i === index ? { ...img, quantity: Math.max(0, quantity) } : img)),
+      imgs.map((img, i) =>
+        i === index
+          ? {
+              ...img,
+              color: this.resolveColor(img),
+              quantity: Math.max(0, quantity),
+              hasCustomVariant: true,
+            }
+          : img,
+      ),
     );
   }
+
+  private resolveColor(img: ImageWithMetadata): string {
+    return img.hasCustomVariant ? img.color : this.defaultColor();
+  }
+
+  private resolveQuantity(img: ImageWithMetadata): number {
+    return img.hasCustomVariant ? img.quantity : this.defaultQuantity();
+  }
+
+  toggleImageOverride(index: number): void {
+    this.expandedImageIndex.update((current) => (current === index ? null : index));
+  }
+
+  resetImageVariant(index: number): void {
+    this.images.update((imgs) =>
+      imgs.map((img, i) => (i === index ? { ...img, hasCustomVariant: false } : img)),
+    );
+    this.expandedImageIndex.set(null);
+  }
+
+  hasAnyCustomVariant = computed(() => this.images().some((img) => img.hasCustomVariant));
 
   setPrimaryImage(index: number): void {
     this.images.update((imgs) => imgs.map((img, i) => ({ ...img, isPrimary: i === index })));
@@ -514,7 +572,7 @@ export class AdminProductFormComponent {
   }
 
   private handleImageOperations(productId: string): Observable<unknown> {
-    const images = this.images();
+    const images = this.resolvedImages();
     const existingImages = images.filter((img) => img.isExisting);
     const newImages = images.filter((img) => !img.isExisting);
     const deletedImages = this.getDeletedImages(existingImages);

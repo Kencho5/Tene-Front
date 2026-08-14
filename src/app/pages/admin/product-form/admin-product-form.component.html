@@ -298,6 +298,36 @@
         />
       </div>
 
+      <!-- Default variant for all images -->
+      @if (imagePreviewUrls().length > 0) {
+      <div class="border-hairline bg-platinum-10 mb-4 rounded-2xl border p-3">
+        <p class="text-platinum-70 mb-2.5 text-sm font-medium">ფერი და რაოდენობა ყველა სურათისთვის</p>
+        <div class="grid gap-2 sm:grid-cols-2">
+          <app-combobox
+            [selectedValue]="defaultColor()"
+            (selectedValueChange)="defaultColor.set($event || '')"
+            [items]="colorOptions"
+            placeholder="აირჩიეთ ფერი"
+            searchPlaceholder="ძიება..."
+            notFoundText="ფერი ვერ მოიძებნა"
+          />
+          <input
+            type="number"
+            min="0"
+            [value]="defaultQuantity()"
+            (input)="defaultQuantity.set(+$any($event.target).value)"
+            placeholder="რაოდენობა"
+            class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white px-3.5 text-sm outline-hidden transition-colors"
+          />
+        </div>
+        @if (hasAnyCustomVariant()) {
+        <p class="text-platinum-50 mt-2 text-xs">
+          ზოგიერთ სურათს აქვს ინდივიდუალური ფერი/რაოდენობა და ეს მნიშვნელობები მათზე არ მოქმედებს.
+        </p>
+        }
+      </div>
+      }
+
       <!-- Image Preview Grid -->
       @if (imagePreviewUrls().length > 0) {
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -378,25 +408,57 @@
               </span>
             </label>
 
-            <!-- Color Combobox -->
-            <app-combobox
-              [selectedValue]="imageMetadata()[$index]?.color"
-              (selectedValueChange)="updateImageColor($index, $event || '')"
-              [items]="colorOptions"
-              placeholder="აირჩიეთ ფერი"
-              searchPlaceholder="ძიება..."
-              notFoundText="ფერი ვერ მოიძებნა"
-            />
+            <!-- Per-image variant override -->
+            <button
+              type="button"
+              (click)="toggleImageOverride($index)"
+              class="text-platinum-60 hover:text-platinum-100 flex items-center justify-between gap-2 text-xs font-medium transition-colors"
+            >
+              <span>
+                @if (imageMetadata()[$index]?.hasCustomVariant) { ინდივიდუალური ფერი/რაოდენობა } @else
+                { სხვა ფერი ან რაოდენობა }
+              </span>
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 16 16"
+                fill="none"
+                class="transition-transform"
+                [class.rotate-180]="expandedImageIndex() === $index"
+              >
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
 
-            <!-- Quantity -->
-            <input
-              type="number"
-              min="0"
-              [value]="imageMetadata()[$index]?.quantity"
-              (input)="updateImageQuantity($index, +$any($event.target).value)"
-              placeholder="რაოდენობა"
-              class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3.5 py-2 text-sm outline-hidden transition-colors"
-            />
+            @if (expandedImageIndex() === $index || imageMetadata()[$index]?.hasCustomVariant) {
+            <div class="flex flex-col gap-2">
+              <app-combobox
+                [selectedValue]="imageMetadata()[$index]?.color"
+                (selectedValueChange)="updateImageColor($index, $event || '')"
+                [items]="colorOptions"
+                placeholder="აირჩიეთ ფერი"
+                searchPlaceholder="ძიება..."
+                notFoundText="ფერი ვერ მოიძებნა"
+              />
+              <input
+                type="number"
+                min="0"
+                [value]="imageMetadata()[$index]?.quantity"
+                (input)="updateImageQuantity($index, +$any($event.target).value)"
+                placeholder="რაოდენობა"
+                class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3.5 py-2 text-sm outline-hidden transition-colors"
+              />
+              @if (imageMetadata()[$index]?.hasCustomVariant) {
+              <button
+                type="button"
+                (click)="resetImageVariant($index)"
+                class="text-platinum-50 hover:text-valencia-60 self-start text-xs transition-colors"
+              >
+                დაბრუნება საერთო მნიშვნელობაზე
+              </button>
+              }
+            </div>
+            }
           </div>
         </div>
         }
