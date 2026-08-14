@@ -107,8 +107,11 @@ export interface CheckoutFields {
   guest_details: string;
   delivery_type: string;
   delivery_time: string;
+  payment_method: CheckoutPaymentMethod;
   comment: string;
 }
+
+export type CheckoutPaymentMethod = 'card' | 'cash_on_delivery';
 
 export interface ProductCategoryCard {
   text: string;
@@ -133,6 +136,7 @@ export interface CheckoutRequest {
   details: string;
   delivery_type: string;
   delivery_time: string;
+  payment_method: CheckoutPaymentMethod;
   comment?: string;
   comment_image_uuids?: string[];
   items: {
@@ -145,7 +149,7 @@ export interface CheckoutRequest {
 
 export interface CheckoutResponse {
   order_id: string;
-  checkout_url: string;
+  checkout_url: string | null;
 }
 
 export interface CommentImageUploadItem {

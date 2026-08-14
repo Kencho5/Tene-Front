@@ -56,6 +56,11 @@ export const CHECKOUT_STRINGS = {
     'თბილისის გარეთ მიწოდების ღირებულებაა 6 ₾ და ხორციელდება 2-3 დღეში. იმავე დღის მიწოდება ხელმისაწვდომია მხოლოდ თბილისში.',
 } as const;
 
+export const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  card: 'ბანკის ბარათი',
+  cash_on_delivery: 'ადგილზე/კურიერთან გადახდა',
+};
+
 export function formatGel(value: number): string {
   return value === 0 ? CHECKOUT_STRINGS.free : `${value}₾`;
 }

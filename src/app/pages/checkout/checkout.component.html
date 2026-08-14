@@ -533,6 +533,68 @@
               </div>
             </div>
             }
+
+            <div class="bg-hairline my-2 h-px"></div>
+
+            <div>
+              <h3 class="mb-3 text-base">გადახდის მეთოდი</h3>
+              <div class="grid gap-3 sm:grid-cols-2">
+                @for (method of paymentMethods; track method.value) { @let paymentSelected =
+                checkoutForm.payment_method().value() === method.value;
+                <button
+                  type="button"
+                  (click)="checkoutForm.payment_method().value.set(method.value)"
+                  [ngClass]="paymentSelected ? 'border-green-60 bg-white' : 'border-hairline bg-white hover:border-ink-30'"
+                  class="flex items-center gap-3 rounded-2xl border-[1.5px] px-3 py-3 text-left transition-colors duration-200 ease-out"
+                >
+                  <span
+                    class="bg-ink-10 text-ink-60 flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+                  >
+                    @if (method.value === 'card') {
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    >
+                      <rect x="2" y="4.5" width="16" height="11" rx="2.5" />
+                      <path d="M2 8.5h16" stroke-linecap="round" />
+                      <path d="M5 12.5h3" stroke-linecap="round" />
+                    </svg>
+                    } @else {
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    >
+                      <rect x="1.75" y="5" width="16.5" height="10" rx="2" />
+                      <circle cx="10" cy="10" r="2.25" />
+                      <path d="M4.75 8v4M15.25 8v4" stroke-linecap="round" />
+                    </svg>
+                    }
+                  </span>
+                  <span class="flex min-w-0 flex-col">
+                    <span class="text-ink-80 truncate text-sm">{{ method.label }}</span>
+                    <span class="text-ink-40 truncate text-xs">{{ method.description }}</span>
+                  </span>
+                  <span
+                    [ngClass]="paymentSelected ? 'border-green-60 bg-green-60' : 'border-hairline bg-ink-10'"
+                    class="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-[1.5px] transition-colors duration-200 ease-out"
+                  >
+                    <span
+                      [ngClass]="paymentSelected ? 'scale-100' : 'scale-0'"
+                      class="h-1.5 w-1.5 rounded-full bg-white transition-transform duration-200 ease-out"
+                    ></span>
+                  </span>
+                </button>
+                }
+              </div>
+            </div>
           </div>
           }
 
@@ -697,6 +759,12 @@
                     </dd>
                   </div>
                   }
+                  <div class="flex justify-between gap-3">
+                    <dt class="text-ink-40">გადახდა</dt>
+                    <dd class="text-ink-70 text-right">
+                      {{ paymentMethodLabel(checkoutForm.payment_method().value()) }}
+                    </dd>
+                  </div>
                 </dl>
               </div>
             </div>
@@ -799,7 +867,11 @@
               ></path>
             </svg>
             <div>
+              @if (checkoutForm.payment_method().value() === 'cash_on_delivery') {
+              <h2 class="text-lg md:text-xl">შეკვეთა ფორმდება</h2>
+              } @else {
               <h2 class="text-lg md:text-xl">გადახდის გვერდზე გადამისამართება</h2>
+              }
               <p class="text-ink-50 text-sm">გთხოვთ მოიცადოთ...</p>
             </div>
           </div>

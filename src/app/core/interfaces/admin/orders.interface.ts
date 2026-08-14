@@ -16,7 +16,8 @@ export type PaymentMethod =
   | 'transfer'
   | 'transfer_bog'
   | 'transfer_tbc'
-  | 'transfer_extra';
+  | 'transfer_extra'
+  | 'cash_on_delivery';
 
 export type FulfillmentMethod = 'store_pickup' | 'courier';
 

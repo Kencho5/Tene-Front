@@ -64,6 +64,7 @@ export class AdminOrdersComponent {
     { label: 'ჩარიცხვა — საქართველოს ბანკი', value: 'transfer_bog' },
     { label: 'ჩარიცხვა — თიბისი', value: 'transfer_tbc' },
     { label: 'ჩარიცხვა — extra.ge', value: 'transfer_extra' },
+    { label: 'ადგილზე/კურიერთან გადახდა', value: 'cash_on_delivery' },
   ];
 
   readonly updatingStatus = signal<ReadonlySet<number>>(new Set());
@@ -249,6 +250,8 @@ export class AdminOrdersComponent {
         return 'ჩარიცხვა — თიბისი';
       case 'transfer_extra':
         return 'ჩარიცხვა — extra.ge';
+      case 'cash_on_delivery':
+        return 'ადგილზე/კურიერთან გადახდა';
       default:
         return '—';
     }

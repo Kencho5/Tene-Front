@@ -14,7 +14,11 @@ import { NgClass } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { email, FormField, form, hidden, required, submit } from '@angular/forms/signals';
 import { catchError, EMPTY, forkJoin, mergeMap, Observable, of, switchMap } from 'rxjs';
-import { CheckoutFields, CheckoutRequest } from '@core/interfaces/products.interface';
+import {
+  CheckoutFields,
+  CheckoutPaymentMethod,
+  CheckoutRequest,
+} from '@core/interfaces/products.interface';
 import { CompressImageService } from '@core/services/compress-image.service';
 import { organizationTypes } from '@utils/organizationTypes';
 import { CartService } from '@core/services/products/cart.service';
@@ -33,7 +37,7 @@ import { AddressFormModalComponent } from '@shared/components/address-form-modal
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { DeliveryPricingService } from './delivery-pricing.service';
-import { TBILISI_REGIONS } from './checkout.config';
+import { PAYMENT_METHOD_LABELS, TBILISI_REGIONS } from './checkout.config';
 import {
   CheckoutAnalyticsEvent,
   CheckoutAnalyticsService,
@@ -93,6 +97,23 @@ export class CheckoutComponent {
   readonly isGuest = computed(() => !this.authService.isAuthenticated());
   readonly georgianCities = georgianCities;
   readonly tbilisiRegions = TBILISI_REGIONS;
+
+  readonly paymentMethods: { value: CheckoutPaymentMethod; label: string; description: string }[] = [
+    {
+      value: 'card',
+      label: PAYMENT_METHOD_LABELS['card'],
+      description: 'Visa / Mastercard',
+    },
+    {
+      value: 'cash_on_delivery',
+      label: PAYMENT_METHOD_LABELS['cash_on_delivery'],
+      description: 'ნაღდი ან ბარათი მიღებისას',
+    },
+  ];
+
+  paymentMethodLabel(value: string): string {
+    return PAYMENT_METHOD_LABELS[value] ?? value;
+  }
 
   cityLabel(value: string): string {
     return georgianCities.find((c) => c.value === value)?.label ?? value;
@@ -206,6 +227,7 @@ export class CheckoutComponent {
     guest_details: '',
     delivery_type: 'delivery',
     delivery_time: '',
+    payment_method: 'card',
     comment: '',
   };
 
@@ -300,6 +322,8 @@ export class CheckoutComponent {
 
     hidden(fieldPath.delivery_time, ({ valueOf }) => valueOf(fieldPath.delivery_type) === 'pickup');
     required(fieldPath.delivery_time, { message: 'მიწოდების დრო აუცილებელია' });
+
+    required(fieldPath.payment_method, { message: 'გადახდის მეთოდის არჩევა აუცილებელია' });
   });
 
   constructor() {
@@ -525,6 +549,7 @@ export class CheckoutComponent {
             details: resolvedDetails,
             delivery_type: model.delivery_type,
             delivery_time: model.delivery_time,
+            payment_method: model.payment_method,
             ...(model.comment ? { comment: model.comment } : {}),
             ...(imageUuids.length > 0 ? { comment_image_uuids: imageUuids } : {}),
             items: this.cartItems(),
@@ -557,7 +582,12 @@ export class CheckoutComponent {
             localStorage.setItem('guest_orders', JSON.stringify([response.order_id]));
           }
         }
-        window.location.href = response.checkout_url;
+        if (response.checkout_url) {
+          window.location.href = response.checkout_url;
+          return;
+        }
+        this.cartService.clearCart();
+        this.router.navigate(['/checkout/result']);
       });
   }
 
@@ -576,6 +606,7 @@ export class CheckoutComponent {
 
   private hasDeliveryErrors(): boolean {
     const f = this.checkoutForm;
+    if (f.payment_method().invalid()) return true;
     if (f.delivery_type().value() === 'pickup') return false;
     if (f.delivery_time().invalid()) return true;
     if (this.isGuest()) {
@@ -737,6 +768,7 @@ export class CheckoutComponent {
       ['guest_details', model.guest_details],
       ['delivery_type', model.delivery_type],
       ['delivery_time', model.delivery_time],
+      ['payment_method', model.payment_method],
       ['comment', model.comment],
     ]);
     return entries;
