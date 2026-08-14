@@ -11,6 +11,7 @@ import { SharedModule } from '@shared/shared.module';
 import { catchError, finalize, map, of, tap } from 'rxjs';
 import { ProductResponse, ProductSearchResponse } from '@core/interfaces/products.interface';
 import { generateProductSlug } from '@utils/slug';
+import { calculateDiscount } from '@utils/discountedPrice';
 import { getProductImageUrl } from '@utils/product-image-url';
 import { AdminService } from '@core/services/admin/admin.service';
 import { CategoriesService } from '@core/services/categories/categories.service';
@@ -34,6 +35,10 @@ export class AdminProductsComponent {
   readonly searchType = signal<'query' | 'id'>('query');
   readonly isDeleteModalOpen = signal<boolean>(false);
   readonly productToDelete = signal<string | null>(null);
+
+  discountedPrice(product: ProductResponse): number {
+    return calculateDiscount(product.data);
+  }
 
   readonly sortOptions: ComboboxItems[] = [
     { label: 'ფასი: კლებადობით', value: 'price_desc' },

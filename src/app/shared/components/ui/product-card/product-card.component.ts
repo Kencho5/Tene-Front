@@ -29,6 +29,10 @@ export class ProductCardComponent {
     return calculateDiscount(this.product().data);
   });
 
+  readonly hasDiscount = computed(() => {
+    return this.product().data.discounted_price != null;
+  });
+
   readonly primaryImage = computed(() => {
     return this.product().images.find((image) => image.is_primary) ?? null;
   });
@@ -54,8 +58,7 @@ export class ProductCardComponent {
 
   readonly savingsAmount = computed(() => {
     const data = this.product().data;
-    const discount = Number(data.discount);
-    if (!discount) return 0;
+    if (data.discounted_price == null) return 0;
     return Number(data.price) - Number(this.discountedPrice());
   });
 

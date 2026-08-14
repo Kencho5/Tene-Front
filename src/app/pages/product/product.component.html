@@ -284,7 +284,7 @@
           <!-- ─── Price (non-cable only) ─── -->
           @if (!isCable()) {
           <div class="border-hairline mt-5 border-t pt-5">
-            @if (+product.data.discount === 0) {
+            @if (product.data.discounted_price === null) {
             <p
               class="text-platinum-100 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[26px]"
             >

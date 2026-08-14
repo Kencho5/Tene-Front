@@ -31,6 +31,7 @@ export interface Product {
   description: string | null;
   price: number;
   discount: number;
+  discounted_price: string | null;
   quantity: number;
   specifications: Record<string, Array<{ name: string; value: string }>>;
   warranty: string;

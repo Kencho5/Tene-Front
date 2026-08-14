@@ -1,15 +1,9 @@
 import { Product } from '@core/interfaces/products.interface';
 
 export function calculateDiscount(product: Product) {
-  const originalPrice = product.price;
-  const discountPercent = product.discount;
-
-  if (discountPercent === 0) {
-    return originalPrice;
+  if (product.discounted_price == null) {
+    return Number(product.price);
   }
 
-  const discountAmount = (originalPrice * discountPercent) / 100;
-  const priceAfterDiscount = originalPrice - discountAmount;
-
-  return Math.round(priceAfterDiscount * 100) / 100;
+  return Number(product.discounted_price);
 }

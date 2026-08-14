@@ -26,6 +26,7 @@ import { CartService } from '@core/services/products/cart.service';
 import { SeoService } from '@core/services/seo/seo.service';
 import { SchemaService } from '@core/services/seo/schema.service';
 import { getProductImageBaseUrl, getProductImageUrl } from '@utils/product-image-url';
+import { calculateDiscount } from '@utils/discountedPrice';
 import { CategoriesService } from '@core/services/categories/categories.service';
 import { CategoryTreeNode } from '@core/interfaces/categories.interface';
 import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
@@ -359,17 +360,7 @@ export class ProductComponent {
     const variant = this.priceVariant();
     if (variant) return Number(variant.price);
 
-    const originalPrice = product.data.price;
-    const discountPercent = product.data.discount;
-
-    if (discountPercent === 0) {
-      return originalPrice;
-    }
-
-    const discountAmount = (originalPrice * discountPercent) / 100;
-    const priceAfterDiscount = originalPrice - discountAmount;
-
-    return Math.round(priceAfterDiscount * 100) / 100;
+    return calculateDiscount(product.data);
   });
 
   readonly displayWarranty = computed(() => {

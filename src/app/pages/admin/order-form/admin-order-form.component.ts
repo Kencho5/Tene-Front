@@ -20,6 +20,7 @@ import { SharedModule } from '@shared/shared.module';
 import { colorLabels } from '@utils/colors';
 import { organizationTypes } from '@utils/organizationTypes';
 import { getProductImageUrl } from '@utils/product-image-url';
+import { calculateDiscount } from '@utils/discountedPrice';
 import { TBILISI_REGIONS } from '../../checkout/checkout.config';
 
 const EMPTY_SEARCH: ProductSearchResponse = { products: [], total: 0, limit: 0, offset: 0 };
@@ -158,9 +159,7 @@ export class AdminOrderFormComponent {
   }
 
   addProduct(product: ProductResponse): void {
-    const price = product.data.discount
-      ? product.data.price - (product.data.price * product.data.discount) / 100
-      : product.data.price;
+    const price = calculateDiscount(product.data);
 
     this.items.update((list) => [
       ...list,
@@ -169,7 +168,7 @@ export class AdminOrderFormComponent {
         product_name: product.data.name,
         color: product.images?.find((img) => img.is_primary)?.color ?? '',
         quantity: 1,
-        price: Math.round(price * 100) / 100,
+        price,
         image_url: this.getImage(product),
       },
     ]);

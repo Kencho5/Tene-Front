@@ -277,9 +277,9 @@
           </div>
           }
           <div class="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-            @if (product.data.discount > 0) {
+            @if (product.data.discounted_price !== null) {
             <span class="text-platinum-100 text-sm font-semibold">
-              {{ product.data.price * (1 - product.data.discount / 100) | number: "1.2-2" }} ₾
+              {{ discountedPrice(product) | number: "1.2-2" }} ₾
             </span>
             <span class="text-platinum-40 text-xs line-through">{{ product.data.price }} ₾</span>
             } @else {
@@ -502,9 +502,9 @@
 
             <!-- Price -->
             <td class="px-4 py-3 whitespace-nowrap">
-              @if (product.data.discount > 0) {
+              @if (product.data.discounted_price !== null) {
               <p class="text-platinum-100 text-sm font-semibold">
-                {{ product.data.price * (1 - product.data.discount / 100) | number: "1.2-2" }} ₾
+                {{ discountedPrice(product) | number: "1.2-2" }} ₾
               </p>
               <p class="text-platinum-40 text-xs line-through">{{ product.data.price }} ₾</p>
               } @else {

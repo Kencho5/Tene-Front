@@ -1,5 +1,5 @@
 import { Injectable, signal, computed, effect } from '@angular/core';
-import { CartItem } from '@core/interfaces/products.interface';
+import { CartItem, Product } from '@core/interfaces/products.interface';
 import { calculateDiscount } from '@utils/discountedPrice';
 
 const CART_STORAGE_KEY = 'tene_cart';
@@ -44,7 +44,7 @@ export class CartService {
 
   readonly totalDiscount = computed(() => {
     return this.items().reduce((total, item) => {
-      if (item.product.discount === 0) {
+      if (item.product.discounted_price == null) {
         return total;
       }
 
@@ -158,15 +158,8 @@ export class CartService {
     }
   }
 
-  calculateFinalPrice(price: number, discount: number): number {
-    if (discount === 0) {
-      return price;
-    }
-
-    const discountAmount = (price * discount) / 100;
-    const priceAfterDiscount = price - discountAmount;
-
-    return Math.round(priceAfterDiscount * 100) / 100;
+  discountedPrice(product: Product): number {
+    return calculateDiscount(product);
   }
 
   calculateTotalPrice(price: number, quantity: number): number {

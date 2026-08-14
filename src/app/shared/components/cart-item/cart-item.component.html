@@ -51,7 +51,7 @@
           <p class="text-platinum-100 text-[16px] leading-none font-bold sm:text-[18px]">
             {{ cartService.calculateTotalPrice(cc.price, item().quantity) | number: "1.2-2" }} ₾
           </p>
-        } @else if (item().product.discount == 0) {
+        } @else if (item().product.discounted_price === null) {
           <p class="text-platinum-100 text-[16px] leading-none font-bold sm:text-[18px]">
             {{ cartService.calculateTotalPrice(item().product.price, item().quantity) | number: "1.2-2" }} ₾
           </p>
@@ -60,7 +60,7 @@
             <p class="text-platinum-100 text-[16px] leading-none font-bold sm:text-[18px]">
               {{
                 cartService.calculateTotalPrice(
-                  cartService.calculateFinalPrice(item().product.price, item().product.discount),
+                  cartService.discountedPrice(item().product),
                   item().quantity
                 ) | number: "1.2-2"
               }} ₾
