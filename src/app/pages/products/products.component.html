@@ -17,18 +17,74 @@
       <a
         routerLink="/search"
         [queryParams]="{ sort_by: 'views_desc', expand_categories: 'true' }"
-        class="text-green-60 hover:text-green-70 text-[16px] font-medium sm:text-sm"
+        class="text-green-60 hover:text-green-70 hidden text-[16px] font-medium sm:block sm:text-sm"
       >
         ყველას ნახვა →
       </a>
     </div>
 
-    <div class="relative">
+    <div class="sm:hidden">
+      <div class="grid grid-cols-2 gap-3">
+        @for (category of topLevelCategories().slice(0, 6); track category.id) {
+        <a
+          [routerLink]="['/search']"
+          [queryParams]="{ parent_category_id: category.id }"
+          class="group flex flex-col items-center gap-3"
+        >
+          <div
+            class="border-hairline relative aspect-square w-full overflow-hidden rounded-2xl border bg-white shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
+          >
+            @if (category.image_url) {
+            <img
+              [src]="category.image_url"
+              [alt]="category.name"
+              width="160"
+              height="160"
+              class="h-full w-full object-cover"
+            />
+            } @else {
+            <div class="bg-green-10 flex h-full w-full items-center justify-center">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" class="text-green-60/40">
+                <path
+                  d="M3 7C3 5.11438 3 4.17157 3.58579 3.58579C4.17157 3 5.11438 3 7 3H17C18.8856 3 19.8284 3 20.4142 3.58579C21 4.17157 21 5.11438 21 7V17C21 18.8856 21 19.8284 20.4142 20.4142C19.8284 21 18.8856 21 17 21H7C5.11438 21 4.17157 21 3.58579 20.4142C3 19.8284 3 18.8856 3 17V7Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M10 9H14M10 12H14M10 15H14"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            }
+          </div>
+
+          <p
+            class="text-platinum-80 text-center text-[15px] leading-tight font-medium"
+          >
+            {{ category.name }}
+          </p>
+        </a>
+        }
+      </div>
+
+      <a
+        routerLink="/search"
+        [queryParams]="{ sort_by: 'views_desc', expand_categories: 'true' }"
+        class="border-green-60 text-green-60 hover:bg-green-10 mt-6 flex w-full items-center justify-center gap-1.5 rounded-full border px-4 py-3 text-[15px] font-medium transition-colors"
+      >
+        ყველას ნახვა <span class="text-xl leading-none">→</span>
+      </a>
+    </div>
+
+    <div class="relative hidden sm:block">
       <div
         appDragScroll
         #scrollContainer
         (scroll)="onScroll(scrollContainer, 'categories')"
-        class="hide-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:gap-4 lg:mx-0 lg:pr-20 lg:pl-0"
+        class="hide-scrollbar flex gap-3 overflow-x-auto pb-2 sm:gap-4 lg:mx-0 lg:pr-20 lg:pl-0"
         style="scrollbar-width: none; -ms-overflow-style: none"
       >
         @for (category of topLevelCategories(); track category.id) {
