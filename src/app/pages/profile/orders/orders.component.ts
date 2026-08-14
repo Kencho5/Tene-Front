@@ -60,6 +60,8 @@ export class OrdersComponent {
         return 'გაგზავნილია';
       case 'finance_cleared':
         return 'დადასტურებული';
+      case 'refunded':
+        return 'თანხა დაბრუნებულია';
     }
   }
 

@@ -7,11 +7,27 @@ export interface CreateOrderItem {
   cable_config?: { watts: number; length_cm: number } | null;
 }
 
-export type PaymentMethod = 'pos' | 'cash' | 'transfer';
+export type PaymentMethod =
+  | 'pos'
+  | 'pos_bog'
+  | 'pos_tbc'
+  | 'pos_liberty'
+  | 'cash'
+  | 'transfer'
+  | 'transfer_bog'
+  | 'transfer_tbc'
+  | 'transfer_extra';
+
+export type FulfillmentMethod = 'store_pickup' | 'courier';
 
 export interface CreateOrderRequest {
   status?: string;
   payment_method?: PaymentMethod;
+  fulfillment_method?: FulfillmentMethod;
+  personal_number?: string;
+  source_comment?: string;
+  is_installment_sale?: boolean;
+  is_product_exchange?: boolean;
   amount?: number;
   customer_type?: string;
   customer_name?: string;
@@ -60,4 +76,9 @@ export interface OrderFormFields {
   comment: string;
   amount: string;
   payment_method: PaymentMethod;
+  fulfillment_method: FulfillmentMethod;
+  personal_number: string;
+  source_comment: string;
+  is_installment_sale: boolean;
+  is_product_exchange: boolean;
 }

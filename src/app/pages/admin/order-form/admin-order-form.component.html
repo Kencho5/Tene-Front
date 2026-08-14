@@ -24,6 +24,11 @@
           [items]="paymentMethodOptions"
           placeholder="გადახდის ფორმა"
         />
+        <app-dropdown
+          [(selectedValue)]="orderForm.fulfillment_method().value"
+          [items]="fulfillmentMethodOptions"
+          placeholder="შეკვეთის ჩაბარების მეთოდი"
+        />
       </div>
     </div>
 
@@ -75,6 +80,11 @@
           [error]="submitted() && orderForm.phone_number().invalid()"
           type="tel"
           placeholder="ტელეფონის ნომერი *"
+        />
+        <app-input
+          [formField]="orderForm.personal_number"
+          type="text"
+          placeholder="პირადი ნომერი"
         />
       </div>
     </div>
@@ -330,7 +340,39 @@
       <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
         კომენტარი
       </h2>
-      <app-input [formField]="orderForm.comment" type="text" placeholder="კომენტარი" />
+      <div class="grid gap-4 sm:grid-cols-2">
+        <app-input [formField]="orderForm.comment" type="text" placeholder="კომენტარი" />
+        <app-input
+          [formField]="orderForm.source_comment"
+          type="text"
+          placeholder="მომხმარებლის მოსვლის წყარო"
+        />
+      </div>
+
+      <div class="mt-4 grid gap-3 sm:grid-cols-2">
+        <label
+          class="border-hairline hover:border-platinum-30 flex cursor-pointer items-center gap-3 rounded-full border p-3 transition-colors"
+        >
+          <input
+            type="checkbox"
+            [checked]="orderModel().is_installment_sale"
+            (change)="orderForm.is_installment_sale().value.set($any($event.target).checked)"
+            class="h-4 w-4 shrink-0"
+          />
+          <span class="text-platinum-100 text-sm font-medium">გაყიდულია განვადებით</span>
+        </label>
+        <label
+          class="border-hairline hover:border-platinum-30 flex cursor-pointer items-center gap-3 rounded-full border p-3 transition-colors"
+        >
+          <input
+            type="checkbox"
+            [checked]="orderModel().is_product_exchange"
+            (change)="orderForm.is_product_exchange().value.set($any($event.target).checked)"
+            class="h-4 w-4 shrink-0"
+          />
+          <span class="text-platinum-100 text-sm font-medium">ხდება პროდუქტის შეცვლა</span>
+        </label>
+      </div>
     </div>
 
     <!-- Actions -->

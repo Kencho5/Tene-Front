@@ -330,10 +330,16 @@
                   <dt class="text-xs text-platinum-50">მიწოდება</dt>
                   <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ deliveryTypeLabel(order.delivery_type) }}</dd>
                 </div>
+                @if (order.personal_number) {
+                  <div>
+                    <dt class="text-xs text-platinum-50">პირადი ნომერი</dt>
+                    <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.personal_number }}</dd>
+                  </div>
+                }
                 @if (order.city) {
                   <div>
                     <dt class="text-xs text-platinum-50">ქალაქი</dt>
-                    <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.city }}</dd>
+                    <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ cityLabel(order.city) }}</dd>
                   </div>
                 }
                 @if (order.address) {
@@ -367,12 +373,24 @@
                 </div>
               }
 
-              @if (order.payment_method || order.created_by) {
+              @if (order.payment_method || order.created_by || order.fulfillment_method || order.source_comment) {
                 <dl class="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-hairline pt-3">
                   @if (order.payment_method) {
                     <div>
                       <dt class="text-xs text-platinum-50">გადახდის ფორმა</dt>
                       <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ paymentMethodLabel(order.payment_method) }}</dd>
+                    </div>
+                  }
+                  @if (order.fulfillment_method) {
+                    <div>
+                      <dt class="text-xs text-platinum-50">ჩაბარების მეთოდი</dt>
+                      <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ fulfillmentMethodLabel(order.fulfillment_method) }}</dd>
+                    </div>
+                  }
+                  @if (order.source_comment) {
+                    <div class="col-span-2">
+                      <dt class="text-xs text-platinum-50">მოსვლის წყარო</dt>
+                      <dd class="mt-0.5 break-words text-sm font-medium text-platinum-100">{{ order.source_comment }}</dd>
                     </div>
                   }
                   @if (order.created_by; as creator) {
@@ -382,6 +400,16 @@
                     </div>
                   }
                 </dl>
+              }
+              @if (order.is_installment_sale || order.is_product_exchange) {
+                <div class="flex flex-wrap gap-2 border-t border-hairline pt-3">
+                  @if (order.is_installment_sale) {
+                    <span class="rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-70">გაყიდულია განვადებით</span>
+                  }
+                  @if (order.is_product_exchange) {
+                    <span class="rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-70">პროდუქტის შეცვლა</span>
+                  }
+                </div>
               }
 
               <!-- Total -->
@@ -420,6 +448,7 @@
             <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50">შეკვეთა</th>
             <th class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 md:table-cell">მომხმარებელი</th>
             <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50">თარიღი</th>
+            <th class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 lg:table-cell">ქალაქი</th>
             @if (isAdminSource()) {
               <th class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 lg:table-cell">გადახდის ფორმა</th>
               <th class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 lg:table-cell">ვინ დაამატა</th>
@@ -446,6 +475,9 @@
                 </td>
                 <td class="px-4 py-3.5">
                   <div class="h-4 w-24 animate-pulse rounded-sm bg-platinum-10"></div>
+                </td>
+                <td class="hidden px-4 py-3.5 lg:table-cell">
+                  <div class="h-4 w-20 animate-pulse rounded-sm bg-platinum-10"></div>
                 </td>
                 @if (isAdminSource()) {
                   <td class="hidden px-4 py-3.5 lg:table-cell">
@@ -538,6 +570,11 @@
                   <span class="text-sm text-platinum-60">
                     {{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}
                   </span>
+                </td>
+
+                <!-- City -->
+                <td class="hidden px-4 py-3 lg:table-cell w-[140px] max-w-[140px]">
+                  <p class="truncate text-sm text-platinum-60">{{ cityLabel(order.city) }}</p>
                 </td>
 
                 @if (isAdminSource()) {
@@ -674,6 +711,12 @@
                               <dt class="text-xs text-platinum-50">ტელეფონი</dt>
                               <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.phone_number }}</dd>
                             </div>
+                            @if (order.personal_number) {
+                              <div>
+                                <dt class="text-xs text-platinum-50">პირადი ნომერი</dt>
+                                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.personal_number }}</dd>
+                              </div>
+                            }
                           </dl>
                         </div>
 
@@ -687,6 +730,12 @@
                               <dt class="text-xs text-platinum-50">ტიპი</dt>
                               <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ deliveryTypeLabel(order.delivery_type) }}</dd>
                             </div>
+                            @if (order.fulfillment_method) {
+                              <div>
+                                <dt class="text-xs text-platinum-50">ჩაბარების მეთოდი</dt>
+                                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ fulfillmentMethodLabel(order.fulfillment_method) }}</dd>
+                              </div>
+                            }
                             @if (order.delivery_time) {
                               <div>
                                 <dt class="text-xs text-platinum-50">დრო</dt>
@@ -696,7 +745,7 @@
                             @if (order.city) {
                               <div>
                                 <dt class="text-xs text-platinum-50">ქალაქი</dt>
-                                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.city }}</dd>
+                                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ cityLabel(order.city) }}</dd>
                               </div>
                             }
                             @if (order.address) {
@@ -777,6 +826,22 @@
                               <div class="flex items-center justify-between gap-3">
                                 <span class="shrink-0 text-xs text-platinum-50">ვინ დაამატა</span>
                                 <span class="truncate text-xs font-medium text-platinum-100">{{ creator.name }}</span>
+                              </div>
+                            }
+                            @if (order.source_comment) {
+                              <div class="flex items-center justify-between gap-3">
+                                <span class="shrink-0 text-xs text-platinum-50">მოსვლის წყარო</span>
+                                <span class="truncate text-xs font-medium text-platinum-100">{{ order.source_comment }}</span>
+                              </div>
+                            }
+                            @if (order.is_installment_sale || order.is_product_exchange) {
+                              <div class="flex flex-wrap gap-2 pt-1">
+                                @if (order.is_installment_sale) {
+                                  <span class="rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-70">გაყიდულია განვადებით</span>
+                                }
+                                @if (order.is_product_exchange) {
+                                  <span class="rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-70">პროდუქტის შეცვლა</span>
+                                }
                               </div>
                             }
                           </div>

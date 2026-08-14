@@ -1,3 +1,5 @@
+import { FulfillmentMethod, PaymentMethod } from '@core/interfaces/admin/orders.interface';
+
 export interface ProductCategory {
   id: number;
   name: string;
@@ -166,7 +168,8 @@ export type OrderStatus =
   | 'processing'
   | 'prepared'
   | 'shipped'
-  | 'finance_cleared';
+  | 'finance_cleared'
+  | 'refunded';
 
 export interface Order {
   id: number;
@@ -197,7 +200,12 @@ export interface Order {
   items: OrderItem[];
   source: OrderSource;
   created_by_user_id: number | null;
-  payment_method: 'pos' | 'cash' | 'transfer' | null;
+  payment_method: PaymentMethod | null;
+  fulfillment_method: FulfillmentMethod | null;
+  personal_number: string | null;
+  source_comment: string | null;
+  is_installment_sale: boolean;
+  is_product_exchange: boolean;
   created_by?: OrderCreator;
 }
 

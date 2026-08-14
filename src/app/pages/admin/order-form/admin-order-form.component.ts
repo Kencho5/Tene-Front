@@ -53,12 +53,22 @@ export class AdminOrderFormComponent {
     { label: 'მომზადებულია', value: 'prepared' },
     { label: 'გაგზავნილია', value: 'shipped' },
     { label: 'ფინანში გატარებულია', value: 'finance_cleared' },
+    { label: 'თანხა დაბრუნებულია', value: 'refunded' },
   ];
 
   readonly paymentMethodOptions: ComboboxItems[] = [
-    { label: 'ბარათი (POS)', value: 'pos' },
+    { label: 'POS — BOG', value: 'pos_bog' },
+    { label: 'POS — TBC', value: 'pos_tbc' },
+    { label: 'POS — Liberty', value: 'pos_liberty' },
     { label: 'ნაღდი', value: 'cash' },
-    { label: 'გადარიცხვა', value: 'transfer' },
+    { label: 'ჩარიცხვა — საქართველოს ბანკი', value: 'transfer_bog' },
+    { label: 'ჩარიცხვა — თიბისი', value: 'transfer_tbc' },
+    { label: 'ჩარიცხვა — extra.ge', value: 'transfer_extra' },
+  ];
+
+  readonly fulfillmentMethodOptions: ComboboxItems[] = [
+    { label: 'მაღაზიიდან გატანა', value: 'store_pickup' },
+    { label: 'საკურიერო მომსახურება', value: 'courier' },
   ];
 
   readonly customerTypeOptions: ComboboxItems[] = [
@@ -94,7 +104,12 @@ export class AdminOrderFormComponent {
     delivery_time: '',
     comment: '',
     amount: '',
-    payment_method: 'pos',
+    payment_method: 'pos_bog',
+    fulfillment_method: 'store_pickup',
+    personal_number: '',
+    source_comment: '',
+    is_installment_sale: false,
+    is_product_exchange: false,
   };
 
   readonly orderModel = signal<OrderFormFields>(structuredClone(this.defaultModel));
@@ -273,6 +288,7 @@ export class AdminOrderFormComponent {
     const payload: CreateOrderRequest = {
       status: model.status,
       payment_method: model.payment_method,
+      fulfillment_method: model.fulfillment_method,
       amount: this.resolvedAmount(),
       customer_type: model.customer_type,
       email: model.email.trim(),
@@ -284,6 +300,10 @@ export class AdminOrderFormComponent {
       delivery_type: model.delivery_type,
       delivery_time: model.delivery_type === 'pickup' ? '' : model.delivery_time,
       comment: model.comment.trim(),
+      source_comment: model.source_comment.trim(),
+      personal_number: model.personal_number.trim(),
+      is_installment_sale: model.is_installment_sale,
+      is_product_exchange: model.is_product_exchange,
       items,
     };
 

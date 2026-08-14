@@ -9,6 +9,7 @@ import {
   LightboxComponent,
   LightboxImage,
 } from '@shared/components/ui/lightbox/lightbox.component';
+import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
 import { SharedModule } from '@shared/shared.module';
 import { getProductImageUrl } from '@utils/product-image-url';
 import { generateProductSlug } from '@utils/slug';
@@ -42,6 +43,7 @@ export class AdminOrdersComponent {
     { label: 'მომზადებულია', value: 'prepared' },
     { label: 'გაგზავნილია', value: 'shipped' },
     { label: 'ფინანში გატარებულია', value: 'finance_cleared' },
+    { label: 'თანხა დაბრუნებულია', value: 'refunded' },
   ];
 
   readonly orderStatusOptions: ComboboxItems[] = this.statusOptions.filter(
@@ -55,9 +57,13 @@ export class AdminOrdersComponent {
 
   readonly paymentMethodOptions: ComboboxItems[] = [
     { label: 'ყველა', value: 'all' },
-    { label: 'ბარათი (POS)', value: 'pos' },
+    { label: 'POS — BOG', value: 'pos_bog' },
+    { label: 'POS — TBC', value: 'pos_tbc' },
+    { label: 'POS — Liberty', value: 'pos_liberty' },
     { label: 'ნაღდი', value: 'cash' },
-    { label: 'გადარიცხვა', value: 'transfer' },
+    { label: 'ჩარიცხვა — საქართველოს ბანკი', value: 'transfer_bog' },
+    { label: 'ჩარიცხვა — თიბისი', value: 'transfer_tbc' },
+    { label: 'ჩარიცხვა — extra.ge', value: 'transfer_extra' },
   ];
 
   readonly updatingStatus = signal<ReadonlySet<number>>(new Set());
@@ -84,7 +90,7 @@ export class AdminOrdersComponent {
   readonly source = computed(() => (this.params()['source'] as string) ?? 'web');
   readonly isAdminSource = computed(() => this.source() === 'admin');
   readonly paymentMethod = computed(() => (this.params()['payment_method'] as string) ?? 'all');
-  readonly columnCount = computed(() => (this.isAdminSource() ? 7 : 5));
+  readonly columnCount = computed(() => (this.isAdminSource() ? 8 : 6));
 
   private normalizedParams(): Record<string, string> {
     const p = { ...this.params() } as Record<string, string>;
@@ -179,6 +185,8 @@ export class AdminOrdersComponent {
         return 'გაგზავნილია';
       case 'finance_cleared':
         return 'ფინანში გატარებულია';
+      case 'refunded':
+        return 'თანხა დაბრუნებულია';
       default:
         return status;
     }
@@ -225,10 +233,38 @@ export class AdminOrdersComponent {
     switch (method) {
       case 'pos':
         return 'ბარათი (POS)';
+      case 'pos_bog':
+        return 'POS — BOG';
+      case 'pos_tbc':
+        return 'POS — TBC';
+      case 'pos_liberty':
+        return 'POS — Liberty';
       case 'cash':
         return 'ნაღდი';
       case 'transfer':
         return 'გადარიცხვა';
+      case 'transfer_bog':
+        return 'ჩარიცხვა — საქართველოს ბანკი';
+      case 'transfer_tbc':
+        return 'ჩარიცხვა — თიბისი';
+      case 'transfer_extra':
+        return 'ჩარიცხვა — extra.ge';
+      default:
+        return '—';
+    }
+  }
+
+  cityLabel(city: string | null): string {
+    if (!city) return '—';
+    return georgianCities.find((c) => c.value === city)?.label ?? city;
+  }
+
+  fulfillmentMethodLabel(method: string | null): string {
+    switch (method) {
+      case 'store_pickup':
+        return 'მაღაზიიდან გატანა';
+      case 'courier':
+        return 'საკურიერო მომსახურება';
       default:
         return '—';
     }
