@@ -341,6 +341,7 @@ export class AdminOrdersComponent {
     { label: 'დღეს', value: 'today' },
     { label: 'გუშინ', value: 'yesterday' },
     { label: 'გუშინწინ', value: 'day_before' },
+    { label: '3 დღის წინ', value: 'three_days_ago' },
     { label: '7 დღის', value: 'last_7' },
     { label: '10 დღის', value: 'last_10' },
     { label: 'ამ თვის', value: 'this_month' },
@@ -389,6 +390,10 @@ export class AdminOrdersComponent {
       case 'day_before':
         from.setDate(today.getDate() - 2);
         to.setDate(today.getDate() - 2);
+        break;
+      case 'three_days_ago':
+        from.setDate(today.getDate() - 3);
+        to.setDate(today.getDate() - 3);
         break;
       case 'last_7':
         from.setDate(today.getDate() - 7);
