@@ -293,9 +293,9 @@
             } @else {
             <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <p
-                class="text-valencia-60 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[26px]"
+                class="text-valencia-60 text-[20px] leading-none whitespace-nowrap line-through sm:text-[16px]"
               >
-                -{{ product.data.discount | number: '1.0-0' }}%
+                {{ product.data.price }}₾
               </p>
               <p
                 class="text-platinum-100 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[26px]"
@@ -303,9 +303,9 @@
                 {{ finalPrice() }}₾
               </p>
               <p
-                class="text-platinum-40 text-[20px] leading-none whitespace-nowrap line-through sm:text-[16px]"
+                class="text-green-60 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[26px]"
               >
-                {{ product.data.price }}₾
+                -{{ product.data.discount | number: '1.0-0' }}%
               </p>
             </div>
             }
