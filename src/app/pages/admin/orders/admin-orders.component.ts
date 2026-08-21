@@ -91,7 +91,7 @@ export class AdminOrdersComponent {
   readonly source = computed(() => (this.params()['source'] as string) ?? 'web');
   readonly isAdminSource = computed(() => this.source() === 'admin');
   readonly paymentMethod = computed(() => (this.params()['payment_method'] as string) ?? 'all');
-  readonly columnCount = computed(() => (this.isAdminSource() ? 8 : 6));
+  readonly columnCount = computed(() => (this.isAdminSource() ? 8 : 7));
 
   private normalizedParams(): Record<string, string> {
     const p = { ...this.params() } as Record<string, string>;
@@ -260,6 +260,17 @@ export class AdminOrdersComponent {
         return 'ადგილზე/კურიერთან გადახდა';
       default:
         return '—';
+    }
+  }
+
+  paymentMethodShortLabel(method: string | null): string {
+    switch (method) {
+      case 'card':
+        return 'ბარათით';
+      case 'cash_on_delivery':
+        return 'ადგილზე';
+      default:
+        return this.paymentMethodLabel(method);
     }
   }
 
