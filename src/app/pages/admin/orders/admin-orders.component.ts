@@ -232,6 +232,8 @@ export class AdminOrdersComponent {
 
   paymentMethodLabel(method: string | null): string {
     switch (method) {
+      case 'card':
+        return 'ბარათით ონლაინ';
       case 'pos':
         return 'ბარათი (POS)';
       case 'pos_bog':

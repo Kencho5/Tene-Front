@@ -8,6 +8,7 @@ export interface CreateOrderItem {
 }
 
 export type PaymentMethod =
+  | 'card'
   | 'pos'
   | 'pos_bog'
   | 'pos_tbc'
