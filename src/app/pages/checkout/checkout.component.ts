@@ -109,7 +109,7 @@ export class CheckoutComponent {
     {
       value: 'cash_on_delivery',
       label: PAYMENT_METHOD_LABELS['cash_on_delivery'],
-      description: 'ნაღდი ან ბარათი მიღებისას (+3₾ / 5%)',
+      description: 'ნაღდი ან ბარათი მიღებისას (+2₾ / 5%)',
     },
   ];
 
@@ -238,7 +238,7 @@ export class CheckoutComponent {
     guest_details: '',
     delivery_type: 'delivery',
     delivery_time: '',
-    payment_method: 'card',
+    payment_method: '',
     comment: '',
   };
 
@@ -533,6 +533,8 @@ export class CheckoutComponent {
 
   private dispatchCheckout(): void {
     const model = this.checkoutModel();
+    const paymentMethod = model.payment_method;
+    if (!paymentMethod) return;
     const isIndividual = model.customer_type === 'individual';
     const guest = this.isGuest();
     const selectedAddress = guest
@@ -566,7 +568,7 @@ export class CheckoutComponent {
             details: resolvedDetails,
             delivery_type: model.delivery_type,
             delivery_time: model.delivery_time,
-            payment_method: model.payment_method,
+            payment_method: paymentMethod,
             ...(model.comment ? { comment: model.comment } : {}),
             ...(imageUuids.length > 0 ? { comment_image_uuids: imageUuids } : {}),
             items: this.cartItems(),

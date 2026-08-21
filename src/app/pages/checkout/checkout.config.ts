@@ -57,8 +57,8 @@ export const CHECKOUT_STRINGS = {
 } as const;
 
 export const CASH_ON_DELIVERY_FEE = {
-  threshold: 60,
-  flat: 3,
+  threshold: 40,
+  flat: 2,
   rate: 0.05,
 } as const;
 

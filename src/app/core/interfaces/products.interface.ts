@@ -107,7 +107,7 @@ export interface CheckoutFields {
   guest_details: string;
   delivery_type: string;
   delivery_time: string;
-  payment_method: CheckoutPaymentMethod;
+  payment_method: CheckoutPaymentMethod | '';
   comment: string;
 }
 
