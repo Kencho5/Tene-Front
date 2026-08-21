@@ -34,7 +34,7 @@ export class AdminOrdersComponent {
 
   readonly statusOptions: ComboboxItems[] = [
     { label: 'ყველა', value: 'all' },
-    { label: 'დადასტურებული + ფინა', value: 'approved,finance_cleared' },
+    { label: 'დადასტურებული + FINA', value: 'approved,finance_cleared' },
     { label: 'დადასტურებული', value: 'approved' },
     { label: 'მოლოდინში', value: 'pending' },
     { label: 'მუშავდება', value: 'processing' },
@@ -42,7 +42,7 @@ export class AdminOrdersComponent {
     { label: 'ვადაგასული', value: 'expired' },
     { label: 'მომზადებულია', value: 'prepared' },
     { label: 'გაგზავნილია', value: 'shipped' },
-    { label: 'ფინანში გატარებულია', value: 'finance_cleared' },
+    { label: 'FINA-ში გატარებულია', value: 'finance_cleared' },
     { label: 'თანხა დაბრუნებულია', value: 'refunded' },
   ];
 
@@ -185,7 +185,7 @@ export class AdminOrdersComponent {
       case 'shipped':
         return 'გაგზავნილია';
       case 'finance_cleared':
-        return 'ფინანში გატარებულია';
+        return 'FINA-ში გატარებულია';
       case 'refunded':
         return 'თანხა დაბრუნებულია';
       default:

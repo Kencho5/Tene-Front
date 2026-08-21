@@ -52,7 +52,7 @@ export class AdminOrderFormComponent {
     { label: 'მუშავდება', value: 'processing' },
     { label: 'მომზადებულია', value: 'prepared' },
     { label: 'გაგზავნილია', value: 'shipped' },
-    { label: 'ფინანში გატარებულია', value: 'finance_cleared' },
+    { label: 'FINA-ში გატარებულია', value: 'finance_cleared' },
     { label: 'თანხა დაბრუნებულია', value: 'refunded' },
   ];
 
