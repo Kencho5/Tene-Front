@@ -8,21 +8,25 @@
   <div class="space-y-2.5 text-sm">
     <div class="flex items-center justify-between">
       <p class="text-ink-50">ნივთები ({{ cartService.itemCount() }})</p>
-      <p class="text-ink-80 font-semibold">{{ cartService.totalPrice() + cartService.totalDiscount() | number: "1.2-2" }}₾</p>
+      <div class="flex items-center gap-1.5 font-semibold">
+        @if (cartService.totalDiscount() > 0) {
+        <span class="text-ink-80">
+          {{ cartService.totalPrice() + cartService.totalDiscount() | number: "1.2-2" }}₾
+        </span>
+        <span class="text-ink-50">-</span>
+        <span class="text-valencia-50">
+          {{ cartService.totalDiscount() | number: "1.2-2" }}₾
+        </span>
+        <span class="text-ink-50">=</span>
+        }
+        <span class="text-ink-80">{{ cartService.totalPrice() | number: "1.2-2" }}₾</span>
+      </div>
     </div>
     @if (showDelivery()) {
     <div class="flex items-center justify-between">
       <p class="text-ink-50">მიწოდება</p>
       <p class="font-semibold" [ngClass]="deliveryPrice() == 0 ? 'text-green-70' : 'text-ink-80'">
         @if (deliveryPrice() == 0) { უფასო } @else { {{ deliveryPrice() | number: "1.2-2" }}₾ }
-      </p>
-    </div>
-    }
-    @if (cartService.totalDiscount() > 0) {
-    <div class="flex items-center justify-between">
-      <p class="text-ink-50">ფასდაკლება</p>
-      <p class="text-valencia-50 font-semibold">
-        -{{ cartService.totalDiscount() | number: "1.2-2" }}₾
       </p>
     </div>
     }
