@@ -105,7 +105,7 @@
 <!-- Category Expanded Overlay + Panel -->
 @if (isCategoryExpanded()) {
 <div
-  (click)="isCategoryExpanded.set(false)"
+  (click)="closeCategoryPanel()"
   class="fixed inset-0 z-20 bg-black/40 backdrop-blur-xs"
   animate.enter="fade-in 200ms ease-out"
   animate.leave="fade-out 150ms ease-in"
@@ -116,13 +116,52 @@
   animate.leave="slide-up-leave 200ms ease-in"
   (pointermove)="categoryPanelPointerMoved.set(true)"
 >
-  <div class="container flex flex-1 flex-col overflow-hidden px-4 pt-20 pb-2 md:flex-none md:pt-6 md:pb-8 xl:px-0">
+  <div class="container flex flex-1 flex-col overflow-hidden px-4 pt-[130px] pb-2 md:flex-none md:pt-6 md:pb-8 xl:px-0">
     <!-- Header -->
     <div class="mb-4 flex items-center justify-between md:mb-6">
-      <h2 class="text-lg font-bold tracking-tight">ყველა კატეგორია</h2>
+      <div class="flex min-w-0 items-center gap-2">
+        @if (drilledParent()) {
+        <nav class="flex min-w-0 items-center gap-1.5 md:hidden" aria-label="breadcrumb">
+          <button
+            type="button"
+            (click)="drilledParentId.set(null)"
+            class="text-platinum-50 hover:text-platinum-80 shrink-0 cursor-pointer text-[15px] font-medium transition-colors"
+          >
+            ყველა კატეგორია
+          </button>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            class="text-platinum-40 shrink-0"
+            aria-hidden="true"
+          >
+            <path
+              d="M6 4L10 8L6 12"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <button
+            type="button"
+            (click)="setParam('parent_category_id', '' + drilledParent()!.id); closeCategoryPanel()"
+            aria-current="page"
+            class="text-platinum-100 min-w-0 cursor-pointer truncate text-lg font-bold tracking-tight"
+          >
+            {{ drilledParent()!.name }}
+          </button>
+        </nav>
+        <h2 class="hidden truncate text-lg font-bold tracking-tight md:block">ყველა კატეგორია</h2>
+        } @else {
+        <h2 class="truncate text-lg font-bold tracking-tight">ყველა კატეგორია</h2>
+        }
+      </div>
       <button
         type="button"
-        (click)="isCategoryExpanded.set(false)"
+        (click)="closeCategoryPanel()"
         aria-label="დახურვა"
         class="border-hairline hover:bg-platinum-10 flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors"
       >
@@ -138,74 +177,78 @@
       </button>
     </div>
 
-    <!-- Mobile: Accordion layout -->
-    <div class="hide-scrollbar flex-1 space-y-2 overflow-y-auto md:hidden">
-      @for (category of categoryTree.value(); track category.id) {
-      <div
-        class="overflow-hidden rounded-2xl border-2 bg-white transition-all duration-200"
-        [class.shadow-low]="expandedParentId() === category.id"
-        [class.border-green-60/40]="expandedParentId() === category.id"
-        [class.border-hairline]="expandedParentId() !== category.id"
-      >
+    <!-- Mobile: grid + drill-in screen -->
+    <div class="hide-scrollbar flex-1 overflow-y-auto md:hidden">
+      @if (!drilledParent()) {
+      <div class="grid grid-cols-2 gap-3">
+        @for (category of categoryTree.value(); track category.id) {
         <button
           type="button"
-          (click)="onAccordionParentClick(category)"
-          class="flex w-full cursor-pointer items-center gap-3 px-3 py-2.5 transition-colors duration-150"
-          [class]="expandedParentId() === category.id
-                ? 'bg-green-20 text-platinum-100'
-                : 'text-platinum-80'"
+          (click)="onMobileParentClick(category)"
+          class="group flex cursor-pointer flex-col items-center gap-3"
         >
-          @if (category.image_url) {
-          <span
-            class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl"
+          <div
+            class="border-hairline relative aspect-square w-full overflow-hidden rounded-2xl border bg-white shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
           >
+            @if (category.image_url) {
             <img
               [src]="category.image_url"
               [alt]="category.name"
-              width="48"
-              height="48"
+              width="160"
+              height="160"
               class="h-full w-full object-cover"
+            />
+            } @else {
+            <div class="bg-green-10 flex h-full w-full items-center justify-center">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" class="text-green-60/40">
+                <path
+                  d="M3 7C3 5.11438 3 4.17157 3.58579 3.58579C4.17157 3 5.11438 3 7 3H17C18.8856 3 19.8284 3 20.4142 3.58579C21 4.17157 21 5.11438 21 7V17C21 18.8856 21 19.8284 20.4142 20.4142C19.8284 21 18.8856 21 17 21H7C5.11438 21 4.17157 21 3.58579 20.4142C3 19.8284 3 18.8856 3 17V7Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M10 9H14M10 12H14M10 15H14"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            }
+          </div>
+
+          <p class="text-platinum-80 text-center text-[15px] leading-tight font-medium">
+            {{ category.name }}
+          </p>
+        </button>
+        }
+      </div>
+      } @else {
+      <div class="space-y-2" animate.enter="slide-left-enter 200ms ease-out">
+        @for (child of drilledParent()!.children; track child.id) {
+        <button
+          type="button"
+          (click)="setParam('child_category_id', '' + child.id); closeCategoryPanel()"
+          class="flex w-full cursor-pointer items-center gap-3 rounded-2xl border px-3 py-2.5 transition-all duration-150"
+          [class]="hasValue('child_category_id', '' + child.id)
+                ? 'border-green-60 bg-green-10 text-platinum-100'
+                : 'border-hairline bg-white text-platinum-80'"
+        >
+          @if (child.image_url) {
+          <span
+            class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl"
+          >
+            <img
+              [src]="child.image_url"
+              [alt]="child.name"
+              width="44"
+              height="44"
+              class="h-full w-full object-contain"
             />
           </span>
           }
-          <span class="truncate text-[16px] font-semibold tracking-tight">{{ category.name }}</span>
-          @if (category.children.length > 0) {
-          <span
-            class="ml-auto flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-all duration-200"
-            [class]="expandedParentId() === category.id
-                  ? 'bg-green-60 text-white rotate-90'
-                  : 'bg-platinum-10 text-platinum-60'"
-          >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M6 4L10 8L6 12"
-                stroke="currentColor"
-                stroke-width="1.75"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </span>
-          }
+          <span class="truncate text-[15px] font-medium">{{ child.name }}</span>
         </button>
-        @if (expandedParentId() === category.id && category.children.length > 0) {
-        <div
-          class="border-hairline flex flex-wrap gap-1.5 border-t bg-green-10 px-3 py-3"
-          animate.enter="slide-down-enter 200ms ease-out"
-        >
-          @for (child of category.children; track child.id) {
-          <button
-            type="button"
-            (click)="setParam('child_category_id', '' + child.id); isCategoryExpanded.set(false)"
-            class="cursor-pointer rounded-full border px-3.5 py-2 text-[14px] font-medium transition-all duration-150"
-            [class]="hasValue('child_category_id', '' + child.id)
-                      ? 'border-green-60 bg-green-60 text-white'
-                      : 'border-hairline bg-platinum-10/50 text-platinum-70'"
-          >
-            <span class="truncate">{{ child.name }}</span>
-          </button>
-          }
-        </div>
         }
       </div>
       }
@@ -219,7 +262,7 @@
         <button
           type="button"
           (mouseenter)="categoryPanelPointerMoved() && expandedParentId.set(category.id)"
-          (click)="setParam('parent_category_id', '' + category.id); isCategoryExpanded.set(false)"
+          (click)="setParam('parent_category_id', '' + category.id); closeCategoryPanel()"
           class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-150"
           [class]="expandedParentId() === category.id
                 ? 'bg-platinum-10 text-platinum-100'
@@ -261,7 +304,7 @@
           @for (child of category.children; track child.id) {
           <button
             type="button"
-            (click)="setParam('child_category_id', '' + child.id); isCategoryExpanded.set(false)"
+            (click)="setParam('child_category_id', '' + child.id); closeCategoryPanel()"
             class="flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 transition-all duration-150"
             [class]="hasValue('child_category_id', '' + child.id)
                       ? 'border-green-60 bg-green-10'

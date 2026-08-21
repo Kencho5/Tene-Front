@@ -155,6 +155,12 @@ export class SearchComponent {
     }
     return tree[0]?.id ?? null;
   });
+  readonly drilledParentId = signal<number | null>(null);
+  readonly drilledParent = computed(() => {
+    const id = this.drilledParentId();
+    if (id === null) return null;
+    return this.categoryTree.value().find((c) => c.id === id) ?? null;
+  });
   readonly brandSearch = signal<string>('');
   readonly categorySearch = signal<string>('');
   readonly showAllBrands = signal(false);
@@ -280,13 +286,18 @@ export class SearchComponent {
     return categories.filter((category) => category.name.toLowerCase().includes(search));
   });
 
-  onAccordionParentClick(category: CategoryTreeNode): void {
+  onMobileParentClick(category: CategoryTreeNode): void {
     if (category.children.length > 0) {
-      this.expandedParentId.set(this.expandedParentId() === category.id ? null! : category.id);
+      this.drilledParentId.set(category.id);
     } else {
       this.setParam('parent_category_id', '' + category.id);
-      this.isCategoryExpanded.set(false);
+      this.closeCategoryPanel();
     }
+  }
+
+  closeCategoryPanel(): void {
+    this.drilledParentId.set(null);
+    this.isCategoryExpanded.set(false);
   }
 
   setParam(key: string, value: string | undefined, debounce = 0): void {
