@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-export type CheckoutStepKey = 'contact' | 'delivery' | 'review' | 'payment';
+export type CheckoutStepKey = 'contact' | 'delivery' | 'payment' | 'review' | 'processing';
 
 export interface CheckoutCartItem {
   product_id: string;

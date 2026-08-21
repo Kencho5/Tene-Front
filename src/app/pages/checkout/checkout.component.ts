@@ -42,9 +42,10 @@ import {
   CheckoutAnalyticsEvent,
   CheckoutAnalyticsService,
   CheckoutCartItem,
+  CheckoutStepKey,
 } from '@core/services/checkout-analytics.service';
 
-type StepKey = 'contact' | 'delivery' | 'review' | 'payment';
+type StepKey = CheckoutStepKey;
 
 const CHECKOUT_STORAGE_KEY = 'checkout_form';
 const CHECKOUT_SESSION_KEY = 'checkout_session_id';
@@ -100,14 +101,14 @@ export class CheckoutComponent {
 
   readonly paymentMethods: { value: CheckoutPaymentMethod; label: string; description: string }[] = [
     {
-      value: 'card',
-      label: PAYMENT_METHOD_LABELS['card'],
-      description: 'Visa / Mastercard',
-    },
-    {
       value: 'cash_on_delivery',
       label: PAYMENT_METHOD_LABELS['cash_on_delivery'],
       description: 'ნაღდი ან ბარათი მიღებისას',
+    },
+    {
+      value: 'card',
+      label: PAYMENT_METHOD_LABELS['card'],
+      description: 'Visa / Mastercard',
     },
   ];
 
@@ -184,9 +185,12 @@ export class CheckoutComponent {
   readonly steps: StepInfo[] = [
     { key: 'contact', label: 'საკონტაქტო დეტალები', shortLabel: 'საკონტაქტო' },
     { key: 'delivery', label: 'მიწოდება', shortLabel: 'მიწოდება' },
-    { key: 'review', label: 'მიმოხილვა', shortLabel: 'მიმოხილვა' },
     { key: 'payment', label: 'გადახდა', shortLabel: 'გადახდა' },
+    { key: 'review', label: 'მიმოხილვა', shortLabel: 'მიმოხილვა' },
+    { key: 'processing', label: 'დადასტურება', shortLabel: 'დადასტურება' },
   ];
+
+  readonly visibleSteps = this.steps.filter((step) => step.key !== 'processing');
 
   readonly currentStepIndex = signal(0);
   readonly currentStep = computed(() => this.steps[this.currentStepIndex()].key);
@@ -227,7 +231,7 @@ export class CheckoutComponent {
     guest_details: '',
     delivery_type: 'delivery',
     delivery_time: '',
-    payment_method: 'card',
+    payment_method: 'cash_on_delivery',
     comment: '',
   };
 
@@ -377,7 +381,7 @@ export class CheckoutComponent {
     });
 
     effect(() => {
-      if (this.currentStep() === 'payment' && !this.checkoutLoading()) {
+      if (this.currentStep() === 'processing' && !this.checkoutLoading()) {
         this.handleCheckout();
       }
     });
@@ -457,7 +461,7 @@ export class CheckoutComponent {
 
   goBack(): void {
     if (this.isFirstStep()) return;
-    if (this.currentStep() === 'payment') return;
+    if (this.currentStep() === 'processing') return;
     this.currentStepIndex.update((i) => Math.max(i - 1, 0));
     this.scrollToTop();
   }
@@ -497,8 +501,10 @@ export class CheckoutComponent {
         return !this.hasContactErrors();
       case 'delivery':
         return !this.hasDeliveryErrors();
-      case 'review':
       case 'payment':
+        return !this.checkoutForm.payment_method().invalid();
+      case 'review':
+      case 'processing':
         return !this.checkoutForm().invalid();
     }
   }
@@ -510,6 +516,10 @@ export class CheckoutComponent {
     }
     if (this.hasDeliveryErrors()) {
       this.currentStepIndex.set(1);
+      return;
+    }
+    if (this.checkoutForm.payment_method().invalid()) {
+      this.currentStepIndex.set(2);
       return;
     }
   }
@@ -559,7 +569,7 @@ export class CheckoutComponent {
         catchError((error) => {
           const message = error?.error?.message || 'შეკვეთის გაფორმება ვერ მოხერხდა';
           this.toastService.add('შეცდომა', message, 5000, 'error');
-          this.currentStepIndex.set(2);
+          this.currentStepIndex.set(3);
           this.checkoutLoading.set(false);
           return EMPTY;
         }),
@@ -606,7 +616,6 @@ export class CheckoutComponent {
 
   private hasDeliveryErrors(): boolean {
     const f = this.checkoutForm;
-    if (f.payment_method().invalid()) return true;
     if (f.delivery_type().value() === 'pickup') return false;
     if (f.delivery_time().invalid()) return true;
     if (this.isGuest()) {
