@@ -99,6 +99,10 @@ export class AdminOrdersComponent {
     if (p['status'] === 'all') delete p['status'];
     if (!p['source']) p['source'] = 'web';
     if (p['source'] === 'web' || p['payment_method'] === 'all') delete p['payment_method'];
+    if (p['search']) {
+      delete p['from_date'];
+      delete p['to_date'];
+    }
     return p;
   }
 
