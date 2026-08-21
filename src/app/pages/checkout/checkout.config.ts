@@ -56,6 +56,19 @@ export const CHECKOUT_STRINGS = {
     'თბილისის გარეთ მიწოდების ღირებულებაა 6 ₾ და ხორციელდება 2-3 დღეში. იმავე დღის მიწოდება ხელმისაწვდომია მხოლოდ თბილისში.',
 } as const;
 
+export const CASH_ON_DELIVERY_FEE = {
+  threshold: 60,
+  flat: 3,
+  rate: 0.05,
+} as const;
+
+export function cashOnDeliveryFee(subtotal: number): number {
+  if (subtotal <= 0) return 0;
+  return subtotal < CASH_ON_DELIVERY_FEE.threshold
+    ? CASH_ON_DELIVERY_FEE.flat
+    : subtotal * CASH_ON_DELIVERY_FEE.rate;
+}
+
 export const PAYMENT_METHOD_LABELS: Record<string, string> = {
   card: 'ბანკის ბარათი',
   cash_on_delivery: 'ადგილზე/კურიერთან გადახდა',

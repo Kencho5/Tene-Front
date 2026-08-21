@@ -10,7 +10,7 @@ import {
   untracked,
   viewChildren,
 } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { DecimalPipe, NgClass } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { email, FormField, form, hidden, required, submit } from '@angular/forms/signals';
 import { catchError, EMPTY, forkJoin, mergeMap, Observable, of, switchMap } from 'rxjs';
@@ -37,7 +37,7 @@ import { AddressFormModalComponent } from '@shared/components/address-form-modal
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { DeliveryPricingService } from './delivery-pricing.service';
-import { PAYMENT_METHOD_LABELS, TBILISI_REGIONS } from './checkout.config';
+import { cashOnDeliveryFee, PAYMENT_METHOD_LABELS, TBILISI_REGIONS } from './checkout.config';
 import {
   CheckoutAnalyticsEvent,
   CheckoutAnalyticsService,
@@ -69,6 +69,7 @@ interface StepInfo {
   selector: 'app-checkout',
   imports: [
     NgClass,
+    DecimalPipe,
     PriceSummaryComponent,
     CartItemComponent,
     ConfirmationModalComponent,
@@ -101,14 +102,14 @@ export class CheckoutComponent {
 
   readonly paymentMethods: { value: CheckoutPaymentMethod; label: string; description: string }[] = [
     {
-      value: 'cash_on_delivery',
-      label: PAYMENT_METHOD_LABELS['cash_on_delivery'],
-      description: 'ნაღდი ან ბარათი მიღებისას',
-    },
-    {
       value: 'card',
       label: PAYMENT_METHOD_LABELS['card'],
       description: 'Visa / Mastercard',
+    },
+    {
+      value: 'cash_on_delivery',
+      label: PAYMENT_METHOD_LABELS['cash_on_delivery'],
+      description: 'ნაღდი ან ბარათი მიღებისას (+3₾ / 5%)',
     },
   ];
 
@@ -160,6 +161,12 @@ export class CheckoutComponent {
   readonly nextDayPrice = this.pricing.nextDayPrice;
   readonly deliveryTimeOptions = this.pricing.deliveryTimeOptions;
   readonly nextDayLabelPrefix = this.pricing.nextDayLabelPrefix;
+
+  readonly paymentFee = computed(() =>
+    this.checkoutForm.payment_method().value() === 'cash_on_delivery'
+      ? cashOnDeliveryFee(this.cartService.totalPrice() + this.deliveryPrice())
+      : 0,
+  );
 
   readonly checkoutLoading = signal(false);
 
@@ -231,7 +238,7 @@ export class CheckoutComponent {
     guest_details: '',
     delivery_type: 'delivery',
     delivery_time: '',
-    payment_method: 'cash_on_delivery',
+    payment_method: 'card',
     comment: '',
   };
 

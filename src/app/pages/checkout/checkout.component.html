@@ -796,6 +796,14 @@
                       {{ paymentMethodLabel(checkoutForm.payment_method().value()) }}
                     </dd>
                   </div>
+                  @if (paymentFee() > 0) {
+                  <div class="flex justify-between gap-3">
+                    <dt class="text-ink-40">საკომისიო</dt>
+                    <dd class="text-ink-70 text-right">
+                      {{ paymentFee() | number: "1.2-2" }}₾
+                    </dd>
+                  </div>
+                  }
                 </dl>
               </div>
             </div>
@@ -956,6 +964,7 @@
       <app-price-summary
         [checkoutLoading]="checkoutLoading()"
         [deliveryPrice]="deliveryPrice()"
+        [paymentFee]="paymentFee()"
         [showCheckoutButton]="currentStep() === 'review'"
         [checkoutButtonText]="'დადასტურება'"
         (checkout)="goNext()"

@@ -30,6 +30,12 @@
       </p>
     </div>
     }
+    @if (paymentFee() > 0) {
+    <div class="flex items-center justify-between">
+      <p class="text-ink-50">კურიერთან გადახდის საკომისიო</p>
+      <p class="text-ink-80 font-semibold">{{ paymentFee() | number: "1.2-2" }}₾</p>
+    </div>
+    }
   </div>
 
   <div class="space-y-3 sm:space-y-6">
@@ -37,7 +43,7 @@
     <div class="flex items-center justify-between">
       <h2 class="text-ink-70 text-base font-medium">ჯამური ღირებულება</h2>
       <p class="text-ink-80 text-lg font-bold">
-        {{ cartService.totalPrice() + deliveryPrice() | number: "1.2-2" }}₾
+        {{ cartService.totalPrice() + deliveryPrice() + paymentFee() | number: "1.2-2" }}₾
       </p>
     </div>
   </div>
