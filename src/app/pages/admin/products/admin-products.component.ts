@@ -32,7 +32,6 @@ export class AdminProductsComponent {
   private debounceTimer?: number;
 
   readonly searchQuery = signal<string>('');
-  readonly searchType = signal<'query' | 'id'>('query');
   readonly isDeleteModalOpen = signal<boolean>(false);
   readonly productToDelete = signal<string | null>(null);
 
@@ -128,25 +127,11 @@ export class AdminProductsComponent {
 
     clearTimeout(this.debounceTimer);
     this.debounceTimer = window.setTimeout(() => {
-      const isId = this.searchType() === 'id';
       this.updateQueryParams({
-        query: isId ? undefined : value || undefined,
-        id: isId ? value || undefined : undefined,
+        query: value || undefined,
         offset: 0,
       });
     }, 400);
-  }
-
-  onSearchTypeChange(type: 'query' | 'id'): void {
-    this.searchType.set(type);
-    const value = this.searchQuery();
-    if (value) {
-      const isId = type === 'id';
-      this.updateQueryParams({
-        query: isId ? undefined : value,
-        id: isId ? value : undefined,
-      });
-    }
   }
 
   onCategoryChange(value: string | undefined): void {
@@ -179,7 +164,7 @@ export class AdminProductsComponent {
 
   clearSearch(): void {
     this.searchQuery.set('');
-    this.updateQueryParams({ query: undefined, id: undefined });
+    this.updateQueryParams({ query: undefined });
   }
 
   private updateQueryParams(params: Record<string, string | number | undefined>): void {

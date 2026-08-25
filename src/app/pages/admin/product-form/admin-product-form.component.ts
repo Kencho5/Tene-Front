@@ -146,7 +146,7 @@ export class AdminProductFormComponent {
   readonly discountMode = signal<'percent' | 'final'>('percent');
 
   readonly productModel = signal<ProductFormData>({
-    id: null as any,
+    sku: '',
     name: '',
     description: '',
     price: null as any,
@@ -162,7 +162,7 @@ export class AdminProductFormComponent {
   });
 
   readonly productForm = form(this.productModel, (fieldPath) => {
-    required(fieldPath.id, { message: 'ID აუცილებელია' });
+    required(fieldPath.sku, { message: 'SKU აუცილებელია' });
     required(fieldPath.name, { message: 'სახელი აუცილებელია' });
     required(fieldPath.price, { message: 'ფასი აუცილებელია' });
     min(fieldPath.price, 0, { message: 'ფასი უნდა იყოს დადებითი' });
@@ -248,7 +248,7 @@ export class AdminProductFormComponent {
     videos: ProductVideo[],
   ): void {
     this.productModel.set({
-      id: product.id,
+      sku: product.sku,
       name: product.name,
       description: product.description ?? '',
       price: product.price,
@@ -465,7 +465,10 @@ export class AdminProductFormComponent {
           ),
         ),
         catchError((error) => {
-          this.handleError('პროდუქტის შექმნა ვერ მოხერხდა', error);
+          this.handleError(
+            error?.error?.message || 'პროდუქტის შექმნა ვერ მოხერხდა',
+            error,
+          );
           return of(null);
         }),
       )
@@ -536,7 +539,7 @@ export class AdminProductFormComponent {
       .filter((f) => f.question && f.answer);
 
     const payload: CreateProductPayload = {
-      id: productData.id,
+      sku: productData.sku,
       name: productData.name,
       description: productData.description,
       price: Number(productData.price) || 0,

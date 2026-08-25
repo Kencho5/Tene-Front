@@ -20,7 +20,7 @@ import { ProductsService } from '@core/services/products/products.service';
 import { getProductImageUrl } from '@utils/product-image-url';
 import { Router } from '@angular/router';
 import { generateSlug } from '@utils/slug';
-import { buildSearchParams, isProductId } from '@utils/product-id';
+import { buildSearchParams } from '@utils/product-id';
 
 @Component({
   selector: 'app-search-dropdown',
@@ -85,10 +85,7 @@ export class SearchDropdownComponent {
   readonly debouncedQuery = signal('');
   private debounceTimer?: number;
 
-  readonly searchLinkParams = computed(() => {
-    const value = this.query().trim();
-    return isProductId(value) ? { id: value } : { query: value };
-  });
+  readonly searchLinkParams = computed(() => ({ query: this.query().trim() }));
 
   constructor() {
     effect(() => {

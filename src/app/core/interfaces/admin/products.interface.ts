@@ -1,5 +1,5 @@
 export interface ProductFormData {
-  id: string;
+  sku: string;
   name: string;
   description: string;
   price: number;
@@ -20,7 +20,7 @@ export interface ProductSeoFaqInput {
 }
 
 export interface CreateProductPayload {
-  id: string;
+  sku: string;
   name: string;
   description: string;
   price: number;

@@ -179,6 +179,9 @@
             <p class="text-platinum-50 mt-0.5 text-xs">
               {{ formatItemAmount(item.price_at_purchase) }} {{ o.currency }} × {{ item.quantity }}
             </p>
+            @if (item.product_sku) {
+            <p class="text-platinum-40 font-mono text-[11px]">{{ item.product_sku }}</p>
+            }
           </div>
 
           <p class="text-platinum-100 shrink-0 text-sm font-medium tabular-nums">

@@ -16,7 +16,7 @@ import { ProductsService } from '@core/services/products/products.service';
 import { SharedModule } from '@shared/shared.module';
 import { getProductImageUrl } from '@utils/product-image-url';
 import { generateSlug } from '@utils/slug';
-import { buildSearchParams, isProductId } from '@utils/product-id';
+import { buildSearchParams } from '@utils/product-id';
 
 @Component({
   selector: 'app-search-bar',
@@ -58,10 +58,7 @@ export class SearchBarComponent {
   readonly focused = signal(false);
   private debounceTimer?: number;
 
-  readonly searchLinkParams = computed(() => {
-    const value = this.query().trim();
-    return isProductId(value) ? { id: value } : { query: value };
-  });
+  readonly searchLinkParams = computed(() => ({ query: this.query().trim() }));
 
   readonly showPanel = computed(
     () => this.focused() && this.query().trim().length > 0,

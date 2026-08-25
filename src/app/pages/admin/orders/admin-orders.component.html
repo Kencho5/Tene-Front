@@ -155,7 +155,7 @@
         type="text"
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
-        placeholder="ძიება ID-ით, სახელით ან გვარით..."
+        placeholder="ძიება ID/SKU-ით, სახელით ან გვარით..."
         class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
       />
       @if (searchQuery()) {
@@ -531,6 +531,9 @@
                   <p class="text-platinum-50 mt-0.5 text-xs">
                     {{ item.quantity }} ცალი × {{ formatItemAmount(item.price_at_purchase) }}
                   </p>
+                  @if (item.product_sku) {
+                  <p class="text-platinum-40 font-mono text-[11px]">{{ item.product_sku }}</p>
+                  }
                 </div>
                 <span class="text-platinum-100 shrink-0 text-sm font-semibold">
                   {{ formatItemAmount(item.price_at_purchase * item.quantity) }}
@@ -1073,6 +1076,11 @@
                             {{ item.quantity }} ცალი × {{ formatItemAmount(item.price_at_purchase)
                             }}
                           </p>
+                          @if (item.product_sku) {
+                          <p class="text-platinum-40 font-mono text-[11px]">
+                            {{ item.product_sku }}
+                          </p>
+                          }
                           @if (item.cable_config) {
                           <p
                             class="bg-green-10 text-green-70 mt-1 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold"

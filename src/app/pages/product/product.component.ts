@@ -769,8 +769,8 @@ export class ProductComponent {
       name: product.data.name,
       description: schemaDescription,
       image: allImageUrls.length > 0 ? allImageUrls : imageUrl,
-      sku: product.data.id.toString(),
-      mpn: product.data.id.toString(),
+      sku: product.data.sku,
+      mpn: product.data.sku,
       brand_name: product.data.brand_name,
       price: price,
       currency: 'GEL',
@@ -780,7 +780,7 @@ export class ProductComponent {
       variants:
         variants.length > 0
           ? variants.map((v) => ({
-              sku: `${product.data.id}-${v.id}`,
+              sku: `${product.data.sku}-${v.id}`,
               name: `${product.data.name} ${v.watts}W ${v.length_cm}სმ`,
               price: Number(v.price),
               url: `${canonicalUrl}?w=${v.watts}&len=${v.length_cm}`,

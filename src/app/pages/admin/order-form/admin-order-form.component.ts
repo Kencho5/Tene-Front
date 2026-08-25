@@ -133,11 +133,9 @@ export class AdminOrderFormComponent {
     params: () => this.searchTerm(),
     stream: ({ params }) => {
       if (!params) return of(EMPTY_SEARCH);
-      const isId = /^[a-zA-Z0-9_-]{8,}$/.test(params) && !/\s/.test(params);
-      const qs = isId
-        ? `id=${encodeURIComponent(params)}&limit=10`
-        : `query=${encodeURIComponent(params)}&limit=10`;
-      return this.adminService.searchProduct(qs);
+      return this.adminService.searchProduct(
+        `query=${encodeURIComponent(params)}&limit=10`,
+      );
     },
   });
 

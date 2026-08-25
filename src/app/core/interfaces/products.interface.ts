@@ -29,6 +29,7 @@ export interface ProductVideo {
 
 export interface Product {
   id: string;
+  sku: string;
   name: string;
   description: string | null;
   price: number;
@@ -231,6 +232,7 @@ export interface OrderItem {
   id: number;
   order_id: number;
   product_id: string;
+  product_sku: string;
   quantity: number;
   price_at_purchase: number;
   product_name: string;
