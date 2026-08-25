@@ -50,6 +50,10 @@ export interface CreateOrderRequest {
   items?: CreateOrderItem[];
 }
 
+export interface UpdateOrderRequest extends CreateOrderRequest {
+  is_fina_cleared?: boolean;
+}
+
 export interface OrderItemFields {
   product_id: string;
   product_name: string;

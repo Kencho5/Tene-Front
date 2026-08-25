@@ -6,7 +6,8 @@
     (click)="onClose()"
   >
     <div
-      class="w-full rounded-t-2xl bg-white px-6 py-2 shadow-xl md:max-w-[640px] md:rounded-2xl"
+      class="w-full rounded-t-2xl bg-white px-6 py-2 shadow-xl md:rounded-2xl"
+      [ngClass]="widthClass()"
       (click)="$event.stopPropagation()"
     >
       <div class="flex items-center justify-between py-4">

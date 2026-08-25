@@ -2,18 +2,18 @@
   <!-- Header -->
   <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div>
-      <h1 class="text-xl font-semibold text-platinum-100">შეკვეთები</h1>
-      <p class="mt-0.5 text-sm text-platinum-50">
+      <h1 class="text-platinum-100 text-xl font-semibold">შეკვეთები</h1>
+      <p class="text-platinum-50 mt-0.5 text-sm">
         სულ {{ totalOrders() }} შეკვეთა
         <span class="text-platinum-30">·</span>
-        <span class="font-medium text-platinum-70">{{ formatTotalAmount(totalAmount()) }} ₾</span>
+        <span class="text-platinum-70 font-medium">{{ formatTotalAmount(totalAmount()) }} ₾</span>
       </p>
     </div>
 
     <div class="flex flex-wrap items-center gap-2">
       <a
         [routerLink]="['/admin/orders/new']"
-        class="inline-flex items-center justify-center gap-1.5 rounded-full bg-green-60 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70"
+        class="bg-green-60 hover:bg-green-70 inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-white transition-colors"
       >
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
           <path
@@ -31,36 +31,104 @@
         type="button"
         (click)="exportToExcel()"
         [disabled]="isExporting()"
-        class="inline-flex items-center justify-center gap-1.5 rounded-full border border-hairline bg-white px-4 py-2 text-sm font-medium text-platinum-80 transition-colors hover:bg-platinum-10/60 disabled:cursor-not-allowed disabled:opacity-60"
+        class="border-hairline text-platinum-80 hover:bg-platinum-10/60 inline-flex items-center justify-center gap-1.5 rounded-full border bg-white px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
       >
         @if (isExporting()) {
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" class="animate-spin text-platinum-50">
-            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" stroke-opacity="0.25"/>
-            <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          class="text-platinum-50 animate-spin"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="9"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-opacity="0.25"
+          />
+          <path
+            d="M21 12a9 9 0 0 0-9-9"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
         } @else {
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32"><defs><linearGradient id="a" x1="4.494" x2="13.832" y1="-2092.086" y2="-2075.914" gradientTransform="translate(0 2100)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#18884f"/><stop offset=".5" stop-color="#117e43"/><stop offset="1" stop-color="#0b6631"/></linearGradient></defs><path fill="#185c37" d="M19.581 15.35 8.512 13.4v14.409A1.19 1.19 0 0 0 9.705 29h19.1A1.19 1.19 0 0 0 30 27.809V22.5Z"/><path fill="#21a366" d="M19.581 3H9.705a1.19 1.19 0 0 0-1.193 1.191V9.5L19.581 16l5.861 1.95L30 16V9.5Z"/><path fill="#107c41" d="M8.512 9.5h11.069V16H8.512Z"/><path d="M16.434 8.2H8.512v16.25h7.922a1.2 1.2 0 0 0 1.194-1.191V9.391A1.2 1.2 0 0 0 16.434 8.2" opacity=".1"/><path d="M15.783 8.85H8.512V25.1h7.271a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191" opacity=".2"/><path d="M15.783 8.85H8.512V23.8h7.271a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191" opacity=".2"/><path d="M15.132 8.85h-6.62V23.8h6.62a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191" opacity=".2"/><path fill="url(#a)" d="M3.194 8.85h11.938a1.193 1.193 0 0 1 1.194 1.191v11.918a1.193 1.193 0 0 1-1.194 1.191H3.194A1.19 1.19 0 0 1 2 21.959V10.041A1.19 1.19 0 0 1 3.194 8.85"/><path fill="#fff" d="m5.7 19.873 2.511-3.884-2.3-3.862h1.847L9.013 14.6c.116.234.2.408.238.524h.017q.123-.281.26-.546l1.342-2.447h1.7l-2.359 3.84 2.419 3.905h-1.809l-1.45-2.711A2.4 2.4 0 0 1 9.2 16.8h-.024a1.7 1.7 0 0 1-.168.351l-1.493 2.722Z"/><path fill="#33c481" d="M28.806 3h-9.225v6.5H30V4.191A1.19 1.19 0 0 0 28.806 3"/><path fill="#107c41" d="M19.581 16H30v6.5H19.581Z"/></svg>
-        }
-        {{ isExporting() ? "მუშავდება..." : "Excel" }}
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32">
+          <defs>
+            <linearGradient
+              id="a"
+              x1="4.494"
+              x2="13.832"
+              y1="-2092.086"
+              y2="-2075.914"
+              gradientTransform="translate(0 2100)"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0" stop-color="#18884f" />
+              <stop offset=".5" stop-color="#117e43" />
+              <stop offset="1" stop-color="#0b6631" />
+            </linearGradient>
+          </defs>
+          <path
+            fill="#185c37"
+            d="M19.581 15.35 8.512 13.4v14.409A1.19 1.19 0 0 0 9.705 29h19.1A1.19 1.19 0 0 0 30 27.809V22.5Z"
+          />
+          <path
+            fill="#21a366"
+            d="M19.581 3H9.705a1.19 1.19 0 0 0-1.193 1.191V9.5L19.581 16l5.861 1.95L30 16V9.5Z"
+          />
+          <path fill="#107c41" d="M8.512 9.5h11.069V16H8.512Z" />
+          <path
+            d="M16.434 8.2H8.512v16.25h7.922a1.2 1.2 0 0 0 1.194-1.191V9.391A1.2 1.2 0 0 0 16.434 8.2"
+            opacity=".1"
+          />
+          <path
+            d="M15.783 8.85H8.512V25.1h7.271a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191"
+            opacity=".2"
+          />
+          <path
+            d="M15.783 8.85H8.512V23.8h7.271a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191"
+            opacity=".2"
+          />
+          <path
+            d="M15.132 8.85h-6.62V23.8h6.62a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191"
+            opacity=".2"
+          />
+          <path
+            fill="url(#a)"
+            d="M3.194 8.85h11.938a1.193 1.193 0 0 1 1.194 1.191v11.918a1.193 1.193 0 0 1-1.194 1.191H3.194A1.19 1.19 0 0 1 2 21.959V10.041A1.19 1.19 0 0 1 3.194 8.85"
+          />
+          <path
+            fill="#fff"
+            d="m5.7 19.873 2.511-3.884-2.3-3.862h1.847L9.013 14.6c.116.234.2.408.238.524h.017q.123-.281.26-.546l1.342-2.447h1.7l-2.359 3.84 2.419 3.905h-1.809l-1.45-2.711A2.4 2.4 0 0 1 9.2 16.8h-.024a1.7 1.7 0 0 1-.168.351l-1.493 2.722Z"
+          />
+          <path fill="#33c481" d="M28.806 3h-9.225v6.5H30V4.191A1.19 1.19 0 0 0 28.806 3" />
+          <path fill="#107c41" d="M19.581 16H30v6.5H19.581Z" />
+        </svg>
+        } {{ isExporting() ? "მუშავდება..." : "Excel" }}
       </button>
     </div>
   </div>
 
   <!-- Source tabs -->
-  <div class="flex gap-1 border-t border-hairline pt-4">
+  <div class="border-hairline flex gap-1 border-t pt-4">
     @for (option of sourceOptions; track option.value) {
-      <button
-        type="button"
-        (click)="onSourceChange(option.value)"
-        class="rounded-full px-4 py-2 text-sm font-medium transition-colors"
-        [class]="
+    <button
+      type="button"
+      (click)="onSourceChange(option.value)"
+      class="rounded-full px-4 py-2 text-sm font-medium transition-colors"
+      [class]="
           source() === option.value
             ? 'bg-green-60 text-white'
             : 'text-platinum-60 hover:bg-platinum-10/60'
         "
-      >
-        {{ option.label }}
-      </button>
+    >
+      {{ option.label }}
+    </button>
     }
   </div>
 
@@ -73,7 +141,7 @@
         height="16"
         viewBox="0 0 20 20"
         fill="none"
-        class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-platinum-40"
+        class="text-platinum-40 pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
       >
         <path
           d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
@@ -88,23 +156,23 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         placeholder="ძიება ID-ით, სახელით ან გვარით..."
-        class="h-11 w-full rounded-xl border border-hairline bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-30"
+        class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
       />
       @if (searchQuery()) {
-        <button
-          type="button"
-          (click)="clearSearch()"
-          class="absolute right-3 top-1/2 -translate-y-1/2 text-platinum-40 transition-colors hover:text-platinum-70"
-        >
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <path
-              d="M12 4L4 12M4 4L12 12"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
+      <button
+        type="button"
+        (click)="clearSearch()"
+        class="text-platinum-40 hover:text-platinum-70 absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
+      >
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M12 4L4 12M4 4L12 12"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
       }
     </div>
 
@@ -121,16 +189,28 @@
       </div>
 
       <!-- Date range -->
-      <div class="flex h-11 items-center gap-1.5 rounded-xl border border-hairline bg-white px-3">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" class="shrink-0 text-platinum-40">
-          <path d="M6.667 2.5v2.5M13.333 2.5v2.5M3.333 7.5h13.334M4.167 4.167h11.666c.46 0 .834.373.834.833v11.667c0 .46-.373.833-.834.833H4.167a.833.833 0 0 1-.834-.833V5c0-.46.373-.833.834-.833Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <div class="border-hairline flex h-11 items-center gap-1.5 rounded-xl border bg-white px-3">
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 20 20"
+          fill="none"
+          class="text-platinum-40 shrink-0"
+        >
+          <path
+            d="M6.667 2.5v2.5M13.333 2.5v2.5M3.333 7.5h13.334M4.167 4.167h11.666c.46 0 .834.373.834.833v11.667c0 .46-.373.833-.834.833H4.167a.833.833 0 0 1-.834-.833V5c0-.46.373-.833.834-.833Z"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
         <input
           type="date"
           [value]="fromDate()"
           (change)="onFromDateChange($event)"
           [max]="toDate() || null"
-          class="bg-transparent text-sm text-platinum-100 outline-hidden"
+          class="text-platinum-100 bg-transparent text-sm outline-hidden"
         />
         <span class="text-platinum-30">–</span>
         <input
@@ -138,296 +218,470 @@
           [value]="toDate()"
           (change)="onToDateChange($event)"
           [min]="fromDate() || null"
-          class="bg-transparent text-sm text-platinum-100 outline-hidden"
+          class="text-platinum-100 bg-transparent text-sm outline-hidden"
         />
         @if (fromDate() || toDate()) {
-          <button
-            type="button"
-            (click)="clearDates()"
-            class="ml-0.5 text-platinum-40 transition-colors hover:text-platinum-70"
-            title="თარიღის გასუფთავება"
-          >
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-              <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </button>
+        <button
+          type="button"
+          (click)="clearDates()"
+          class="text-platinum-40 hover:text-platinum-70 ml-0.5 transition-colors"
+          title="თარიღის გასუფთავება"
+        >
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M12 4L4 12M4 4L12 12"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
         }
       </div>
 
-      <!-- Payment method -->
-      @if (isAdminSource()) {
-        <div class="w-full sm:w-[160px]">
-          <app-dropdown
-            [selectedValue]="paymentMethod()"
-            (selectedValueChange)="onPaymentMethodChange($event)"
-            placeholder="გადახდის ფორმა"
-            [items]="paymentMethodOptions"
+      <!-- Filters -->
+      <button
+        type="button"
+        (click)="openFilters()"
+        class="border-hairline text-platinum-80 hover:bg-platinum-10/60 inline-flex h-11 shrink-0 items-center gap-2 rounded-xl border bg-white px-4 text-sm font-medium transition-colors"
+      >
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" class="text-platinum-50">
+          <path
+            d="M3 5h14M6 10h8M8.5 15h3"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
           />
-        </div>
-      }
-
-      <!-- Status -->
-      <div class="w-full sm:w-[180px]">
-        <app-dropdown
-          [selectedValue]="params()['status'] ?? 'approved,finance_cleared'"
-          (selectedValueChange)="onStatusChange($event)"
-          placeholder="სტატუსი"
-          [items]="statusOptions"
-        />
-      </div>
+        </svg>
+        ფილტრი @if (activeFilterCount() > 0) {
+        <span
+          class="bg-green-10 text-green-70 rounded-full px-1.5 py-0.5 text-[11px] font-semibold"
+        >
+          {{ activeFilterCount() }}
+        </span>
+        }
+      </button>
     </div>
   </div>
+
+  <!-- Active filter chips -->
+  @if (filterChips().length > 0) {
+  <div class="flex flex-wrap items-center gap-2">
+    @for (chip of filterChips(); track chip.key + chip.value) {
+    <span
+      class="bg-platinum-10 text-platinum-70 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium"
+    >
+      {{ chip.label }}
+      <button
+        type="button"
+        (click)="removeChip(chip)"
+        class="text-platinum-40 hover:text-platinum-100 transition-colors"
+      >
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M12 4L4 12M4 4L12 12"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+    </span>
+    }
+    <button
+      type="button"
+      (click)="clearFilters()"
+      class="text-platinum-50 hover:text-platinum-100 text-xs font-medium underline transition-colors"
+    >
+      ყველას გასუფთავება
+    </button>
+  </div>
+  }
 
   <!-- Mobile Card List -->
   <div class="sm:hidden">
     @if (searchResponse.isLoading()) {
-      <div class="space-y-3">
-        @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
-          <div class="flex gap-3 rounded-2xl bg-platinum-10/60 p-3">
-            <div class="h-16 w-16 shrink-0 animate-pulse rounded-lg bg-platinum-10"></div>
-            <div class="min-w-0 flex-1 space-y-2">
-              <div class="h-4 w-3/4 animate-pulse rounded-sm bg-platinum-10"></div>
-              <div class="h-3 w-1/3 animate-pulse rounded-sm bg-platinum-10"></div>
-              <div class="h-3 w-1/2 animate-pulse rounded-sm bg-platinum-10"></div>
-            </div>
-          </div>
-        }
-      </div>
-    } @else if (orders().length === 0) {
-      <div class="rounded-2xl bg-platinum-10/60 px-4 py-16 text-center">
-        <div class="flex flex-col items-center gap-2">
-          <svg width="44" height="44" viewBox="0 0 48 48" fill="none" class="text-platinum-30">
-            <path d="M42 30V18L24 9L6 18V30L24 39L42 30Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M6 18L24 27L42 18M24 39V27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <p class="text-sm font-medium text-platinum-70">შეკვეთები არ მოიძებნა</p>
-          <p class="text-xs text-platinum-50">სცადეთ სხვა ძებნის პარამეტრები</p>
+    <div class="space-y-3">
+      @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
+      <div class="bg-platinum-10/60 flex gap-3 rounded-2xl p-3">
+        <div class="bg-platinum-10 h-16 w-16 shrink-0 animate-pulse rounded-lg"></div>
+        <div class="min-w-0 flex-1 space-y-2">
+          <div class="bg-platinum-10 h-4 w-3/4 animate-pulse rounded-sm"></div>
+          <div class="bg-platinum-10 h-3 w-1/3 animate-pulse rounded-sm"></div>
+          <div class="bg-platinum-10 h-3 w-1/2 animate-pulse rounded-sm"></div>
         </div>
       </div>
+      }
+    </div>
+    } @else if (orders().length === 0) {
+    <div class="bg-platinum-10/60 rounded-2xl px-4 py-16 text-center">
+      <div class="flex flex-col items-center gap-2">
+        <svg width="44" height="44" viewBox="0 0 48 48" fill="none" class="text-platinum-30">
+          <path
+            d="M42 30V18L24 9L6 18V30L24 39L42 30Z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M6 18L24 27L42 18M24 39V27"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <p class="text-platinum-70 text-sm font-medium">შეკვეთები არ მოიძებნა</p>
+        <p class="text-platinum-50 text-xs">სცადეთ სხვა ძებნის პარამეტრები</p>
+      </div>
+    </div>
     } @else {
-      <div class="space-y-3">
-        @for (order of orders(); track order.id) {
-          <div class="rounded-2xl border border-hairline bg-white p-4">
-          <button
-            type="button"
-            (click)="toggleOrder(order)"
-            class="flex w-full items-start gap-3.5 text-left"
-          >
-            @if (order.items.length > 0 && getItemImageUrl(order.items[0]); as imgUrl) {
-              <div class="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-hairline">
-                <img [src]="imgUrl" [alt]="order.items[0].product_name" class="h-full w-full object-cover"/>
-              </div>
-            } @else {
-              <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border border-hairline bg-platinum-10">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-platinum-40">
-                  <path d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            }
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center justify-between gap-2">
-                <p class="text-xs font-medium text-platinum-50">#{{ order.id }}</p>
-                @if (order.comment_images && order.comment_images.length > 0) {
-                  <span class="inline-flex items-center gap-1 text-xs text-platinum-40">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                      <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/>
-                      <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
-                      <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    {{ order.comment_images.length }}
-                  </span>
-                }
-              </div>
-              <p class="mt-0.5 truncate text-sm font-medium leading-snug text-platinum-100">
-                {{ order.items[0]?.product_name ?? "შეკვეთა" }}
-              </p>
-              @if (order.items.length > 1) {
-                <p class="mt-0.5 text-xs text-platinum-50">+{{ order.items.length - 1 }} სხვა ნივთი</p>
-              }
-              <p class="mt-1 text-xs text-platinum-50">
-                {{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}
-              </p>
-              <div class="mt-2.5 flex flex-wrap items-center gap-2">
-                <span class="text-sm font-semibold text-platinum-100">
-                  {{ formatAmount(order.amount) }} {{ order.currency }}
-                </span>
-                <span class="rounded-full bg-platinum-10 px-2 py-0.5 text-xs font-medium text-platinum-70">
-                  {{ deliveryTypeLabel(order.delivery_type) }}
-                </span>
-                <span class="rounded-full bg-platinum-10 px-2 py-0.5 text-xs font-medium text-platinum-70">
-                  გადახდა: {{ paymentMethodShortLabel(order.payment_method) }}
-                </span>
-              </div>
-            </div>
-            <svg
-              width="16" height="16" viewBox="0 0 16 16" fill="none"
-              class="mt-1 shrink-0 self-start text-platinum-40 transition-transform duration-200"
-              [class.rotate-90]="isExpanded(order.id)"
-            >
-              <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-
-          <!-- Status -->
-          <div class="mt-3 border-t border-hairline pt-3">
-            <app-dropdown
-              [selectedValue]="order.status"
-              (selectedValueChange)="onOrderStatusChange(order, $event)"
-              [items]="orderStatusOptions"
-              [disabled]="isUpdatingStatus(order.id) || isStatusLocked(order)"
-              placeholder="სტატუსი"
+    <div class="space-y-3">
+      @for (order of orders(); track order.id) {
+      <div class="border-hairline rounded-2xl border bg-white p-4">
+        <button
+          type="button"
+          (click)="toggleOrder(order)"
+          class="flex w-full items-start gap-3.5 text-left"
+        >
+          @if (order.items.length > 0 && getItemImageUrl(order.items[0]); as imgUrl) {
+          <div class="border-hairline h-16 w-16 shrink-0 overflow-hidden rounded-lg border">
+            <img
+              [src]="imgUrl"
+              [alt]="order.items[0].product_name"
+              class="h-full w-full object-cover"
             />
           </div>
-
-          <!-- Expanded detail -->
-          @if (isExpanded(order.id)) {
-            <div class="mt-3 space-y-3 border-t border-hairline pt-3">
-              <!-- Items -->
-              <div>
-                <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-green-70">
-                  პროდუქტები ({{ order.items.length }})
-                </p>
-                <div class="space-y-2.5">
-                  @for (item of order.items; track item.id) {
-                    <div class="flex items-center gap-3">
-                      @if (getItemImageUrl(item); as imgUrl) {
-                        <div class="h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-hairline">
-                          <img [src]="imgUrl" [alt]="item.product_name" class="h-full w-full object-cover"/>
-                        </div>
-                      } @else {
-                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-hairline bg-platinum-10">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-platinum-40">
-                            <path d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                          </svg>
-                        </div>
-                      }
-                      <div class="min-w-0 flex-1">
-                        <a [routerLink]="getProductRoute(item)" class="block truncate text-sm font-medium text-platinum-100">{{ item.product_name }}</a>
-                        <p class="mt-0.5 text-xs text-platinum-50">{{ item.quantity }} ცალი × {{ formatItemAmount(item.price_at_purchase) }}</p>
-                      </div>
-                      <span class="shrink-0 text-sm font-semibold text-platinum-100">{{ formatItemAmount(item.price_at_purchase * item.quantity) }}</span>
-                    </div>
-                  }
-                </div>
-              </div>
-
-              <!-- Customer -->
-              <dl class="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-hairline pt-3">
-                @if (order.customer_type === 'company') {
-                  <div class="col-span-2">
-                    <dt class="text-xs text-platinum-50">ორგანიზაცია</dt>
-                    <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.organization_name }}</dd>
-                  </div>
-                } @else {
-                  <div class="col-span-2">
-                    <dt class="text-xs text-platinum-50">სახელი</dt>
-                    <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.customer_name }} {{ order.customer_surname }}</dd>
-                  </div>
-                }
-                <div class="col-span-2">
-                  <dt class="text-xs text-platinum-50">ელ-ფოსტა</dt>
-                  <dd class="mt-0.5 break-all text-sm font-medium text-platinum-100">{{ order.email }}</dd>
-                </div>
-                <div>
-                  <dt class="text-xs text-platinum-50">ტელეფონი</dt>
-                  <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.phone_number }}</dd>
-                </div>
-                <div>
-                  <dt class="text-xs text-platinum-50">მიწოდება</dt>
-                  <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ deliveryTypeLabel(order.delivery_type) }}</dd>
-                </div>
-                @if (order.personal_number) {
-                  <div>
-                    <dt class="text-xs text-platinum-50">პირადი ნომერი</dt>
-                    <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.personal_number }}</dd>
-                  </div>
-                }
-                @if (order.city) {
-                  <div>
-                    <dt class="text-xs text-platinum-50">ქალაქი</dt>
-                    <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ cityLabel(order.city) }}</dd>
-                  </div>
-                }
-                @if (order.address) {
-                  <div class="col-span-2">
-                    <dt class="text-xs text-platinum-50">მისამართი</dt>
-                    <dd class="mt-0.5 break-words text-sm font-medium text-platinum-100">{{ order.address }}</dd>
-                  </div>
-                }
-              </dl>
-
-              <!-- Comment & images -->
-              @if (order.comment || (order.comment_images && order.comment_images.length > 0)) {
-                <div class="border-t border-hairline pt-3">
-                  <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-green-70">კომენტარი</p>
-                  @if (order.comment) {
-                    <p class="break-words text-sm text-platinum-100">{{ order.comment }}</p>
-                  }
-                  @if (order.comment_images && order.comment_images.length > 0) {
-                    <div class="mt-2 flex flex-wrap gap-2">
-                      @for (image of order.comment_images; track image.image_uuid) {
-                        <button
-                          type="button"
-                          (click)="openCommentImages(order.comment_images!, image.image_uuid)"
-                          class="h-16 w-16 overflow-hidden rounded-lg border border-hairline"
-                        >
-                          <img [src]="image.url" alt="" class="h-full w-full object-cover" loading="lazy"/>
-                        </button>
-                      }
-                    </div>
-                  }
-                </div>
-              }
-
-              @if (order.payment_method || order.created_by || order.fulfillment_method || order.source_comment) {
-                <dl class="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-hairline pt-3">
-                  @if (order.payment_method) {
-                    <div>
-                      <dt class="text-xs text-platinum-50">გადახდის ფორმა</dt>
-                      <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ paymentMethodLabel(order.payment_method) }}</dd>
-                    </div>
-                  }
-                  @if (order.fulfillment_method) {
-                    <div>
-                      <dt class="text-xs text-platinum-50">ჩაბარების მეთოდი</dt>
-                      <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ fulfillmentMethodLabel(order.fulfillment_method) }}</dd>
-                    </div>
-                  }
-                  @if (order.source_comment) {
-                    <div class="col-span-2">
-                      <dt class="text-xs text-platinum-50">მოსვლის წყარო</dt>
-                      <dd class="mt-0.5 break-words text-sm font-medium text-platinum-100">{{ order.source_comment }}</dd>
-                    </div>
-                  }
-                  @if (order.created_by; as creator) {
-                    <div>
-                      <dt class="text-xs text-platinum-50">ვინ დაამატა</dt>
-                      <dd class="mt-0.5 break-words text-sm font-medium text-platinum-100">{{ creator.name }}</dd>
-                    </div>
-                  }
-                </dl>
-              }
-              @if (order.is_installment_sale || order.is_product_exchange) {
-                <div class="flex flex-wrap gap-2 border-t border-hairline pt-3">
-                  @if (order.is_installment_sale) {
-                    <span class="rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-70">გაყიდულია განვადებით</span>
-                  }
-                  @if (order.is_product_exchange) {
-                    <span class="rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-70">პროდუქტის შეცვლა</span>
-                  }
-                </div>
-              }
-
-              <!-- Total -->
-              <div class="flex items-center justify-between border-t border-hairline pt-3">
-                <span class="text-sm font-medium text-platinum-70">სულ</span>
-                <span class="text-base font-bold text-platinum-100">{{ formatAmount(order.amount) }} {{ order.currency }}</span>
-              </div>
-            </div>
-          }
+          } @else {
+          <div
+            class="border-hairline bg-platinum-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-platinum-40">
+              <path
+                d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
+          }
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-platinum-50 text-xs font-medium">#{{ order.id }}</p>
+              @if (order.comment_images && order.comment_images.length > 0) {
+              <span class="text-platinum-40 inline-flex items-center gap-1 text-xs">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <rect
+                    x="3"
+                    y="3"
+                    width="18"
+                    height="18"
+                    rx="3"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+                  <path
+                    d="M21 15L16 10L5 21"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                {{ order.comment_images.length }}
+              </span>
+              }
+            </div>
+            <p class="text-platinum-100 mt-0.5 truncate text-sm leading-snug font-medium">
+              {{ order.items[0]?.product_name ?? "შეკვეთა" }}
+            </p>
+            @if (order.items.length > 1) {
+            <p class="text-platinum-50 mt-0.5 text-xs">+{{ order.items.length - 1 }} სხვა ნივთი</p>
+            }
+            <p class="text-platinum-50 mt-1 text-xs">
+              {{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}
+            </p>
+            <div class="mt-2.5 flex flex-wrap items-center gap-2">
+              <span class="text-platinum-100 text-sm font-semibold">
+                {{ formatAmount(order.amount) }} {{ order.currency }}
+              </span>
+              <span
+                class="bg-platinum-10 text-platinum-70 rounded-full px-2 py-0.5 text-xs font-medium"
+              >
+                {{ deliveryTypeLabel(order.delivery_type) }}
+              </span>
+              <span
+                class="bg-platinum-10 text-platinum-70 rounded-full px-2 py-0.5 text-xs font-medium"
+              >
+                გადახდა: {{ paymentMethodShortLabel(order.payment_method) }}
+              </span>
+              @if (order.is_fina_cleared) {
+              <span
+                class="bg-green-10 text-green-70 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                ფინა
+              </span>
+              }
+            </div>
+          </div>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            class="text-platinum-40 mt-1 shrink-0 self-start transition-transform duration-200"
+            [class.rotate-90]="isExpanded(order.id)"
+          >
+            <path
+              d="M6 4L10 8L6 12"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+
+        <!-- Status -->
+        <div class="border-hairline mt-3 space-y-2.5 border-t pt-3">
+          <app-dropdown
+            [selectedValue]="order.status"
+            (selectedValueChange)="onOrderStatusChange(order, $event)"
+            [items]="orderStatusOptions"
+            [disabled]="isUpdatingStatus(order.id) || isStatusLocked(order)"
+            placeholder="სტატუსი"
+          />
+          <label
+            class="border-hairline flex cursor-pointer items-center gap-2.5 rounded-xl border px-3.5 py-2.5"
+            [class.pointer-events-none]="isUpdatingFina(order.id)"
+            [class.opacity-50]="isUpdatingFina(order.id)"
+          >
+            <input
+              type="checkbox"
+              class="accent-green-60 h-[18px] w-[18px] shrink-0 cursor-pointer"
+              [checked]="order.is_fina_cleared"
+              [disabled]="isUpdatingFina(order.id)"
+              (change)="onFinaClearedToggle(order, $any($event.target).checked)"
+            />
+            <span class="text-platinum-100 text-sm font-medium">გატარებულია ფინაში</span>
+          </label>
+        </div>
+
+        <!-- Expanded detail -->
+        @if (isExpanded(order.id)) {
+        <div class="border-hairline mt-3 space-y-3 border-t pt-3">
+          <!-- Items -->
+          <div>
+            <p class="text-green-70 mb-2 text-xs font-semibold tracking-wide uppercase">
+              პროდუქტები ({{ order.items.length }})
+            </p>
+            <div class="space-y-2.5">
+              @for (item of order.items; track item.id) {
+              <div class="flex items-center gap-3">
+                @if (getItemImageUrl(item); as imgUrl) {
+                <div class="border-hairline h-12 w-12 shrink-0 overflow-hidden rounded-lg border">
+                  <img
+                    [src]="imgUrl"
+                    [alt]="item.product_name"
+                    class="h-full w-full object-cover"
+                  />
+                </div>
+                } @else {
+                <div
+                  class="border-hairline bg-platinum-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    class="text-platinum-40"
+                  >
+                    <path
+                      d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+                }
+                <div class="min-w-0 flex-1">
+                  <a
+                    [routerLink]="getProductRoute(item)"
+                    class="text-platinum-100 block truncate text-sm font-medium"
+                  >
+                    {{ item.product_name }}
+                  </a>
+                  <p class="text-platinum-50 mt-0.5 text-xs">
+                    {{ item.quantity }} ცალი × {{ formatItemAmount(item.price_at_purchase) }}
+                  </p>
+                </div>
+                <span class="text-platinum-100 shrink-0 text-sm font-semibold">
+                  {{ formatItemAmount(item.price_at_purchase * item.quantity) }}
+                </span>
+              </div>
+              }
+            </div>
+          </div>
+
+          <!-- Customer -->
+          <dl class="border-hairline grid grid-cols-2 gap-x-4 gap-y-2 border-t pt-3">
+            @if (order.customer_type === 'company') {
+            <div class="col-span-2">
+              <dt class="text-platinum-50 text-xs">ორგანიზაცია</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                {{ order.organization_name }}
+              </dd>
+            </div>
+            } @else {
+            <div class="col-span-2">
+              <dt class="text-platinum-50 text-xs">სახელი</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                {{ order.customer_name }} {{ order.customer_surname }}
+              </dd>
+            </div>
+            }
+            <div class="col-span-2">
+              <dt class="text-platinum-50 text-xs">ელ-ფოსტა</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium break-all">
+                {{ order.email }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-platinum-50 text-xs">ტელეფონი</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium">{{ order.phone_number }}</dd>
+            </div>
+            <div>
+              <dt class="text-platinum-50 text-xs">მიწოდება</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                {{ deliveryTypeLabel(order.delivery_type) }}
+              </dd>
+            </div>
+            @if (order.personal_number) {
+            <div>
+              <dt class="text-platinum-50 text-xs">პირადი ნომერი</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                {{ order.personal_number }}
+              </dd>
+            </div>
+            } @if (order.city) {
+            <div>
+              <dt class="text-platinum-50 text-xs">ქალაქი</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                {{ cityLabel(order.city) }}
+              </dd>
+            </div>
+            } @if (order.address) {
+            <div class="col-span-2">
+              <dt class="text-platinum-50 text-xs">მისამართი</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium break-words">
+                {{ order.address }}
+              </dd>
+            </div>
+            }
+          </dl>
+
+          <!-- Comment & images -->
+          @if (order.comment || (order.comment_images && order.comment_images.length > 0)) {
+          <div class="border-hairline border-t pt-3">
+            <p class="text-green-70 mb-2 text-xs font-semibold tracking-wide uppercase">
+              კომენტარი
+            </p>
+            @if (order.comment) {
+            <p class="text-platinum-100 text-sm break-words">{{ order.comment }}</p>
+            } @if (order.comment_images && order.comment_images.length > 0) {
+            <div class="mt-2 flex flex-wrap gap-2">
+              @for (image of order.comment_images; track image.image_uuid) {
+              <button
+                type="button"
+                (click)="openCommentImages(order.comment_images!, image.image_uuid)"
+                class="border-hairline h-16 w-16 overflow-hidden rounded-lg border"
+              >
+                <img [src]="image.url" alt="" class="h-full w-full object-cover" loading="lazy" />
+              </button>
+              }
+            </div>
+            }
+          </div>
+          } @if (order.payment_method || order.created_by || order.fulfillment_method ||
+          order.source_comment) {
+          <dl class="border-hairline grid grid-cols-2 gap-x-4 gap-y-2 border-t pt-3">
+            @if (order.payment_method) {
+            <div>
+              <dt class="text-platinum-50 text-xs">გადახდის ფორმა</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                {{ paymentMethodLabel(order.payment_method) }}
+              </dd>
+            </div>
+            } @if (order.fulfillment_method) {
+            <div>
+              <dt class="text-platinum-50 text-xs">ჩაბარების მეთოდი</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                {{ fulfillmentMethodLabel(order.fulfillment_method) }}
+              </dd>
+            </div>
+            } @if (order.source_comment) {
+            <div class="col-span-2">
+              <dt class="text-platinum-50 text-xs">მოსვლის წყარო</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium break-words">
+                {{ order.source_comment }}
+              </dd>
+            </div>
+            } @if (order.created_by; as creator) {
+            <div>
+              <dt class="text-platinum-50 text-xs">ვინ დაამატა</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium break-words">
+                {{ creator.name }}
+              </dd>
+            </div>
+            }
+          </dl>
+          } @if (order.is_installment_sale || order.is_product_exchange) {
+          <div class="border-hairline flex flex-wrap gap-2 border-t pt-3">
+            @if (order.is_installment_sale) {
+            <span
+              class="bg-platinum-10 text-platinum-70 rounded-full px-2.5 py-1 text-xs font-medium"
+            >
+              გაყიდულია განვადებით
+            </span>
+            } @if (order.is_product_exchange) {
+            <span
+              class="bg-platinum-10 text-platinum-70 rounded-full px-2.5 py-1 text-xs font-medium"
+            >
+              პროდუქტის შეცვლა
+            </span>
+            }
+          </div>
+          }
+
+          <!-- Total -->
+          <div class="border-hairline flex items-center justify-between border-t pt-3">
+            <span class="text-platinum-70 text-sm font-medium">სულ</span>
+            <span class="text-platinum-100 text-base font-bold">
+              {{ formatAmount(order.amount) }} {{ order.currency }}
+            </span>
+          </div>
+        </div>
         }
       </div>
+      }
+    </div>
     }
   </div>
 
@@ -446,420 +700,642 @@
   </div>
 
   <!-- Table (sm+) -->
-  <div class="hidden rounded-2xl border border-hairline bg-white sm:block">
+  <div class="border-hairline hidden rounded-2xl border bg-white sm:block">
     <div class="overflow-x-auto rounded-t-2xl">
       <table class="w-full">
         <thead>
-          <tr class="border-b border-hairline">
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50">შეკვეთა</th>
-            <th class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 md:table-cell">მომხმარებელი</th>
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50">თარიღი</th>
-            <th class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 lg:table-cell">ქალაქი</th>
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50">მიწოდება / გადახდა</th>
+          <tr class="border-hairline border-b">
+            <th
+              class="text-platinum-50 px-4 py-3 text-left text-xs font-medium tracking-wider uppercase"
+            >
+              შეკვეთა
+            </th>
+            <th
+              class="text-platinum-50 hidden px-4 py-3 text-left text-xs font-medium tracking-wider uppercase md:table-cell"
+            >
+              მომხმარებელი
+            </th>
+            <th
+              class="text-platinum-50 px-4 py-3 text-left text-xs font-medium tracking-wider uppercase"
+            >
+              თარიღი
+            </th>
+            <th
+              class="text-platinum-50 hidden px-4 py-3 text-left text-xs font-medium tracking-wider uppercase lg:table-cell"
+            >
+              ქალაქი
+            </th>
+            <th
+              class="text-platinum-50 px-4 py-3 text-left text-xs font-medium tracking-wider uppercase"
+            >
+              მიწოდება
+            </th>
             @if (isAdminSource()) {
-              <th class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 lg:table-cell">ვინ დაამატა</th>
+            <th
+              class="text-platinum-50 hidden px-4 py-3 text-left text-xs font-medium tracking-wider uppercase lg:table-cell"
+            >
+              ვინ დაამატა
+            </th>
             }
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50">ღირებულება</th>
-            <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-platinum-50">სტატუსი</th>
+            <th
+              class="text-platinum-50 px-4 py-3 text-left text-xs font-medium tracking-wider uppercase"
+            >
+              ღირებულება
+            </th>
+            <th
+              class="text-platinum-50 px-4 py-3 text-center text-xs font-medium tracking-wider uppercase"
+            >
+              ფინა
+            </th>
+            <th
+              class="text-platinum-50 px-4 py-3 text-right text-xs font-medium tracking-wider uppercase"
+            >
+              სტატუსი
+            </th>
           </tr>
         </thead>
         <tbody>
-          @if (searchResponse.isLoading()) {
-            @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
-              <tr class="border-b border-hairline last:border-b-0">
-                <td class="px-4 py-3.5">
-                  <div class="flex items-center gap-3">
-                    <div class="h-11 w-11 animate-pulse rounded-lg bg-platinum-10"></div>
-                    <div class="space-y-1.5">
-                      <div class="h-4 w-32 animate-pulse rounded-sm bg-platinum-10"></div>
-                      <div class="h-3 w-20 animate-pulse rounded-sm bg-platinum-10"></div>
-                    </div>
-                  </div>
-                </td>
-                <td class="hidden px-4 py-3.5 md:table-cell">
-                  <div class="h-4 w-28 animate-pulse rounded-sm bg-platinum-10"></div>
-                </td>
-                <td class="px-4 py-3.5">
-                  <div class="h-4 w-24 animate-pulse rounded-sm bg-platinum-10"></div>
-                </td>
-                <td class="hidden px-4 py-3.5 lg:table-cell">
-                  <div class="h-4 w-20 animate-pulse rounded-sm bg-platinum-10"></div>
-                </td>
-                <td class="px-4 py-3.5">
-                  <div class="h-4 w-20 animate-pulse rounded-sm bg-platinum-10"></div>
-                </td>
-                @if (isAdminSource()) {
-                  <td class="hidden px-4 py-3.5 lg:table-cell">
-                    <div class="h-4 w-24 animate-pulse rounded-sm bg-platinum-10"></div>
-                  </td>
-                }
-                <td class="px-4 py-3.5">
-                  <div class="h-4 w-16 animate-pulse rounded-sm bg-platinum-10"></div>
-                </td>
-                <td class="px-4 py-3.5">
-                  <div class="flex justify-end">
-                    <div class="h-5 w-20 animate-pulse rounded-full bg-platinum-10"></div>
-                  </div>
-                </td>
-              </tr>
-            }
-          } @else if (orders().length === 0) {
-            <tr>
-              <td [attr.colspan]="columnCount()" class="px-4 py-16 text-center">
-                <div class="flex flex-col items-center gap-2">
-                  <svg width="44" height="44" viewBox="0 0 48 48" fill="none" class="text-platinum-30">
-                    <path d="M42 30V18L24 9L6 18V30L24 39L42 30Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M6 18L24 27L42 18M24 39V27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  <p class="text-sm font-medium text-platinum-70">შეკვეთები არ მოიძებნა</p>
-                  <p class="text-xs text-platinum-50">სცადეთ სხვა ძებნის პარამეტრები</p>
+          @if (searchResponse.isLoading()) { @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
+          <tr class="border-hairline border-b last:border-b-0">
+            <td class="px-4 py-3.5">
+              <div class="flex items-center gap-3">
+                <div class="bg-platinum-10 h-11 w-11 animate-pulse rounded-lg"></div>
+                <div class="space-y-1.5">
+                  <div class="bg-platinum-10 h-4 w-32 animate-pulse rounded-sm"></div>
+                  <div class="bg-platinum-10 h-3 w-20 animate-pulse rounded-sm"></div>
                 </div>
-              </td>
-            </tr>
-          } @else {
-            @for (order of orders(); track order.id) {
-              <tr
-                class="cursor-pointer transition-colors hover:bg-platinum-10/50"
-                [class.border-b]="!isExpanded(order.id) && !$last"
-                [class.border-hairline]="!isExpanded(order.id) && !$last"
-                (click)="toggleOrder(order)"
-              >
-                <!-- Order / product -->
-                <td class="px-4 py-3 max-w-[360px] lg:w-[360px]">
-                  <div class="flex items-center gap-3">
-                    @if (order.items.length > 0 && getItemImageUrl(order.items[0]); as imgUrl) {
-                      <div class="h-11 w-11 shrink-0 overflow-hidden rounded-lg border border-hairline">
-                        <img [src]="imgUrl" [alt]="order.items[0].product_name" class="h-full w-full object-cover"/>
-                      </div>
-                    } @else {
-                      <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-hairline bg-platinum-10">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-platinum-40">
-                          <path d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                      </div>
+              </div>
+            </td>
+            <td class="hidden px-4 py-3.5 md:table-cell">
+              <div class="bg-platinum-10 h-4 w-28 animate-pulse rounded-sm"></div>
+            </td>
+            <td class="px-4 py-3.5">
+              <div class="bg-platinum-10 h-4 w-24 animate-pulse rounded-sm"></div>
+            </td>
+            <td class="hidden px-4 py-3.5 lg:table-cell">
+              <div class="bg-platinum-10 h-4 w-20 animate-pulse rounded-sm"></div>
+            </td>
+            <td class="px-4 py-3.5">
+              <div class="bg-platinum-10 h-4 w-20 animate-pulse rounded-sm"></div>
+            </td>
+            @if (isAdminSource()) {
+            <td class="hidden px-4 py-3.5 lg:table-cell">
+              <div class="bg-platinum-10 h-4 w-24 animate-pulse rounded-sm"></div>
+            </td>
+            }
+            <td class="px-4 py-3.5">
+              <div class="bg-platinum-10 h-4 w-16 animate-pulse rounded-sm"></div>
+            </td>
+            <td class="px-4 py-3.5">
+              <div class="bg-platinum-10 mx-auto h-5 w-5 animate-pulse rounded-md"></div>
+            </td>
+            <td class="px-4 py-3.5">
+              <div class="flex justify-end">
+                <div class="bg-platinum-10 h-5 w-20 animate-pulse rounded-full"></div>
+              </div>
+            </td>
+          </tr>
+          } } @else if (orders().length === 0) {
+          <tr>
+            <td [attr.colspan]="columnCount()" class="px-4 py-16 text-center">
+              <div class="flex flex-col items-center gap-2">
+                <svg
+                  width="44"
+                  height="44"
+                  viewBox="0 0 48 48"
+                  fill="none"
+                  class="text-platinum-30"
+                >
+                  <path
+                    d="M42 30V18L24 9L6 18V30L24 39L42 30Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M6 18L24 27L42 18M24 39V27"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <p class="text-platinum-70 text-sm font-medium">შეკვეთები არ მოიძებნა</p>
+                <p class="text-platinum-50 text-xs">სცადეთ სხვა ძებნის პარამეტრები</p>
+              </div>
+            </td>
+          </tr>
+          } @else { @for (order of orders(); track order.id) {
+          <tr
+            class="hover:bg-platinum-10/50 cursor-pointer transition-colors"
+            [class.border-b]="!isExpanded(order.id) && !$last"
+            [class.border-hairline]="!isExpanded(order.id) && !$last"
+            (click)="toggleOrder(order)"
+          >
+            <!-- Order / product -->
+            <td class="max-w-[360px] px-4 py-3 lg:w-[360px]">
+              <div class="flex items-center gap-3">
+                @if (order.items.length > 0 && getItemImageUrl(order.items[0]); as imgUrl) {
+                <div class="border-hairline h-11 w-11 shrink-0 overflow-hidden rounded-lg border">
+                  <img
+                    [src]="imgUrl"
+                    [alt]="order.items[0].product_name"
+                    class="h-full w-full object-cover"
+                  />
+                </div>
+                } @else {
+                <div
+                  class="border-hairline bg-platinum-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    class="text-platinum-40"
+                  >
+                    <path
+                      d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+                }
+                <div class="min-w-0 flex-1 lg:min-w-[220px]">
+                  <div class="flex items-center gap-2">
+                    <p class="text-platinum-100 truncate text-sm font-medium">
+                      {{ order.items[0]?.product_name ?? "შეკვეთა" }}
+                    </p>
+                    @if (order.comment_images && order.comment_images.length > 0) {
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      class="text-platinum-40 shrink-0"
+                    >
+                      <rect
+                        x="3"
+                        y="3"
+                        width="18"
+                        height="18"
+                        rx="3"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      />
+                      <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+                      <path
+                        d="M21 15L16 10L5 21"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
                     }
-                    <div class="min-w-0 flex-1 lg:min-w-[220px]">
-                      <div class="flex items-center gap-2">
-                        <p class="truncate text-sm font-medium text-platinum-100">
-                          {{ order.items[0]?.product_name ?? "შეკვეთა" }}
-                        </p>
-                        @if (order.comment_images && order.comment_images.length > 0) {
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="shrink-0 text-platinum-40">
-                            <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/>
-                            <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
-                            <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </div>
+                  <p class="text-platinum-50 truncate text-xs">#{{ order.id }}</p>
+                  @if (order.items.length > 1) {
+                  <p class="text-platinum-50 text-xs">+{{ order.items.length - 1 }} სხვა ნივთი</p>
+                  }
+                </div>
+              </div>
+            </td>
+
+            <!-- User -->
+            <td class="hidden w-[200px] max-w-[200px] px-4 py-3 md:table-cell">
+              <div class="min-w-0">
+                @if (order.customer_type === "company" && order.organization_name) {
+                <p class="text-platinum-100 truncate text-sm font-medium">
+                  {{ order.organization_name }}
+                </p>
+                } @else {
+                <p class="text-platinum-100 truncate text-sm font-medium">
+                  {{ order.customer_name }} {{ order.customer_surname }}
+                </p>
+                }
+                <p class="text-platinum-50 truncate text-xs">{{ order.email }}</p>
+              </div>
+            </td>
+
+            <!-- Date -->
+            <td class="px-4 py-3 whitespace-nowrap">
+              <span class="text-platinum-60 text-sm">
+                {{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}
+              </span>
+            </td>
+
+            <!-- City -->
+            <td class="hidden w-[140px] max-w-[140px] px-4 py-3 lg:table-cell">
+              <p class="text-platinum-60 truncate text-sm">{{ cityLabel(order.city) }}</p>
+            </td>
+
+            <!-- Delivery / payment method -->
+            <td class="px-4 py-3 whitespace-nowrap">
+              <p class="text-platinum-100 text-sm">{{ deliveryTypeLabel(order.delivery_type) }}</p>
+              <p class="text-platinum-50 text-xs">
+                გადახდა: {{ paymentMethodShortLabel(order.payment_method) }}
+              </p>
+            </td>
+
+            @if (isAdminSource()) {
+            <!-- Created by -->
+            <td class="hidden w-[160px] max-w-[160px] px-4 py-3 lg:table-cell">
+              @if (order.created_by; as creator) {
+              <p class="text-platinum-100 truncate text-sm font-medium">{{ creator.name }}</p>
+              <p class="text-platinum-50 truncate text-xs">{{ creator.email }}</p>
+              } @else {
+              <span class="text-platinum-40 text-sm">—</span>
+              }
+            </td>
+            }
+
+            <!-- Amount -->
+            <td class="px-4 py-3 whitespace-nowrap">
+              <span class="text-platinum-100 text-sm font-semibold">
+                {{ formatAmount(order.amount) }} {{ order.currency }}
+              </span>
+            </td>
+
+            <!-- Finance cleared -->
+            <td class="px-4 py-3" (click)="$event.stopPropagation()">
+              <div class="flex justify-center">
+                <label
+                  class="inline-flex cursor-pointer items-center"
+                  [class.pointer-events-none]="isUpdatingFina(order.id)"
+                  [class.opacity-50]="isUpdatingFina(order.id)"
+                  [title]="order.is_fina_cleared ? 'გატარებულია ფინაში' : 'ფინაში გაუტარებელი'"
+                >
+                  <input
+                    type="checkbox"
+                    class="accent-green-60 h-[18px] w-[18px] cursor-pointer"
+                    [checked]="order.is_fina_cleared"
+                    [disabled]="isUpdatingFina(order.id)"
+                    (change)="onFinaClearedToggle(order, $any($event.target).checked)"
+                  />
+                </label>
+              </div>
+            </td>
+
+            <!-- Status -->
+            <td class="px-4 py-3">
+              <div class="flex items-center justify-end gap-2">
+                <div class="w-[210px]" (click)="$event.stopPropagation()">
+                  <app-dropdown
+                    [selectedValue]="order.status"
+                    (selectedValueChange)="onOrderStatusChange(order, $event)"
+                    [items]="orderStatusOptions"
+                    [disabled]="isUpdatingStatus(order.id) || isStatusLocked(order)"
+                    [fixedPanel]="true"
+                    placeholder="სტატუსი"
+                  />
+                </div>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  class="text-platinum-40 shrink-0 transition-transform duration-200"
+                  [class.rotate-180]="isExpanded(order.id)"
+                >
+                  <path
+                    d="M4 6L8 10L12 6"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Expanded detail row -->
+          @if (isExpanded(order.id)) {
+          <tr class="last:border-b-0">
+            <td [attr.colspan]="columnCount()" class="bg-platinum-10/30 px-4 py-5">
+              <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <!-- Left: items, customer, delivery, comment -->
+                <div class="space-y-4 lg:col-span-2">
+                  <!-- Items -->
+                  <div class="border-hairline rounded-2xl border bg-white">
+                    <div class="border-hairline border-b px-4 py-3">
+                      <p class="text-green-70 text-xs font-semibold tracking-wide uppercase">
+                        პროდუქტები ({{ order.items.length }})
+                      </p>
+                    </div>
+                    <div class="divide-hairline divide-y">
+                      @for (item of order.items; track item.id) {
+                      <div class="flex items-center gap-3.5 px-4 py-3.5">
+                        @if (getItemImageUrl(item); as imgUrl) {
+                        <a [routerLink]="getProductRoute(item)" class="shrink-0">
+                          <div class="border-hairline h-14 w-14 overflow-hidden rounded-lg border">
+                            <img
+                              [src]="imgUrl"
+                              [alt]="item.product_name"
+                              class="h-full w-full object-cover"
+                            />
+                          </div>
+                        </a>
+                        } @else {
+                        <div
+                          class="border-hairline bg-platinum-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border"
+                        >
+                          <svg
+                            width="22"
+                            height="22"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            class="text-platinum-40"
+                          >
+                            <path
+                              d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
+                              stroke="currentColor"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
                           </svg>
+                        </div>
                         }
+                        <div class="min-w-0 flex-1">
+                          <a
+                            [routerLink]="getProductRoute(item)"
+                            class="text-platinum-100 hover:text-green-70 block text-sm font-medium hover:underline"
+                          >
+                            {{ item.product_name }}
+                          </a>
+                          <p class="text-platinum-50 mt-0.5 text-xs">
+                            {{ item.quantity }} ცალი × {{ formatItemAmount(item.price_at_purchase)
+                            }}
+                          </p>
+                          @if (item.cable_config) {
+                          <p
+                            class="bg-green-10 text-green-70 mt-1 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold"
+                          >
+                            {{ item.cable_config.watts }}W · {{ item.cable_config.length_cm }} სმ
+                          </p>
+                          }
+                        </div>
+                        <span class="text-platinum-100 shrink-0 text-sm font-semibold">
+                          {{ formatItemAmount(item.price_at_purchase * item.quantity) }}
+                        </span>
                       </div>
-                      <p class="truncate text-xs text-platinum-50">#{{ order.id }}</p>
-                      @if (order.items.length > 1) {
-                        <p class="text-xs text-platinum-50">+{{ order.items.length - 1 }} სხვა ნივთი</p>
                       }
                     </div>
                   </div>
-                </td>
 
-                <!-- User -->
-                <td class="hidden px-4 py-3 md:table-cell w-[200px] max-w-[200px]">
-                  <div class="min-w-0">
-                    @if (order.customer_type === "company" && order.organization_name) {
-                      <p class="truncate text-sm font-medium text-platinum-100">{{ order.organization_name }}</p>
-                    } @else {
-                      <p class="truncate text-sm font-medium text-platinum-100">{{ order.customer_name }} {{ order.customer_surname }}</p>
-                    }
-                    <p class="truncate text-xs text-platinum-50">{{ order.email }}</p>
-                  </div>
-                </td>
-
-                <!-- Date -->
-                <td class="whitespace-nowrap px-4 py-3">
-                  <span class="text-sm text-platinum-60">
-                    {{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}
-                  </span>
-                </td>
-
-                <!-- City -->
-                <td class="hidden px-4 py-3 lg:table-cell w-[140px] max-w-[140px]">
-                  <p class="truncate text-sm text-platinum-60">{{ cityLabel(order.city) }}</p>
-                </td>
-
-                <!-- Delivery / payment method -->
-                <td class="whitespace-nowrap px-4 py-3">
-                  <p class="text-sm text-platinum-100">{{ deliveryTypeLabel(order.delivery_type) }}</p>
-                  <p class="text-xs text-platinum-50">გადახდა: {{ paymentMethodShortLabel(order.payment_method) }}</p>
-                </td>
-
-                @if (isAdminSource()) {
-                  <!-- Created by -->
-                  <td class="hidden px-4 py-3 lg:table-cell w-[160px] max-w-[160px]">
-                    @if (order.created_by; as creator) {
-                      <p class="truncate text-sm font-medium text-platinum-100">{{ creator.name }}</p>
-                      <p class="truncate text-xs text-platinum-50">{{ creator.email }}</p>
-                    } @else {
-                      <span class="text-sm text-platinum-40">—</span>
-                    }
-                  </td>
-                }
-
-                <!-- Amount -->
-                <td class="whitespace-nowrap px-4 py-3">
-                  <span class="text-sm font-semibold text-platinum-100">
-                    {{ formatAmount(order.amount) }} {{ order.currency }}
-                  </span>
-                </td>
-
-                <!-- Status -->
-                <td class="px-4 py-3">
-                  <div class="flex items-center justify-end gap-2">
-                    <div class="w-[210px]" (click)="$event.stopPropagation()">
-                      <app-dropdown
-                        [selectedValue]="order.status"
-                        (selectedValueChange)="onOrderStatusChange(order, $event)"
-                        [items]="orderStatusOptions"
-                        [disabled]="isUpdatingStatus(order.id) || isStatusLocked(order)"
-                        [fixedPanel]="true"
-                        placeholder="სტატუსი"
-                      />
+                  <!-- Customer -->
+                  <div class="border-hairline rounded-2xl border bg-white">
+                    <div class="border-hairline border-b px-4 py-3">
+                      <p class="text-green-70 text-xs font-semibold tracking-wide uppercase">
+                        მომხმარებელი
+                      </p>
                     </div>
-                    <svg
-                      width="16" height="16" viewBox="0 0 16 16" fill="none"
-                      class="shrink-0 text-platinum-40 transition-transform duration-200"
-                      [class.rotate-180]="isExpanded(order.id)"
-                    >
-                      <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <dl class="grid grid-cols-1 gap-x-6 gap-y-3 px-4 py-4 sm:grid-cols-2">
+                      @if (order.customer_type !== 'company') {
+                      <div>
+                        <dt class="text-platinum-50 text-xs">სახელი</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                          {{ order.customer_name }} {{ order.customer_surname }}
+                        </dd>
+                      </div>
+                      } @else {
+                      <div>
+                        <dt class="text-platinum-50 text-xs">ორგანიზაცია</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                          {{ order.organization_name }}
+                        </dd>
+                      </div>
+                      @if (order.organization_code) {
+                      <div>
+                        <dt class="text-platinum-50 text-xs">კოდი</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                          {{ order.organization_code }}
+                        </dd>
+                      </div>
+                      } }
+                      <div>
+                        <dt class="text-platinum-50 text-xs">ტიპი</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                          {{ customerLabel(order.customer_type) }}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt class="text-platinum-50 text-xs">ელ-ფოსტა</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium break-all">
+                          {{ order.email }}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt class="text-platinum-50 text-xs">ტელეფონი</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                          {{ order.phone_number }}
+                        </dd>
+                      </div>
+                      @if (order.personal_number) {
+                      <div>
+                        <dt class="text-platinum-50 text-xs">პირადი ნომერი</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                          {{ order.personal_number }}
+                        </dd>
+                      </div>
+                      }
+                    </dl>
                   </div>
-                </td>
-              </tr>
 
-              <!-- Expanded detail row -->
-              @if (isExpanded(order.id)) {
-                <tr class="last:border-b-0">
-                  <td [attr.colspan]="columnCount()" class="bg-platinum-10/30 px-4 py-5">
-                    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                      <!-- Left: items, customer, delivery, comment -->
-                      <div class="space-y-4 lg:col-span-2">
-                        <!-- Items -->
-                        <div class="rounded-2xl border border-hairline bg-white">
-                          <div class="border-b border-hairline px-4 py-3">
-                            <p class="text-xs font-semibold uppercase tracking-wide text-green-70">
-                              პროდუქტები ({{ order.items.length }})
-                            </p>
-                          </div>
-                          <div class="divide-y divide-hairline">
-                            @for (item of order.items; track item.id) {
-                              <div class="flex items-center gap-3.5 px-4 py-3.5">
-                                @if (getItemImageUrl(item); as imgUrl) {
-                                  <a [routerLink]="getProductRoute(item)" class="shrink-0">
-                                    <div class="h-14 w-14 overflow-hidden rounded-lg border border-hairline">
-                                      <img [src]="imgUrl" [alt]="item.product_name" class="h-full w-full object-cover"/>
-                                    </div>
-                                  </a>
-                                } @else {
-                                  <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-hairline bg-platinum-10">
-                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-platinum-40">
-                                      <path d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                  </div>
-                                }
-                                <div class="min-w-0 flex-1">
-                                  <a [routerLink]="getProductRoute(item)" class="block text-sm font-medium text-platinum-100 hover:text-green-70 hover:underline">
-                                    {{ item.product_name }}
-                                  </a>
-                                  <p class="mt-0.5 text-xs text-platinum-50">
-                                    {{ item.quantity }} ცალი × {{ formatItemAmount(item.price_at_purchase) }}
-                                  </p>
-                                  @if (item.cable_config) {
-                                    <p class="mt-1 inline-flex items-center gap-1 rounded-md bg-green-10 px-1.5 py-0.5 text-[11px] font-semibold text-green-70">
-                                      {{ item.cable_config.watts }}W · {{ item.cable_config.length_cm }} სმ
-                                    </p>
-                                  }
-                                </div>
-                                <span class="shrink-0 text-sm font-semibold text-platinum-100">
-                                  {{ formatItemAmount(item.price_at_purchase * item.quantity) }}
-                                </span>
-                              </div>
-                            }
-                          </div>
-                        </div>
+                  <!-- Delivery -->
+                  <div class="border-hairline rounded-2xl border bg-white">
+                    <div class="border-hairline border-b px-4 py-3">
+                      <p class="text-green-70 text-xs font-semibold tracking-wide uppercase">
+                        მიწოდება
+                      </p>
+                    </div>
+                    <dl class="grid grid-cols-1 gap-x-6 gap-y-3 px-4 py-4 sm:grid-cols-2">
+                      <div>
+                        <dt class="text-platinum-50 text-xs">ტიპი</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                          {{ deliveryTypeLabel(order.delivery_type) }}
+                        </dd>
+                      </div>
+                      @if (order.fulfillment_method) {
+                      <div>
+                        <dt class="text-platinum-50 text-xs">ჩაბარების მეთოდი</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                          {{ fulfillmentMethodLabel(order.fulfillment_method) }}
+                        </dd>
+                      </div>
+                      } @if (order.delivery_time) {
+                      <div>
+                        <dt class="text-platinum-50 text-xs">დრო</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                          {{ deliveryTimeLabel(order.delivery_time) }}
+                        </dd>
+                      </div>
+                      } @if (order.city) {
+                      <div>
+                        <dt class="text-platinum-50 text-xs">ქალაქი</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
+                          {{ cityLabel(order.city) }}
+                        </dd>
+                      </div>
+                      } @if (order.address) {
+                      <div class="sm:col-span-2">
+                        <dt class="text-platinum-50 text-xs">მისამართი</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium break-words">
+                          {{ order.address }}
+                        </dd>
+                      </div>
+                      } @if (order.details) {
+                      <div class="sm:col-span-2">
+                        <dt class="text-platinum-50 text-xs">დეტალები</dt>
+                        <dd class="text-platinum-100 mt-0.5 text-sm font-medium break-words">
+                          {{ order.details }}
+                        </dd>
+                      </div>
+                      }
+                    </dl>
+                  </div>
 
-                        <!-- Customer -->
-                        <div class="rounded-2xl border border-hairline bg-white">
-                          <div class="border-b border-hairline px-4 py-3">
-                            <p class="text-xs font-semibold uppercase tracking-wide text-green-70">მომხმარებელი</p>
-                          </div>
-                          <dl class="grid grid-cols-1 gap-x-6 gap-y-3 px-4 py-4 sm:grid-cols-2">
-                            @if (order.customer_type !== 'company') {
-                              <div>
-                                <dt class="text-xs text-platinum-50">სახელი</dt>
-                                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.customer_name }} {{ order.customer_surname }}</dd>
-                              </div>
-                            } @else {
-                              <div>
-                                <dt class="text-xs text-platinum-50">ორგანიზაცია</dt>
-                                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.organization_name }}</dd>
-                              </div>
-                              @if (order.organization_code) {
-                                <div>
-                                  <dt class="text-xs text-platinum-50">კოდი</dt>
-                                  <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.organization_code }}</dd>
-                                </div>
-                              }
-                            }
-                            <div>
-                              <dt class="text-xs text-platinum-50">ტიპი</dt>
-                              <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ customerLabel(order.customer_type) }}</dd>
-                            </div>
-                            <div>
-                              <dt class="text-xs text-platinum-50">ელ-ფოსტა</dt>
-                              <dd class="mt-0.5 break-all text-sm font-medium text-platinum-100">{{ order.email }}</dd>
-                            </div>
-                            <div>
-                              <dt class="text-xs text-platinum-50">ტელეფონი</dt>
-                              <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.phone_number }}</dd>
-                            </div>
-                            @if (order.personal_number) {
-                              <div>
-                                <dt class="text-xs text-platinum-50">პირადი ნომერი</dt>
-                                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ order.personal_number }}</dd>
-                              </div>
-                            }
-                          </dl>
-                        </div>
-
-                        <!-- Delivery -->
-                        <div class="rounded-2xl border border-hairline bg-white">
-                          <div class="border-b border-hairline px-4 py-3">
-                            <p class="text-xs font-semibold uppercase tracking-wide text-green-70">მიწოდება</p>
-                          </div>
-                          <dl class="grid grid-cols-1 gap-x-6 gap-y-3 px-4 py-4 sm:grid-cols-2">
-                            <div>
-                              <dt class="text-xs text-platinum-50">ტიპი</dt>
-                              <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ deliveryTypeLabel(order.delivery_type) }}</dd>
-                            </div>
-                            @if (order.fulfillment_method) {
-                              <div>
-                                <dt class="text-xs text-platinum-50">ჩაბარების მეთოდი</dt>
-                                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ fulfillmentMethodLabel(order.fulfillment_method) }}</dd>
-                              </div>
-                            }
-                            @if (order.delivery_time) {
-                              <div>
-                                <dt class="text-xs text-platinum-50">დრო</dt>
-                                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ deliveryTimeLabel(order.delivery_time) }}</dd>
-                              </div>
-                            }
-                            @if (order.city) {
-                              <div>
-                                <dt class="text-xs text-platinum-50">ქალაქი</dt>
-                                <dd class="mt-0.5 text-sm font-medium text-platinum-100">{{ cityLabel(order.city) }}</dd>
-                              </div>
-                            }
-                            @if (order.address) {
-                              <div class="sm:col-span-2">
-                                <dt class="text-xs text-platinum-50">მისამართი</dt>
-                                <dd class="mt-0.5 break-words text-sm font-medium text-platinum-100">{{ order.address }}</dd>
-                              </div>
-                            }
-                            @if (order.details) {
-                              <div class="sm:col-span-2">
-                                <dt class="text-xs text-platinum-50">დეტალები</dt>
-                                <dd class="mt-0.5 break-words text-sm font-medium text-platinum-100">{{ order.details }}</dd>
-                              </div>
-                            }
-                          </dl>
-                        </div>
-
-                        <!-- Comment & images -->
-                        @if (order.comment || (order.comment_images && order.comment_images.length > 0)) {
-                          <div class="rounded-2xl border border-hairline bg-white">
-                            <div class="border-b border-hairline px-4 py-3">
-                              <p class="text-xs font-semibold uppercase tracking-wide text-green-70">კომენტარი</p>
-                            </div>
-                            <div class="space-y-4 px-4 py-4">
-                              @if (order.comment) {
-                                <p class="break-words text-sm text-platinum-100">{{ order.comment }}</p>
-                              }
-                              @if (order.comment_images && order.comment_images.length > 0) {
-                                <div class="flex flex-wrap gap-2.5">
-                                  @for (image of order.comment_images; track image.image_uuid) {
-                                    <button
-                                      type="button"
-                                      (click)="openCommentImages(order.comment_images!, image.image_uuid)"
-                                      class="h-20 w-20 overflow-hidden rounded-xl border border-hairline transition-opacity hover:opacity-80"
-                                    >
-                                      <img [src]="image.url" alt="" class="h-full w-full object-cover" loading="lazy"/>
-                                    </button>
-                                  }
-                                </div>
-                              }
-                            </div>
-                          </div>
+                  <!-- Comment & images -->
+                  @if (order.comment || (order.comment_images && order.comment_images.length > 0)) {
+                  <div class="border-hairline rounded-2xl border bg-white">
+                    <div class="border-hairline border-b px-4 py-3">
+                      <p class="text-green-70 text-xs font-semibold tracking-wide uppercase">
+                        კომენტარი
+                      </p>
+                    </div>
+                    <div class="space-y-4 px-4 py-4">
+                      @if (order.comment) {
+                      <p class="text-platinum-100 text-sm break-words">{{ order.comment }}</p>
+                      } @if (order.comment_images && order.comment_images.length > 0) {
+                      <div class="flex flex-wrap gap-2.5">
+                        @for (image of order.comment_images; track image.image_uuid) {
+                        <button
+                          type="button"
+                          (click)="openCommentImages(order.comment_images!, image.image_uuid)"
+                          class="border-hairline h-20 w-20 overflow-hidden rounded-xl border transition-opacity hover:opacity-80"
+                        >
+                          <img
+                            [src]="image.url"
+                            alt=""
+                            class="h-full w-full object-cover"
+                            loading="lazy"
+                          />
+                        </button>
                         }
                       </div>
+                      }
+                    </div>
+                  </div>
+                  }
+                </div>
 
-                      <!-- Right: summary -->
-                      <div class="lg:col-span-1">
-                        <div class="rounded-2xl border border-hairline bg-white">
-                          <div class="border-b border-hairline px-4 py-3">
-                            <p class="text-xs font-semibold uppercase tracking-wide text-green-70">ჯამი</p>
-                          </div>
-                          <div class="space-y-2.5 px-4 py-4">
-                            <div class="flex items-center justify-between">
-                              <span class="text-sm text-platinum-50">ქვეჯამი</span>
-                              <span class="text-sm font-medium text-platinum-100">{{ formatItemAmount(subtotal(order)) }} {{ order.currency }}</span>
-                            </div>
-                            <div class="mt-1 flex items-center justify-between border-t border-hairline pt-3">
-                              <span class="text-sm font-medium text-platinum-70">სულ</span>
-                              <span class="text-base font-bold text-platinum-100">{{ formatAmount(order.amount) }} {{ order.currency }}</span>
-                            </div>
-                          </div>
-                          <div class="space-y-2.5 border-t border-hairline px-4 py-4">
-                            <div class="flex items-center justify-between gap-3">
-                              <span class="shrink-0 text-xs text-platinum-50">შეკვეთის ID</span>
-                              <span class="truncate text-xs font-medium text-platinum-100">{{ order.order_id }}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                              <span class="shrink-0 text-xs text-platinum-50">თარიღი</span>
-                              <span class="text-xs font-medium text-platinum-100">{{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}</span>
-                            </div>
-                            @if (order.payment_method) {
-                              <div class="flex items-center justify-between gap-3">
-                                <span class="shrink-0 text-xs text-platinum-50">გადახდის ფორმა</span>
-                                <span class="text-xs font-medium text-platinum-100">{{ paymentMethodLabel(order.payment_method) }}</span>
-                              </div>
-                            }
-                            @if (order.created_by; as creator) {
-                              <div class="flex items-center justify-between gap-3">
-                                <span class="shrink-0 text-xs text-platinum-50">ვინ დაამატა</span>
-                                <span class="truncate text-xs font-medium text-platinum-100">{{ creator.name }}</span>
-                              </div>
-                            }
-                            @if (order.source_comment) {
-                              <div class="flex items-center justify-between gap-3">
-                                <span class="shrink-0 text-xs text-platinum-50">მოსვლის წყარო</span>
-                                <span class="truncate text-xs font-medium text-platinum-100">{{ order.source_comment }}</span>
-                              </div>
-                            }
-                            @if (order.is_installment_sale || order.is_product_exchange) {
-                              <div class="flex flex-wrap gap-2 pt-1">
-                                @if (order.is_installment_sale) {
-                                  <span class="rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-70">გაყიდულია განვადებით</span>
-                                }
-                                @if (order.is_product_exchange) {
-                                  <span class="rounded-full bg-platinum-10 px-2.5 py-1 text-xs font-medium text-platinum-70">პროდუქტის შეცვლა</span>
-                                }
-                              </div>
-                            }
-                          </div>
-                        </div>
+                <!-- Right: summary -->
+                <div class="lg:col-span-1">
+                  <div class="border-hairline rounded-2xl border bg-white">
+                    <div class="border-hairline border-b px-4 py-3">
+                      <p class="text-green-70 text-xs font-semibold tracking-wide uppercase">
+                        ჯამი
+                      </p>
+                    </div>
+                    <div class="space-y-2.5 px-4 py-4">
+                      <div class="flex items-center justify-between">
+                        <span class="text-platinum-50 text-sm">ქვეჯამი</span>
+                        <span class="text-platinum-100 text-sm font-medium">
+                          {{ formatItemAmount(subtotal(order)) }} {{ order.currency }}
+                        </span>
+                      </div>
+                      <div
+                        class="border-hairline mt-1 flex items-center justify-between border-t pt-3"
+                      >
+                        <span class="text-platinum-70 text-sm font-medium">სულ</span>
+                        <span class="text-platinum-100 text-base font-bold">
+                          {{ formatAmount(order.amount) }} {{ order.currency }}
+                        </span>
                       </div>
                     </div>
-                  </td>
-                </tr>
-              }
-            }
-          }
+                    <div class="border-hairline space-y-2.5 border-t px-4 py-4">
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-platinum-50 shrink-0 text-xs">შეკვეთის ID</span>
+                        <span class="text-platinum-100 truncate text-xs font-medium">
+                          {{ order.order_id }}
+                        </span>
+                      </div>
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-platinum-50 shrink-0 text-xs">თარიღი</span>
+                        <span class="text-platinum-100 text-xs font-medium">
+                          {{ formatDate(order.created_at) }}, {{ formatTime(order.created_at) }}
+                        </span>
+                      </div>
+                      @if (order.payment_method) {
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-platinum-50 shrink-0 text-xs">გადახდის ფორმა</span>
+                        <span class="text-platinum-100 text-xs font-medium">
+                          {{ paymentMethodLabel(order.payment_method) }}
+                        </span>
+                      </div>
+                      } @if (order.created_by; as creator) {
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-platinum-50 shrink-0 text-xs">ვინ დაამატა</span>
+                        <span class="text-platinum-100 truncate text-xs font-medium">
+                          {{ creator.name }}
+                        </span>
+                      </div>
+                      } @if (order.source_comment) {
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-platinum-50 shrink-0 text-xs">მოსვლის წყარო</span>
+                        <span class="text-platinum-100 truncate text-xs font-medium">
+                          {{ order.source_comment }}
+                        </span>
+                      </div>
+                      }
+                      <div class="pt-1">
+                        <label
+                          class="border-hairline flex cursor-pointer items-center gap-2.5 rounded-xl border px-3 py-2.5"
+                          [class.pointer-events-none]="isUpdatingFina(order.id)"
+                          [class.opacity-50]="isUpdatingFina(order.id)"
+                        >
+                          <input
+                            type="checkbox"
+                            class="accent-green-60 h-[18px] w-[18px] shrink-0 cursor-pointer"
+                            [checked]="order.is_fina_cleared"
+                            [disabled]="isUpdatingFina(order.id)"
+                            (change)="onFinaClearedToggle(order, $any($event.target).checked)"
+                          />
+                          <span class="text-platinum-100 text-xs font-medium">
+                            გატარებულია ფინაში
+                          </span>
+                        </label>
+                      </div>
+                      @if (order.is_installment_sale || order.is_product_exchange) {
+                      <div class="flex flex-wrap gap-2 pt-1">
+                        @if (order.is_installment_sale) {
+                        <span
+                          class="bg-platinum-10 text-platinum-70 rounded-full px-2.5 py-1 text-xs font-medium"
+                        >
+                          გაყიდულია განვადებით
+                        </span>
+                        } @if (order.is_product_exchange) {
+                        <span
+                          class="bg-platinum-10 text-platinum-70 rounded-full px-2.5 py-1 text-xs font-medium"
+                        >
+                          პროდუქტის შეცვლა
+                        </span>
+                        }
+                      </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          } } }
         </tbody>
       </table>
     </div>
@@ -878,6 +1354,94 @@
       />
     </div>
   </div>
+
+  <!-- Filter modal -->
+  <app-modal
+    [isOpen]="filtersOpen()"
+    title="ფილტრი"
+    cancelText="გაუქმება"
+    acceptText="გამოყენება"
+    widthClass="md:max-w-[720px]"
+    (close)="closeFilters()"
+    (accept)="applyFilters()"
+  >
+    <div class="-mt-2 max-h-[65vh] overflow-y-auto pr-1">
+      <div class="grid grid-cols-1 gap-x-5 gap-y-4 sm:grid-cols-2">
+        @for (group of multiFilterGroups; track group.key) {
+        <div>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">{{ group.label }}</label>
+          <app-multi-dropdown
+            [selectedValues]="draftValues(group.key)"
+            (selectedValuesChange)="setDraft(group.key, $event)"
+            [items]="group.items"
+            [placeholder]="group.placeholder"
+          />
+        </div>
+        }
+
+        <div>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">ქალაქი</label>
+          <app-dropdown
+            [selectedValue]="draftCity()"
+            (selectedValueChange)="draftCity.set($event ?? '')"
+            placeholder="ყველა ქალაქი"
+            [items]="cityOptions"
+            customClass="!h-[40px] !rounded-lg !px-3"
+          />
+        </div>
+
+        <div>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">ღირებულება (₾)</label>
+          <div class="flex items-center gap-2">
+            <input
+              type="number"
+              min="0"
+              [value]="draftMinAmount()"
+              (input)="draftMinAmount.set($any($event.target).value)"
+              placeholder="დან"
+              class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-[40px] w-full rounded-lg border bg-white px-3 text-sm outline-hidden transition-colors"
+            />
+            <span class="text-platinum-30">–</span>
+            <input
+              type="number"
+              min="0"
+              [value]="draftMaxAmount()"
+              (input)="draftMaxAmount.set($any($event.target).value)"
+              placeholder="მდე"
+              class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-[40px] w-full rounded-lg border bg-white px-3 text-sm outline-hidden transition-colors"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="border-hairline mt-5 grid grid-cols-1 gap-x-5 gap-y-4 border-t pt-5 sm:grid-cols-2"
+      >
+        @for (flag of flagOptions; track flag.key) {
+        <div>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">{{ flag.label }}</label>
+          <app-dropdown
+            [selectedValue]="draftFlag(flag.key)"
+            (selectedValueChange)="setDraftFlag(flag.key, $event ?? '')"
+            placeholder="ყველა"
+            [items]="triStateOptions"
+            customClass="!h-[40px] !rounded-lg !px-3"
+          />
+        </div>
+        }
+      </div>
+
+      <div class="border-hairline mt-5 flex justify-end border-t pt-3">
+        <button
+          type="button"
+          (click)="resetDraftFilters()"
+          class="text-platinum-50 hover:text-platinum-100 text-sm font-medium underline transition-colors"
+        >
+          ფილტრების გასუფთავება
+        </button>
+      </div>
+    </div>
+  </app-modal>
 
   <!-- Comment images lightbox -->
   <app-lightbox

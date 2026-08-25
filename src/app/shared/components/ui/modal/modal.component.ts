@@ -17,6 +17,7 @@ export class ModalComponent {
   readonly title = input.required<string>();
   readonly cancelText = input.required<string>();
   readonly acceptText = input.required<string>();
+  readonly widthClass = input<string>('md:max-w-[640px]');
 
   readonly close = output<void>();
   readonly accept = output<void>();

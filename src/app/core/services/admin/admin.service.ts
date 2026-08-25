@@ -49,7 +49,7 @@ import {
   PaymentLinkResponse,
 } from '@core/interfaces/admin/payment-link.interface';
 import { CheckoutSessionSearchResponse } from '@core/interfaces/admin/checkout-sessions.interface';
-import { CreateOrderRequest } from '@core/interfaces/admin/orders.interface';
+import { CreateOrderRequest, UpdateOrderRequest } from '@core/interfaces/admin/orders.interface';
 import {
   BlogCreatePayload,
   BlogListParams,
@@ -165,8 +165,16 @@ export class AdminService {
     return this.http.post<Order>('/admin/orders', payload);
   }
 
+  updateOrder(id: number, payload: UpdateOrderRequest): Observable<Order> {
+    return this.http.patch<Order>(`/admin/orders/${id}`, payload);
+  }
+
   updateOrderStatus(id: number, status: string): Observable<Order> {
-    return this.http.patch<Order>(`/admin/orders/${id}/status`, { status });
+    return this.updateOrder(id, { status });
+  }
+
+  updateOrderFinaCleared(id: number, isFinaCleared: boolean): Observable<Order> {
+    return this.updateOrder(id, { is_fina_cleared: isFinaCleared });
   }
 
   exportOrders(params: string): Observable<Blob> {

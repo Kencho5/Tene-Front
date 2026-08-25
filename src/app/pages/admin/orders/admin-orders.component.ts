@@ -4,6 +4,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { Order, OrderItem, OrderStatus } from '@core/interfaces/products.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
+import { ModalComponent } from '@shared/components/ui/modal/modal.component';
+import { MultiDropdownComponent } from '@shared/components/ui/multi-dropdown/multi-dropdown.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import {
   LightboxComponent,
@@ -17,9 +19,26 @@ import { OrderCommentImage } from '@core/interfaces/products.interface';
 import { AdminService } from '@core/services/admin/admin.service';
 import { AuthService } from '@core/services/auth/auth-service.service';
 
+type MultiFilterKey = 'status' | 'payment_method' | 'delivery_type' | 'fulfillment_method';
+
+type FlagKey = 'is_fina_cleared' | 'is_installment_sale' | 'is_product_exchange';
+
+interface FilterChip {
+  key: string;
+  value: string;
+  label: string;
+}
+
 @Component({
   selector: 'app-admin-orders',
-  imports: [SharedModule, DropdownComponent, PaginationComponent, LightboxComponent],
+  imports: [
+    SharedModule,
+    DropdownComponent,
+    ModalComponent,
+    MultiDropdownComponent,
+    PaginationComponent,
+    LightboxComponent,
+  ],
   templateUrl: './admin-orders.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -32,9 +51,7 @@ export class AdminOrdersComponent {
 
   readonly searchQuery = signal((this.route.snapshot.queryParams['search'] as string) ?? '');
 
-  readonly statusOptions: ComboboxItems[] = [
-    { label: 'ყველა', value: 'all' },
-    { label: 'დადასტურებული + FINA', value: 'approved,finance_cleared' },
+  readonly orderStatusOptions: ComboboxItems[] = [
     { label: 'დადასტურებული', value: 'approved' },
     { label: 'მოლოდინში', value: 'pending' },
     { label: 'მუშავდება', value: 'processing' },
@@ -46,17 +63,13 @@ export class AdminOrdersComponent {
     { label: 'თანხა დაბრუნებულია', value: 'refunded' },
   ];
 
-  readonly orderStatusOptions: ComboboxItems[] = this.statusOptions.filter(
-    (o) => o.value !== 'all' && o.value !== 'approved,finance_cleared',
-  );
-
   readonly sourceOptions: ComboboxItems[] = [
     { label: 'საიტიდან', value: 'web' },
     { label: 'ხელით დამატებული', value: 'admin' },
   ];
 
   readonly paymentMethodOptions: ComboboxItems[] = [
-    { label: 'ყველა', value: 'all' },
+    { label: 'ბარათით ონლაინ', value: 'card' },
     { label: 'POS — BOG', value: 'pos_bog' },
     { label: 'POS — TBC', value: 'pos_tbc' },
     { label: 'POS — Liberty', value: 'pos_liberty' },
@@ -67,9 +80,77 @@ export class AdminOrdersComponent {
     { label: 'ადგილზე/კურიერთან გადახდა', value: 'cash_on_delivery' },
   ];
 
+  readonly deliveryTypeOptions: ComboboxItems[] = [
+    { label: 'მიტანა', value: 'delivery' },
+    { label: 'გატანა', value: 'pickup' },
+  ];
+
+  readonly fulfillmentMethodOptions: ComboboxItems[] = [
+    { label: 'მაღაზიიდან გატანა', value: 'store_pickup' },
+    { label: 'საკურიერო მომსახურება', value: 'courier' },
+  ];
+
+  readonly flagOptions: ReadonlyArray<{ key: FlagKey; label: string }> = [
+    { key: 'is_fina_cleared', label: 'გატარებულია ფინაში' },
+    { key: 'is_installment_sale', label: 'გაყიდულია განვადებით' },
+    { key: 'is_product_exchange', label: 'პროდუქტის შეცვლა' },
+  ];
+
+  readonly triStateOptions: ComboboxItems[] = [
+    { label: 'ყველა', value: '' },
+    { label: 'კი', value: 'true' },
+    { label: 'არა', value: 'false' },
+  ];
+
+  readonly cityOptions: ComboboxItems[] = georgianCities.map((c) => ({
+    label: c.label,
+    value: c.value,
+  }));
+
+  private readonly multiFilterKeys = [
+    'status',
+    'payment_method',
+    'delivery_type',
+    'fulfillment_method',
+  ] as const;
+
+  readonly multiFilterGroups: ReadonlyArray<{
+    key: MultiFilterKey;
+    label: string;
+    placeholder: string;
+    items: ComboboxItems[];
+  }> = [
+    {
+      key: 'status',
+      label: 'სტატუსი',
+      placeholder: 'ყველა სტატუსი',
+      items: this.orderStatusOptions,
+    },
+    {
+      key: 'payment_method',
+      label: 'გადახდის ფორმა',
+      placeholder: 'ყველა გადახდა',
+      items: this.paymentMethodOptions,
+    },
+    {
+      key: 'delivery_type',
+      label: 'მიწოდება',
+      placeholder: 'ყველა მიწოდება',
+      items: this.deliveryTypeOptions,
+    },
+    {
+      key: 'fulfillment_method',
+      label: 'ჩაბარების მეთოდი',
+      placeholder: 'ყველა მეთოდი',
+      items: this.fulfillmentMethodOptions,
+    },
+  ];
+
   readonly updatingStatus = signal<ReadonlySet<number>>(new Set());
+  readonly updatingFina = signal<ReadonlySet<number>>(new Set());
 
   private readonly statusOverrides = signal<Record<number, OrderStatus>>({});
+  private readonly finaOverrides = signal<Record<number, boolean>>({});
 
   readonly params = toSignal(this.route.queryParams, {
     initialValue: {} as Params,
@@ -90,29 +171,79 @@ export class AdminOrdersComponent {
 
   readonly source = computed(() => (this.params()['source'] as string) ?? 'web');
   readonly isAdminSource = computed(() => this.source() === 'admin');
-  readonly paymentMethod = computed(() => (this.params()['payment_method'] as string) ?? 'all');
-  readonly columnCount = computed(() => (this.isAdminSource() ? 8 : 7));
+  readonly columnCount = computed(() => (this.isAdminSource() ? 9 : 8));
+
+  readonly activeFilterCount = computed(() => this.filterChips().length);
+
+  readonly filterChips = computed<FilterChip[]>(() => {
+    const chips: FilterChip[] = [];
+
+    for (const key of this.multiFilterKeys) {
+      for (const value of this.csvParam(key)) {
+        chips.push({ key, value, label: this.optionLabel(key, value) });
+      }
+    }
+
+    for (const flag of this.flagOptions) {
+      const value = (this.params()[flag.key] as string) ?? '';
+      if (value === 'true' || value === 'false') {
+        chips.push({
+          key: flag.key,
+          value,
+          label: value === 'true' ? flag.label : `${flag.label}: არა`,
+        });
+      }
+    }
+
+    const city = (this.params()['city'] as string) ?? '';
+    if (city) chips.push({ key: 'city', value: city, label: this.cityLabel(city) });
+
+    const min = (this.params()['min_amount'] as string) ?? '';
+    const max = (this.params()['max_amount'] as string) ?? '';
+    if (min) chips.push({ key: 'min_amount', value: min, label: `${min} ₾-დან` });
+    if (max) chips.push({ key: 'max_amount', value: max, label: `${max} ₾-მდე` });
+
+    return chips;
+  });
+
+  private optionLabel(key: MultiFilterKey, value: string): string {
+    const items: Record<MultiFilterKey, ComboboxItems[]> = {
+      status: this.orderStatusOptions,
+      payment_method: this.paymentMethodOptions,
+      delivery_type: this.deliveryTypeOptions,
+      fulfillment_method: this.fulfillmentMethodOptions,
+    };
+    return items[key].find((i) => i.value === value)?.label ?? value;
+  }
+
+  private csvParam(key: string): string[] {
+    const raw = this.params()[key] as string | undefined;
+    return raw ? raw.split(',').filter(Boolean) : [];
+  }
 
   private normalizedParams(): Record<string, string> {
     const p = { ...this.params() } as Record<string, string>;
-    if (!p['status']) p['status'] = 'approved,finance_cleared';
-    if (p['status'] === 'all') delete p['status'];
     if (!p['source']) p['source'] = 'web';
-    if (p['source'] === 'web' || p['payment_method'] === 'all') delete p['payment_method'];
     if (p['search']) {
       delete p['from_date'];
       delete p['to_date'];
+    }
+    for (const key of Object.keys(p)) {
+      if (!p[key]) delete p[key];
     }
     return p;
   }
 
   readonly orders = computed(() => {
     const overrides = this.statusOverrides();
-    return this.searchResponse
-      .value()
-      .orders.map((order) =>
-        overrides[order.id] ? { ...order, status: overrides[order.id] } : order,
-      );
+    const finance = this.finaOverrides();
+    return this.searchResponse.value().orders.map((order) => {
+      const status = overrides[order.id] ?? order.status;
+      const isFinaCleared = finance[order.id] ?? order.is_fina_cleared;
+      return status === order.status && isFinaCleared === order.is_fina_cleared
+        ? order
+        : { ...order, status, is_fina_cleared: isFinaCleared };
+    });
   });
   readonly totalOrders = computed(() => this.searchResponse.value().total);
   readonly totalAmount = computed(() => this.searchResponse.value().total_amount);
@@ -227,9 +358,129 @@ export class AdminOrdersComponent {
     });
   }
 
-  onPaymentMethodChange(value: string | undefined): void {
+  readonly filtersOpen = signal(false);
+  private readonly draftMulti = signal<Record<MultiFilterKey, string[]>>(this.emptyMulti());
+  private readonly draftFlags = signal<Record<FlagKey, string>>(this.emptyFlags());
+  readonly draftCity = signal('');
+  readonly draftMinAmount = signal('');
+  readonly draftMaxAmount = signal('');
+
+  private emptyMulti(): Record<MultiFilterKey, string[]> {
+    return {
+      status: [],
+      payment_method: [],
+      delivery_type: [],
+      fulfillment_method: [],
+    };
+  }
+
+  private emptyFlags(): Record<FlagKey, string> {
+    return {
+      is_fina_cleared: '',
+      is_installment_sale: '',
+      is_product_exchange: '',
+    };
+  }
+
+  openFilters(): void {
+    this.syncDraftFromParams();
+    this.filtersOpen.set(true);
+  }
+
+  private syncDraftFromParams(): void {
+    const multi = this.emptyMulti();
+    for (const key of this.multiFilterKeys) multi[key] = this.csvParam(key);
+    this.draftMulti.set(multi);
+
+    const flags = this.emptyFlags();
+    for (const flag of this.flagOptions) {
+      flags[flag.key] = (this.params()[flag.key] as string) ?? '';
+    }
+    this.draftFlags.set(flags);
+
+    this.draftCity.set((this.params()['city'] as string) ?? '');
+    this.draftMinAmount.set((this.params()['min_amount'] as string) ?? '');
+    this.draftMaxAmount.set((this.params()['max_amount'] as string) ?? '');
+  }
+
+  draftValues(key: MultiFilterKey): string[] {
+    return this.draftMulti()[key];
+  }
+
+  setDraft(key: MultiFilterKey, values: string[]): void {
+    this.draftMulti.update((m) => ({ ...m, [key]: values }));
+  }
+
+  draftFlag(key: FlagKey): string {
+    return this.draftFlags()[key];
+  }
+
+  setDraftFlag(key: FlagKey, value: string): void {
+    this.draftFlags.update((f) => ({ ...f, [key]: value }));
+  }
+
+  applyFilters(): void {
+    const multi = this.draftMulti();
+    const flags = this.draftFlags();
+
     this.updateQueryParams({
-      payment_method: !value || value === 'all' ? undefined : value,
+      status: multi.status.join(',') || undefined,
+      payment_method: multi.payment_method.join(',') || undefined,
+      delivery_type: multi.delivery_type.join(',') || undefined,
+      fulfillment_method: multi.fulfillment_method.join(',') || undefined,
+      is_fina_cleared: flags.is_fina_cleared || undefined,
+      is_installment_sale: flags.is_installment_sale || undefined,
+      is_product_exchange: flags.is_product_exchange || undefined,
+      city: this.draftCity() || undefined,
+      min_amount: this.draftMinAmount() || undefined,
+      max_amount: this.draftMaxAmount() || undefined,
+      offset: 0,
+    });
+
+    this.filtersOpen.set(false);
+  }
+
+  closeFilters(): void {
+    this.filtersOpen.set(false);
+  }
+
+  resetDraftFilters(): void {
+    this.draftMulti.set(this.emptyMulti());
+    this.draftFlags.set(this.emptyFlags());
+    this.draftCity.set('');
+    this.draftMinAmount.set('');
+    this.draftMaxAmount.set('');
+  }
+
+  removeChip(chip: FilterChip): void {
+    if ((this.multiFilterKeys as readonly string[]).includes(chip.key)) {
+      const key = chip.key as MultiFilterKey;
+      const next = this.csvParam(key).filter((v) => v !== chip.value);
+      this.updateQueryParams({ [key]: next.join(',') || undefined, offset: 0 });
+      return;
+    }
+    this.updateQueryParams({ [chip.key]: undefined, offset: 0 });
+  }
+
+  clearFilters(): void {
+    this.searchQuery.set('');
+    this.fromDate.set('');
+    this.toDate.set('');
+    this.selectedPreset.set('');
+    this.updateQueryParams({
+      search: undefined,
+      status: undefined,
+      payment_method: undefined,
+      delivery_type: undefined,
+      fulfillment_method: undefined,
+      is_fina_cleared: undefined,
+      is_installment_sale: undefined,
+      is_product_exchange: undefined,
+      city: undefined,
+      min_amount: undefined,
+      max_amount: undefined,
+      from_date: undefined,
+      to_date: undefined,
       offset: 0,
     });
   }
@@ -290,8 +541,11 @@ export class AdminOrdersComponent {
     }
   }
 
-  onStatusChange(value: string | undefined): void {
-    this.updateQueryParams({ status: value ?? 'approved,finance_cleared', offset: 0 });
+  onStatusChange(values: string[]): void {
+    this.updateQueryParams({
+      status: values.length ? values.join(',') : undefined,
+      offset: 0,
+    });
   }
 
   isUpdatingStatus(orderId: number): boolean {
@@ -330,6 +584,35 @@ export class AdminOrdersComponent {
 
   private clearUpdating(orderId: number): void {
     this.updatingStatus.update((set) => {
+      const next = new Set(set);
+      next.delete(orderId);
+      return next;
+    });
+  }
+
+  isUpdatingFina(orderId: number): boolean {
+    return this.updatingFina().has(orderId);
+  }
+
+  onFinaClearedToggle(order: Order, checked: boolean): void {
+    if (checked === order.is_fina_cleared || this.isUpdatingFina(order.id)) return;
+
+    this.updatingFina.update((set) => new Set(set).add(order.id));
+
+    this.adminService.updateOrderFinaCleared(order.id, checked).subscribe({
+      next: (updated) => {
+        this.finaOverrides.update((m) => ({
+          ...m,
+          [order.id]: updated.is_fina_cleared,
+        }));
+        this.clearUpdatingFina(order.id);
+      },
+      error: () => this.clearUpdatingFina(order.id),
+    });
+  }
+
+  private clearUpdatingFina(orderId: number): void {
+    this.updatingFina.update((set) => {
       const next = new Set(set);
       next.delete(orderId);
       return next;

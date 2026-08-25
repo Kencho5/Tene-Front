@@ -210,6 +210,7 @@ export interface Order {
   source_comment: string | null;
   is_installment_sale: boolean;
   is_product_exchange: boolean;
+  is_fina_cleared: boolean;
   created_by?: OrderCreator;
 }
 

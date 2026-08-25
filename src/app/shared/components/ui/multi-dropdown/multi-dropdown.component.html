@@ -1,0 +1,81 @@
+<div class="relative w-full" (outsideClick)="opened.set(false)">
+  <button
+    type="button"
+    class="flex h-[40px] w-full items-center justify-between gap-2 rounded-lg border border-hairline bg-white px-3 text-sm text-platinum-100 transition-colors focus:border-platinum-30 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+    [class.border-platinum-30]="opened()"
+    [disabled]="disabled()"
+    (click)="toggle()"
+  >
+    <span
+      class="truncate"
+      [ngClass]="{
+        'text-platinum-50': selectedValues().length === 0,
+        'text-platinum-100': selectedValues().length > 0,
+      }"
+    >
+      {{ triggerLabel() }}
+    </span>
+
+    <span class="flex shrink-0 items-center gap-1.5">
+      @if (selectedValues().length > 0) {
+        <span
+          role="button"
+          class="text-platinum-40 transition-colors hover:text-platinum-100"
+          (click)="clear($event)"
+        >
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+            <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+        </span>
+      }
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        class="text-platinum-50 transition-transform duration-150"
+        [class.rotate-180]="opened()"
+      >
+        <path
+          d="M6 9L11.2929 14.6854C11.6834 15.1049 12.3166 15.1049 12.7071 14.6854L18 9"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+        />
+      </svg>
+    </span>
+  </button>
+
+  @if (opened()) {
+    <div
+      class="absolute z-50 mt-1 w-full rounded-lg border border-hairline bg-white text-sm shadow-lg"
+    >
+      <div class="flex max-h-56 flex-col overflow-y-auto p-1">
+        @for (item of items(); track item.value) {
+          <button
+            type="button"
+            [disabled]="item.disabled"
+            class="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-sm text-platinum-100 transition-colors hover:bg-platinum-10 disabled:cursor-not-allowed disabled:opacity-50"
+            (click)="toggleItem(item.value)"
+          >
+            <span
+              class="flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border transition-colors"
+              [ngClass]="
+                isSelected(item.value)
+                  ? 'border-green-60 bg-green-60 text-white'
+                  : 'border-platinum-30'
+              "
+            >
+              @if (isSelected(item.value)) {
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+              }
+            </span>
+            <span class="truncate">{{ item.label }}</span>
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>
