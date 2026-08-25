@@ -252,7 +252,10 @@
                   {{ formatAmount(order.amount) }} {{ order.currency }}
                 </span>
                 <span class="rounded-full bg-platinum-10 px-2 py-0.5 text-xs font-medium text-platinum-70">
-                  {{ paymentMethodShortLabel(order.payment_method) }}
+                  {{ deliveryTypeLabel(order.delivery_type) }}
+                </span>
+                <span class="rounded-full bg-platinum-10 px-2 py-0.5 text-xs font-medium text-platinum-70">
+                  გადახდა: {{ paymentMethodShortLabel(order.payment_method) }}
                 </span>
               </div>
             </div>
@@ -452,7 +455,7 @@
             <th class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 md:table-cell">მომხმარებელი</th>
             <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50">თარიღი</th>
             <th class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 lg:table-cell">ქალაქი</th>
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50">გადახდის ფორმა</th>
+            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50">მიწოდება / გადახდა</th>
             @if (isAdminSource()) {
               <th class="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50 lg:table-cell">ვინ დაამატა</th>
             }
@@ -580,9 +583,10 @@
                   <p class="truncate text-sm text-platinum-60">{{ cityLabel(order.city) }}</p>
                 </td>
 
-                <!-- Payment method -->
+                <!-- Delivery / payment method -->
                 <td class="whitespace-nowrap px-4 py-3">
-                  <span class="text-sm text-platinum-60">{{ paymentMethodShortLabel(order.payment_method) }}</span>
+                  <p class="text-sm text-platinum-100">{{ deliveryTypeLabel(order.delivery_type) }}</p>
+                  <p class="text-xs text-platinum-50">გადახდა: {{ paymentMethodShortLabel(order.payment_method) }}</p>
                 </td>
 
                 @if (isAdminSource()) {
