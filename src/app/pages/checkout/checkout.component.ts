@@ -163,7 +163,8 @@ export class CheckoutComponent {
   readonly nextDayLabelPrefix = this.pricing.nextDayLabelPrefix;
 
   readonly paymentFee = computed(() =>
-    this.checkoutForm.payment_method().value() === 'cash_on_delivery'
+    this.checkoutForm.payment_method().value() === 'cash_on_delivery' &&
+    this.checkoutForm.delivery_type().value() !== 'pickup'
       ? cashOnDeliveryFee(this.cartService.totalPrice() + this.deliveryPrice())
       : 0,
   );
