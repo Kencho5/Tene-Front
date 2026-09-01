@@ -104,7 +104,7 @@ export class CheckoutComponent {
     {
       value: 'card',
       label: PAYMENT_METHOD_LABELS['card'],
-      description: 'Visa / Mastercard',
+      description: 'Visa / Mastercard (0% საკომისიო)',
     },
     {
       value: 'cash_on_delivery',
@@ -279,6 +279,7 @@ export class CheckoutComponent {
         individual: { ...this.defaultModel.individual, ...saved.individual },
         company: { ...this.defaultModel.company, ...saved.company },
         address: '',
+        payment_method: '',
       };
     } catch {
       return this.defaultModel;
@@ -379,7 +380,7 @@ export class CheckoutComponent {
     });
 
     effect(() => {
-      const model = this.checkoutModel();
+      const { payment_method, ...model } = this.checkoutModel();
       if (typeof localStorage === 'undefined') return;
       try {
         localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(model));
