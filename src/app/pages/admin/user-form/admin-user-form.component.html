@@ -45,6 +45,21 @@
             placeholder="აირჩიეთ როლი"
           />
         </div>
+
+        <!-- Delivery price -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-platinum-70">
+            მიწოდების ფასი (₾)
+          </label>
+          <app-input
+            [formField]="userForm.deliveryPrice"
+            type="number"
+            placeholder="მიწოდების ფასი"
+          />
+          <p class="mt-1 text-xs text-platinum-50">
+            ცარიელი ველი — სტანდარტული მიწოდების ფასი
+          </p>
+        </div>
       </div>
     </div>
 

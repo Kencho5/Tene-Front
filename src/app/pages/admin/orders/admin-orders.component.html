@@ -1368,7 +1368,7 @@
     [isOpen]="filtersOpen()"
     title="ფილტრი"
     cancelText="გაუქმება"
-    acceptText="გამოყენება"
+    acceptText="გაფილტვრა"
     widthClass="md:max-w-[720px]"
     (close)="closeFilters()"
     (accept)="applyFilters()"
@@ -1394,6 +1394,17 @@
             (selectedValueChange)="draftCity.set($event ?? '')"
             placeholder="ყველა ქალაქი"
             [items]="cityOptions"
+            customClass="!h-[40px] !rounded-lg !px-3"
+          />
+        </div>
+
+        <div>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">ამტვირთველი</label>
+          <app-dropdown
+            [selectedValue]="draftUploadedBy()"
+            (selectedValueChange)="draftUploadedBy.set($event ?? '')"
+            placeholder="ყველა"
+            [items]="uploadedByOptions()"
             customClass="!h-[40px] !rounded-lg !px-3"
           />
         </div>

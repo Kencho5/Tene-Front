@@ -22,6 +22,7 @@ interface UserFormData {
   name: string;
   email: string;
   role: UserRole;
+  deliveryPrice: string;
 }
 
 @Component({
@@ -52,6 +53,7 @@ export class AdminUserFormComponent {
     name: '',
     email: '',
     role: 'user',
+    deliveryPrice: '',
   });
 
   readonly userForm = form(this.userModel, (fieldPath) => {
@@ -86,6 +88,7 @@ export class AdminUserFormComponent {
           name: user.name,
           email: user.email,
           role: user.role,
+          deliveryPrice: user.delivery_price === null ? '' : String(user.delivery_price),
         });
       }
     });
@@ -96,10 +99,13 @@ export class AdminUserFormComponent {
 
     this.isSubmitting.set(true);
 
+    const deliveryPrice = this.userModel().deliveryPrice.trim();
+
     const payload = {
       name: this.userModel().name,
       email: this.userModel().email,
       role: this.userModel().role,
+      delivery_price: deliveryPrice === '' ? null : Number(deliveryPrice),
     };
 
     const userId = this.userId();

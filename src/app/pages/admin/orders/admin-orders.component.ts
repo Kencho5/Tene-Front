@@ -18,6 +18,7 @@ import { generateProductSlug } from '@utils/slug';
 import { OrderCommentImage } from '@core/interfaces/products.interface';
 import { AdminService } from '@core/services/admin/admin.service';
 import { AuthService } from '@core/services/auth/auth-service.service';
+import { UserResponse } from '@core/interfaces/admin/users.interface';
 
 type MultiFilterKey = 'status' | 'payment_method' | 'delivery_type' | 'fulfillment_method';
 
@@ -169,6 +170,22 @@ export class AdminOrdersComponent {
 
   readonly isExporting = signal(false);
 
+  private readonly staffResponse = rxResource({
+    defaultValue: { users: [], total: 0, limit: 0, offset: 0 },
+    params: () => 'role=admin,operator&limit=100',
+    stream: ({ params }) => this.adminService.searchUsers(params),
+  });
+
+  readonly staffUsers = computed(() => this.staffResponse.value().users);
+
+  readonly uploadedByOptions = computed<ComboboxItems[]>(() => [
+    { label: 'ყველა', value: '' },
+    ...this.staffUsers().map((user: UserResponse) => ({
+      label: user.name || user.email,
+      value: String(user.id),
+    })),
+  ]);
+
   readonly source = computed(() => (this.params()['source'] as string) ?? 'web');
   readonly isAdminSource = computed(() => this.source() === 'admin');
   readonly columnCount = computed(() => (this.isAdminSource() ? 9 : 8));
@@ -198,6 +215,15 @@ export class AdminOrdersComponent {
     const city = (this.params()['city'] as string) ?? '';
     if (city) chips.push({ key: 'city', value: city, label: this.cityLabel(city) });
 
+    const uploadedBy = (this.params()['created_by_user_id'] as string) ?? '';
+    if (uploadedBy) {
+      chips.push({
+        key: 'created_by_user_id',
+        value: uploadedBy,
+        label: `ამტვირთველი: ${this.uploadedByLabel(uploadedBy)}`,
+      });
+    }
+
     const min = (this.params()['min_amount'] as string) ?? '';
     const max = (this.params()['max_amount'] as string) ?? '';
     if (min) chips.push({ key: 'min_amount', value: min, label: `${min} ₾-დან` });
@@ -214,6 +240,11 @@ export class AdminOrdersComponent {
       fulfillment_method: this.fulfillmentMethodOptions,
     };
     return items[key].find((i) => i.value === value)?.label ?? value;
+  }
+
+  uploadedByLabel(userId: string): string {
+    const user = this.staffUsers().find((u: UserResponse) => String(u.id) === userId);
+    return user ? user.name || user.email : userId;
   }
 
   private csvParam(key: string): string[] {
@@ -362,6 +393,7 @@ export class AdminOrdersComponent {
   private readonly draftMulti = signal<Record<MultiFilterKey, string[]>>(this.emptyMulti());
   private readonly draftFlags = signal<Record<FlagKey, string>>(this.emptyFlags());
   readonly draftCity = signal('');
+  readonly draftUploadedBy = signal('');
   readonly draftMinAmount = signal('');
   readonly draftMaxAmount = signal('');
 
@@ -399,6 +431,7 @@ export class AdminOrdersComponent {
     this.draftFlags.set(flags);
 
     this.draftCity.set((this.params()['city'] as string) ?? '');
+    this.draftUploadedBy.set((this.params()['created_by_user_id'] as string) ?? '');
     this.draftMinAmount.set((this.params()['min_amount'] as string) ?? '');
     this.draftMaxAmount.set((this.params()['max_amount'] as string) ?? '');
   }
@@ -432,6 +465,7 @@ export class AdminOrdersComponent {
       is_installment_sale: flags.is_installment_sale || undefined,
       is_product_exchange: flags.is_product_exchange || undefined,
       city: this.draftCity() || undefined,
+      created_by_user_id: this.draftUploadedBy() || undefined,
       min_amount: this.draftMinAmount() || undefined,
       max_amount: this.draftMaxAmount() || undefined,
       offset: 0,
@@ -448,6 +482,7 @@ export class AdminOrdersComponent {
     this.draftMulti.set(this.emptyMulti());
     this.draftFlags.set(this.emptyFlags());
     this.draftCity.set('');
+    this.draftUploadedBy.set('');
     this.draftMinAmount.set('');
     this.draftMaxAmount.set('');
   }
@@ -477,6 +512,7 @@ export class AdminOrdersComponent {
       is_installment_sale: undefined,
       is_product_exchange: undefined,
       city: undefined,
+      created_by_user_id: undefined,
       min_amount: undefined,
       max_amount: undefined,
       from_date: undefined,

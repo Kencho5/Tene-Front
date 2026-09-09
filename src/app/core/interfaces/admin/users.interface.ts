@@ -12,6 +12,7 @@ export interface UserResponse {
   email: string;
   name: string;
   role: UserRole;
+  delivery_price: number | null;
   created_at: string;
 }
 
@@ -26,4 +27,5 @@ export interface UserRequest {
   email?: string;
   name?: string;
   role?: UserRole;
+  delivery_price?: number | null;
 }
