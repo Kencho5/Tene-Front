@@ -194,6 +194,7 @@ export interface Order {
   phone_number: number;
   address: string;
   city: string;
+  region: string | null;
   details: string;
   comment: string | null;
   comment_images?: OrderCommentImage[];

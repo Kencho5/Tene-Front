@@ -12,6 +12,12 @@ import {
   LightboxImage,
 } from '@shared/components/ui/lightbox/lightbox.component';
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
+import {
+  DELIVERY_PRICES,
+  HIGH_MOUNTAIN_CITIES,
+  TBILISI_REGIONS,
+  tbilisiExpressPrice,
+} from '@pages/checkout/checkout.config';
 import { SharedModule } from '@shared/shared.module';
 import { getProductImageUrl } from '@utils/product-image-url';
 import { generateProductSlug } from '@utils/slug';
@@ -856,6 +862,29 @@ export class AdminOrdersComponent {
       default:
         return type;
     }
+  }
+
+  regionLabel(region: string | null): string {
+    if (!region) return '—';
+    return TBILISI_REGIONS.find((r) => r.value === region)?.label ?? region;
+  }
+
+  deliveryPrice(order: Order): number {
+    if (order.delivery_type === 'pickup') return 0;
+    const city = (order.city ?? '').trim().toLowerCase();
+    if (city === 'tbilisi') {
+      return order.delivery_time === 'same_day'
+        ? tbilisiExpressPrice(order.region ?? '')
+        : DELIVERY_PRICES.nextDay;
+    }
+    return HIGH_MOUNTAIN_CITIES.has(city)
+      ? DELIVERY_PRICES.highMountain
+      : DELIVERY_PRICES.outsideTbilisi;
+  }
+
+  deliveryPriceLabel(order: Order): string {
+    const price = this.deliveryPrice(order);
+    return price === 0 ? 'უფასო' : `${this.formatItemAmount(price)} ${order.currency}`;
   }
 
   deliveryTimeLabel(time: string): string {

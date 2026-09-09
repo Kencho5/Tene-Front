@@ -37,7 +37,12 @@ import { AddressFormModalComponent } from '@shared/components/address-form-modal
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { DeliveryPricingService } from './delivery-pricing.service';
-import { cashOnDeliveryFee, PAYMENT_METHOD_LABELS, TBILISI_REGIONS } from './checkout.config';
+import {
+  cashOnDeliveryFee,
+  CHECKOUT_STRINGS,
+  PAYMENT_METHOD_LABELS,
+  TBILISI_REGIONS,
+} from './checkout.config';
 import {
   CheckoutAnalyticsEvent,
   CheckoutAnalyticsService,
@@ -161,6 +166,16 @@ export class CheckoutComponent {
   readonly nextDayPrice = this.pricing.nextDayPrice;
   readonly deliveryTimeOptions = this.pricing.deliveryTimeOptions;
   readonly nextDayLabelPrefix = this.pricing.nextDayLabelPrefix;
+
+  readonly cashOnDeliveryUnavailableReason = CHECKOUT_STRINGS.cashOnDeliveryUnavailable;
+
+  readonly cashOnDeliveryAvailable = computed(
+    () => this.checkoutForm.delivery_time().value() !== 'same_day',
+  );
+
+  isPaymentMethodDisabled(method: CheckoutPaymentMethod): boolean {
+    return method === 'cash_on_delivery' && !this.cashOnDeliveryAvailable();
+  }
 
   readonly paymentFee = computed(() =>
     this.checkoutForm.payment_method().value() === 'cash_on_delivery' &&
@@ -359,6 +374,15 @@ export class CheckoutComponent {
     effect(() => {
       if (!this.sameDayAvailable() && this.checkoutForm.delivery_time().value() === 'same_day') {
         this.checkoutForm.delivery_time().value.set('');
+      }
+    });
+
+    effect(() => {
+      if (
+        !this.cashOnDeliveryAvailable() &&
+        this.checkoutForm.payment_method().value() === 'cash_on_delivery'
+      ) {
+        this.checkoutForm.payment_method().value.set('');
       }
     });
 

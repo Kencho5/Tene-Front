@@ -546,11 +546,13 @@
             <div>
               <div class="grid gap-3 sm:grid-cols-2">
                 @for (method of paymentMethods; track method.value) { @let paymentSelected =
-                checkoutForm.payment_method().value() === method.value;
+                checkoutForm.payment_method().value() === method.value; @let paymentDisabled =
+                isPaymentMethodDisabled(method.value);
                 <button
                   type="button"
+                  [disabled]="paymentDisabled"
                   (click)="checkoutForm.payment_method().value.set(method.value)"
-                  [ngClass]="paymentSelected ? 'border-green-60 bg-white' : 'border-hairline bg-white hover:border-ink-30'"
+                  [ngClass]="paymentDisabled ? 'border-hairline bg-white cursor-not-allowed opacity-50' : paymentSelected ? 'border-green-60 bg-white' : 'border-hairline bg-white hover:border-ink-30'"
                   class="flex items-center gap-3 rounded-2xl border-[1.5px] px-3 py-3 text-left transition-colors duration-200 ease-out"
                 >
                   <span
@@ -586,7 +588,9 @@
                   </span>
                   <span class="flex min-w-0 flex-col">
                     <span class="text-ink-80 truncate text-sm">{{ method.label }}</span>
-                    <span class="text-ink-40 truncate text-xs">{{ method.description }}</span>
+                    <span class="text-ink-40 truncate text-xs">
+                      {{ paymentDisabled ? cashOnDeliveryUnavailableReason : method.description }}
+                    </span>
                   </span>
                   <span
                     [ngClass]="paymentSelected ? 'border-green-60 bg-green-60' : 'border-hairline bg-ink-10'"

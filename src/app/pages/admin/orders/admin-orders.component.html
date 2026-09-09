@@ -412,8 +412,15 @@
               <span
                 class="bg-platinum-10 text-platinum-70 rounded-full px-2 py-0.5 text-xs font-medium"
               >
-                {{ deliveryTypeLabel(order.delivery_type) }}
+                {{ deliveryTypeLabel(order.delivery_type) }} · {{ deliveryPriceLabel(order) }}
               </span>
+              @if (order.region) {
+              <span
+                class="bg-platinum-10 text-platinum-70 rounded-full px-2 py-0.5 text-xs font-medium"
+              >
+                {{ regionLabel(order.region) }}
+              </span>
+              }
               <span
                 class="bg-platinum-10 text-platinum-70 rounded-full px-2 py-0.5 text-xs font-medium"
               >
@@ -939,7 +946,13 @@
 
             <!-- Delivery / payment method -->
             <td class="px-4 py-3 whitespace-nowrap">
-              <p class="text-platinum-100 text-sm">{{ deliveryTypeLabel(order.delivery_type) }}</p>
+              <p class="text-platinum-100 text-sm">
+                {{ deliveryTypeLabel(order.delivery_type) }}
+                <span class="text-platinum-50">· {{ deliveryPriceLabel(order) }}</span>
+              </p>
+              @if (order.region) {
+              <p class="text-platinum-50 text-xs">{{ regionLabel(order.region) }}</p>
+              }
               <p class="text-platinum-50 text-xs">
                 გადახდა: {{ paymentMethodShortLabel(order.payment_method) }}
               </p>
