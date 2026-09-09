@@ -178,11 +178,13 @@ export class AdminOrdersComponent {
 
   private readonly staffResponse = rxResource({
     defaultValue: { users: [], total: 0, limit: 0, offset: 0 },
-    params: () => 'role=admin,operator&limit=100',
+    params: () => (this.authService.isAdmin() ? 'role=admin,operator&limit=100' : undefined),
     stream: ({ params }) => this.adminService.searchUsers(params),
   });
 
-  readonly staffUsers = computed(() => this.staffResponse.value().users);
+  readonly staffUsers = computed(() =>
+    this.staffResponse.hasValue() ? this.staffResponse.value().users : [],
+  );
 
   readonly uploadedByOptions = computed<ComboboxItems[]>(() => [
     { label: 'ყველა', value: '' },
