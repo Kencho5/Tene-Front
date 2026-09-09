@@ -590,7 +590,7 @@
                 {{ cityLabel(order.city) }}
               </dd>
             </div>
-            } @if (order.address) {
+            } @if (order.address && order.delivery_type !== 'pickup') {
             <div class="col-span-2">
               <dt class="text-platinum-50 text-xs">მისამართი</dt>
               <dd class="text-platinum-100 mt-0.5 text-sm font-medium break-words">
@@ -1191,7 +1191,7 @@
                           {{ cityLabel(order.city) }}
                         </dd>
                       </div>
-                      } @if (order.address) {
+                      } @if (order.address && order.delivery_type !== 'pickup') {
                       <div class="sm:col-span-2">
                         <dt class="text-platinum-50 text-xs">მისამართი</dt>
                         <dd class="text-platinum-100 mt-0.5 text-sm font-medium break-words">
