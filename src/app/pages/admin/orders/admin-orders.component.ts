@@ -561,6 +561,10 @@ export class AdminOrdersComponent {
     }
   }
 
+  orderPaymentMethod(order: Order): string | null {
+    return order.payment_method ?? (order.source === 'web' ? 'card' : null);
+  }
+
   paymentMethodShortLabel(method: string | null): string {
     switch (method) {
       case 'card':
