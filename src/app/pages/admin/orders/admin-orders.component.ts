@@ -2,7 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
-import { Order, OrderItem, OrderStatus } from '@core/interfaces/products.interface';
+import {
+  Order,
+  OrderCreator,
+  OrderItem,
+  OrderStatus,
+} from '@core/interfaces/products.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { ModalComponent } from '@shared/components/ui/modal/modal.component';
 import { MultiDropdownComponent } from '@shared/components/ui/multi-dropdown/multi-dropdown.component';
@@ -24,7 +29,6 @@ import { generateProductSlug } from '@utils/slug';
 import { OrderCommentImage } from '@core/interfaces/products.interface';
 import { AdminService } from '@core/services/admin/admin.service';
 import { AuthService } from '@core/services/auth/auth-service.service';
-import { UserResponse } from '@core/interfaces/admin/users.interface';
 
 type MultiFilterKey = 'status' | 'payment_method' | 'delivery_type' | 'fulfillment_method';
 
@@ -176,21 +180,19 @@ export class AdminOrdersComponent {
 
   readonly isExporting = signal(false);
 
-  private readonly staffResponse = rxResource({
-    defaultValue: { users: [], total: 0, limit: 0, offset: 0 },
-    params: () => (this.authService.isAdmin() ? 'role=admin,operator&limit=100' : undefined),
-    stream: ({ params }) => this.adminService.searchUsers(params),
-  });
+  private readonly creatorsRequested = signal(false);
 
-  readonly staffUsers = computed(() =>
-    this.staffResponse.hasValue() ? this.staffResponse.value().users : [],
-  );
+  private readonly creatorsResponse = rxResource({
+    defaultValue: [] as OrderCreator[],
+    params: () => (this.creatorsRequested() && this.authService.isAdmin() ? true : undefined),
+    stream: () => this.adminService.getOrderCreators(),
+  });
 
   readonly uploadedByOptions = computed<ComboboxItems[]>(() => [
     { label: 'ყველა', value: '' },
-    ...this.staffUsers().map((user: UserResponse) => ({
-      label: user.name || user.email,
-      value: String(user.id),
+    ...(this.creatorsResponse.hasValue() ? this.creatorsResponse.value() : []).map((creator) => ({
+      label: creator.name || creator.email,
+      value: String(creator.id),
     })),
   ]);
 
@@ -251,8 +253,8 @@ export class AdminOrdersComponent {
   }
 
   uploadedByLabel(userId: string): string {
-    const user = this.staffUsers().find((u: UserResponse) => String(u.id) === userId);
-    return user ? user.name || user.email : userId;
+    const creator = this.orders().find((o) => String(o.created_by?.id) === userId)?.created_by;
+    return creator ? creator.name || creator.email : userId;
   }
 
   private csvParam(key: string): string[] {
@@ -423,6 +425,7 @@ export class AdminOrdersComponent {
   }
 
   openFilters(): void {
+    this.creatorsRequested.set(true);
     this.syncDraftFromParams();
     this.filtersOpen.set(true);
   }

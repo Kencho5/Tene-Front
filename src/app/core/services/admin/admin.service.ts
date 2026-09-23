@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpStatusCode } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
   Order,
+  OrderCreator,
   OrderSearchResponse,
   ProductResponse,
   ProductSearchResponse,
@@ -175,6 +176,10 @@ export class AdminService {
 
   updateOrderFinaCleared(id: number, isFinaCleared: boolean): Observable<Order> {
     return this.updateOrder(id, { is_fina_cleared: isFinaCleared });
+  }
+
+  getOrderCreators(): Observable<OrderCreator[]> {
+    return this.http.get<OrderCreator[]>('/admin/orders/creators');
   }
 
   exportOrders(params: string): Observable<Blob> {
