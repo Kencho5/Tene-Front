@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { DecimalPipe, NgClass } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { email, FormField, form, hidden, required, submit } from '@angular/forms/signals';
+import { email, FormField, form, hidden, required, submit, validate } from '@angular/forms/signals';
 import { catchError, EMPTY, forkJoin, mergeMap, Observable, of, switchMap } from 'rxjs';
 import {
   CheckoutFields,
@@ -36,6 +36,10 @@ import { AddressData } from '@core/interfaces/address.interface';
 import { AddressFormModalComponent } from '@shared/components/address-form-modal/address-form-modal.component';
 import { georgianCities } from '@shared/components/address-form-modal/georgian-cities';
 import { AuthService } from '@core/services/auth/auth-service.service';
+import { PhoneNumberService } from '@core/services/phone-number.service';
+import { PhoneNumber } from '@core/interfaces/phone-number.interface';
+import { PhoneVerificationComponent } from '@shared/components/phone-verification/phone-verification.component';
+import { formatPhoneNumber, isValidPhoneNumber, normalizePhoneNumber } from '@utils/phone-number';
 import { DeliveryPricingService } from './delivery-pricing.service';
 import {
   cashOnDeliveryFee,
@@ -82,6 +86,7 @@ interface StepInfo {
     ComboboxComponent,
     DropdownComponent,
     AddressFormModalComponent,
+    PhoneVerificationComponent,
     FormField,
   ],
   templateUrl: './checkout.component.html',
@@ -100,6 +105,7 @@ export class CheckoutComponent {
   private readonly deliveryPricing = inject(DeliveryPricingService);
   private readonly analytics = inject(CheckoutAnalyticsService);
   private readonly compressImageService = inject(CompressImageService);
+  private readonly phoneNumberService = inject(PhoneNumberService);
 
   readonly isGuest = computed(() => !this.authService.isAuthenticated());
   readonly georgianCities = georgianCities;
@@ -204,6 +210,29 @@ export class CheckoutComponent {
   });
 
   readonly addresses = signal<AddressData[]>([]);
+
+  readonly savedPhones = signal<PhoneNumber[]>([]);
+  readonly formatPhoneNumber = formatPhoneNumber;
+  readonly verificationCode = signal('');
+  readonly verificationCodeSent = signal(false);
+
+  readonly normalizedPhone = computed(() =>
+    normalizePhoneNumber(this.checkoutForm.phone_number().value()),
+  );
+
+  readonly needsPhoneVerification = computed(() => {
+    const phone = this.normalizedPhone();
+    if (this.isGuest()) return true;
+    return !this.savedPhones().some((p) => p.verified && p.phone_number === phone);
+  });
+
+  readonly phoneVerificationMissing = computed(
+    () => this.needsPhoneVerification() && this.verificationCode().length !== 6,
+  );
+
+  selectSavedPhone(phone: PhoneNumber): void {
+    this.checkoutForm.phone_number().value.set(formatPhoneNumber(phone.phone_number));
+  }
 
   readonly steps: StepInfo[] = [
     { key: 'contact', label: 'საკონტაქტო დეტალები', shortLabel: 'საკონტაქტო' },
@@ -321,6 +350,11 @@ export class CheckoutComponent {
     required(fieldPath.phone_number, {
       message: 'ტელეფონის ნომერი აუცილებელია',
     });
+    validate(fieldPath.phone_number, ({ value }) =>
+      !value() || isValidPhoneNumber(value())
+        ? undefined
+        : { kind: 'phone', message: 'შეიყვანეთ სწორი მობილურის ნომერი (5XXXXXXXX)' },
+    );
     hidden(
       fieldPath.address,
       ({ valueOf }) => valueOf(fieldPath.delivery_type) === 'pickup' || this.isGuest(),
@@ -396,6 +430,14 @@ export class CheckoutComponent {
     });
 
     effect(() => {
+      this.normalizedPhone();
+      untracked(() => {
+        this.verificationCode.set('');
+        this.verificationCodeSent.set(false);
+      });
+    });
+
+    effect(() => {
       const cart = this.cartItems();
       const serialized = JSON.stringify(cart);
       if (serialized === this.lastCartSnapshot) return;
@@ -453,6 +495,21 @@ export class CheckoutComponent {
             this.fieldSnapshot.set('address', id);
           }
         });
+
+      this.phoneNumberService
+        .getPhoneNumbers()
+        .pipe(
+          takeUntilDestroyed(),
+          catchError(() => of([])),
+        )
+        .subscribe((phones) => {
+          this.savedPhones.set(phones);
+          const preferred = phones.find((p) => p.verified) ?? phones[0];
+          if (preferred && !this.checkoutForm.phone_number().value()) {
+            this.selectSavedPhone(preferred);
+            this.fieldSnapshot.set('phone_number', this.checkoutModel().phone_number);
+          }
+        });
     }
   }
 
@@ -460,7 +517,7 @@ export class CheckoutComponent {
     event?.preventDefault();
     this.submitted.set(true);
 
-    if (this.checkoutForm().invalid()) {
+    if (this.checkoutForm().invalid() || this.phoneVerificationMissing()) {
       this.goToFirstInvalidStep();
       this.scrollPending.set(true);
       return;
@@ -538,7 +595,7 @@ export class CheckoutComponent {
         return !this.checkoutForm.payment_method().invalid();
       case 'review':
       case 'processing':
-        return !this.checkoutForm().invalid();
+        return !this.checkoutForm().invalid() && !this.phoneVerificationMissing();
     }
   }
 
@@ -571,6 +628,8 @@ export class CheckoutComponent {
     const resolvedCity = guest ? model.guest_city : (selectedAddress?.city ?? '');
     const resolvedRegion = guest ? model.guest_region : (selectedAddress?.region ?? '');
     const resolvedDetails = guest ? model.guest_details : (selectedAddress?.details ?? '');
+    const phoneNumber = this.normalizedPhone() ?? model.phone_number;
+    const verificationCode = this.needsPhoneVerification() ? this.verificationCode() : '';
 
     this.checkoutLoading.set(true);
 
@@ -587,7 +646,8 @@ export class CheckoutComponent {
                   organization_code: model.company.organization_code,
                 }),
             email: model.email,
-            phone_number: model.phone_number,
+            phone_number: phoneNumber,
+            ...(verificationCode ? { phone_verification_code: Number(verificationCode) } : {}),
             address: resolvedAddress,
             city: resolvedCity,
             ...(resolvedRegion ? { region: resolvedRegion } : {}),
@@ -604,7 +664,13 @@ export class CheckoutComponent {
         catchError((error) => {
           const message = error?.error?.message || 'შეკვეთის გაფორმება ვერ მოხერხდა';
           this.toastService.add('შეცდომა', message, 5000, 'error');
-          this.currentStepIndex.set(3);
+          if (verificationCode && (error?.status === 400 || error?.status === 429)) {
+            this.verificationCode.set('');
+            if (error.status === 429) this.verificationCodeSent.set(false);
+            this.currentStepIndex.set(0);
+          } else {
+            this.currentStepIndex.set(3);
+          }
           this.checkoutLoading.set(false);
           return EMPTY;
         }),
@@ -643,6 +709,7 @@ export class CheckoutComponent {
     return (
       f.email().invalid() ||
       f.phone_number().invalid() ||
+      this.phoneVerificationMissing() ||
       (isIndividual && (f.individual.name().invalid() || f.individual.surname().invalid())) ||
       (isCompany &&
         (f.company.organization_name().invalid() || f.company.organization_code().invalid()))

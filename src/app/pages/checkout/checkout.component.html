@@ -145,13 +145,57 @@
             @if (submitted() && checkoutForm.phone_number().invalid()) {
             <span #errorAnchor></span>
             }
+            @if (savedPhones().length > 0) {
+            <div class="flex flex-wrap gap-2">
+              @for (phone of savedPhones(); track phone.id) {
+              <button
+                type="button"
+                (click)="selectSavedPhone(phone)"
+                class="inline-flex items-center gap-1.5 rounded-full border-[1.5px] px-3 py-1.5 text-sm transition-colors"
+                [ngClass]="
+                  normalizedPhone() === phone.phone_number
+                    ? 'border-green-60 bg-green-10 text-green-70'
+                    : 'border-hairline text-ink-70 hover:bg-ink-10 bg-white'
+                "
+              >
+                {{ formatPhoneNumber(phone.phone_number) }}
+                @if (phone.verified) {
+                <svg class="text-green-60 h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-label="დადასტურებული">
+                  <path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                }
+              </button>
+              }
+            </div>
+            }
             <app-input
               [formField]="checkoutForm.phone_number"
               [error]="submitted() && checkoutForm.phone_number().invalid()"
               [errorMessage]="checkoutForm.phone_number().errors()[0]?.message ?? ''"
-              type="text"
-              placeholder="ტელეფონის ნომერი"
+              type="tel"
+              placeholder="ტელეფონის ნომერი (5XX XXX XXX)"
             />
+
+            @if (normalizedPhone()) {
+            @if (needsPhoneVerification()) {
+            @if (submitted() && phoneVerificationMissing()) {
+            <span #errorAnchor></span>
+            }
+            <app-phone-verification
+              [phoneNumber]="normalizedPhone()"
+              [error]="submitted() && phoneVerificationMissing()"
+              [(code)]="verificationCode"
+              [(codeSent)]="verificationCodeSent"
+            />
+            } @else {
+            <p class="text-green-70 -mt-2 flex items-center gap-1.5 text-sm font-medium">
+              <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                <path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              ნომერი დადასტურებულია
+            </p>
+            }
+            }
           </div>
           }
 
@@ -679,7 +723,7 @@
                   <div class="flex justify-between gap-3">
                     <dt class="text-ink-40">ტელეფონი</dt>
                     <dd class="text-ink-70 text-right">
-                      {{ checkoutForm.phone_number().value() }}
+                      {{ formatPhoneNumber(checkoutForm.phone_number().value()) }}
                     </dd>
                   </div>
                 </dl>

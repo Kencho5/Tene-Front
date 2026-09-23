@@ -142,6 +142,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/profile/addresses/addresses.component').then((m) => m.AddressesComponent),
       },
+      {
+        path: 'phone-numbers',
+        loadComponent: () =>
+          import('./pages/profile/phone-numbers/phone-numbers.component').then(
+            (m) => m.PhoneNumbersComponent,
+          ),
+      },
     ],
   },
 
