@@ -12,7 +12,6 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
-import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
 import { catchError, finalize, map, of, tap } from 'rxjs';
@@ -32,7 +31,6 @@ interface CategoryWithDepth extends Category {
   imports: [
     SharedModule,
     DropdownComponent,
-    ConfirmationModalComponent,
     PaginationComponent,
   ],
   templateUrl: './admin-categories.component.html',

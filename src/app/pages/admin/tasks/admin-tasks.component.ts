@@ -11,7 +11,6 @@ import {
 } from '@core/interfaces/admin/tasks.interface';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
-import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { SharedModule } from '@shared/shared.module';
 import { catchError, of, tap } from 'rxjs';
 import { TaskCardComponent } from './task-card/task-card.component';
@@ -31,7 +30,6 @@ const PAGE_SIZE = 10;
     SharedModule,
     FormsModule,
     DropdownComponent,
-    ConfirmationModalComponent,
     TaskCardComponent,
     TaskEditorComponent,
   ],

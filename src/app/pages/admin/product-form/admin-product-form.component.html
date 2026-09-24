@@ -1,8 +1,8 @@
-<div class="space-y-5">
+<div class="mx-auto max-w-4xl space-y-4">
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-platinum-100 text-xl font-semibold">{{ pageTitle() }}</h1>
+      <h1 class="text-platinum-100 text-lg font-semibold">{{ pageTitle() }}</h1>
       <p class="text-platinum-50 mt-0.5 text-sm">
         @if (isEditMode()) { პროდუქტის SKU: {{ productModel().sku }} } @else { შეავსეთ ყველა
         სავალდებულო ველი }
@@ -11,51 +11,63 @@
   </div>
 
   <!-- Form -->
-  <form (submit)="onSubmit($event)" novalidate class="space-y-5">
+  <form (submit)="onSubmit($event)" novalidate class="space-y-4">
     <!-- Basic Information Card -->
-    <div class="border-hairline rounded-2xl border bg-white p-5">
-      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
+    <div class="border-hairline-strong/60 rounded-2xl border bg-white">
+      <div class="border-hairline-strong/60 border-b px-5 py-3">
+        <h2 class="text-platinum-100 text-sm font-semibold">
         ძირითადი ინფორმაცია
       </h2>
+      </div>
+      <div class="px-5 py-4">
 
       <div class="flex flex-col gap-4">
         <!-- Product SKU -->
-        <app-input
-          [formField]="productForm.sku"
-          [error]="submitted() && productForm.sku().invalid()"
-          type="text"
-          placeholder="პროდუქტის SKU *"
-        />
+        <div>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">SKU *</label>
+          <app-input
+            [formField]="productForm.sku"
+            [error]="submitted() && productForm.sku().invalid()"
+            type="text"
+            placeholder="SKU"
+          />
+        </div>
 
         <!-- Product Name -->
-        <textarea
-          [formField]="productForm.name"
-          rows="2"
-          placeholder="პროდუქტის სახელი *"
-          [ngClass]="{
-            'border-valencia-50 hover:border-valencia-50 focus:border-valencia-50 focus:ring-1 focus:ring-valencia-50':
-              submitted() && productForm.name().invalid(),
-            'focus:border-platinum-30 focus:ring-1 focus:ring-platinum-40': !(
-              submitted() && productForm.name().invalid()
-            ),
-          }"
-          class="border-hairline text-platinum-100 placeholder:text-platinum-40 w-full resize-none rounded-xl border bg-white px-3.5 py-2.5 text-sm break-words focus:outline-hidden"
-        ></textarea>
+        <div>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">სახელი *</label>
+          <textarea
+            [formField]="productForm.name"
+            rows="2"
+            placeholder="პროდუქტის სახელი"
+            [ngClass]="{
+              'border-valencia-50 hover:border-valencia-50 focus:border-valencia-50 focus:ring-1 focus:ring-valencia-50':
+                submitted() && productForm.name().invalid(),
+              'focus:border-platinum-30 focus:ring-1 focus:ring-platinum-40': !(
+                submitted() && productForm.name().invalid()
+              ),
+            }"
+            class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 w-full resize-none rounded-xl border bg-white px-3.5 py-2.5 text-sm break-words focus:outline-hidden"
+          ></textarea>
+        </div>
 
         <!-- Description -->
-        <textarea
-          [formField]="productForm.description"
-          rows="4"
-          placeholder="პროდუქტის დეტალური აღწერა"
-          [ngClass]="{
-            'border-valencia-50 hover:border-valencia-50 focus:border-valencia-50 focus:ring-1 focus:ring-valencia-50':
-              submitted() && productForm.description().invalid(),
-            'focus:border-platinum-30 focus:ring-1 focus:ring-platinum-40': !(
-              submitted() && productForm.description().invalid()
-            ),
-          }"
-          class="border-hairline text-platinum-100 placeholder:text-platinum-40 w-full resize-none rounded-xl border bg-white px-3.5 py-2.5 text-sm focus:outline-hidden"
-        ></textarea>
+        <div>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">აღწერა</label>
+          <textarea
+            [formField]="productForm.description"
+            rows="4"
+            placeholder="პროდუქტის დეტალური აღწერა"
+            [ngClass]="{
+              'border-valencia-50 hover:border-valencia-50 focus:border-valencia-50 focus:ring-1 focus:ring-valencia-50':
+                submitted() && productForm.description().invalid(),
+              'focus:border-platinum-30 focus:ring-1 focus:ring-platinum-40': !(
+                submitted() && productForm.description().invalid()
+              ),
+            }"
+            class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 w-full resize-none rounded-xl border bg-white px-3.5 py-2.5 text-sm focus:outline-hidden"
+          ></textarea>
+        </div>
 
         <!-- Categories -->
         <div>
@@ -118,25 +130,32 @@
         </div>
 
         <!-- Warranty -->
-        <app-input
-          [formField]="productForm.warranty"
-          [error]="submitted() && productForm.warranty().invalid()"
-          type="text"
-          placeholder="გარანტია (მაგ: 12 თვე)"
-        />
+        <div>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium">გარანტია</label>
+          <app-input
+            [formField]="productForm.warranty"
+            [error]="submitted() && productForm.warranty().invalid()"
+            type="text"
+            placeholder="მაგ: 12 თვე"
+          />
+        </div>
+      </div>
       </div>
     </div>
 
     <!-- Pricing & Inventory Card -->
-    <div class="border-hairline rounded-2xl border bg-white p-5">
-      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
+    <div class="border-hairline-strong/60 rounded-2xl border bg-white">
+      <div class="border-hairline-strong/60 border-b px-5 py-3">
+        <h2 class="text-platinum-100 text-sm font-semibold">
         ფასი და მარაგი
       </h2>
+      </div>
+      <div class="px-5 py-4">
 
       <div class="grid gap-4 sm:grid-cols-2">
         <!-- Price -->
         <div>
-          <div class="mb-2 hidden h-9 sm:block"></div>
+          <label class="text-platinum-70 mb-1.5 block text-sm font-medium sm:mb-2 sm:flex sm:h-9 sm:items-end">ფასი (₾) *</label>
           <app-input
             [formField]="productForm.price"
             [error]="submitted() && productForm.price().invalid()"
@@ -147,7 +166,7 @@
 
         <!-- Discount (toggle: percent / final price) -->
         <div>
-          <div class="border-hairline mb-2 grid grid-cols-2 gap-0.5 rounded-lg border p-0.5 sm:inline-flex sm:w-auto">
+          <div class="border-hairline-strong/60 mb-2 grid grid-cols-2 gap-0.5 rounded-lg border p-0.5 sm:inline-flex sm:w-auto">
             <button
               type="button"
               (click)="setDiscountMode('percent')"
@@ -193,18 +212,19 @@
 
         <!-- Quantity is auto-computed from image variants -->
       </div>
+      </div>
     </div>
 
     <!-- Specifications Card -->
-    <div class="border-hairline rounded-2xl border bg-white p-5">
-      <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-platinum-50 text-sm font-semibold tracking-wider uppercase">
+    <div class="border-hairline-strong/60 rounded-2xl border bg-white">
+      <div class="border-hairline-strong/60 border-b px-5 py-3 flex items-center justify-between">
+        <h2 class="text-platinum-100 text-sm font-semibold">
           სპეციფიკაცია
         </h2>
         <button
           type="button"
           (click)="addSpecification()"
-          class="bg-green-60 hover:bg-green-70 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-white transition-colors"
+          class="border-hairline-strong/60 text-platinum-80 hover:bg-platinum-10/60 inline-flex h-8 items-center gap-1.5 rounded-full border bg-white px-3 text-sm font-medium transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
             <path
@@ -217,26 +237,27 @@
           დამატება
         </button>
       </div>
+      <div class="px-5 py-4">
 
       @if (specifications().length === 0) {
       <p class="text-platinum-40 py-4 text-center text-sm">სპეციფიკაციები არ არის დამატებული</p>
       } @else {
       <div class="space-y-3">
         @for (spec of specifications(); track $index) {
-        <div class="border-hairline flex flex-col gap-2 rounded-2xl border p-2 sm:flex-row sm:items-center sm:gap-3 sm:border-0 sm:p-0">
+        <div class="border-hairline-strong/60 flex flex-col gap-2 rounded-2xl border p-2 sm:flex-row sm:items-center sm:gap-3 sm:border-0 sm:p-0">
           <input
             type="text"
             [value]="spec.group"
             (input)="updateSpecificationGroup($index, $any($event.target).value)"
             placeholder="ჯგუფი (მაგ: ეკრანი)"
-            class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3.5 py-2 text-sm outline-hidden transition-colors sm:w-1/4"
+            class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3.5 py-2 text-sm outline-hidden transition-colors sm:w-1/4"
           />
           <input
             type="text"
             [value]="spec.key"
             (input)="updateSpecificationKey($index, $any($event.target).value)"
             placeholder="პარამეტრი (მაგ: ზომა)"
-            class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3.5 py-2 text-sm outline-hidden transition-colors sm:flex-1"
+            class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3.5 py-2 text-sm outline-hidden transition-colors sm:flex-1"
           />
           <div class="flex items-center gap-2 sm:flex-1">
             <input
@@ -244,7 +265,7 @@
               [value]="spec.value"
               (input)="updateSpecificationValue($index, $any($event.target).value)"
               placeholder="მნიშვნელობა (მაგ: 10x10x10 სმ)"
-              class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3.5 py-2 text-sm outline-hidden transition-colors"
+              class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3.5 py-2 text-sm outline-hidden transition-colors"
             />
             <button
               type="button"
@@ -261,21 +282,25 @@
         }
       </div>
       }
+      </div>
     </div>
 
     <!-- Images Upload Card -->
-    <div class="border-hairline rounded-2xl border bg-white p-5">
-      <h2 class="text-platinum-50 mb-4 text-sm font-semibold tracking-wider uppercase">
+    <div class="border-hairline-strong/60 rounded-2xl border bg-white">
+      <div class="border-hairline-strong/60 border-b px-5 py-3">
+        <h2 class="text-platinum-100 text-sm font-semibold">
         სურათები @if (!isEditMode()) {
         <span class="text-valencia-60">*</span>
         }
       </h2>
+      </div>
+      <div class="px-5 py-4">
 
       <!-- Upload Area -->
       <div class="mb-4">
         <label
           for="images"
-          class="border-hairline bg-platinum-10 hover:border-green-60 hover:bg-green-10 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-8 transition-colors"
+          class="border-hairline-strong/60 bg-platinum-10 hover:border-green-60 hover:bg-green-10 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-8 transition-colors"
         >
           <svg width="40" height="40" viewBox="0 0 48 48" fill="none" class="text-platinum-40 mb-3">
             <path
@@ -300,7 +325,7 @@
 
       <!-- Default variant for all images -->
       @if (imagePreviewUrls().length > 0) {
-      <div class="border-hairline bg-platinum-10 mb-4 rounded-2xl border p-3">
+      <div class="border-hairline-strong/60 bg-platinum-10 mb-4 rounded-2xl border p-3">
         <p class="text-platinum-70 mb-2.5 text-sm font-medium">ფერი და რაოდენობა ყველა სურათისთვის</p>
         <div class="grid gap-2 sm:grid-cols-2">
           <app-combobox
@@ -317,7 +342,7 @@
             [value]="defaultQuantity()"
             (input)="defaultQuantity.set(+$any($event.target).value)"
             placeholder="რაოდენობა"
-            class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white px-3.5 text-sm outline-hidden transition-colors"
+            class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white px-3.5 text-sm outline-hidden transition-colors"
           />
         </div>
         @if (hasAnyCustomVariant()) {
@@ -333,7 +358,7 @@
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         @for (url of imagePreviewUrls(); track $index) {
         <div
-          class="group border-hairline relative rounded-2xl border bg-white"
+          class="group border-hairline-strong/60 relative rounded-2xl border bg-white"
           style="overflow: visible"
         >
           <!-- Image -->
@@ -369,7 +394,7 @@
           <div class="flex flex-col gap-3 p-3">
             <!-- Primary Radio -->
             <label
-              class="border-hairline hover:border-green-60 flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 transition-all"
+              class="border-hairline-strong/60 hover:border-green-60 flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 transition-all"
               [class.border-green-60]="imageMetadata()[$index]?.is_primary"
               [class.bg-green-10]="imageMetadata()[$index]?.is_primary"
             >
@@ -446,7 +471,7 @@
                 [value]="imageMetadata()[$index]?.quantity"
                 (input)="updateImageQuantity($index, +$any($event.target).value)"
                 placeholder="რაოდენობა"
-                class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3.5 py-2 text-sm outline-hidden transition-colors"
+                class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3.5 py-2 text-sm outline-hidden transition-colors"
               />
               @if (imageMetadata()[$index]?.hasCustomVariant) {
               <button
@@ -464,18 +489,19 @@
         }
       </div>
       }
+      </div>
     </div>
 
     <!-- Videos Card -->
-    <div class="border-hairline rounded-2xl border bg-white p-5">
-      <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-platinum-50 text-sm font-semibold tracking-wider uppercase">
+    <div class="border-hairline-strong/60 rounded-2xl border bg-white">
+      <div class="border-hairline-strong/60 border-b px-5 py-3 flex items-center justify-between">
+        <h2 class="text-platinum-100 text-sm font-semibold">
           ვიდეოები
         </h2>
         <button
           type="button"
           (click)="addVideo()"
-          class="bg-green-60 hover:bg-green-70 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-white transition-colors"
+          class="border-hairline-strong/60 text-platinum-80 hover:bg-platinum-10/60 inline-flex h-8 items-center gap-1.5 rounded-full border bg-white px-3 text-sm font-medium transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
             <path
@@ -488,8 +514,9 @@
           დამატება
         </button>
       </div>
+      <div class="px-5 py-4">
 
-      <p class="text-platinum-40 mb-3 text-xs">
+      <p class="text-platinum-50 mb-3 text-xs">
         YouTube ან Facebook ვიდეოს ბმული (მაგ: https://www.youtube.com/watch?v=...)
       </p>
 
@@ -504,7 +531,7 @@
             [value]="video"
             (input)="updateVideo($index, $any($event.target).value)"
             placeholder="https://www.youtube.com/watch?v=... ან https://fb.watch/..."
-            class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3.5 py-2 text-sm outline-hidden transition-colors"
+            class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3.5 py-2 text-sm outline-hidden transition-colors"
           />
           <button
             type="button"
@@ -520,17 +547,21 @@
         }
       </div>
       }
+      </div>
     </div>
 
     <!-- SEO Card -->
-    <div class="border-hairline rounded-2xl border bg-white p-5">
-      <h2 class="text-platinum-50 mb-5 text-sm font-semibold tracking-wider uppercase">
+    <div class="border-hairline-strong/60 rounded-2xl border bg-white">
+      <div class="border-hairline-strong/60 border-b px-5 py-3">
+        <h2 class="text-platinum-100 text-sm font-semibold">
         SEO და აღმოჩენადობა
       </h2>
+      </div>
+      <div class="px-5 py-4">
 
-      <div class="divide-platinum-20/60 flex flex-col divide-y">
+      <div class="divide-hairline-strong/60 flex flex-col divide-y">
         <!-- Meta tags group -->
-        <div class="flex flex-col gap-4 pb-5">
+        <div class="flex flex-col gap-4 pb-4">
           <!-- Meta Title -->
           <div>
             <div class="mb-1.5 flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5">
@@ -547,7 +578,7 @@
               (input)="productModel.update(m => ({ ...m, meta_title: $any($event.target).value }))"
               maxlength="120"
               placeholder="მაგ: Apple iPhone 15 Pro Max 256GB | Tene"
-              class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full resize-none rounded-xl border px-3.5 py-2.5 text-sm break-words outline-hidden transition-colors"
+              class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full resize-none rounded-xl border px-3.5 py-2.5 text-sm break-words outline-hidden transition-colors"
             ></textarea>
           </div>
 
@@ -567,13 +598,13 @@
               (input)="productModel.update(m => ({ ...m, meta_description: $any($event.target).value }))"
               maxlength="320"
               placeholder="მოკლე, მიმზიდველი აღწერა საძიებო შედეგებისთვის"
-              class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full resize-none rounded-xl border px-3.5 py-2.5 text-sm outline-hidden transition-colors"
+              class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full resize-none rounded-xl border px-3.5 py-2.5 text-sm outline-hidden transition-colors"
             ></textarea>
           </div>
         </div>
 
         <!-- URL slug -->
-        <div class="py-5">
+        <div class="py-4">
           <label class="text-platinum-70 mb-1.5 block text-sm font-medium">URL slug</label>
           <div class="flex items-stretch gap-2">
             <input
@@ -581,12 +612,12 @@
               [value]="productModel().slug"
               (input)="productModel.update(m => ({ ...m, slug: $any($event.target).value }))"
               placeholder="apple-iphone-15-pro-max"
-              class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 min-w-0 flex-1 rounded-xl border px-3.5 text-sm outline-hidden transition-colors"
+              class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 min-w-0 flex-1 rounded-xl border px-3.5 text-sm outline-hidden transition-colors"
             />
             <button
               type="button"
               (click)="suggestSlug()"
-              class="border-hairline text-platinum-70 hover:bg-platinum-10 h-11 shrink-0 rounded-full border px-3 text-xs font-medium transition-colors"
+              class="border-hairline-strong/60 text-platinum-70 hover:bg-platinum-10 h-11 shrink-0 rounded-full border px-3 text-xs font-medium transition-colors"
             >
               სახელიდან
             </button>
@@ -594,11 +625,11 @@
         </div>
 
         <!-- Keywords + synonyms -->
-        <div class="flex flex-col gap-4 py-5">
+        <div class="flex flex-col gap-4 py-4">
           <!-- Meta Keywords -->
           <div>
             <label class="text-platinum-70 mb-1.5 block text-sm font-medium">საკვანძო სიტყვები</label>
-            <div class="border-hairline focus-within:border-platinum-30 flex min-h-11 flex-wrap items-center gap-1.5 rounded-xl border px-2 py-1.5 transition-colors">
+            <div class="border-hairline-strong/60 focus-within:border-platinum-30 flex min-h-11 flex-wrap items-center gap-1.5 rounded-xl border px-2 py-1.5 transition-colors">
               @for (kw of metaKeywords(); track kw) {
               <span class="bg-green-10 text-green-70 inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium">
                 {{ kw }}
@@ -629,7 +660,7 @@
           <!-- Search terms / synonyms -->
           <div>
             <label class="text-platinum-70 mb-1.5 block text-sm font-medium">ალტერნატიული სახელები</label>
-            <div class="border-hairline focus-within:border-platinum-30 flex min-h-11 flex-wrap items-center gap-1.5 rounded-xl border px-2 py-1.5 transition-colors">
+            <div class="border-hairline-strong/60 focus-within:border-platinum-30 flex min-h-11 flex-wrap items-center gap-1.5 rounded-xl border px-2 py-1.5 transition-colors">
               @for (term of searchTerms(); track term) {
               <span class="bg-platinum-10 text-platinum-70 inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium">
                 {{ term }}
@@ -659,13 +690,13 @@
         </div>
 
         <!-- FAQs -->
-        <div class="py-5">
+        <div class="py-4">
           <div class="mb-2.5 flex items-center justify-between gap-2">
             <label class="text-platinum-70 text-sm font-medium">FAQ</label>
             <button
               type="button"
               (click)="addFaq()"
-              class="bg-green-60 hover:bg-green-70 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-white transition-colors"
+              class="border-hairline-strong/60 text-platinum-80 hover:bg-platinum-10/60 inline-flex h-7 items-center gap-1.5 rounded-full border bg-white px-3 text-xs font-medium transition-colors"
             >
               <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                 <path d="M8 3.33337V12.6667M3.33334 8.00004H12.6667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -679,7 +710,7 @@
           } @else {
           <div class="space-y-3">
             @for (faq of faqs(); track $index) {
-            <div class="border-hairline rounded-2xl border p-3">
+            <div class="border-hairline-strong/60 rounded-2xl border p-3">
               <div class="mb-2 flex items-center justify-between gap-2">
                 <span class="text-platinum-50 text-xs font-semibold">#{{ $index + 1 }}</span>
                 <button
@@ -699,14 +730,14 @@
                   [value]="faq.question"
                   (input)="updateFaqQuestion($index, $any($event.target).value)"
                   placeholder="კითხვა"
-                  class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3 py-2 text-sm outline-hidden transition-colors"
+                  class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full rounded-xl border px-3 py-2 text-sm outline-hidden transition-colors"
                 />
                 <textarea
                   rows="2"
                   [value]="faq.answer"
                   (input)="updateFaqAnswer($index, $any($event.target).value)"
                   placeholder="პასუხი"
-                  class="border-hairline text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full resize-none rounded-xl border px-3 py-2 text-sm outline-hidden transition-colors"
+                  class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 w-full resize-none rounded-xl border px-3 py-2 text-sm outline-hidden transition-colors"
                 ></textarea>
               </div>
             </div>
@@ -716,17 +747,18 @@
         </div>
 
         <!-- No index toggle -->
-        <div class="pt-5">
-          <label class="border-hairline hover:border-platinum-30 flex cursor-pointer items-center gap-3 rounded-full border p-3 transition-colors">
+        <div class="pt-4">
+          <label class="flex cursor-pointer items-center gap-2.5">
             <input
               type="checkbox"
               [checked]="productModel().no_index"
               (change)="productModel.update(m => ({ ...m, no_index: $any($event.target).checked }))"
-              class="h-4 w-4 shrink-0"
+              class="accent-green-60 h-4 w-4 shrink-0 cursor-pointer"
             />
             <span class="text-platinum-100 text-sm font-medium">დამალე საძიებო სისტემებისგან (noindex)</span>
           </label>
         </div>
+      </div>
       </div>
     </div>
 
@@ -735,19 +767,14 @@
       <button
         type="button"
         (click)="cancel()"
-        class="border-hairline text-platinum-60 hover:bg-platinum-10 rounded-full border px-5 py-2 text-sm font-medium transition-colors"
+        class="border-hairline-strong/60 text-platinum-80 hover:bg-platinum-10/60 inline-flex h-9 items-center rounded-full border bg-white px-4 text-sm font-medium transition-colors"
       >
         გაუქმება
       </button>
       <button
         type="submit"
         [disabled]="isLoading()"
-        [class]="
-          'inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-medium text-white transition-colors ' +
-          (isLoading()
-            ? 'cursor-not-allowed bg-platinum-40'
-            : 'bg-green-60 hover:bg-green-70')
-        "
+        class="bg-green-60 hover:bg-green-70 inline-flex h-9 items-center gap-1.5 rounded-full px-5 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60"
       >
         @if (isLoading()) {
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="animate-spin">

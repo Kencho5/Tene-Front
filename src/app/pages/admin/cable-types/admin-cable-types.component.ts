@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
 import { catchError, finalize, of, tap } from 'rxjs';
@@ -11,7 +10,7 @@ import { CableType, CableVariant } from '@core/interfaces/admin/cable-types.inte
 
 @Component({
   selector: 'app-admin-cable-types',
-  imports: [SharedModule, ConfirmationModalComponent, PaginationComponent],
+  imports: [SharedModule, PaginationComponent],
   templateUrl: './admin-cable-types.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -13,11 +13,11 @@
     [class.-translate-x-full]="!isMobileSidebarOpen()"
     [class.lg:w-[244px]]="isSidebarOpen()"
     [class.lg:w-[64px]]="!isSidebarOpen()"
-    class="fixed inset-y-0 left-0 z-50 flex w-[244px] flex-col border-r border-hairline bg-platinum-10 transition-all duration-200 ease-out lg:bg-platinum-10/40 lg:relative lg:translate-x-0"
+    class="fixed inset-y-0 left-0 z-50 flex w-[244px] flex-col border-r border-hairline-strong/60 bg-white transition-all duration-200 ease-out lg:relative lg:translate-x-0"
   >
     <!-- Logo -->
     <div
-      class="flex h-14 shrink-0 items-center justify-between"
+      class="flex h-14 shrink-0 items-center justify-between border-b border-hairline-strong/60"
       [class.px-4]="isSidebarOpen()"
       [class.px-3]="!isSidebarOpen()"
     >
@@ -29,7 +29,7 @@
       <button
         type="button"
         (click)="toggleSidebar()"
-        class="hidden rounded-md p-1.5 text-platinum-40 transition-colors hover:bg-platinum-20/60 hover:text-platinum-80 lg:block"
+        class="hidden rounded-full p-1.5 text-platinum-40 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:block"
         aria-label="Toggle sidebar"
       >
         <svg width="17" height="17" viewBox="0 0 16 16" fill="none">
@@ -40,7 +40,7 @@
       <button
         type="button"
         (click)="closeMobileSidebar()"
-        class="rounded-md p-1.5 text-platinum-40 transition-colors hover:bg-platinum-20/60 hover:text-platinum-80 lg:hidden"
+        class="rounded-full p-1.5 text-platinum-40 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:hidden"
         aria-label="Close sidebar"
       >
         <svg width="17" height="17" viewBox="0 0 16 16" fill="none">
@@ -51,7 +51,7 @@
       <button
         type="button"
         (click)="toggleSidebar()"
-        class="hidden w-full justify-center rounded-md p-1.5 text-platinum-40 transition-colors hover:bg-platinum-20/60 hover:text-platinum-80 lg:flex"
+        class="hidden w-full justify-center rounded-full p-1.5 text-platinum-40 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:flex"
         aria-label="Expand sidebar"
       >
         <svg width="17" height="17" viewBox="0 0 16 16" fill="none">
@@ -63,18 +63,18 @@
 
     <!-- Navigation -->
     <nav
-      class="flex-1 overflow-y-auto py-2"
+      class="flex-1 overflow-y-auto py-3"
       [class.px-3]="isSidebarOpen()"
       [class.px-2]="!isSidebarOpen()"
     >
       @for (section of navSections(); track section.title) {
       <div class="py-1.5">
         @if (isSidebarOpen()) {
-        <p class="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wider text-platinum-40">
+        <p class="px-3 pb-1.5 pt-2 text-xs font-semibold text-platinum-70">
           {{ section.title }}
         </p>
         } @else if (!$first) {
-        <div class="mx-2 my-2 h-px bg-platinum-20/70"></div>
+        <div class="mx-2 my-2 h-px bg-hairline-strong/60"></div>
         }
         <div class="space-y-0.5">
         @for (item of section.items; track item.route) {
@@ -87,17 +87,14 @@
           [class.justify-center]="!isSidebarOpen()"
           [class.px-2.5]="isSidebarOpen()"
           [class.px-0]="!isSidebarOpen()"
-          [class.bg-white]="rla.isActive"
-          [class.shadow-sm]="rla.isActive"
-          [class.ring-1]="rla.isActive"
-          [class.ring-platinum-20/70]="rla.isActive"
-          [class.text-green-70]="rla.isActive"
+          [class.bg-platinum-10]="rla.isActive"
+          [class.text-platinum-100]="rla.isActive"
           [class.font-medium]="rla.isActive"
           [class.text-platinum-60]="!rla.isActive"
-          class="group relative flex items-center gap-2.5 overflow-hidden rounded-lg py-2 text-[13.5px] transition-all hover:bg-platinum-20/50 hover:text-platinum-100"
+          class="group relative flex items-center gap-2.5 overflow-hidden rounded-lg py-2 text-sm transition-colors hover:bg-platinum-10/60 hover:text-platinum-100"
         >
           @if (rla.isActive && isSidebarOpen()) {
-          <span class="absolute inset-y-0 left-0 w-[3px] bg-green-60"></span>
+          <span class="absolute inset-y-1.5 left-0 w-[3px] rounded-r-full bg-green-60"></span>
           }
           @switch (item.icon) { @case ("products") {
           <svg width="19" height="19" viewBox="0 0 20 20" fill="none" class="shrink-0">
@@ -298,7 +295,7 @@
 
     <!-- Bottom Section -->
     <div
-      class="shrink-0 border-t border-hairline py-3"
+      class="shrink-0 border-t border-hairline-strong/60 py-3"
       [class.px-3]="isSidebarOpen()"
       [class.px-2]="!isSidebarOpen()"
     >
@@ -310,15 +307,15 @@
         class="mb-1 flex items-center gap-2.5 py-1.5"
       >
         <div
-          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-60 text-xs font-semibold text-white ring-2 ring-green-20"
+          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-60 text-xs font-semibold text-white"
         >
           {{ user()!.name.charAt(0).toUpperCase() }}
         </div>
 
         @if (isSidebarOpen()) {
         <div class="flex-1 overflow-hidden">
-          <p class="truncate text-[13px] font-medium text-platinum-90">{{ user()!.name }}</p>
-          <p class="truncate text-[11.5px] text-platinum-50">{{ user()!.email }}</p>
+          <p class="truncate text-sm font-medium text-platinum-100">{{ user()!.name }}</p>
+          <p class="truncate text-xs text-platinum-50">{{ user()!.email }}</p>
         </div>
         }
       </div>
@@ -328,7 +325,7 @@
         (click)="logout()"
         [class.justify-center]="!isSidebarOpen()"
         [class.px-2.5]="isSidebarOpen()"
-        class="flex cursor-pointer items-center gap-2.5 rounded-lg py-2 text-[13.5px] text-platinum-50 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
+        class="flex cursor-pointer items-center gap-2.5 rounded-lg py-2 text-sm text-platinum-60 transition-colors hover:bg-valencia-10 hover:text-valencia-60"
       >
         <svg width="19" height="19" viewBox="0 0 20 20" fill="none" class="shrink-0">
           <path
@@ -363,13 +360,13 @@
   <!-- Main Content -->
   <div class="flex flex-1 flex-col overflow-hidden">
     <!-- Top Bar -->
-    <header class="flex h-14 shrink-0 items-center border-b border-hairline bg-white/80 px-3 backdrop-blur-sm lg:px-5">
-      <div class="flex flex-1 items-center gap-1">
+    <header class="flex h-14 shrink-0 items-center border-b border-hairline-strong/60 bg-white px-3 lg:px-7">
+      <div class="flex flex-1 items-center gap-2">
         <!-- Mobile Sidebar Toggle -->
         <button
           type="button"
           (click)="toggleMobileSidebar()"
-          class="rounded-md p-1.5 text-platinum-40 transition-colors hover:bg-platinum-10 hover:text-platinum-80 lg:hidden"
+          class="rounded-full p-1.5 text-platinum-50 transition-colors hover:bg-platinum-10 hover:text-platinum-100 lg:hidden"
           aria-label="Toggle sidebar"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -381,7 +378,7 @@
         <button
           type="button"
           (click)="goBack()"
-          class="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[13.5px] text-platinum-50 transition-colors hover:bg-platinum-10 hover:text-platinum-90"
+          class="border-hairline-strong/60 text-platinum-70 hover:bg-platinum-10/60 hover:text-platinum-100 inline-flex h-8 items-center gap-1.5 rounded-full border bg-white px-3 text-sm font-medium transition-colors"
           aria-label="Go back"
         >
           <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
@@ -396,13 +393,10 @@
           <span class="hidden sm:inline">უკან</span>
         </button>
 
-        <!-- Divider -->
-        <div class="mx-1 h-4 w-px bg-platinum-20"></div>
-
         <!-- Home Link -->
         <a
           routerLink="/"
-          class="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[13.5px] text-platinum-50 transition-colors hover:bg-platinum-10 hover:text-platinum-90"
+          class="border-hairline-strong/60 text-platinum-70 hover:bg-platinum-10/60 hover:text-platinum-100 inline-flex h-8 items-center gap-1.5 rounded-full border bg-white px-3 text-sm font-medium transition-colors"
           aria-label="Go to main website"
         >
           <svg width="16" height="16" viewBox="0 0 20 20" fill="none">

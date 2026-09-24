@@ -5,7 +5,6 @@ import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { CategoryTreeNode } from '@core/interfaces/categories.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
-import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
 import { catchError, finalize, map, of, tap } from 'rxjs';
@@ -19,7 +18,7 @@ import { ToastService } from '@core/services/toast.service';
 
 @Component({
   selector: 'app-admin-products',
-  imports: [SharedModule, DropdownComponent, ComboboxComponent, ConfirmationModalComponent, PaginationComponent],
+  imports: [SharedModule, DropdownComponent, ComboboxComponent, PaginationComponent],
   templateUrl: './admin-products.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

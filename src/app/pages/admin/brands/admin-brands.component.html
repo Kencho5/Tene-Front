@@ -1,14 +1,13 @@
-<div class="space-y-5">
+<div class="space-y-4">
   <!-- Header -->
   <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div>
-      <h1 class="text-xl font-semibold text-platinum-100">ბრენდები</h1>
-      <p class="mt-0.5 text-sm text-platinum-50">სულ {{ totalBrands() }} ბრენდი</p>
-    </div>
+    <h1 class="text-lg font-semibold text-platinum-100">
+      ბრენდები <span class="font-normal text-platinum-50">({{ totalBrands() }})</span>
+    </h1>
 
     <a
       [routerLink]="['/admin/brands/new']"
-      class="inline-flex items-center justify-center gap-1.5 rounded-full bg-green-60 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-70"
+      class="inline-flex h-9 items-center justify-center gap-1.5 rounded-full bg-green-60 px-4 text-sm font-medium text-white transition-colors hover:bg-green-70"
     >
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
         <path
@@ -25,7 +24,7 @@
   <!-- Filters -->
   <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
     <!-- Search -->
-    <div class="relative flex-1">
+    <div class="relative w-full lg:max-w-md">
       <svg
         width="16"
         height="16"
@@ -46,7 +45,7 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         placeholder="ძიება ბრენდის სახელით ან ID-ით..."
-        class="h-11 w-full rounded-xl border border-hairline bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-30"
+        class="h-11 w-full rounded-xl border border-hairline-strong/60 bg-white py-2 pl-9 pr-9 text-sm text-platinum-100 outline-hidden transition-colors placeholder:text-platinum-40 focus:border-platinum-30"
       />
       @if (searchQuery()) {
         <button
@@ -68,11 +67,11 @@
   </div>
 
   <!-- Table -->
-  <div class="overflow-visible rounded-2xl bg-white">
-    <div class="overflow-x-auto">
+  <div class="overflow-visible rounded-2xl border border-hairline-strong/60 bg-white">
+    <div class="overflow-x-auto rounded-t-2xl">
       <table class="w-full">
         <thead>
-          <tr class="border-b border-hairline">
+          <tr class="border-b border-hairline-strong/60 bg-platinum-10/40">
             <th
               class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-platinum-50"
             >
@@ -93,7 +92,7 @@
         <tbody>
           @if (allBrands.isLoading()) {
             @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
-              <tr class="border-b border-hairline last:border-b-0">
+              <tr class="border-b border-hairline-strong/60 last:border-b-0">
                 <td class="px-4 py-3.5">
                   <div class="space-y-1.5">
                     <div class="h-4 w-32 animate-pulse rounded-sm bg-platinum-10"></div>
@@ -145,7 +144,7 @@
           } @else {
             @for (brand of brands(); track brand.id) {
               <tr
-                class="border-b border-hairline transition-colors last:border-b-0 hover:bg-platinum-10/50"
+                class="border-b border-hairline-strong/60 transition-colors last:border-b-0 hover:bg-platinum-10/50"
               >
                 <!-- Brand Name -->
                 <td class="px-4 py-3">
@@ -232,14 +231,43 @@
   </div>
 </div>
 
-<app-confirmation-modal
-  [isOpen]="isDeleteModalOpen()"
-  title="ბრენდის წაშლა"
-  message="დარწმუნებული ხართ, რომ გსურთ ამ ბრენდის წაშლა? ეს მოქმედება შეუქცევადია."
-  confirmText="წაშლა"
-  cancelText="გაუქმება"
-  confirmButtonGradientStart="#ef4444"
-  confirmButtonGradientEnd="#dc2626"
-  (confirm)="confirmDelete()"
-  (cancel)="closeDeleteModal()"
-/>
+@if (isDeleteModalOpen()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/20" (click)="closeDeleteModal()"></div>
+  <div class="relative w-full max-w-[440px] rounded-2xl bg-white shadow-xl">
+    <div class="flex items-center justify-between border-b border-hairline-strong/60 px-5 py-4">
+      <h2 class="text-base font-semibold text-platinum-100">ბრენდის წაშლა</h2>
+      <button
+        type="button"
+        (click)="closeDeleteModal()"
+        class="rounded-full p-1.5 text-platinum-40 transition-colors hover:bg-platinum-10 hover:text-platinum-100"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="px-5 py-5">
+      <p class="text-sm text-platinum-70">დარწმუნებული ხართ, რომ გსურთ ამ ბრენდის წაშლა?</p>
+    </div>
+
+    <div class="flex items-center justify-end gap-2 border-t border-hairline-strong/60 px-5 py-4">
+      <button
+        type="button"
+        (click)="closeDeleteModal()"
+        class="inline-flex h-9 items-center rounded-full border border-hairline-strong/60 bg-white px-4 text-sm font-medium text-platinum-80 transition-colors hover:bg-platinum-10/60"
+      >
+        გაუქმება
+      </button>
+      <button
+        type="button"
+        (click)="confirmDelete()"
+        class="inline-flex h-9 items-center rounded-full bg-valencia-60 px-4 text-sm font-medium text-white transition-colors hover:bg-valencia-70"
+      >
+        წაშლა
+      </button>
+    </div>
+  </div>
+</div>
+}

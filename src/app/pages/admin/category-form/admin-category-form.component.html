@@ -1,8 +1,8 @@
-<div class="space-y-5">
+<div class="mx-auto max-w-2xl space-y-4">
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-xl font-semibold text-platinum-100">
+      <h1 class="text-lg font-semibold text-platinum-100">
         {{ pageTitle() }}
       </h1>
       <p class="mt-0.5 text-sm text-platinum-50">
@@ -16,30 +16,34 @@
   </div>
 
   <!-- Form -->
-  <form (submit)="onSubmit($event)" novalidate class="space-y-5">
+  <form (submit)="onSubmit($event)" novalidate class="space-y-4">
     <!-- Basic Information Card -->
-    <div class="rounded-2xl border border-hairline bg-white p-5">
-      <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-platinum-50">
-        ძირითადი ინფორმაცია
-      </h2>
+    <div class="rounded-2xl border border-hairline-strong/60 bg-white">
+      <div class="border-b border-hairline-strong/60 px-5 py-3">
+        <h2 class="text-sm font-semibold text-platinum-100">ძირითადი ინფორმაცია</h2>
+      </div>
 
-      <div class="flex flex-col gap-4">
-        <!-- Category Name -->
+      <div class="flex flex-col gap-4 px-5 py-4">
+        <div>
+        <label class="mb-1.5 block text-sm font-medium text-platinum-70">სახელი *</label>
         <app-input
           [formField]="categoryForm.name"
           [error]="submitted() && categoryForm.name().invalid()"
           type="text"
-          placeholder="კატეგორიის სახელი *"
+          placeholder="კატეგორიის სახელი"
           (input)="onNameInput($event)"
         />
+        </div>
 
-        <!-- Slug -->
+        <div>
+        <label class="mb-1.5 block text-sm font-medium text-platinum-70">სლაგი (URL) *</label>
         <app-input
           [formField]="categoryForm.slug"
           [error]="submitted() && categoryForm.slug().invalid()"
           type="text"
-          placeholder="სლაგი (URL) *"
+          placeholder="category-slug"
         />
+        </div>
 
         <!-- Parent Category -->
         <div>
@@ -56,13 +60,15 @@
           />
         </div>
 
-        <!-- Description -->
+        <div>
+        <label class="mb-1.5 block text-sm font-medium text-platinum-70">აღწერა</label>
         <textarea
           [formField]="categoryForm.description"
           rows="4"
-          placeholder="კატეგორიის დეტალური აღწერა (სურვილისამებრ)"
-          class="w-full resize-none rounded-2xl border border-hairline bg-white px-3.5 py-2.5 text-sm text-platinum-100 placeholder:text-platinum-40 outline-hidden focus:border-platinum-30 focus:ring-1 focus:ring-platinum-40"
+          placeholder="კატეგორიის დეტალური აღწერა"
+          class="w-full resize-none rounded-xl border border-hairline-strong/60 bg-white px-3.5 py-2.5 text-sm text-platinum-100 placeholder:text-platinum-40 outline-hidden focus:border-platinum-30 focus:ring-1 focus:ring-platinum-40"
         ></textarea>
+        </div>
 
         <!-- Category Image -->
         <div>
@@ -75,7 +81,7 @@
               <img
                 [src]="imagePreview()"
                 alt="Category preview"
-                class="h-48 w-full rounded-2xl border border-hairline object-cover"
+                class="h-48 w-full rounded-xl border border-hairline-strong/60 object-cover"
               />
               <button
                 type="button"
@@ -96,7 +102,7 @@
           } @else {
             <label
               for="category-image"
-              class="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-hairline bg-platinum-10 px-6 py-8 transition-colors hover:border-green-60 hover:bg-green-10"
+              class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-hairline-strong/60 bg-platinum-10 px-6 py-8 transition-colors hover:border-green-60 hover:bg-green-10"
             >
               <svg
                 width="40"
@@ -127,15 +133,17 @@
           }
         </div>
 
-        <!-- Display Order -->
+        <div>
+        <label class="mb-1.5 block text-sm font-medium text-platinum-70">ჩვენების რიგი</label>
         <app-input
           [formField]="categoryForm.display_order"
           type="number"
-          placeholder="ჩვენების რიგი"
+          placeholder="0"
         />
+        </div>
 
         <!-- Enabled Toggle -->
-        <div class="flex items-center justify-between rounded-2xl bg-platinum-10/50 p-4">
+        <div class="flex items-center justify-between border-t border-hairline-strong/60 pt-4">
           <div>
             <p class="text-sm font-medium text-platinum-100">სტატუსი</p>
             <p class="text-xs text-platinum-50">
@@ -161,23 +169,18 @@
     </div>
 
     <!-- Form Actions -->
-    <div class="flex items-center justify-end gap-3">
+    <div class="flex items-center justify-end gap-2">
       <button
         type="button"
         (click)="cancel()"
-        class="rounded-full border border-hairline px-5 py-2 text-sm font-medium text-platinum-60 transition-colors hover:bg-platinum-10"
+        class="inline-flex h-9 items-center rounded-full border border-hairline-strong/60 bg-white px-4 text-sm font-medium text-platinum-80 transition-colors hover:bg-platinum-10/60"
       >
         გაუქმება
       </button>
       <button
         type="submit"
         [disabled]="isLoading()"
-        [class]="
-          'inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-medium text-white transition-colors ' +
-          (isLoading()
-            ? 'cursor-not-allowed bg-platinum-40'
-            : 'bg-green-60 hover:bg-green-70')
-        "
+        class="inline-flex h-9 items-center gap-1.5 rounded-full bg-green-60 px-5 text-sm font-medium text-white transition-colors hover:bg-green-70 disabled:cursor-not-allowed disabled:opacity-60"
       >
         @if (isLoading()) {
           <svg

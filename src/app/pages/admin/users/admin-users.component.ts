@@ -9,7 +9,6 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AdminService } from '@core/services/admin/admin.service';
 import { ToastService } from '@core/services/toast.service';
-import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { SharedModule } from '@shared/shared.module';
 import { catchError, finalize, of, tap } from 'rxjs';
@@ -21,7 +20,6 @@ import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.compo
   selector: 'app-admin-users',
   imports: [
     SharedModule,
-    ConfirmationModalComponent,
     PaginationComponent,
     DropdownComponent,
   ],

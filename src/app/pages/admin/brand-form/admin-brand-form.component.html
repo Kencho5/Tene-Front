@@ -1,8 +1,8 @@
-<div class="space-y-5">
+<div class="mx-auto max-w-2xl space-y-4">
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-xl font-semibold text-platinum-100">
+      <h1 class="text-lg font-semibold text-platinum-100">
         {{ pageTitle() }}
       </h1>
       <p class="mt-0.5 text-sm text-platinum-50">
@@ -16,42 +16,39 @@
   </div>
 
   <!-- Form -->
-  <form (submit)="onSubmit($event)" novalidate class="space-y-5">
+  <form (submit)="onSubmit($event)" novalidate class="space-y-4">
     <!-- Basic Information Card -->
-    <div class="rounded-2xl border border-hairline bg-white p-5">
-      <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-platinum-50">
-        ძირითადი ინფორმაცია
-      </h2>
+    <div class="rounded-2xl border border-hairline-strong/60 bg-white">
+      <div class="border-b border-hairline-strong/60 px-5 py-3">
+        <h2 class="text-sm font-semibold text-platinum-100">ძირითადი ინფორმაცია</h2>
+      </div>
 
-      <div class="flex flex-col gap-4">
-        <!-- Brand Name -->
+      <div class="flex flex-col gap-4 px-5 py-4">
+        <div>
+        <label class="mb-1.5 block text-sm font-medium text-platinum-70">სახელი *</label>
         <app-input
           [formField]="brandForm.name"
           [error]="submitted() && brandForm.name().invalid()"
           type="text"
-          placeholder="ბრენდის სახელი *"
+          placeholder="ბრენდის სახელი"
         />
+        </div>
       </div>
     </div>
 
     <!-- Form Actions -->
-    <div class="flex items-center justify-end gap-3">
+    <div class="flex items-center justify-end gap-2">
       <button
         type="button"
         (click)="cancel()"
-        class="rounded-full border border-hairline px-5 py-2 text-sm font-medium text-platinum-60 transition-colors hover:bg-platinum-10"
+        class="inline-flex h-9 items-center rounded-full border border-hairline-strong/60 bg-white px-4 text-sm font-medium text-platinum-80 transition-colors hover:bg-platinum-10/60"
       >
         გაუქმება
       </button>
       <button
         type="submit"
         [disabled]="isLoading()"
-        [class]="
-          'inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-medium text-white transition-colors ' +
-          (isLoading()
-            ? 'cursor-not-allowed bg-platinum-40'
-            : 'bg-green-60 hover:bg-green-70')
-        "
+        class="inline-flex h-9 items-center gap-1.5 rounded-full bg-green-60 px-5 text-sm font-medium text-white transition-colors hover:bg-green-70 disabled:cursor-not-allowed disabled:opacity-60"
       >
         @if (isLoading()) {
           <svg
