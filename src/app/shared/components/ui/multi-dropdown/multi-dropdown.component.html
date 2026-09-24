@@ -1,7 +1,7 @@
 <div class="relative w-full" (outsideClick)="opened.set(false)">
   <button
     type="button"
-    class="flex h-[40px] w-full items-center justify-between gap-2 rounded-lg border border-hairline bg-white px-3 text-sm text-platinum-100 transition-colors focus:border-platinum-30 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+    class="flex h-[40px] w-full items-center justify-between gap-2 rounded-lg border border-hairline-strong bg-white px-3 text-sm text-platinum-100 transition-colors focus:border-platinum-30 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
     [class.border-platinum-30]="opened()"
     [disabled]="disabled()"
     (click)="toggle()"
@@ -48,7 +48,7 @@
 
   @if (opened()) {
     <div
-      class="absolute z-50 mt-1 w-full rounded-lg border border-hairline bg-white text-sm shadow-lg"
+      class="absolute z-50 mt-1 w-full min-w-[240px] rounded-lg border border-hairline bg-white text-sm shadow-lg"
     >
       <div class="flex max-h-56 flex-col overflow-y-auto p-1">
         @for (item of items(); track item.value) {

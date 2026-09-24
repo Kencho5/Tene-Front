@@ -102,6 +102,7 @@ export class AdminOrderFormComponent {
     details: '',
     delivery_type: 'delivery',
     delivery_time: '',
+    delivery_price: '',
     comment: '',
     amount: '',
     payment_method: 'pos_bog',
@@ -147,10 +148,18 @@ export class AdminOrderFormComponent {
     this.items().reduce((sum, item) => sum + item.price * item.quantity, 0),
   );
 
+  readonly deliveryPrice = computed(() => {
+    if (!this.isDelivery()) return 0;
+    const price = Number(this.orderModel().delivery_price.trim());
+    return isNaN(price) || price < 0 ? 0 : price;
+  });
+
+  readonly calculatedTotal = computed(() => this.itemsTotal() + this.deliveryPrice());
+
   readonly resolvedAmount = computed(() => {
     const manual = Number(this.orderModel().amount.trim());
     if (this.orderModel().amount.trim() && !isNaN(manual)) return manual;
-    return this.itemsTotal();
+    return this.calculatedTotal();
   });
 
   onSearchInput(event: Event): void {
@@ -297,6 +306,7 @@ export class AdminOrderFormComponent {
       details: model.details.trim(),
       delivery_type: model.delivery_type,
       delivery_time: model.delivery_type === 'pickup' ? '' : model.delivery_time,
+      delivery_price: this.deliveryPrice(),
       comment: model.comment.trim(),
       source_comment: model.source_comment.trim(),
       personal_number: model.personal_number.trim(),

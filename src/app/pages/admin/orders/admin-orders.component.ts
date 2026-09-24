@@ -8,6 +8,7 @@ import {
   OrderItem,
   OrderStatus,
 } from '@core/interfaces/products.interface';
+import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { ModalComponent } from '@shared/components/ui/modal/modal.component';
 import { MultiDropdownComponent } from '@shared/components/ui/multi-dropdown/multi-dropdown.component';
@@ -29,6 +30,7 @@ import { generateProductSlug } from '@utils/slug';
 import { OrderCommentImage } from '@core/interfaces/products.interface';
 import { AdminService } from '@core/services/admin/admin.service';
 import { AuthService } from '@core/services/auth/auth-service.service';
+import { ToastService } from '@core/services/toast.service';
 
 type MultiFilterKey = 'status' | 'payment_method' | 'delivery_type' | 'fulfillment_method';
 
@@ -44,6 +46,7 @@ interface FilterChip {
   selector: 'app-admin-orders',
   imports: [
     SharedModule,
+    ConfirmationModalComponent,
     DropdownComponent,
     ModalComponent,
     MultiDropdownComponent,
@@ -52,17 +55,20 @@ interface FilterChip {
   ],
   templateUrl: './admin-orders.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '(document:keydown.escape)': 'onEscape()' },
 })
 export class AdminOrdersComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly adminService = inject(AdminService);
   private readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
   private debounceTimer?: number;
 
   readonly searchQuery = signal((this.route.snapshot.queryParams['search'] as string) ?? '');
 
   readonly orderStatusOptions: ComboboxItems[] = [
+    { label: 'შექმნილი', value: 'created' },
     { label: 'დადასტურებული', value: 'approved' },
     { label: 'მოლოდინში', value: 'pending' },
     { label: 'მუშავდება', value: 'processing' },
@@ -160,6 +166,10 @@ export class AdminOrdersComponent {
   readonly updatingStatus = signal<ReadonlySet<number>>(new Set());
   readonly updatingFina = signal<ReadonlySet<number>>(new Set());
 
+  readonly orderToDelete = signal<Order | null>(null);
+  readonly isDeleting = signal(false);
+  readonly canDelete = computed(() => this.authService.isAdmin());
+
   private readonly statusOverrides = signal<Record<number, OrderStatus>>({});
   private readonly finaOverrides = signal<Record<number, boolean>>({});
 
@@ -198,7 +208,7 @@ export class AdminOrdersComponent {
 
   readonly source = computed(() => (this.params()['source'] as string) ?? 'web');
   readonly isAdminSource = computed(() => this.source() === 'admin');
-  readonly columnCount = computed(() => (this.isAdminSource() ? 9 : 8));
+  readonly columnCount = computed(() => (this.isAdminSource() ? 10 : 9));
 
   readonly activeFilterCount = computed(() => this.filterChips().length);
 
@@ -346,6 +356,8 @@ export class AdminOrdersComponent {
 
   statusLabel(status: string): string {
     switch (status) {
+      case 'created':
+        return 'შექმნილი';
       case 'approved':
         return 'დადასტურებული';
       case 'pending':
@@ -641,6 +653,37 @@ export class AdminOrdersComponent {
     });
   }
 
+  openDeleteModal(order: Order): void {
+    this.orderToDelete.set(order);
+  }
+
+  closeDeleteModal(): void {
+    if (this.isDeleting()) return;
+    this.orderToDelete.set(null);
+  }
+
+  confirmDelete(): void {
+    const order = this.orderToDelete();
+    if (!order || this.isDeleting()) return;
+
+    this.isDeleting.set(true);
+    this.adminService.deleteOrder(order.id).subscribe({
+      next: () => {
+        this.isDeleting.set(false);
+        this.orderToDelete.set(null);
+        if (this.selectedId() === order.id) this.selectedId.set(null);
+        this.toastService.add('წარმატება', `შეკვეთა #${order.id} წაიშალა`, 3000, 'success');
+        this.searchResponse.reload();
+      },
+      error: (err) => {
+        this.isDeleting.set(false);
+        this.orderToDelete.set(null);
+        const message = err?.error?.message || 'შეკვეთის წაშლა ვერ მოხერხდა';
+        this.toastService.add('შეცდომა', message, 5000, 'error');
+      },
+    });
+  }
+
   isUpdatingFina(orderId: number): boolean {
     return this.updatingFina().has(orderId);
   }
@@ -829,18 +872,56 @@ export class AdminOrdersComponent {
     });
   }
 
-  readonly expandedId = signal<number | null>(null);
+  readonly selectedId = signal<number | null>(null);
+
+  readonly selectedOrder = computed(() => {
+    const id = this.selectedId();
+    return id === null ? null : (this.orders().find((o) => o.id === id) ?? null);
+  });
 
   readonly lightboxOpen = signal(false);
   readonly lightboxImages = signal<LightboxImage[]>([]);
   readonly lightboxActiveId = signal<string | null>(null);
 
-  toggleOrder(order: Order): void {
-    this.expandedId.update((id) => (id === order.id ? null : order.id));
+  openDetail(order: Order): void {
+    this.selectedId.set(order.id);
   }
 
-  isExpanded(orderId: number): boolean {
-    return this.expandedId() === orderId;
+  closeDetail(): void {
+    this.selectedId.set(null);
+  }
+
+  isSelected(orderId: number): boolean {
+    return this.selectedId() === orderId;
+  }
+
+  onEscape(): void {
+    if (this.lightboxOpen() || this.orderToDelete() || this.filtersOpen()) return;
+    this.closeDetail();
+  }
+
+  customerName(order: Order): string {
+    if (order.customer_type === 'company') return order.organization_name || '—';
+    return `${order.customer_name ?? ''} ${order.customer_surname ?? ''}`.trim() || '—';
+  }
+
+  statusDotClass(status: string): string {
+    switch (status) {
+      case 'approved':
+      case 'shipped':
+      case 'finance_cleared':
+        return 'bg-success';
+      case 'pending':
+      case 'processing':
+      case 'prepared':
+        return 'bg-info';
+      case 'refunded':
+        return 'bg-warning';
+      case 'declined':
+        return 'bg-valencia-60';
+      default:
+        return 'bg-platinum-30';
+    }
   }
 
   subtotal(order: Order): number {
@@ -880,6 +961,7 @@ export class AdminOrdersComponent {
 
   deliveryPrice(order: Order): number {
     if (order.delivery_type === 'pickup') return 0;
+    if (order.delivery_price != null) return order.delivery_price / 100;
     const city = (order.city ?? '').trim().toLowerCase();
     if (city === 'tbilisi') {
       return order.delivery_time === 'same_day'

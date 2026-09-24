@@ -170,6 +170,10 @@ export class AdminService {
     return this.http.patch<Order>(`/admin/orders/${id}`, payload);
   }
 
+  deleteOrder(id: number): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/orders/${id}`);
+  }
+
   updateOrderStatus(id: number, status: string): Observable<Order> {
     return this.updateOrder(id, { status });
   }

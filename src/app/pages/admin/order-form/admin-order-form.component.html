@@ -105,6 +105,11 @@
             [items]="deliveryTimeOptions"
             placeholder="მიწოდების დრო"
           />
+          <app-input
+            [formField]="orderForm.delivery_price"
+            type="text"
+            placeholder="მიწოდების ფასი (₾)"
+          />
         }
       </div>
 
@@ -329,8 +334,11 @@
         <label class="text-platinum-90 text-sm font-medium">ჯამური თანხა (₾)</label>
         <app-input [formField]="orderForm.amount" type="text" placeholder="0.00" />
         <p class="text-platinum-50 text-xs">
-          ცარიელი დატოვების შემთხვევაში დაითვლება პროდუქტების ჯამი:
-          <span class="text-platinum-70 font-medium">{{ formatPrice(itemsTotal()) }} ₾</span>
+          ცარიელი დატოვების შემთხვევაში დაითვლება პროდუქტების ჯამი
+          @if (deliveryPrice() > 0) {
+            + მიწოდება
+          }:
+          <span class="text-platinum-70 font-medium">{{ formatPrice(calculatedTotal()) }} ₾</span>
         </p>
       </div>
     </div>

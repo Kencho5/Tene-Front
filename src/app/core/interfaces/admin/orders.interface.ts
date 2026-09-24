@@ -45,6 +45,7 @@ export interface CreateOrderRequest {
   details?: string;
   delivery_type?: string;
   delivery_time?: string;
+  delivery_price?: number;
   comment?: string;
   user_id?: number;
   items?: CreateOrderItem[];
@@ -79,6 +80,7 @@ export interface OrderFormFields {
   details: string;
   delivery_type: string;
   delivery_time: string;
+  delivery_price: string;
   comment: string;
   amount: string;
   payment_method: PaymentMethod;

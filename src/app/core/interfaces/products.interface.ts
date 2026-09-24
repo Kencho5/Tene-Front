@@ -201,6 +201,7 @@ export interface Order {
   comment_images?: OrderCommentImage[];
   delivery_type: string;
   delivery_time: string;
+  delivery_price: number | null;
   checkout_url: string | null;
   created_at: string;
   updated_at: string;
