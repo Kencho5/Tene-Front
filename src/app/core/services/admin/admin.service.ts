@@ -226,6 +226,10 @@ export class AdminService {
     return this.http.delete<HttpStatusCode>(`/admin/categories/${categoryId}`);
   }
 
+  moveCategory(categoryId: number, direction: 'up' | 'down'): Observable<HttpStatusCode> {
+    return this.http.post<HttpStatusCode>(`/admin/categories/${categoryId}/move`, { direction });
+  }
+
   // Category Image Management
   getCategoryImagePresignedUrl(
     categoryId: number,

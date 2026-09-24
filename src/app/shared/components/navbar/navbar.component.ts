@@ -58,12 +58,6 @@ export class NavbarComponent {
   });
 
   readonly sortedCategories = computed<CategoryTreeNode[]>(() => {
-    const all = this.categories.value().categories ?? [];
-    const priorityIds = [66, 2, 3, 9];
-    const priority = priorityIds
-      .map((id) => all.find((c) => c.id === id))
-      .filter(Boolean) as CategoryTreeNode[];
-    const rest = all.filter((c) => !priorityIds.includes(c.id));
-    return [...priority, ...rest];
+    return this.categories.value().categories ?? [];
   });
 }

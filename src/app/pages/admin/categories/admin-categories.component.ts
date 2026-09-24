@@ -1,8 +1,11 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
   inject,
+  Injector,
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
@@ -20,6 +23,8 @@ import { CategoryTreeNode } from '@core/interfaces/categories.interface';
 
 interface CategoryWithDepth extends Category {
   depth: number;
+  hasChildren: boolean;
+  ancestorIds: number[];
 }
 
 @Component({
@@ -38,11 +43,14 @@ export class AdminCategoriesComponent {
   private readonly router = inject(Router);
   private readonly adminService = inject(AdminService);
   private readonly toastService = inject(ToastService);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly injector = inject(Injector);
   private debounceTimer?: number;
 
   readonly searchQuery = signal<string>('');
   readonly isDeleteModalOpen = signal<boolean>(false);
   readonly categoryToDelete = signal<number | null>(null);
+  readonly expandedIds = signal<ReadonlySet<number>>(new Set());
 
   readonly statusOptions: ComboboxItems[] = [
     { label: 'ყველა', value: 'all' },
@@ -54,7 +62,9 @@ export class AdminCategoriesComponent {
     initialValue: {} as Params,
   });
 
-  private flattenTree(nodes: CategoryTreeNode[], parentId: number | null = null, depth: number = 0): CategoryWithDepth[] {
+  private flattenTree(nodes: CategoryTreeNode[], ancestorIds: number[] = []): CategoryWithDepth[] {
+    const parentId = ancestorIds.at(-1) ?? null;
+    const depth = ancestorIds.length;
     let result: CategoryWithDepth[] = [];
     nodes.forEach((node) => {
       // Create a flat category object from tree node with depth
@@ -70,11 +80,13 @@ export class AdminCategoriesComponent {
         created_at: (node as any).created_at || '',
         updated_at: (node as any).updated_at || '',
         depth: depth,
+        hasChildren: !!node.children?.length,
+        ancestorIds,
       };
       result.push(category);
 
       if (node.children && node.children.length > 0) {
-        result = result.concat(this.flattenTree(node.children, node.id, depth + 1));
+        result = result.concat(this.flattenTree(node.children, [...ancestorIds, node.id]));
       }
     });
     return result;
@@ -101,6 +113,9 @@ export class AdminCategoriesComponent {
       );
     } else if (id) {
       filtered = filtered.filter((cat) => cat.id === Number(id));
+    } else {
+      const expanded = this.expandedIds();
+      filtered = filtered.filter((cat) => cat.ancestorIds.every((ancestorId) => expanded.has(ancestorId)));
     }
 
     // Status filter
@@ -125,6 +140,25 @@ export class AdminCategoriesComponent {
   });
 
   readonly categories = computed(() => this.searchResponse().categories as CategoryWithDepth[]);
+  readonly canReorder = computed(() => {
+    const params = this.params();
+    return !params['query'] && !params['id'] && !params['enabled'];
+  });
+  readonly siblingEdges = computed(() => {
+    const groups = new Map<number | null, number[]>();
+    for (const category of this.allCategories.value()) {
+      const ids = groups.get(category.parent_id) ?? [];
+      ids.push(category.id);
+      groups.set(category.parent_id, ids);
+    }
+    const first = new Set<number>();
+    const last = new Set<number>();
+    for (const ids of groups.values()) {
+      first.add(ids[0]);
+      last.add(ids[ids.length - 1]);
+    }
+    return { first, last };
+  });
   readonly totalCategories = computed(() => this.searchResponse().total);
   readonly currentPage = computed(() => {
     const offset = Number(this.params()['offset']) || 0;
@@ -148,6 +182,87 @@ export class AdminCategoriesComponent {
     const limit = this.limit();
     return Math.min(offset + limit, this.totalCategories());
   });
+
+  toggleExpanded(categoryId: number): void {
+    this.expandedIds.update((ids) => {
+      const next = new Set(ids);
+      if (!next.delete(categoryId)) next.add(categoryId);
+      return next;
+    });
+  }
+
+  moveCategory(category: CategoryWithDepth, direction: 'up' | 'down'): void {
+    const list = this.allCategories.value();
+    const start = list.findIndex((c) => c.id === category.id);
+    if (start === -1) return;
+
+    const blockEnd = (index: number) => {
+      let end = index + 1;
+      while (end < list.length && list[end].depth > list[index].depth) end++;
+      return end;
+    };
+    const end = blockEnd(start);
+
+    let reordered: CategoryWithDepth[];
+    if (direction === 'up') {
+      let prev = start - 1;
+      while (prev >= 0 && list[prev].depth > category.depth) prev--;
+      if (prev < 0 || list[prev].depth !== category.depth) return;
+      reordered = [
+        ...list.slice(0, prev),
+        ...list.slice(start, end),
+        ...list.slice(prev, start),
+        ...list.slice(end),
+      ];
+    } else {
+      if (end >= list.length || list[end].depth !== category.depth) return;
+      const nextEnd = blockEnd(end);
+      reordered = [
+        ...list.slice(0, start),
+        ...list.slice(end, nextEnd),
+        ...list.slice(start, end),
+        ...list.slice(nextEnd),
+      ];
+    }
+
+    const previousTops = this.rowTops();
+    this.allCategories.set(reordered);
+    afterNextRender({ write: () => this.animateRows(previousTops) }, { injector: this.injector });
+
+    this.adminService
+      .moveCategory(category.id, direction)
+      .pipe(
+        catchError((error) => {
+          this.toastService.add('შეცდომა', error.error?.message ?? 'პოზიციის შეცვლა ვერ მოხერხდა', 3000, 'error');
+          this.allCategories.reload();
+          return of(null);
+        }),
+      )
+      .subscribe();
+  }
+
+  private rowElements(): HTMLElement[] {
+    return Array.from(this.host.nativeElement.querySelectorAll<HTMLElement>('tr[data-category-id]'));
+  }
+
+  private rowTops(): Map<string, number> {
+    return new Map(this.rowElements().map((row) => [row.dataset['categoryId']!, row.getBoundingClientRect().top]));
+  }
+
+  private animateRows(previousTops: Map<string, number>): void {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    for (const row of this.rowElements()) {
+      const previousTop = previousTops.get(row.dataset['categoryId']!);
+      if (previousTop === undefined) continue;
+      const offset = previousTop - row.getBoundingClientRect().top;
+      if (offset === 0) continue;
+      row.animate([{ transform: `translateY(${offset}px)` }, { transform: 'translateY(0)' }], {
+        duration: 300,
+        easing: 'cubic-bezier(0.2, 0, 0, 1)',
+      });
+    }
+  }
 
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
