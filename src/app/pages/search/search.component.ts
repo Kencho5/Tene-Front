@@ -172,6 +172,8 @@ export class SearchComponent {
     { label: 'ფასი: ზრდადობით', value: 'price_asc' },
   ];
 
+  readonly sortBy = computed(() => this.params()['sort_by'] ?? 'views_desc');
+
   readonly searchResponse = rxResource({
     defaultValue: { products: [], total: 0, limit: 0, offset: 0 } as ProductSearchResponse,
     params: () => {
@@ -179,6 +181,7 @@ export class SearchComponent {
       if (urlParams.has('child_category_id')) {
         urlParams.delete('parent_category_id');
       }
+      urlParams.set('sort_by', this.sortBy());
       return urlParams.toString();
     },
     stream: ({ params }) => this.productsService.searchProduct(params),

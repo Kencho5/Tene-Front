@@ -31,6 +31,7 @@ export class DeliveryPricingService {
   }
 
   readonly timeAllowsSameDay = this.isWithinSameDayCutoff();
+  readonly isFriday = new Date().getDay() === 5;
 
   create(inputs: DeliveryPricingInputs) {
     const isTbilisi = (city: string) => !city || city === 'tbilisi';
@@ -72,7 +73,11 @@ export class DeliveryPricingService {
 
     const deliveryNotice = computed(() => {
       const city = inputs.city();
-      if (!city || city === 'tbilisi') return '';
+      if (!city || city === 'tbilisi') {
+        const nextDaySelected =
+          inputs.deliveryType() !== 'pickup' && inputs.deliveryTime() !== 'same_day';
+        return this.isFriday && nextDaySelected ? CHECKOUT_STRINGS.fridayNotice : '';
+      }
       if (HIGH_MOUNTAIN_CITIES.has(city)) return CHECKOUT_STRINGS.highMountainNotice;
       return CHECKOUT_STRINGS.outsideTbilisiNotice;
     });
@@ -81,7 +86,9 @@ export class DeliveryPricingService {
       const city = inputs.city();
       if (HIGH_MOUNTAIN_CITIES.has(city)) return CHECKOUT_STRINGS.highMountainLabelPrefix;
       if (city && city !== 'tbilisi') return CHECKOUT_STRINGS.outsideTbilisiLabelPrefix;
-      return CHECKOUT_STRINGS.nextDayLabelPrefix;
+      return this.isFriday
+        ? CHECKOUT_STRINGS.fridayNextDayLabelPrefix
+        : CHECKOUT_STRINGS.nextDayLabelPrefix;
     });
 
     const deliveryTimeOptions = computed<DeliveryOption[]>(() => {

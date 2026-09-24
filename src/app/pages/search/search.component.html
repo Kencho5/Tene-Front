@@ -839,7 +839,7 @@
         <div class="flex items-center gap-2">
           <div class="flex-1 sm:w-[190px] sm:flex-none">
             <app-dropdown
-              [selectedValue]="params()['sort_by']"
+              [selectedValue]="sortBy()"
               (selectedValueChange)="setParam('sort_by', $event)"
               placeholder="სორტირება"
               customClass="!h-[42px] !rounded-full"

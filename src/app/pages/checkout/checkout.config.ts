@@ -47,6 +47,8 @@ export const CHECKOUT_STRINGS = {
   sameDayPastCutoff: 'ხელმისაწვდომია 17:30-მდე',
   sameDayLabelPrefix: '1 საათში მიწოდება',
   nextDayLabelPrefix: 'მომდევნო სამუშაო დღეს',
+  fridayNextDayLabelPrefix: 'მიწოდება ორშაბათს',
+  fridayNotice: 'პარასკევს გაფორმებული შეკვეთა ჩაბარდება ორშაბათს.',
   outsideTbilisiLabelPrefix: 'მიწოდება 2-3 დღეში',
   highMountainLabelPrefix: 'მიწოდება 3-5 დღეში',
   free: 'უფასო',
