@@ -8,9 +8,7 @@ import {
   OrderItem,
   OrderStatus,
 } from '@core/interfaces/products.interface';
-import { ConfirmationModalComponent } from '@shared/components/ui/confirmation-modal/confirmation-modal.component';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
-import { ModalComponent } from '@shared/components/ui/modal/modal.component';
 import { MultiDropdownComponent } from '@shared/components/ui/multi-dropdown/multi-dropdown.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import {
@@ -46,9 +44,7 @@ interface FilterChip {
   selector: 'app-admin-orders',
   imports: [
     SharedModule,
-    ConfirmationModalComponent,
     DropdownComponent,
-    ModalComponent,
     MultiDropdownComponent,
     PaginationComponent,
     LightboxComponent,
@@ -896,7 +892,15 @@ export class AdminOrdersComponent {
   }
 
   onEscape(): void {
-    if (this.lightboxOpen() || this.orderToDelete() || this.filtersOpen()) return;
+    if (this.filtersOpen()) {
+      this.closeFilters();
+      return;
+    }
+    if (this.orderToDelete()) {
+      this.closeDeleteModal();
+      return;
+    }
+    if (this.lightboxOpen()) return;
     this.closeDetail();
   }
 
