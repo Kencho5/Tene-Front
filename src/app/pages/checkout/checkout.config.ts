@@ -49,14 +49,14 @@ export const CHECKOUT_STRINGS = {
   nextDayLabelPrefix: 'მომდევნო სამუშაო დღეს',
   fridayNextDayLabelPrefix: 'მიწოდება ორშაბათს',
   fridayNotice: 'პარასკევს გაფორმებული შეკვეთა ჩაბარდება ორშაბათს.',
-  outsideTbilisiLabelPrefix: 'მიწოდება 2-3 დღეში',
+  outsideTbilisiLabelPrefix: 'მიწოდება 3-4 სამუშაო დღეში',
   highMountainLabelPrefix: 'მიწოდება 3-5 დღეში',
   free: 'უფასო',
   highMountainNotice:
     'მაღალმთიან რეგიონში (სვანეთი, რაჭა, ხევსურეთი, თუშეთი, ზემო აჭარა) მიწოდების ღირებულებაა 8 ₾ და ხორციელდება 3-5 დღეში.',
   cashOnDeliveryUnavailable: 'არ არის ხელმისაწვდომი 1 საათში მიწოდებისას',
   outsideTbilisiNotice:
-    'თბილისის გარეთ მიწოდების ღირებულებაა 6 ₾ და ხორციელდება 2-3 დღეში. იმავე დღის მიწოდება ხელმისაწვდომია მხოლოდ თბილისში.',
+    'თბილისის გარეთ მიწოდების ღირებულებაა 6 ₾ და ხორციელდება 3-4 სამუშაო დღეში. იმავე დღის მიწოდება ხელმისაწვდომია მხოლოდ თბილისში.',
 } as const;
 
 export const CASH_ON_DELIVERY_FEE = {

@@ -828,7 +828,7 @@ export class ProductComponent {
       detail: 'შეკვეთა 11:00–00:00 · ყოველდღე კვირის გარდა',
       price: 6,
     },
-    { title: 'რეგიონები · 2–3 დღეში', detail: 'საქართველოს მასშტაბით', price: 6 },
+    { title: 'რეგიონები · 3–4 სამუშაო დღეში', detail: 'საქართველოს მასშტაბით', price: 6 },
   ];
 
   toggleDelivery(): void {
