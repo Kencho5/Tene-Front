@@ -11,6 +11,7 @@ import {
   viewChildren,
 } from '@angular/core';
 import { DecimalPipe, NgClass } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { email, FormField, form, hidden, required, submit, validate } from '@angular/forms/signals';
 import { catchError, EMPTY, forkJoin, mergeMap, Observable, of, switchMap } from 'rxjs';
@@ -215,13 +216,23 @@ export class CheckoutComponent {
   readonly formatPhoneNumber = formatPhoneNumber;
   readonly verificationCode = signal('');
   readonly verificationCodeSent = signal(false);
+  readonly phoneVerifying = signal(false);
+  private readonly phoneVerification = signal<{ phone: string; token: string } | null>(null);
 
   readonly normalizedPhone = computed(() =>
     normalizePhoneNumber(this.checkoutForm.phone_number().value()),
   );
 
+  readonly phoneVerificationToken = computed(() => {
+    const verification = this.phoneVerification();
+    return verification && verification.phone === this.normalizedPhone()
+      ? verification.token
+      : null;
+  });
+
   readonly needsPhoneVerification = computed(() => {
     const phone = this.normalizedPhone();
+    if (this.phoneVerificationToken()) return false;
     if (this.isGuest()) return true;
     return !this.savedPhones().some((p) => p.verified && p.phone_number === phone);
   });
@@ -517,7 +528,7 @@ export class CheckoutComponent {
     event?.preventDefault();
     this.submitted.set(true);
 
-    if (this.checkoutForm().invalid() || this.phoneVerificationMissing()) {
+    if (this.checkoutForm().invalid() || this.needsPhoneVerification()) {
       this.goToFirstInvalidStep();
       this.scrollPending.set(true);
       return;
@@ -542,6 +553,10 @@ export class CheckoutComponent {
     this.submitted.set(true);
     if (!this.isCurrentStepValid()) {
       this.scrollPending.set(true);
+      return;
+    }
+    if (this.currentStep() === 'contact' && this.needsPhoneVerification()) {
+      this.verifyPhone(() => this.goNext());
       return;
     }
     this.submitted.set(false);
@@ -569,10 +584,35 @@ export class CheckoutComponent {
         this.scrollPending.set(true);
         return;
       }
+      if (this.steps[i].key === 'contact' && this.needsPhoneVerification()) {
+        this.verifyPhone(() => this.goToStep(index));
+        return;
+      }
     }
     this.submitted.set(false);
     this.currentStepIndex.set(index);
     this.scrollToTop();
+  }
+
+  private verifyPhone(onVerified: () => void): void {
+    const phone = this.normalizedPhone();
+    if (!phone || this.phoneVerifying()) return;
+
+    this.phoneVerifying.set(true);
+    this.phoneNumberService.verifyCode(phone, Number(this.verificationCode())).subscribe({
+      next: ({ verification_token }) => {
+        this.phoneVerifying.set(false);
+        this.phoneVerification.set({ phone, token: verification_token });
+        onVerified();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.phoneVerifying.set(false);
+        this.verificationCode.set('');
+        if (error.status === 429) this.verificationCodeSent.set(false);
+        const message = error?.error?.message || 'კოდის დადასტურება ვერ მოხერხდა';
+        this.toastService.add('შეცდომა', message, 5000, 'error');
+      },
+    });
   }
 
   private scrollToTop(): void {
@@ -600,7 +640,7 @@ export class CheckoutComponent {
   }
 
   private goToFirstInvalidStep(): void {
-    if (this.hasContactErrors()) {
+    if (this.hasContactErrors() || this.needsPhoneVerification()) {
       this.currentStepIndex.set(0);
       return;
     }
@@ -629,7 +669,7 @@ export class CheckoutComponent {
     const resolvedRegion = guest ? model.guest_region : (selectedAddress?.region ?? '');
     const resolvedDetails = guest ? model.guest_details : (selectedAddress?.details ?? '');
     const phoneNumber = this.normalizedPhone() ?? model.phone_number;
-    const verificationCode = this.needsPhoneVerification() ? this.verificationCode() : '';
+    const verificationToken = this.phoneVerificationToken();
 
     this.checkoutLoading.set(true);
 
@@ -647,7 +687,7 @@ export class CheckoutComponent {
                 }),
             email: model.email,
             phone_number: phoneNumber,
-            ...(verificationCode ? { phone_verification_code: Number(verificationCode) } : {}),
+            ...(verificationToken ? { phone_verification_token: verificationToken } : {}),
             address: resolvedAddress,
             city: resolvedCity,
             ...(resolvedRegion ? { region: resolvedRegion } : {}),
@@ -664,9 +704,10 @@ export class CheckoutComponent {
         catchError((error) => {
           const message = error?.error?.message || 'შეკვეთის გაფორმება ვერ მოხერხდა';
           this.toastService.add('შეცდომა', message, 5000, 'error');
-          if (verificationCode && (error?.status === 400 || error?.status === 429)) {
+          if (error?.error?.code === 'phone_verification_required') {
+            this.phoneVerification.set(null);
             this.verificationCode.set('');
-            if (error.status === 429) this.verificationCodeSent.set(false);
+            this.verificationCodeSent.set(false);
             this.currentStepIndex.set(0);
           } else {
             this.currentStepIndex.set(3);

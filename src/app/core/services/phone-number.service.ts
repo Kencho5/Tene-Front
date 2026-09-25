@@ -3,7 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { PhoneNumber } from '@core/interfaces/phone-number.interface';
 
-export const PHONE_CODE_RESEND_SECONDS = 60;
+export const PHONE_CODE_RESEND_SECONDS = 30;
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +17,13 @@ export class PhoneNumberService {
     return this.http
       .post<void>('/phone/send-code', { phone_number: phoneNumber })
       .pipe(tap({ next: () => this.startCooldown(phoneNumber) }));
+  }
+
+  verifyCode(phoneNumber: string, code: number): Observable<{ verification_token: string }> {
+    return this.http.post<{ verification_token: string }>('/phone/verify-code', {
+      phone_number: phoneNumber,
+      code,
+    });
   }
 
   startCooldown(phoneNumber: string): void {

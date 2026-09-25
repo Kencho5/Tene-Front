@@ -131,7 +131,7 @@ export interface CheckoutRequest {
   organization_code?: string;
   email: string;
   phone_number: string;
-  phone_verification_code?: number;
+  phone_verification_token?: string;
   address: string;
   city: string;
   region?: string;

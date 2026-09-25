@@ -989,8 +989,16 @@
             <button
               type="button"
               (click)="goNext()"
-              class="bg-green-60 hover:bg-green-70 inline-flex h-[44px] items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-white transition-colors duration-200"
+              [disabled]="phoneVerifying()"
+              class="bg-green-60 hover:bg-green-70 inline-flex h-[44px] items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-white transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60"
             >
+              @if (phoneVerifying()) {
+              <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              მოწმდება...
+              } @else {
               შემდეგი
               <svg
                 class="h-4 w-4"
@@ -1001,6 +1009,7 @@
               >
                 <path d="M8 5l5 5-5 5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
+              }
             </button>
             }
           </div>
