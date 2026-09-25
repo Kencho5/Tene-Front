@@ -18,10 +18,13 @@ import { SeoService } from '@core/services/seo/seo.service';
 import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
 import { CategoryTreeNode } from '@core/interfaces/categories.interface';
 import { ProductResponse } from '@core/interfaces/products.interface';
+import { SlidersService } from '@core/services/sliders/sliders.service';
+import { Slider } from '@core/interfaces/admin/sliders.interface';
+import { HeroSliderComponent } from '@shared/components/hero-slider/hero-slider.component';
 
 @Component({
   selector: 'app-products',
-  imports: [SharedModule, ProductCardComponent, DragScrollDirective],
+  imports: [SharedModule, ProductCardComponent, DragScrollDirective, HeroSliderComponent],
   templateUrl: './products.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: `
@@ -34,6 +37,12 @@ export class ProductsComponent implements OnInit {
   private readonly productsService = inject(ProductsService);
   private readonly categoriesService = inject(CategoriesService);
   private readonly seoService = inject(SeoService);
+  private readonly slidersService = inject(SlidersService);
+
+  readonly sliders = rxResource({
+    defaultValue: [] as Slider[],
+    stream: () => this.slidersService.getSliders().pipe(catchError(() => of([] as Slider[]))),
+  });
 
   readonly productTopCategoryCards = productTopCategoryCards;
   readonly productBrandCards = productBrandCards;
@@ -65,7 +74,7 @@ export class ProductsComponent implements OnInit {
       title: 'პროდუქცია — USB კაბელები, დამტენები და ტექნიკა | Tene',
       description:
         'სრული კატალოგი: USB Type-C, Lightning და Micro-USB კაბელები, სწრაფი დამტენები, ყურსასმენები, მობილურები და აქსესუარები. ოფიციალური გარანტია, მიწოდება საქართველოს მასშტაბით.',
-      url: 'https://tene.ge/products',
+      url: 'https://tene.ge',
       type: 'website',
       keywords:
         'USB კაბელი ფასი, Type-C კაბელი ყიდვა, Lightning კაბელი, სწრაფი დამტენი, ყურსასმენი, მობილური აქსესუარები, ტექნიკის კატალოგი, Tene',

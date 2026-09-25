@@ -36,8 +36,8 @@ export const routes: Routes = [
       },
       {
         path: 'products',
-        loadComponent: () =>
-          import('./pages/products/products.component').then((m) => m.ProductsComponent),
+        redirectTo: '',
+        pathMatch: 'full',
       },
       {
         path: 'products/:slug/:product_id',
@@ -344,6 +344,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin/blog-form/admin-blog-form.component').then(
             (m) => m.AdminBlogFormComponent,
+          ),
+      },
+      {
+        path: 'sliders',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/sliders/admin-sliders.component').then(
+            (m) => m.AdminSlidersComponent,
           ),
       },
       {

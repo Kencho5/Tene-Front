@@ -26,6 +26,13 @@ import {
 } from '@core/interfaces/admin/categories.interface';
 import { CategoryTreeResponse } from '@core/interfaces/categories.interface';
 import { Brand, BrandRequest } from '@core/interfaces/admin/brands.interface';
+import {
+  Slider,
+  SliderImagePresignedResponse,
+  SliderImageUploadRequest,
+  SliderImageVariant,
+  SliderRequest,
+} from '@core/interfaces/admin/sliders.interface';
 import { AnalyticsResponse } from '@core/interfaces/admin/analytics.interface';
 import {
   CableType,
@@ -269,6 +276,37 @@ export class AdminService {
 
   deleteBrand(brandId: number): Observable<HttpStatusCode> {
     return this.http.delete<HttpStatusCode>(`/admin/brands/${brandId}`);
+  }
+
+  getSliders(): Observable<Slider[]> {
+    return this.http.get<Slider[]>('/admin/sliders');
+  }
+
+  createSlider(payload: SliderRequest): Observable<Slider> {
+    return this.http.post<Slider>('/admin/sliders', payload);
+  }
+
+  updateSlider(sliderId: number, payload: SliderRequest): Observable<Slider> {
+    return this.http.put<Slider>(`/admin/sliders/${sliderId}`, payload);
+  }
+
+  deleteSlider(sliderId: number): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/sliders/${sliderId}`);
+  }
+
+  moveSlider(sliderId: number, direction: 'up' | 'down'): Observable<HttpStatusCode> {
+    return this.http.post<HttpStatusCode>(`/admin/sliders/${sliderId}/move`, { direction });
+  }
+
+  getSliderImagePresignedUrl(
+    sliderId: number,
+    payload: SliderImageUploadRequest,
+  ): Observable<SliderImagePresignedResponse> {
+    return this.http.put<SliderImagePresignedResponse>(`/admin/sliders/${sliderId}/image`, payload);
+  }
+
+  deleteSliderImage(sliderId: number, variant: SliderImageVariant): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(`/admin/sliders/${sliderId}/image/${variant}`);
   }
 
   getCableTypes(): Observable<CableType[]> {

@@ -1,0 +1,351 @@
+<div class="space-y-4">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-platinum-100 text-lg font-semibold">
+        სლაიდერები
+        <span class="text-platinum-50 font-normal">({{ sliders.value().length }})</span>
+      </h1>
+      <p class="text-platinum-50 mt-0.5 text-sm">
+        მთავარი გვერდის ბანერები. საიტზე ჩანს მხოლოდ აქტიური სლაიდერი ატვირთული სურათით.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      (click)="createSlider()"
+      [disabled]="isCreating()"
+      class="bg-green-60 hover:bg-green-70 inline-flex h-9 items-center justify-center gap-1.5 rounded-full px-4 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+    >
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+        <path
+          d="M8 3.33337V12.6667M3.33334 8.00004H12.6667"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+      ახალი სლაიდერი
+    </button>
+  </div>
+
+  @if (sliders.isLoading() && sliders.value().length === 0) { @for (skeleton of [1, 2]; track
+  skeleton) {
+  <div class="border-hairline-strong/60 bg-platinum-10 h-72 animate-pulse rounded-2xl border"></div>
+  } } @else if (sliders.value().length === 0) {
+  <div
+    class="border-hairline-strong/60 flex flex-col items-center gap-2 rounded-2xl border bg-white px-4 py-16 text-center"
+  >
+    <p class="text-platinum-70 text-sm font-medium">სლაიდერები არ არის დამატებული</p>
+    <p class="text-platinum-50 text-xs">მთავარ გვერდზე გამოჩნდება სტანდარტული ბანერი</p>
+  </div>
+  } @else { @for (slider of sliders.value(); track slider.id; let i = $index, first = $first, last =
+  $last) {
+  @let open = isExpanded(slider.id);
+  <div class="border-hairline-strong/60 rounded-2xl border bg-white">
+    <div
+      class="border-hairline-strong/60 flex items-center justify-between gap-3 px-5 py-3 transition-[border-color] duration-300"
+      [class.border-b]="open"
+    >
+      <button
+        type="button"
+        (click)="toggleExpanded(slider.id)"
+        [attr.aria-expanded]="open"
+        [attr.aria-controls]="'slider-body-' + slider.id"
+        class="flex min-w-0 flex-1 items-center gap-3 text-left"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          class="text-platinum-50 shrink-0 transition-transform duration-300"
+          [class.rotate-90]="open"
+        >
+          <path
+            d="M6 4L10 8L6 12"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        @if (slider.desktop_image_url ?? slider.mobile_image_url; as thumb) {
+        <img
+          [src]="thumb"
+          alt=""
+          class="border-hairline-strong/60 h-9 w-20 shrink-0 rounded-md border object-cover"
+        />
+        } @else {
+        <div class="bg-platinum-10 h-9 w-20 shrink-0 rounded-md"></div>
+        }
+        <span class="text-platinum-100 shrink-0 text-sm font-semibold">#{{ i + 1 }}</span>
+        <span class="text-platinum-60 truncate text-sm">{{ slider.title ?? 'უსათაურო' }}</span>
+      </button>
+
+      <div class="flex shrink-0 items-center gap-2">
+        <span
+          class="rounded-full px-2 py-0.5 text-xs font-medium"
+          [class.bg-green-10]="slider.enabled"
+          [class.text-green-70]="slider.enabled"
+          [class.bg-platinum-10]="!slider.enabled"
+          [class.text-platinum-50]="!slider.enabled"
+        >
+          {{ slider.enabled ? 'აქტიური' : 'გამორთული' }}
+        </span>
+      </div>
+
+      <div class="flex items-center gap-1">
+        <button
+          type="button"
+          (click)="move(slider, 'up')"
+          [disabled]="first || isBusy('move:' + slider.id)"
+          class="text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex items-center justify-center rounded-full p-2 transition-colors disabled:pointer-events-none disabled:opacity-30"
+          aria-label="ზემოთ"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M4 10L8 6L12 10"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+        <button
+          type="button"
+          (click)="move(slider, 'down')"
+          [disabled]="last || isBusy('move:' + slider.id)"
+          class="text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex items-center justify-center rounded-full p-2 transition-colors disabled:pointer-events-none disabled:opacity-30"
+          aria-label="ქვემოთ"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M4 6L8 10L12 6"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          (click)="toggleEnabled(slider)"
+          [disabled]="isBusy('save:' + slider.id)"
+          class="focus:ring-green-60 relative ml-2 inline-flex h-[22px] w-10 items-center rounded-full transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
+          [class.bg-green-60]="slider.enabled"
+          [class.bg-platinum-30]="!slider.enabled"
+          [attr.aria-label]="slider.enabled ? 'გამორთვა' : 'ჩართვა'"
+        >
+          <span
+            class="inline-block h-4 w-4 transform rounded-full bg-white shadow-xs transition-transform"
+            [class.translate-x-[21px]]="slider.enabled"
+            [class.translate-x-[3px]]="!slider.enabled"
+          ></span>
+        </button>
+
+        <button
+          type="button"
+          (click)="sliderToDelete.set(slider.id)"
+          [disabled]="isBusy('delete:' + slider.id)"
+          class="text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 ml-1 flex items-center justify-center rounded-full p-2 transition-colors"
+          aria-label="წაშლა"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M2 4H3.33333H14"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M5.33334 4.00004V2.66671C5.33334 2.31309 5.47381 1.97395 5.72386 1.7239C5.97391 1.47385 6.31305 1.33337 6.66668 1.33337H9.33334C9.68697 1.33337 10.0261 1.47385 10.2762 1.7239C10.5262 1.97395 10.6667 2.31309 10.6667 2.66671V4.00004M12.6667 4.00004V13.3334C12.6667 13.687 12.5262 14.0261 12.2762 14.2762C12.0261 14.5262 11.687 14.6667 11.3333 14.6667H4.66668C4.31305 14.6667 3.97391 14.5262 3.72386 14.2762C3.47381 14.0261 3.33334 13.687 3.33334 13.3334V4.00004H12.6667Z"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div
+      [id]="'slider-body-' + slider.id"
+      class="grid transition-[grid-template-rows] duration-300 ease-out"
+      [class]="open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+      [attr.inert]="open ? null : ''"
+    >
+    <div class="overflow-hidden">
+    <div class="grid gap-4 px-5 py-4 md:grid-cols-[2fr_1fr]">
+      @for (slot of imageSlots; track slot.variant) {
+      <div>
+        <div class="mb-1.5 flex items-baseline justify-between gap-2">
+          <label class="text-platinum-70 text-sm font-medium">{{ slot.label }}</label>
+          <span class="text-platinum-50 text-xs">{{ slot.hint }}</span>
+        </div>
+
+        @let url = imageUrl(slider, slot.variant); @let key = slider.id + ':' + slot.variant; @if
+        (isBusy(key)) {
+        <div
+          class="border-hairline-strong/60 bg-platinum-10 flex w-full items-center justify-center rounded-xl border"
+          [class]="slot.aspect"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 16 16"
+            fill="none"
+            class="text-platinum-50 animate-spin"
+          >
+            <path
+              d="M8 2V4M8 12V14M14 8H12M4 8H2M12.2426 3.75736L10.8284 5.17157M5.17157 10.8284L3.75736 12.2426M12.2426 12.2426L10.8284 10.8284M5.17157 5.17157L3.75736 3.75736"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        } @else if (url) {
+        <div class="group relative w-full" [class]="slot.aspect">
+          <img
+            [src]="url"
+            [alt]="slot.label"
+            class="border-hairline-strong/60 h-full w-full rounded-xl border object-cover"
+          />
+          <div class="absolute top-2 right-2 flex gap-1.5">
+            <label
+              class="text-platinum-80 flex h-7 cursor-pointer items-center rounded-full bg-white/90 px-3 text-xs font-medium shadow-sm transition-colors hover:bg-white"
+            >
+              შეცვლა
+              <input
+                type="file"
+                accept="image/*"
+                class="hidden"
+                (change)="onImageSelect(slider, slot, $event)"
+              />
+            </label>
+            <button
+              type="button"
+              (click)="removeImage(slider, slot.variant)"
+              class="bg-valencia-60 hover:bg-valencia-70 flex h-7 w-7 items-center justify-center rounded-full text-white transition-colors"
+              aria-label="წაშლა"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M12 4L4 12M4 4L12 12"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        } @else {
+        <label
+          class="border-hairline-strong/60 bg-platinum-10 hover:border-green-60 hover:bg-green-10 flex w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-4 text-center transition-colors"
+          [class]="slot.aspect"
+        >
+          <svg width="32" height="32" viewBox="0 0 48 48" fill="none" class="text-platinum-40 mb-2">
+            <path
+              d="M24 32V16M16 24H32M42 24C42 33.9411 33.9411 42 24 42C14.0589 42 6 33.9411 6 24C6 14.0589 14.0589 6 24 6C33.9411 6 42 14.0589 42 24Z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          <p class="text-platinum-70 text-sm font-medium">ატვირთეთ სურათი</p>
+          <p class="text-platinum-50 text-xs">PNG, JPG, WEBP</p>
+          <input
+            type="file"
+            accept="image/*"
+            class="hidden"
+            (change)="onImageSelect(slider, slot, $event)"
+          />
+        </label>
+        }
+      </div>
+      }
+    </div>
+
+    <div class="border-hairline-strong/60 grid gap-4 border-t px-5 py-4 md:grid-cols-2">
+      <div>
+        <label class="text-platinum-70 mb-1.5 block text-sm font-medium">
+          სათაური (alt ტექსტი)
+        </label>
+        <input
+          type="text"
+          [value]="slider.title ?? ''"
+          (change)="updateField(slider, 'title', $event)"
+          placeholder="მაგ. ახალი კოლექცია"
+          class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white px-3.5 text-sm outline-hidden"
+        />
+      </div>
+      <div>
+        <label class="text-platinum-70 mb-1.5 block text-sm font-medium">ბმული</label>
+        <input
+          type="text"
+          [value]="slider.link_url ?? ''"
+          (change)="updateField(slider, 'link_url', $event)"
+          placeholder="მაგ: search?sale_type=discount"
+          class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white px-3.5 text-sm outline-hidden"
+        />
+      </div>
+    </div>
+    </div>
+    </div>
+  </div>
+  } }
+</div>
+
+@if (sliderToDelete() !== null) {
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/20" (click)="sliderToDelete.set(null)"></div>
+  <div class="relative w-full max-w-[440px] rounded-2xl bg-white shadow-xl">
+    <div class="border-hairline-strong/60 flex items-center justify-between border-b px-5 py-4">
+      <h2 class="text-platinum-100 text-base font-semibold">სლაიდერის წაშლა</h2>
+      <button
+        type="button"
+        (click)="sliderToDelete.set(null)"
+        class="text-platinum-40 hover:bg-platinum-10 hover:text-platinum-100 rounded-full p-1.5 transition-colors"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M12 4L4 12M4 4L12 12"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <div class="px-5 py-5">
+      <p class="text-platinum-70 text-sm">
+        დარწმუნებული ხართ, რომ გსურთ ამ სლაიდერის და მისი სურათების წაშლა?
+      </p>
+    </div>
+
+    <div class="border-hairline-strong/60 flex items-center justify-end gap-2 border-t px-5 py-4">
+      <button
+        type="button"
+        (click)="sliderToDelete.set(null)"
+        class="border-hairline-strong/60 text-platinum-80 hover:bg-platinum-10/60 inline-flex h-9 items-center rounded-full border bg-white px-4 text-sm font-medium transition-colors"
+      >
+        გაუქმება
+      </button>
+      <button
+        type="button"
+        (click)="confirmDelete()"
+        class="bg-valencia-60 hover:bg-valencia-70 inline-flex h-9 items-center rounded-full px-4 text-sm font-medium text-white transition-colors"
+      >
+        წაშლა
+      </button>
+    </div>
+  </div>
+</div>
+}

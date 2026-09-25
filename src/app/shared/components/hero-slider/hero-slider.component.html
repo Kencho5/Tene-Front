@@ -1,0 +1,82 @@
+<div class="relative" role="region" aria-roledescription="carousel" aria-label="ბანერები">
+  <div
+    #track
+    (scroll)="onScroll()"
+    class="border-hairline flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-2xl border [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+  >
+    @for (slider of sliders(); track slider.id; let i = $index) {
+      <div
+        class="aspect-[1265/1045] w-full shrink-0 snap-center snap-always lg:aspect-[1903/818]"
+        role="group"
+        aria-roledescription="slide"
+        [attr.aria-label]="i + 1 + ' / ' + sliders().length"
+      >
+        @if (slider.link_url; as link) {
+          @if (isInternal(link)) {
+            <a [routerLink]="link" class="block h-full w-full">
+              <ng-container *ngTemplateOutlet="banner; context: { $implicit: slider, index: i }" />
+            </a>
+          } @else {
+            <a [href]="link" target="_blank" rel="noopener" class="block h-full w-full">
+              <ng-container *ngTemplateOutlet="banner; context: { $implicit: slider, index: i }" />
+            </a>
+          }
+        } @else {
+          <ng-container *ngTemplateOutlet="banner; context: { $implicit: slider, index: i }" />
+        }
+      </div>
+    }
+  </div>
+
+  @if (sliders().length > 1) {
+    <button
+      type="button"
+      (click)="prev()"
+      class="absolute left-4 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-platinum-100 shadow-md backdrop-blur-sm transition-colors hover:bg-white lg:flex"
+      aria-label="წინა"
+    >
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+    <button
+      type="button"
+      (click)="next()"
+      class="absolute right-4 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-platinum-100 shadow-md backdrop-blur-sm transition-colors hover:bg-white lg:flex"
+      aria-label="შემდეგი"
+    >
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <div
+      class="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/35 px-2.5 py-2 backdrop-blur-sm lg:bottom-5"
+    >
+      @for (slider of sliders(); track slider.id; let i = $index) {
+        <button
+          type="button"
+          (click)="goTo(i)"
+          class="h-2.5 rounded-full transition-[width,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          [class]="current() === i ? 'w-7 bg-green-60' : 'w-2.5 bg-white hover:bg-white/80'"
+          [attr.aria-label]="'სლაიდი ' + (i + 1)"
+          [attr.aria-current]="current() === i"
+        ></button>
+      }
+    </div>
+  }
+</div>
+
+<ng-template #banner let-slider let-index="index">
+  <picture>
+    <source media="(min-width: 1024px)" [attr.srcset]="slider.desktop_image_url" />
+    <img
+      [src]="slider.mobile_image_url ?? slider.desktop_image_url"
+      [alt]="slider.title ?? ''"
+      [attr.loading]="index === 0 ? 'eager' : 'lazy'"
+      [attr.fetchpriority]="index === 0 ? 'high' : 'auto'"
+      draggable="false"
+      class="h-full w-full object-cover"
+    />
+  </picture>
+</ng-template>

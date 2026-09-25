@@ -35,7 +35,7 @@ export class FooterComponent {
     სერვისები: [
       { label: 'მწვანე ურნა', route: '/bins' },
       { label: 'ტენე ქოინები', route: '/coming-soon' },
-      { label: 'პროდუქტები', route: '/products' },
+      { label: 'პროდუქტები', route: '/' },
       { label: 'გადადნობა', route: '/coming-soon' },
       { label: 'გამომუშავება', route: '/coming-soon' },
     ],

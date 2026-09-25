@@ -2,7 +2,7 @@ import { NavUrl } from '@core/interfaces/navbar.interface';
 
 export const navUrls: NavUrl[] = [
   {
-    url: 'products',
+    url: '/',
     name: 'პროდუქცია',
     icon: 'products',
   },

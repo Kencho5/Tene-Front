@@ -1,4 +1,7 @@
 <div class="container space-y-16 px-4 pt-10 md:pt-16">
+  @if (sliders.value().length) {
+  <app-hero-slider [sliders]="sliders.value()" class="mb-8 block lg:mb-16" />
+  } @else {
   <a routerLink="/search" [queryParams]="{ sale_type: 'discount' }" class="mb-8 block lg:mb-16">
     <img
       src="/assets/images/products/banner.webp"
@@ -9,6 +12,7 @@
       class="border-hairline hidden w-full rounded-2xl border lg:block"
     />
   </a>
+  }
 
   <!-- Categories -->
   <div class="space-y-6">
