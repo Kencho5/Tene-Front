@@ -159,6 +159,14 @@ export class AdminOrdersComponent {
     },
   ];
 
+  readonly isOperator = computed(() => this.authService.isOperator());
+
+  readonly visibleMultiFilterGroups = computed(() =>
+    this.isOperator()
+      ? this.multiFilterGroups.filter((group) => group.key !== 'status')
+      : this.multiFilterGroups,
+  );
+
   readonly updatingStatus = signal<ReadonlySet<number>>(new Set());
   readonly updatingFina = signal<ReadonlySet<number>>(new Set());
 
@@ -212,6 +220,7 @@ export class AdminOrdersComponent {
     const chips: FilterChip[] = [];
 
     for (const key of this.multiFilterKeys) {
+      if (key === 'status' && this.isOperator()) continue;
       for (const value of this.csvParam(key)) {
         chips.push({ key, value, label: this.optionLabel(key, value) });
       }
@@ -275,6 +284,7 @@ export class AdminOrdersComponent {
       delete p['from_date'];
       delete p['to_date'];
     }
+    if (this.isOperator()) p['status'] = 'approved';
     for (const key of Object.keys(p)) {
       if (!p[key]) delete p[key];
     }

@@ -1408,7 +1408,7 @@
 
     <div class="flex-1 overflow-y-auto px-5 py-5">
       <div class="space-y-4">
-        @for (group of multiFilterGroups; track group.key) {
+        @for (group of visibleMultiFilterGroups(); track group.key) {
         <div>
           <label class="text-platinum-70 mb-1.5 block text-sm font-medium">{{ group.label }}</label>
           <app-multi-dropdown
