@@ -10,10 +10,11 @@ import {
 } from '@core/interfaces/categories.interface';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { MenuContentComponent } from './menu-content/menu-content.component';
+import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
 
 @Component({
   selector: 'app-navbar',
-  imports: [SharedModule, SearchBarComponent, MenuContentComponent],
+  imports: [SharedModule, SearchBarComponent, MenuContentComponent, DragScrollDirective],
   templateUrl: './navbar.component.html',
   styles: `
     @keyframes skeleton-shimmer {
