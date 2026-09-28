@@ -369,14 +369,18 @@
                 [class.text-platinum-90]="hasSelectedLength()"
                 [class.text-valencia-60]="!hasSelectedLength()"
               >
-                @if (hasSelectedLength()) { სიგრძე · {{ cableLengths()[selectedLengthIdx()!] }} სმ }
-                @else { აირჩიეთ სიგრძე }
+                @if (hasSelectedLength()) { სიგრძე } @else { აირჩიეთ სიგრძე }
               </p>
-              <p
-                class="text-platinum-100 text-[36px] leading-none font-bold whitespace-nowrap sm:text-[32px]"
-              >
-                {{ finalPrice() }}₾
-              </p>
+              <div class="flex items-baseline gap-2 whitespace-nowrap">
+                @if (hasSelectedLength()) {
+                <span class="text-platinum-60 text-[20px] font-semibold sm:text-[18px]">
+                  {{ cableLengths()[selectedLengthIdx()!] }} სმ ·
+                </span>
+                }
+                <p class="text-platinum-100 text-[36px] leading-none font-bold sm:text-[32px]">
+                  {{ finalPrice() }}₾
+                </p>
+              </div>
             </div>
             <!-- Custom slider: track + fill + arrow share the same 0–100% coordinate
                  system as the ruler/numbers below. Native input overlays for dragging. -->
