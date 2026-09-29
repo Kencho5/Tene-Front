@@ -284,12 +284,31 @@ export class SearchComponent {
     if (category.children.length > 0) {
       this.drilledParentId.set(category.id);
     } else {
-      this.setParam('parent_category_id', '' + category.id);
+      this.selectCategory('parent_category_id', '' + category.id);
+    }
+  }
+
+  toggleCategoryPanel(): void {
+    if (this.isCategoryExpanded()) {
       this.closeCategoryPanel();
+    } else {
+      this.isCategoryExpanded.set(true);
     }
   }
 
   closeCategoryPanel(): void {
+    this.resetCategoryPanel();
+    if (this.params()['expand_categories']) {
+      this.updateParams({ expand_categories: undefined });
+    }
+  }
+
+  selectCategory(key: string, value: string): void {
+    this.resetCategoryPanel();
+    this.setParam(key, value);
+  }
+
+  private resetCategoryPanel(): void {
     this.drilledParentId.set(null);
     this.isCategoryExpanded.set(false);
   }
@@ -308,7 +327,10 @@ export class SearchComponent {
   private readonly paginationKeys = new Set(['offset', 'limit', 'sort_by']);
 
   private updateParam(key: string, value: string | undefined): void {
-    const queryParams: Record<string, string | number | undefined> = { [key]: value };
+    const queryParams: Record<string, string | number | undefined> = {
+      [key]: value,
+      expand_categories: undefined,
+    };
 
     if (!this.paginationKeys.has(key)) {
       queryParams['offset'] = undefined;

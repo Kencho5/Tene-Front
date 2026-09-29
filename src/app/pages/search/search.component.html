@@ -10,7 +10,7 @@
         <!-- "ყველა" -->
         <button
           type="button"
-          (click)="isCategoryExpanded.set(!isCategoryExpanded())"
+          (click)="toggleCategoryPanel()"
           class="group flex w-28 shrink-0 cursor-pointer flex-col items-center gap-2 rounded-xl px-1 py-2 transition-colors sm:w-24"
         >
           <span
@@ -147,7 +147,7 @@
           </svg>
           <button
             type="button"
-            (click)="setParam('parent_category_id', '' + drilledParent()!.id); closeCategoryPanel()"
+            (click)="selectCategory('parent_category_id', '' + drilledParent()!.id)"
             aria-current="page"
             class="text-platinum-100 min-w-0 cursor-pointer truncate text-lg font-bold tracking-tight"
           >
@@ -228,7 +228,7 @@
         @for (child of drilledParent()!.children; track child.id) {
         <button
           type="button"
-          (click)="setParam('child_category_id', '' + child.id); closeCategoryPanel()"
+          (click)="selectCategory('child_category_id', '' + child.id)"
           class="flex w-full cursor-pointer items-center gap-3 rounded-2xl border px-3 py-2.5 transition-all duration-150"
           [class]="hasValue('child_category_id', '' + child.id)
                 ? 'border-green-60 bg-green-10 text-platinum-100'
@@ -262,7 +262,7 @@
         <button
           type="button"
           (mouseenter)="categoryPanelPointerMoved() && expandedParentId.set(category.id)"
-          (click)="setParam('parent_category_id', '' + category.id); closeCategoryPanel()"
+          (click)="selectCategory('parent_category_id', '' + category.id)"
           class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-150"
           [class]="expandedParentId() === category.id
                 ? 'bg-platinum-10 text-platinum-100'
@@ -304,7 +304,7 @@
           @for (child of category.children; track child.id) {
           <button
             type="button"
-            (click)="setParam('child_category_id', '' + child.id); closeCategoryPanel()"
+            (click)="selectCategory('child_category_id', '' + child.id)"
             class="flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 transition-all duration-150"
             [class]="hasValue('child_category_id', '' + child.id)
                       ? 'border-green-60 bg-green-10'
