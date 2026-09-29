@@ -64,6 +64,7 @@ export class AdminOrderFormComponent {
     { label: 'ჩარიცხვა — საქართველოს ბანკი', value: 'transfer_bog' },
     { label: 'ჩარიცხვა — თიბისი', value: 'transfer_tbc' },
     { label: 'ჩარიცხვა — extra.ge', value: 'transfer_extra' },
+    { label: 'კურიერთან გადახდა', value: 'cash_on_delivery' },
   ];
 
   readonly fulfillmentMethodOptions: ComboboxItems[] = [
