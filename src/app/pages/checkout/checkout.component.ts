@@ -401,7 +401,7 @@ export class CheckoutComponent {
 
   constructor() {
     afterNextRender(() => {
-      if (this.cartService.items().length === 0) {
+      if (this.cartService.items().length === 0 || this.cartService.hasUnconfiguredCables()) {
         this.router.navigate(['/cart']);
       }
     });

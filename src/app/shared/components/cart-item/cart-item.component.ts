@@ -11,10 +11,11 @@ import { ImageComponent } from '@shared/components/ui/image/image.component';
 import { SharedModule } from '@shared/shared.module';
 import { generateProductSlug } from '@utils/slug';
 import { getProductImageUrl } from '@utils/product-image-url';
+import { CableConfiguratorComponent } from '@shared/components/cable-configurator/cable-configurator.component';
 
 @Component({
   selector: 'app-cart-item',
-  imports: [SharedModule, ImageComponent],
+  imports: [SharedModule, ImageComponent, CableConfiguratorComponent],
   templateUrl: './cart-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -23,12 +24,22 @@ export class CartItemComponent {
   readonly index = input<number | null>(null);
   readonly showQuantityControls = input<boolean>(true);
   readonly clickable = input<boolean>(true);
+  readonly cableConfigurable = input<boolean>(false);
+  readonly showCableError = input<boolean>(false);
 
   readonly cartService = inject(CartService);
 
   readonly productSlug = computed(() => {
     return generateProductSlug(this.item().product.name);
   });
+
+  readonly needsCableConfig = computed(
+    () => this.item().product.cable_type_id != null && !this.item().cableConfig,
+  );
+
+  onCableConfigChange(config: CartItem['cableConfig'] | null): void {
+    this.cartService.setCableConfig(this.item(), config);
+  }
 
   getImageSrc(
     imageId: string,
@@ -48,11 +59,6 @@ export class CartItemComponent {
     event.preventDefault();
     event.stopPropagation();
     const item = this.item();
-    this.cartService.updateQuantity(
-      item.product.id,
-      item.selectedColor,
-      item.selectedImageId,
-      item.quantity + delta,
-    );
+    this.cartService.updateQuantity(item, item.quantity + delta);
   }
 }

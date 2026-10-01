@@ -35,6 +35,7 @@ export class CartService {
 
   readonly totalPrice = computed(() => {
     return this.items().reduce((total, item) => {
+      if (item.product.cable_type_id != null && !item.cableConfig) return total;
       const price = item.cableConfig
         ? item.cableConfig.price
         : calculateDiscount(item.product);
@@ -42,9 +43,13 @@ export class CartService {
     }, 0);
   });
 
+  readonly hasUnconfiguredCables = computed(() =>
+    this.items().some((item) => item.product.cable_type_id != null && !item.cableConfig),
+  );
+
   readonly totalDiscount = computed(() => {
     return this.items().reduce((total, item) => {
-      if (item.product.discounted_price == null) {
+      if (item.product.discounted_price == null || item.product.cable_type_id != null) {
         return total;
       }
 
@@ -95,32 +100,16 @@ export class CartService {
     });
   }
 
-  removeItem(productId: string, color: string, imageId: string): void {
+  removeItem(target: CartItem): void {
     this.items.update((currentItems) =>
-      currentItems.filter(
-        (item) =>
-          !(
-            item.product.id === productId &&
-            item.selectedColor === color &&
-            item.selectedImageId === imageId
-          ),
-      ),
+      currentItems.filter((item) => item !== target),
     );
   }
 
-  updateQuantity(
-    productId: string,
-    color: string,
-    imageId: string,
-    quantity: number,
-  ): void {
+  updateQuantity(target: CartItem, quantity: number): void {
     this.items.update((currentItems) => {
       return currentItems.map((item) => {
-        if (
-          item.product.id === productId &&
-          item.selectedColor === color &&
-          item.selectedImageId === imageId
-        ) {
+        if (item === target) {
           const clampedQuantity = Math.max(
             1,
             Math.min(quantity, item.selectedImageQuantity),
@@ -130,6 +119,14 @@ export class CartService {
         return item;
       });
     });
+  }
+
+  setCableConfig(target: CartItem, cableConfig: CartItem['cableConfig'] | null): void {
+    this.items.update((currentItems) =>
+      currentItems.map((item) =>
+        item === target ? { ...item, cableConfig: cableConfig ?? undefined } : item,
+      ),
+    );
   }
 
   clearCart(): void {
@@ -149,11 +146,7 @@ export class CartService {
   confirmDelete(): void {
     const item = this.itemToDelete();
     if (item) {
-      this.removeItem(
-        item.product.id,
-        item.selectedColor,
-        item.selectedImageId,
-      );
+      this.removeItem(item);
       this.closeDeleteModal();
     }
   }

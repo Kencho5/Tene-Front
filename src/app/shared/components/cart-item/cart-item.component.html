@@ -1,9 +1,17 @@
+<div
+  class="relative w-full rounded-2xl border bg-white p-3.5 transition-colors sm:p-4"
+  [ngClass]="
+    showCableError() && needsCableConfig()
+      ? 'border-valencia-60'
+      : 'border-hairline hover:border-platinum-30'
+  "
+>
 <a
   [routerLink]="
     clickable() ? ['/products', productSlug(), item().product.id] : null
   "
   [class.pointer-events-none]="!clickable()"
-  class="border-hairline relative flex w-full gap-3.5 rounded-2xl border bg-white p-3.5 transition-colors hover:border-platinum-30 sm:gap-4 sm:p-4"
+  class="flex w-full gap-3.5 sm:gap-4"
 >
   <div
     class="bg-surface-10 border-hairline relative flex aspect-square w-[88px] shrink-0 items-center justify-center overflow-hidden rounded-lg border sm:w-[112px]"
@@ -47,7 +55,8 @@
 
     <div class="mt-auto flex items-center justify-between gap-2">
       <div class="min-w-0">
-        @if (item().cableConfig; as cc) {
+        @if (needsCableConfig()) {
+        } @else if (item().cableConfig; as cc) {
           <p class="text-platinum-100 text-[16px] leading-none font-bold sm:text-[18px]">
             {{ cartService.calculateTotalPrice(cc.price, item().quantity) | number: "1.2-2" }} ₾
           </p>
@@ -128,3 +137,14 @@
     </div>
   </div>
 </a>
+@if (cableConfigurable() && item().product.cable_type_id; as cableTypeId) {
+  <div class="border-hairline mt-3.5 border-t pt-3.5 sm:mt-4 sm:pt-4">
+    <app-cable-configurator
+      [cableTypeId]="cableTypeId"
+      [config]="item().cableConfig ?? null"
+      [showError]="showCableError()"
+      (configChange)="onCableConfigChange($event)"
+    />
+  </div>
+}
+</div>
