@@ -1,17 +1,14 @@
 <div class="container space-y-16 px-4 pt-10 md:pt-16">
-  @if (sliders.value().length) {
+  @if (sliders.isLoading()) {
+  <div
+    class="border-hairline bg-platinum-10 mb-8 flex aspect-[1265/1045] w-full items-center justify-center rounded-2xl border lg:mb-16 lg:aspect-[1903/818]"
+    role="status"
+    aria-label="იტვირთება"
+  >
+    <div class="border-t-green-60 border-platinum-20 h-8 w-8 animate-spin rounded-full border-[3px]"></div>
+  </div>
+  } @else if (sliders.value().length) {
   <app-hero-slider [sliders]="sliders.value()" class="mb-8 block lg:mb-16" />
-  } @else {
-  <a routerLink="/search" [queryParams]="{ sale_type: 'discount' }" class="mb-8 block lg:mb-16">
-    <img
-      src="/assets/images/products/banner.webp"
-      class="border-hairline w-full rounded-2xl border lg:hidden"
-    />
-    <img
-      src="/assets/images/products/banner-desktop.webp"
-      class="border-hairline hidden w-full rounded-2xl border lg:block"
-    />
-  </a>
   }
 
   <!-- Categories -->
@@ -65,9 +62,7 @@
             }
           </div>
 
-          <p
-            class="text-platinum-80 text-center text-[15px] leading-tight font-medium"
-          >
+          <p class="text-platinum-80 text-center text-[15px] leading-tight font-medium">
             {{ category.name }}
           </p>
         </a>
@@ -79,7 +74,8 @@
         [queryParams]="{ sort_by: 'views_desc', expand_categories: 'true' }"
         class="border-green-60 text-green-60 hover:bg-green-10 mt-6 flex w-full items-center justify-center gap-1.5 rounded-full border px-4 py-3 text-[15px] font-medium transition-colors"
       >
-        ყველას ნახვა <span class="text-xl leading-none">→</span>
+        ყველას ნახვა
+        <span class="text-xl leading-none">→</span>
       </a>
     </div>
 
@@ -205,7 +201,8 @@
         [queryParams]="{ sort_by: 'views_desc' }"
         class="border-green-60 text-green-60 hover:bg-green-10 mt-4 flex w-full items-center justify-center gap-1.5 rounded-full border px-4 py-3 text-[15px] font-medium transition-colors sm:hidden"
       >
-        ყველას ნახვა <span class="text-xl leading-none">→</span>
+        ყველას ნახვა
+        <span class="text-xl leading-none">→</span>
       </a>
 
       @if (canScrollLeft("products")) {
