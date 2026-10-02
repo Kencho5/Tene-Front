@@ -243,6 +243,16 @@ export class AdminOrderFormComponent {
     this.updateItem(index, { color: color ?? '' });
   }
 
+  onProductExchangeChange(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.orderModel.update((model) => ({
+      ...model,
+      is_product_exchange: checked,
+      amount: checked ? '0' : '',
+      payment_method: checked ? '' : this.defaultModel.payment_method,
+    }));
+  }
+
   formatPrice(value: number): string {
     return value.toFixed(2);
   }
@@ -296,7 +306,7 @@ export class AdminOrderFormComponent {
 
     const payload: CreateOrderRequest = {
       status: model.status,
-      payment_method: model.payment_method,
+      payment_method: model.payment_method || undefined,
       fulfillment_method: model.fulfillment_method,
       amount: this.resolvedAmount(),
       customer_type: model.customer_type,

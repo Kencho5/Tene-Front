@@ -84,7 +84,7 @@ export interface OrderFormFields {
   delivery_price: string;
   comment: string;
   amount: string;
-  payment_method: PaymentMethod;
+  payment_method: PaymentMethod | '';
   fulfillment_method: FulfillmentMethod;
   personal_number: string;
   source_comment: string;

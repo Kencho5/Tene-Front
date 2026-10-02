@@ -25,6 +25,7 @@
         <app-dropdown
           [(selectedValue)]="orderForm.payment_method().value"
           [items]="paymentMethodOptions"
+          [disabled]="orderModel().is_product_exchange"
           placeholder="გადახდის ფორმა"
         />
         <app-dropdown
@@ -392,7 +393,7 @@
           <input
             type="checkbox"
             [checked]="orderModel().is_product_exchange"
-            (change)="orderForm.is_product_exchange().value.set($any($event.target).checked)"
+            (change)="onProductExchangeChange($event)"
             class="accent-green-60 h-4 w-4 shrink-0 cursor-pointer"
           />
           <span class="text-platinum-100 text-sm font-medium">ხდება პროდუქტის შეცვლა</span>
