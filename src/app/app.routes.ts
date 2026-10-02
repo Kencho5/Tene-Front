@@ -224,6 +224,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'orders/:id/edit',
+        loadComponent: () =>
+          import('./pages/admin/order-form/admin-order-form.component').then(
+            (m) => m.AdminOrderFormComponent,
+          ),
+      },
+      {
         path: 'payment-link',
         loadComponent: () =>
           import('./pages/admin/payment-link/admin-payment-link.component').then(

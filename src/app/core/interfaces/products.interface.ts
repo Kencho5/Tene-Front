@@ -236,6 +236,7 @@ export interface OrderItem {
   order_id: number;
   product_id: string;
   product_sku: string;
+  color: string | null;
   quantity: number;
   price_at_purchase: number;
   product_name: string;

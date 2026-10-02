@@ -173,6 +173,14 @@ export class AdminService {
     return this.http.post<Order>('/admin/orders', payload);
   }
 
+  getOrder(id: number): Observable<Order> {
+    return this.http.get<Order>(`/admin/orders/${id}`);
+  }
+
+  replaceOrder(id: number, payload: CreateOrderRequest): Observable<Order> {
+    return this.http.put<Order>(`/admin/orders/${id}`, payload);
+  }
+
   updateOrder(id: number, payload: UpdateOrderRequest): Observable<Order> {
     return this.http.patch<Order>(`/admin/orders/${id}`, payload);
   }

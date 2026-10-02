@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { form, FormField, required } from '@angular/forms/signals';
 import { catchError, of } from 'rxjs';
@@ -7,10 +7,15 @@ import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import {
   CreateOrderItem,
   CreateOrderRequest,
+  FulfillmentMethod,
   OrderFormFields,
   OrderItemFields,
 } from '@core/interfaces/admin/orders.interface';
-import { ProductResponse, ProductSearchResponse } from '@core/interfaces/products.interface';
+import {
+  Order,
+  ProductResponse,
+  ProductSearchResponse,
+} from '@core/interfaces/products.interface';
 import { AdminService } from '@core/services/admin/admin.service';
 import { ToastService } from '@core/services/toast.service';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
@@ -33,6 +38,7 @@ const EMPTY_SEARCH: ProductSearchResponse = { products: [], total: 0, limit: 0, 
 })
 export class AdminOrderFormComponent {
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly adminService = inject(AdminService);
   private readonly toastService = inject(ToastService);
   private searchTimer?: number;
@@ -125,6 +131,10 @@ export class AdminOrderFormComponent {
   readonly isLoading = signal(false);
   readonly items = signal<OrderItemFields[]>([]);
 
+  readonly orderId = Number(this.route.snapshot.paramMap.get('id')) || null;
+  readonly isEdit = this.orderId !== null;
+  readonly isFetching = signal(this.isEdit);
+
   readonly isCompany = computed(() => this.orderModel().customer_type === 'company');
   readonly isDelivery = computed(() => this.orderModel().delivery_type === 'delivery');
 
@@ -163,6 +173,87 @@ export class AdminOrderFormComponent {
     if (this.orderModel().amount.trim() && !isNaN(manual)) return manual;
     return this.calculatedTotal();
   });
+
+  constructor() {
+    if (this.orderId === null) return;
+
+    this.adminService
+      .getOrder(this.orderId)
+      .pipe(
+        catchError((err) => {
+          const message = err?.error?.message || 'შეკვეთის ჩატვირთვა ვერ მოხერხდა';
+          this.toastService.add('შეცდომა', message, 5000, 'error');
+          this.router.navigate(['/admin/orders']);
+          return of(null);
+        }),
+      )
+      .subscribe((order) => {
+        if (!order) return;
+        if (order.source !== 'admin') {
+          this.toastService.add(
+            'შეცდომა',
+            'მხოლოდ ხელით დამატებული შეკვეთის რედაქტირებაა შესაძლებელი',
+            5000,
+            'error',
+          );
+          this.router.navigate(['/admin/orders']);
+          return;
+        }
+        this.populate(order);
+        this.isFetching.set(false);
+      });
+  }
+
+  private populate(order: Order): void {
+    const items: OrderItemFields[] = order.items.map((item) => ({
+      product_id: item.product_id ?? '',
+      product_name: item.product_name,
+      color: item.color ?? '',
+      quantity: item.quantity,
+      price: Number(item.price_at_purchase),
+      image_url: item.product_image
+        ? getProductImageUrl(
+            item.product_image.product_id,
+            item.product_image.image_uuid,
+            item.product_image.extension,
+          )
+        : null,
+    }));
+    this.items.set(items);
+
+    const deliveryPrice = order.delivery_price != null ? order.delivery_price / 100 : 0;
+    const itemsTotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const amount = order.amount / 100;
+    const isDelivery = order.delivery_type === 'delivery';
+    const calculated = itemsTotal + (isDelivery ? deliveryPrice : 0);
+
+    this.orderModel.set({
+      status: order.status,
+      customer_type: order.customer_type || 'individual',
+      customer_name: order.customer_name ?? '',
+      customer_surname: order.customer_surname ?? '',
+      organization_type: order.organization_type ?? 'llc',
+      organization_name: order.organization_name ?? '',
+      organization_code: order.organization_code ?? '',
+      email: order.email ?? '',
+      phone_number: String(order.phone_number ?? ''),
+      city: order.city ?? '',
+      region: order.region ?? '',
+      address: order.address ?? '',
+      details: order.details ?? '',
+      delivery_type: order.delivery_type || 'delivery',
+      delivery_time: order.delivery_time ?? '',
+      delivery_price: order.delivery_price != null ? String(deliveryPrice) : '',
+      comment: order.comment ?? '',
+      amount: Math.abs(amount - calculated) < 0.005 ? '' : String(amount),
+      payment_method: order.payment_method ?? '',
+      fulfillment_method: (order.fulfillment_method ?? 'store_pickup') as FulfillmentMethod,
+      personal_number: order.personal_number ?? '',
+      source_comment: order.source_comment ?? '',
+      is_installment_sale: order.is_installment_sale,
+      is_product_exchange: order.is_product_exchange,
+    });
+  }
 
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
@@ -273,20 +364,30 @@ export class AdminOrderFormComponent {
 
     this.isLoading.set(true);
 
-    this.adminService
-      .createOrder(this.buildPayload())
+    const payload = this.buildPayload();
+    const request$ =
+      this.orderId !== null
+        ? this.adminService.replaceOrder(this.orderId, payload)
+        : this.adminService.createOrder(payload);
+
+    request$
       .pipe(
         catchError((err) => {
           this.isLoading.set(false);
-          const message = err?.error?.message || 'შეკვეთის შექმნა ვერ მოხერხდა';
-          this.toastService.add('შეცდომა', message, 5000, 'error');
+          const fallback = this.isEdit
+            ? 'შეკვეთის განახლება ვერ მოხერხდა'
+            : 'შეკვეთის შექმნა ვერ მოხერხდა';
+          this.toastService.add('შეცდომა', err?.error?.message || fallback, 5000, 'error');
           return of(null);
         }),
       )
       .subscribe((order) => {
         this.isLoading.set(false);
         if (order) {
-          this.toastService.add('წარმატებული', `შეკვეთა შეიქმნა: ${order.order_id}`, 3000, 'success');
+          const message = this.isEdit
+            ? `შეკვეთა განახლდა: ${order.order_id}`
+            : `შეკვეთა შეიქმნა: ${order.order_id}`;
+          this.toastService.add('წარმატებული', message, 3000, 'success');
           this.router.navigate(['/admin/orders']);
         }
       });

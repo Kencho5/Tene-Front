@@ -687,8 +687,16 @@
             </span>
           </div>
 
-          @if (canDelete()) {
-          <div class="flex justify-end">
+          @if (order.source === 'admin' || canDelete()) {
+          <div class="flex justify-end gap-1">
+            @if (order.source === 'admin') {
+            <a
+              [routerLink]="['/admin/orders', order.id, 'edit']"
+              class="text-platinum-70 hover:bg-platinum-10 rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
+            >
+              რედაქტირება
+            </a>
+            } @if (canDelete()) {
             <button
               type="button"
               (click)="openDeleteModal(order)"
@@ -696,6 +704,7 @@
             >
               შეკვეთის წაშლა
             </button>
+            }
           </div>
           }
         </div>
@@ -856,7 +865,7 @@
           >
             <!-- Order / product -->
             <td
-              class="max-w-[360px] px-4 py-3 lg:w-[360px]"
+              class="max-w-[320px] px-4 py-3"
               [class.shadow-[inset_3px_0_0_var(--color-platinum-50)]]="isSelected(order.id)"
             >
               <div class="flex items-center gap-3">
@@ -889,7 +898,7 @@
                   </svg>
                 </div>
                 }
-                <div class="min-w-0 flex-1 lg:min-w-[220px]">
+                <div class="min-w-0 flex-1 lg:min-w-[160px]">
                   <div class="flex items-center gap-2">
                     <p class="text-platinum-100 truncate text-sm font-medium">
                       {{ order.items[0]?.product_name ?? "შეკვეთა" }}
@@ -959,8 +968,8 @@
             </td>
 
             <!-- Delivery / payment method -->
-            <td class="px-4 py-3 whitespace-nowrap">
-              <p class="text-platinum-100 text-sm">
+            <td class="max-w-[200px] px-4 py-3">
+              <p class="text-platinum-100 text-sm whitespace-nowrap">
                 {{ deliveryTypeLabel(order.delivery_type) }}
                 @if (order.delivery_type !== 'pickup') {
                 <span class="text-platinum-50">· {{ deliveryPriceLabel(order) }}</span>
@@ -1076,7 +1085,15 @@
                     </span>
                     }
                   </div>
-                  @if (canDelete()) {
+                  <div class="flex items-center gap-2">
+                  @if (order.source === 'admin') {
+                  <a
+                    [routerLink]="['/admin/orders', order.id, 'edit']"
+                    class="border-hairline-strong/60 text-platinum-70 hover:bg-platinum-10/60 hover:text-platinum-100 inline-flex h-9 items-center gap-1.5 rounded-full border bg-white px-4 text-sm font-medium transition-colors"
+                  >
+                    რედაქტირება
+                  </a>
+                  } @if (canDelete()) {
                   <button
                     type="button"
                     (click)="openDeleteModal(order)"
@@ -1094,6 +1111,7 @@
                     წაშლა
                   </button>
                   }
+                  </div>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">

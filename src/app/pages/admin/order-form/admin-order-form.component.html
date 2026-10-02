@@ -2,13 +2,18 @@
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-platinum-100 text-lg font-semibold">ახალი შეკვეთა</h1>
+      <h1 class="text-platinum-100 text-lg font-semibold">
+        {{ isEdit ? 'შეკვეთის რედაქტირება #' + orderId : 'ახალი შეკვეთა' }}
+      </h1>
       <p class="text-platinum-50 mt-0.5 text-sm">
-        შექმენით შეკვეთა ხელით — გადახდის ბმულის გარეშე
+        {{ isEdit ? 'ხელით დამატებული შეკვეთის განახლება' : 'შექმენით შეკვეთა ხელით — გადახდის ბმულის გარეშე' }}
       </p>
     </div>
   </div>
 
+  @if (isFetching()) {
+    <p class="text-platinum-50 py-10 text-center text-sm">იტვირთება...</p>
+  } @else {
   <form (submit)="onSubmit($event)" novalidate class="space-y-4">
     <!-- Status -->
     <div class="border-hairline-strong/60 rounded-2xl border bg-white">
@@ -427,9 +432,10 @@
           </svg>
           <span>მუშავდება...</span>
         } @else {
-          <span>შეკვეთის შექმნა</span>
+          <span>{{ isEdit ? 'ცვლილებების შენახვა' : 'შეკვეთის შექმნა' }}</span>
         }
       </button>
     </div>
   </form>
+  }
 </div>
