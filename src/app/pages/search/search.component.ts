@@ -198,8 +198,13 @@ export class SearchComponent {
     this.setParam('query', value, 300);
   }
 
-  readonly products = computed(() => this.searchResponse.value().products);
-  readonly totalProducts = computed(() => this.searchResponse.value().total);
+  readonly shownResponse = linkedSignal<{ response: ProductSearchResponse; loading: boolean }, ProductSearchResponse>({
+    source: () => ({ response: this.searchResponse.value(), loading: this.searchResponse.isLoading() }),
+    computation: ({ response, loading }, previous) => (loading && previous ? previous.value : response),
+  });
+
+  readonly products = computed(() => this.shownResponse().products);
+  readonly totalProducts = computed(() => this.shownResponse().total);
   readonly limit = computed(() => Number(this.params()['limit']) || 12);
   readonly offset = computed(() => Number(this.params()['offset']) || 0);
   readonly currentPage = computed(() => Math.floor(this.offset() / this.limit()) + 1);

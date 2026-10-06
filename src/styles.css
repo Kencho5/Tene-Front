@@ -63,3 +63,135 @@ textarea::placeholder {
   color: #6D6D6D;
   font-weight: 400;
 }
+
+@property --ring-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+:root {
+  --ring-colors: #fcdb2f, #fef9e2, #fae277, #f7c152, #fceca6, #fcdb2f;
+  --ease-fluid: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes ring-spin {
+  to { --ring-angle: 360deg; }
+}
+
+@keyframes ring-sheen {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+@keyframes ring-shake {
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+@keyframes search-progress {
+  from { transform: scaleX(0); }
+  30% { transform: scaleX(0.6); }
+  to { transform: scaleX(0.92); }
+}
+
+@keyframes result-rise {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+.search-ring {
+  position: relative;
+  border-radius: 9999px;
+  transition: box-shadow 0.4s var(--ease-fluid);
+}
+
+.search-ring::before,
+.search-ring::after {
+  content: '';
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.search-ring::before {
+  inset: -1.5px;
+  padding: 1.5px;
+  background: conic-gradient(from var(--ring-angle), var(--ring-colors));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: ring-spin 4s linear infinite;
+}
+
+.search-ring::after {
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(100deg, transparent 30%, rgb(252 219 47 / 0.1) 50%, transparent 70%) 0 0 / 200% 100%;
+}
+
+.search-ring:focus-within,
+.search-ring.is-searching {
+  box-shadow: 0 0 0 3px rgb(252 219 47 / 0.08), 0 6px 18px -10px rgb(247 193 82 / 0.3);
+}
+
+.search-ring:focus-within::before,
+.search-ring.is-searching::before {
+  opacity: 0.65;
+}
+
+.search-ring.is-searching::before {
+  opacity: 0.8;
+  animation-duration: 1.8s;
+}
+
+.search-ring.is-searching::after {
+  opacity: 1;
+  animation: ring-sheen 1.4s linear infinite;
+}
+
+.search-ring.shake {
+  animation: ring-shake 0.4s var(--ease-fluid);
+}
+
+.search-progress {
+  height: 2px;
+  transform-origin: left;
+  opacity: 0.8;
+  background: linear-gradient(90deg, var(--ring-colors));
+  animation: search-progress 1.6s var(--ease-fluid) forwards;
+}
+
+.search-progress-leave {
+  animation: search-progress-done 0.35s var(--ease-fluid) forwards;
+}
+
+@keyframes search-progress-done {
+  from { transform: scaleX(0.92); }
+  to { transform: scaleX(1); opacity: 0; }
+}
+
+.result-rise {
+  animation: result-rise 0.4s var(--ease-fluid) backwards;
+}
+
+.results-dim > * {
+  transition: opacity 0.25s, filter 0.25s;
+}
+
+.results-dim.is-searching > * {
+  opacity: 0.45;
+  filter: saturate(0.4);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-ring::before,
+  .search-ring::after,
+  .search-progress,
+  .result-rise {
+    animation: none;
+  }
+}

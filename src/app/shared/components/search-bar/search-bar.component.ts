@@ -4,6 +4,7 @@ import {
   computed,
   ElementRef,
   inject,
+  linkedSignal,
   signal,
   viewChild,
 } from '@angular/core';
@@ -33,6 +34,10 @@ import { buildSearchParams } from '@utils/product-id';
         opacity: 1;
         transform: translateY(0);
       }
+    }
+
+    .panel-enter {
+      animation: panel-enter 0.25s var(--ease-fluid);
     }
 
     @keyframes skeleton-shimmer {
@@ -83,13 +88,33 @@ export class SearchBarComponent {
     },
   });
 
+  readonly shownProducts = linkedSignal<{ products?: ProductResponse[]; loading: boolean }, ProductResponse[]>({
+    source: () => ({ products: this.results.value()?.products, loading: this.results.isLoading() }),
+    computation: ({ products, loading }, previous) =>
+      loading && previous ? previous.value : (products ?? []),
+  });
+
+  readonly searching = computed(
+    () => this.query().trim().length > 0 && (this.query() !== this.debouncedQuery() || this.results.isLoading()),
+  );
+
+  readonly shaking = signal(false);
+
   submit(): void {
     const value = this.query().trim();
     if (!value) {
+      this.shaking.set(true);
+      this.searchInput()?.nativeElement.focus();
       return;
     }
     this.close();
     this.router.navigate(['/search'], { queryParams: this.searchLinkParams() });
+  }
+
+  onRingAnimationEnd(event: AnimationEvent): void {
+    if (event.animationName === 'ring-shake') {
+      this.shaking.set(false);
+    }
   }
 
   close(): void {

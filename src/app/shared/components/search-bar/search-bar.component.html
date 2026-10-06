@@ -1,8 +1,12 @@
 <div class="relative w-full" (outsideClick)="close()">
-  <form (submit)="$event.preventDefault(); submit()" class="flex w-full">
-    <div
-      class="focus-within:ring-dolly-50 flex w-full overflow-hidden rounded-full shadow-sm focus-within:ring-2"
-    >
+  <form
+    (submit)="$event.preventDefault(); submit()"
+    (animationend)="onRingAnimationEnd($event)"
+    class="search-ring flex w-full"
+    [class.is-searching]="searching()"
+    [class.shake]="shaking()"
+  >
+    <div class="flex w-full overflow-hidden rounded-full shadow-sm">
       <input
         #searchInput
         type="text"
@@ -17,7 +21,7 @@
       <button
         type="submit"
         aria-label="ძიება"
-        class="bg-dolly-50 text-platinum-100 flex h-11 w-12 shrink-0 items-center justify-center transition-opacity hover:opacity-90"
+        class="bg-dolly-50 text-platinum-100 flex h-11 w-12 shrink-0 items-center justify-center transition-[opacity,transform] hover:opacity-90 active:scale-95"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
@@ -40,12 +44,14 @@
     class="border-hairline shadow-low absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-2xl border bg-white"
   >
     <div class="p-3">
-      @if (results.value()?.products?.length) {
-      <div class="flex flex-col gap-0.5">
-        @for (result of results.value()!.products; track result.data.id) {
+      @if (shownProducts().length) {
+      <div class="results-dim flex flex-col gap-0.5" [class.is-searching]="searching()">
+        @for (result of shownProducts(); track result.data.id) {
         <button
           type="button"
           (click)="openProduct(result)"
+          animate.enter="result-rise"
+          [style.animation-delay.ms]="$index * 35"
           class="hover:bg-platinum-10 active:bg-platinum-20/60 flex items-center gap-3.5 rounded-xl px-2.5 py-2 transition-colors"
         >
           <div class="flex h-12 w-12 shrink-0 items-center justify-center">
@@ -78,7 +84,7 @@
       >
         ყველა შედეგის ნახვა
       </a>
-      } @else if (results.isLoading()) {
+      } @else if (searching()) {
       <div class="flex flex-col gap-0.5">
         @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
         <div class="flex items-center gap-3.5 px-2.5 py-2">
