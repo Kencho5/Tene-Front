@@ -31,8 +31,6 @@ export function tbilisiExpressPrice(region: string): number {
   return TBILISI_REGION_EXPRESS_PRICE[region] ?? TBILISI_DEFAULT_EXPRESS_PRICE;
 }
 
-export const SAME_DAY_ENABLED = false;
-
 export const SAME_DAY_CUTOFF = { hour: 17, minute: 30 } as const;
 
 export const HIGH_MOUNTAIN_CITIES: ReadonlySet<string> = new Set([

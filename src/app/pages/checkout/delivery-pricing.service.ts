@@ -5,7 +5,6 @@ import {
   DeliveryTime,
   HIGH_MOUNTAIN_CITIES,
   SAME_DAY_CUTOFF,
-  SAME_DAY_ENABLED,
   formatGel,
   tbilisiExpressPrice,
 } from './checkout.config';
@@ -26,7 +25,7 @@ export interface DeliveryOption {
 @Injectable({ providedIn: 'root' })
 export class DeliveryPricingService {
   private isWithinSameDayCutoff(now: Date = new Date()): boolean {
-    if (!SAME_DAY_ENABLED || now.getDay() === 0) return false;
+    if (now.getDay() === 0) return false;
     const { hour, minute } = SAME_DAY_CUTOFF;
     return now.getHours() < hour || (now.getHours() === hour && now.getMinutes() < minute);
   }
@@ -97,7 +96,7 @@ export class DeliveryPricingService {
       const outsideTbilisi = !!city && city !== 'tbilisi';
       const options: DeliveryOption[] = [];
 
-      if (SAME_DAY_ENABLED && !outsideTbilisi) {
+      if (!outsideTbilisi) {
         const available = sameDayAvailable();
         const sameDayBase = `${CHECKOUT_STRINGS.sameDayLabelPrefix} - ${formatGel(sameDayPrice())}`;
         const sameDayLabel = available
