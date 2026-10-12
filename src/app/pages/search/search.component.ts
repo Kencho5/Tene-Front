@@ -251,8 +251,7 @@ export class SearchComponent {
 
   readonly cableTypes = rxResource({
     defaultValue: [] as CableType[],
-    params: () =>
-      this.selectedParentId() == 2 || this.selectedParentId() == 66 ? true : undefined,
+    params: () => (this.selectedParentId() == 66 ? true : undefined),
     stream: () => this.productsService.getCableTypes(),
   });
 

@@ -1,11 +1,13 @@
-<div class="container space-y-16 px-4 pt-10 md:pt-16">
+<div class="container space-y-16 px-4 pt-4 md:pt-6">
   @if (sliders.isLoading()) {
   <div
     class="border-hairline bg-platinum-10 mb-8 flex aspect-[1265/1045] w-full items-center justify-center rounded-2xl border lg:mb-16 lg:aspect-[1903/818]"
     role="status"
     aria-label="იტვირთება"
   >
-    <div class="border-t-green-60 border-platinum-20 h-8 w-8 animate-spin rounded-full border-[3px]"></div>
+    <div
+      class="border-t-green-60 border-platinum-20 h-8 w-8 animate-spin rounded-full border-[3px]"
+    ></div>
   </div>
   } @else if (sliders.value().length) {
   <app-hero-slider [sliders]="sliders.value()" class="mb-8 block lg:mb-16" />
