@@ -21,6 +21,7 @@ import { DragScrollDirective } from '@core/directives/drag-scroll.directive';
 import { ProductFacets, ProductSearchResponse } from '@core/interfaces/products.interface';
 import { getColorLabel } from '@utils/colors';
 import { map } from 'rxjs';
+import { CableType } from '@core/interfaces/admin/cable-types.interface';
 
 @Component({
   selector: 'app-search',
@@ -143,7 +144,12 @@ export class SearchComponent {
   readonly categoryPanelPointerMoved = signal(false);
   readonly isCategoryExpanded = signal(
     this.route.snapshot.queryParamMap.get('expand_categories') === 'true',
-    { equal: (a, b) => { if (a !== b) this.categoryPanelPointerMoved.set(false); return a === b; } },
+    {
+      equal: (a, b) => {
+        if (a !== b) this.categoryPanelPointerMoved.set(false);
+        return a === b;
+      },
+    },
   );
   readonly expandedParentId = linkedSignal(() => {
     const paramId = this.route.snapshot.queryParamMap.get('parent_category_id');
@@ -198,9 +204,16 @@ export class SearchComponent {
     this.setParam('query', value, 300);
   }
 
-  readonly shownResponse = linkedSignal<{ response: ProductSearchResponse; loading: boolean }, ProductSearchResponse>({
-    source: () => ({ response: this.searchResponse.value(), loading: this.searchResponse.isLoading() }),
-    computation: ({ response, loading }, previous) => (loading && previous ? previous.value : response),
+  readonly shownResponse = linkedSignal<
+    { response: ProductSearchResponse; loading: boolean },
+    ProductSearchResponse
+  >({
+    source: () => ({
+      response: this.searchResponse.value(),
+      loading: this.searchResponse.isLoading(),
+    }),
+    computation: ({ response, loading }, previous) =>
+      loading && previous ? previous.value : response,
   });
 
   readonly products = computed(() => this.shownResponse().products);
@@ -234,6 +247,13 @@ export class SearchComponent {
           return res.categories;
         }),
       ),
+  });
+
+  readonly cableTypes = rxResource({
+    defaultValue: [] as CableType[],
+    params: () =>
+      this.selectedParentId() == 2 || this.selectedParentId() == 66 ? true : undefined,
+    stream: () => this.productsService.getCableTypes(),
   });
 
   readonly selectedParentId = computed(() => {

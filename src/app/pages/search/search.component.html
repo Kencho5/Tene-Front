@@ -18,7 +18,10 @@
             [class]="isCategoryExpanded() ? 'text-green-70' : 'text-platinum-80 group-hover:text-platinum-100'"
           >
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-              <path fill="currentColor" d="M3 3h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 17h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 10h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4z" />
+              <path
+                fill="currentColor"
+                d="M3 3h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 17h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 10h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4z"
+              />
             </svg>
           </span>
           <span
@@ -84,10 +87,22 @@
             >
               @if (hasValue('child_category_id', '' + child.id)) {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                  d="M5 12l5 5L20 7"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
               } @else if (child.image_url) {
-              <img [src]="child.image_url" [alt]="child.name" width="20" height="20" class="h-5 w-5 object-contain" />
+              <img
+                [src]="child.image_url"
+                [alt]="child.name"
+                width="20"
+                height="20"
+                class="h-5 w-5 object-contain"
+              />
               }
             </span>
             <span class="whitespace-nowrap">{{ child.name }}</span>
@@ -97,7 +112,6 @@
       </div>
     </div>
     }
-
   </div>
 </div>
 }
@@ -116,7 +130,9 @@
   animate.leave="slide-up-leave 200ms ease-in"
   (pointermove)="categoryPanelPointerMoved.set(true)"
 >
-  <div class="container flex flex-1 flex-col overflow-hidden px-4 pt-[130px] pb-2 md:flex-none md:pt-6 md:pb-8 xl:px-0">
+  <div
+    class="container flex flex-1 flex-col overflow-hidden px-4 pt-[130px] pb-2 md:flex-none md:pt-6 md:pb-8 xl:px-0"
+  >
     <!-- Header -->
     <div class="mb-4 flex items-center justify-between md:mb-6">
       <div class="flex min-w-0 items-center gap-2">
@@ -586,6 +602,52 @@
         </div>
       </div>
 
+      <!-- Cable Types Section -->
+      @if ((selectedParentId() == 2 || selectedParentId() == 66) && cableTypes.value().length > 0) {
+      <div class="border-hairline border-b py-4">
+        <p class="text-platinum-100 mb-3 text-sm font-bold">კაბელის ტიპი</p>
+        <div class="space-y-1">
+          @for (cableType of cableTypes.value(); track cableType.id) {
+          <label
+            class="hover:bg-platinum-10 flex cursor-pointer items-center gap-2 rounded-md px-1 py-1.5 transition-colors"
+          >
+            <span class="relative inline-block h-[18px] w-[18px] shrink-0">
+              <input
+                type="checkbox"
+                [checked]="hasValue('cable_type_id', '' + cableType.id)"
+                (change)="
+                  toggleParam(
+                    'cable_type_id',
+                    '' + cableType.id,
+                    $any($event.target).checked
+                  )
+                "
+                class="peer sr-only"
+              />
+              <span
+                class="border-platinum-30 peer-checked:bg-green-60 block h-full w-full rounded-sm border peer-checked:border-0"
+              ></span>
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                class="pointer-events-none absolute top-1/2 left-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 peer-checked:block"
+              >
+                <path
+                  d="M16.6667 5L7.50004 14.1667L3.33337 10"
+                  stroke="white"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="text-platinum-70 flex-1 truncate text-sm">{{ cableType.name }}</span>
+          </label>
+          }
+        </div>
+      </div>
+      }
+
       <!-- Brands Section -->
       <div class="border-hairline border-b py-4">
         <p class="text-platinum-100 mb-3 text-sm font-bold">ბრენდი</p>
@@ -881,8 +943,8 @@
         class="results-dim grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 sm:gap-y-8 lg:grid-cols-3 xl:grid-cols-4"
         [class.is-searching]="searchResponse.isLoading()"
       >
-        @if (searchResponse.isLoading() && products().length === 0) { @for (skeleton of [1, 2, 3, 4, 5, 6, 7, 8]; track
-        skeleton) {
+        @if (searchResponse.isLoading() && products().length === 0) { @for (skeleton of [1, 2, 3, 4,
+        5, 6, 7, 8]; track skeleton) {
         <app-product-card-skeleton
           animate.enter="result-rise"
           [style.animation-delay.ms]="$index * 30"

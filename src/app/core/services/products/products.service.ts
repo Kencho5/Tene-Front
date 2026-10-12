@@ -39,6 +39,10 @@ export class ProductsService {
     return this.http.post<HttpStatusCode>(`/products/${product_id}/views`, { user_id });
   }
 
+  getCableTypes(): Observable<CableType[]> {
+    return this.http.get<CableType[]>(`/cable-types`);
+  }
+
   getCableType(id: number): Observable<CableType> {
     return this.http.get<CableType>(`/cable-types/${id}`);
   }
