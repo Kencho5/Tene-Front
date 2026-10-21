@@ -72,6 +72,7 @@ export class AdminOrderFormComponent {
     { label: 'ჩარიცხვა — extra.ge', value: 'transfer_extra' },
     { label: 'კურიერთან გადახდა', value: 'cash_on_delivery' },
     { label: 'კონსიგნაცია', value: 'consignment' },
+    { label: 'საჩუქარი', value: 'gift' },
   ];
 
   readonly fulfillmentMethodOptions: ComboboxItems[] = [
@@ -119,6 +120,7 @@ export class AdminOrderFormComponent {
     source_comment: '',
     is_installment_sale: false,
     is_product_exchange: false,
+    created_at: '',
   };
 
   readonly orderModel = signal<OrderFormFields>(structuredClone(this.defaultModel));
@@ -252,7 +254,15 @@ export class AdminOrderFormComponent {
       source_comment: order.source_comment ?? '',
       is_installment_sale: order.is_installment_sale,
       is_product_exchange: order.is_product_exchange,
+      created_at: this.toLocalDateTime(order.created_at),
     });
+  }
+
+  private toLocalDateTime(value: string): string {
+    const date = new Date(value);
+    if (isNaN(date.getTime())) return '';
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
   }
 
   onSearchInput(event: Event): void {
@@ -425,6 +435,7 @@ export class AdminOrderFormComponent {
       personal_number: model.personal_number.trim(),
       is_installment_sale: model.is_installment_sale,
       is_product_exchange: model.is_product_exchange,
+      created_at: model.created_at ? new Date(model.created_at).toISOString() : undefined,
       items,
     };
 

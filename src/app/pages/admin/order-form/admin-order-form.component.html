@@ -38,6 +38,14 @@
           [items]="fulfillmentMethodOptions"
           placeholder="შეკვეთის ჩაბარების მეთოდი"
         />
+        <label class="block">
+          <span class="text-platinum-50 mb-1 block text-xs">შეკვეთის თარიღი</span>
+          <app-input
+            [formField]="orderForm.created_at"
+            type="datetime-local"
+            placeholder="შეკვეთის თარიღი"
+          />
+        </label>
       </div>
       </div>
     </div>

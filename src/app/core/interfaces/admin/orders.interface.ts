@@ -19,7 +19,8 @@ export type PaymentMethod =
   | 'transfer_tbc'
   | 'transfer_extra'
   | 'cash_on_delivery'
-  | 'consignment';
+  | 'consignment'
+  | 'gift';
 
 export type FulfillmentMethod = 'store_pickup' | 'courier';
 
@@ -49,6 +50,7 @@ export interface CreateOrderRequest {
   delivery_price?: number;
   comment?: string;
   user_id?: number;
+  created_at?: string;
   items?: CreateOrderItem[];
 }
 
@@ -90,4 +92,5 @@ export interface OrderFormFields {
   source_comment: string;
   is_installment_sale: boolean;
   is_product_exchange: boolean;
+  created_at: string;
 }

@@ -92,6 +92,7 @@ export class AdminOrdersComponent {
     { label: 'ჩარიცხვა — extra.ge', value: 'transfer_extra' },
     { label: 'ადგილზე გადახდა', value: 'cash_on_delivery' },
     { label: 'კონსიგნაცია', value: 'consignment' },
+    { label: 'საჩუქარი', value: 'gift' },
   ];
 
   readonly deliveryTypeOptions: ComboboxItems[] = [
@@ -590,6 +591,8 @@ export class AdminOrdersComponent {
         return 'ადგილზე გადახდა';
       case 'consignment':
         return 'კონსიგნაცია';
+      case 'gift':
+        return 'საჩუქარი';
       default:
         return '—';
     }
