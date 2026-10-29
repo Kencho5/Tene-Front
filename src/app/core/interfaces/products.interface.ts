@@ -193,6 +193,7 @@ export interface Order {
   organization_code: string | null;
   email: string;
   phone_number: number;
+  secondary_phone_number: string | null;
   address: string;
   city: string;
   region: string | null;

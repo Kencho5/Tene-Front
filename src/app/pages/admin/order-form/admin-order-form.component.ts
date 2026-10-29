@@ -76,7 +76,7 @@ export class AdminOrderFormComponent {
   ];
 
   readonly fulfillmentMethodOptions: ComboboxItems[] = [
-    { label: 'მაღაზიიდან გატანა', value: 'store_pickup' },
+    { label: 'ადგილიდან გაყიდვა', value: 'store_pickup' },
     { label: 'საკურიერო მომსახურება', value: 'courier' },
   ];
 
@@ -105,6 +105,7 @@ export class AdminOrderFormComponent {
     organization_code: '',
     email: '',
     phone_number: '',
+    secondary_phone_number: '',
     city: '',
     region: '',
     address: '',
@@ -126,7 +127,19 @@ export class AdminOrderFormComponent {
   readonly orderModel = signal<OrderFormFields>(structuredClone(this.defaultModel));
 
   readonly orderForm = form(this.orderModel, (fieldPath) => {
+    required(fieldPath.status, { message: 'აირჩიეთ სტატუსი' });
+    required(fieldPath.payment_method, {
+      message: 'აირჩიეთ გადახდის ფორმა',
+      when: ({ valueOf }) => !valueOf(fieldPath.is_product_exchange),
+    });
+    required(fieldPath.fulfillment_method, { message: 'აირჩიეთ ჩაბარების მეთოდი' });
+    required(fieldPath.customer_type, { message: 'აირჩიეთ პირის ტიპი' });
     required(fieldPath.phone_number, { message: 'ტელეფონის ნომერი აუცილებელია' });
+    required(fieldPath.delivery_type, { message: 'აირჩიეთ მიწოდების ტიპი' });
+    required(fieldPath.delivery_time, {
+      message: 'აირჩიეთ მიწოდების დრო',
+      when: ({ valueOf }) => valueOf(fieldPath.delivery_type) === 'delivery',
+    });
   });
 
   readonly submitted = signal(false);
@@ -239,6 +252,7 @@ export class AdminOrderFormComponent {
       organization_code: order.organization_code ?? '',
       email: order.email ?? '',
       phone_number: String(order.phone_number ?? ''),
+      secondary_phone_number: order.secondary_phone_number ?? '',
       city: order.city ?? '',
       region: order.region ?? '',
       address: order.address ?? '',
@@ -372,6 +386,11 @@ export class AdminOrderFormComponent {
       return;
     }
 
+    if (this.items().length === 0) {
+      this.toastService.add('შეცდომა', 'დაამატეთ მინიმუმ ერთი პროდუქტი', 5000, 'error');
+      return;
+    }
+
     this.isLoading.set(true);
 
     const payload = this.buildPayload();
@@ -423,6 +442,7 @@ export class AdminOrderFormComponent {
       customer_type: model.customer_type,
       email: model.email.trim(),
       phone_number: model.phone_number.trim(),
+      secondary_phone_number: model.secondary_phone_number.trim(),
       address: model.address.trim(),
       city: model.city.trim(),
       region: model.region.trim(),

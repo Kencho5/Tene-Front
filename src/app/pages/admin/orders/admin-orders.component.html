@@ -411,7 +411,7 @@
               <span
                 class="bg-platinum-10 text-platinum-70 rounded-full px-2 py-0.5 text-xs font-medium"
               >
-                {{ deliveryTypeLabel(order.delivery_type) }}@if (order.delivery_type !== 'pickup') { · {{ deliveryPriceLabel(order) }}}
+                {{ deliverySummaryLabel(order) }}
               </span>
               @if (order.region) {
               <span
@@ -423,7 +423,7 @@
               <span
                 class="bg-platinum-10 text-platinum-70 rounded-full px-2 py-0.5 text-xs font-medium"
               >
-                გადახდა: {{ paymentMethodShortLabel(orderPaymentMethod(order)) }}
+                {{ paymentSummaryLabel(order) }}
               </span>
               @if (order.is_fina_cleared) {
               <span
@@ -576,6 +576,12 @@
               <dt class="text-platinum-50 text-xs">ტელეფონი</dt>
               <dd class="text-platinum-100 mt-0.5 text-sm font-medium">{{ order.phone_number }}</dd>
             </div>
+            @if (order.secondary_phone_number) {
+            <div>
+              <dt class="text-platinum-50 text-xs">დამატებითი ტელეფონი</dt>
+              <dd class="text-platinum-100 mt-0.5 text-sm font-medium">{{ order.secondary_phone_number }}</dd>
+            </div>
+            }
             <div>
               <dt class="text-platinum-50 text-xs">მიწოდება</dt>
               <dd class="text-platinum-100 mt-0.5 text-sm font-medium">
@@ -970,9 +976,13 @@
             <!-- Delivery / payment method -->
             <td class="max-w-[200px] px-4 py-3">
               <p class="text-platinum-100 text-sm whitespace-nowrap">
+                @if (order.fulfillment_method === 'store_pickup') {
+                ადგილიდან გაყიდვა
+                } @else {
                 {{ deliveryTypeLabel(order.delivery_type) }}
                 @if (order.delivery_type !== 'pickup') {
                 <span class="text-platinum-50">· {{ deliveryPriceLabel(order) }}</span>
+                }
                 }
               </p>
               @if (order.region) {
@@ -983,7 +993,7 @@
               </p>
               }
               <p class="text-platinum-50 text-xs">
-                გადახდა: {{ paymentMethodShortLabel(orderPaymentMethod(order)) }}
+                {{ paymentSummaryLabel(order) }}
               </p>
             </td>
 
@@ -1149,6 +1159,12 @@
                         <dt class="text-platinum-50 w-28 shrink-0 text-sm">ტელეფონი</dt>
                         <dd class="text-platinum-100 min-w-0 text-sm font-medium">{{ order.phone_number }}</dd>
                       </div>
+                      @if (order.secondary_phone_number) {
+                      <div class="flex gap-4 px-5 py-2.5">
+                        <dt class="text-platinum-50 w-28 shrink-0 text-sm">დამატ. ტელეფონი</dt>
+                        <dd class="text-platinum-100 min-w-0 text-sm font-medium">{{ order.secondary_phone_number }}</dd>
+                      </div>
+                      }
                       @if (order.personal_number) {
                       <div class="flex gap-4 px-5 py-2.5">
                         <dt class="text-platinum-50 w-28 shrink-0 text-sm">პირადი ნომერი</dt>
@@ -1323,7 +1339,7 @@
                                 {{ formatItemAmount(subtotal(order)) }} {{ order.currency }}
                               </dd>
                             </div>
-                            @if (order.delivery_type !== 'pickup') {
+                            @if (order.delivery_type !== 'pickup' && order.fulfillment_method !== 'store_pickup') {
                             <div class="flex items-center justify-between gap-3">
                               <dt class="text-platinum-50 text-sm">მიწოდება</dt>
                               <dd class="text-platinum-100 text-sm font-medium">

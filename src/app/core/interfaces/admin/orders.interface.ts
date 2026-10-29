@@ -41,6 +41,7 @@ export interface CreateOrderRequest {
   organization_code?: string;
   email?: string;
   phone_number?: string;
+  secondary_phone_number?: string;
   address?: string;
   city?: string;
   region?: string;
@@ -77,6 +78,7 @@ export interface OrderFormFields {
   organization_code: string;
   email: string;
   phone_number: string;
+  secondary_phone_number: string;
   city: string;
   region: string;
   address: string;

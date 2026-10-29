@@ -25,18 +25,21 @@
         <app-dropdown
           [(selectedValue)]="orderForm.status().value"
           [items]="statusOptions"
-          placeholder="სტატუსი"
+          [error]="submitted() && orderForm.status().invalid()"
+          placeholder="სტატუსი *"
         />
         <app-dropdown
           [(selectedValue)]="orderForm.payment_method().value"
           [items]="paymentMethodOptions"
           [disabled]="orderModel().is_product_exchange"
-          placeholder="გადახდის ფორმა"
+          [error]="submitted() && orderForm.payment_method().invalid()"
+          placeholder="გადახდის ფორმა *"
         />
         <app-dropdown
           [(selectedValue)]="orderForm.fulfillment_method().value"
           [items]="fulfillmentMethodOptions"
-          placeholder="შეკვეთის ჩაბარების მეთოდი"
+          [error]="submitted() && orderForm.fulfillment_method().invalid()"
+          placeholder="შეკვეთის ჩაბარების მეთოდი *"
         />
         <label class="block">
           <span class="text-platinum-50 mb-1 block text-xs">შეკვეთის თარიღი</span>
@@ -101,6 +104,11 @@
           placeholder="ტელეფონის ნომერი *"
         />
         <app-input
+          [formField]="orderForm.secondary_phone_number"
+          type="tel"
+          placeholder="დამატებითი საკონტაქტო ნომერი"
+        />
+        <app-input
           [formField]="orderForm.personal_number"
           type="text"
           placeholder="პირადი ნომერი"
@@ -120,13 +128,15 @@
         <app-dropdown
           [(selectedValue)]="orderForm.delivery_type().value"
           [items]="deliveryTypeOptions"
-          placeholder="მიწოდების ტიპი"
+          [error]="submitted() && orderForm.delivery_type().invalid()"
+          placeholder="მიწოდების ტიპი *"
         />
         @if (isDelivery()) {
           <app-dropdown
             [(selectedValue)]="orderForm.delivery_time().value"
             [items]="deliveryTimeOptions"
-            placeholder="მიწოდების დრო"
+            [error]="submitted() && orderForm.delivery_time().invalid()"
+            placeholder="მიწოდების დრო *"
           />
           <app-input
             [formField]="orderForm.delivery_price"

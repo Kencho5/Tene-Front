@@ -90,7 +90,7 @@ export class AdminOrdersComponent {
     { label: 'ჩარიცხვა — საქართველოს ბანკი', value: 'transfer_bog' },
     { label: 'ჩარიცხვა — თიბისი', value: 'transfer_tbc' },
     { label: 'ჩარიცხვა — extra.ge', value: 'transfer_extra' },
-    { label: 'ადგილზე გადახდა', value: 'cash_on_delivery' },
+    { label: 'კურიერთან გადახდა', value: 'cash_on_delivery' },
     { label: 'კონსიგნაცია', value: 'consignment' },
     { label: 'საჩუქარი', value: 'gift' },
   ];
@@ -101,7 +101,7 @@ export class AdminOrdersComponent {
   ];
 
   readonly fulfillmentMethodOptions: ComboboxItems[] = [
-    { label: 'მაღაზიიდან გატანა', value: 'store_pickup' },
+    { label: 'ადგილიდან გაყიდვა', value: 'store_pickup' },
     { label: 'საკურიერო მომსახურება', value: 'courier' },
   ];
 
@@ -588,7 +588,7 @@ export class AdminOrdersComponent {
       case 'transfer_extra':
         return 'ჩარიცხვა — extra.ge';
       case 'cash_on_delivery':
-        return 'ადგილზე გადახდა';
+        return 'კურიერთან გადახდა';
       case 'consignment':
         return 'კონსიგნაცია';
       case 'gift':
@@ -607,10 +607,21 @@ export class AdminOrdersComponent {
       case 'card':
         return 'ბარათით';
       case 'cash_on_delivery':
-        return 'ადგილზე';
+        return 'კურიერთან';
       default:
         return this.paymentMethodLabel(method);
     }
+  }
+
+  paymentSummaryLabel(order: Order): string {
+    if (order.is_product_exchange) return 'პროდუქტის შეცვლა';
+    return `გადახდა: ${this.paymentMethodShortLabel(this.orderPaymentMethod(order))}`;
+  }
+
+  deliverySummaryLabel(order: Order): string {
+    if (order.fulfillment_method === 'store_pickup') return 'ადგილიდან გაყიდვა';
+    if (order.delivery_type === 'pickup') return this.deliveryTypeLabel(order.delivery_type);
+    return `${this.deliveryTypeLabel(order.delivery_type)} · ${this.deliveryPriceLabel(order)}`;
   }
 
   cityLabel(city: string | null): string {
@@ -621,7 +632,7 @@ export class AdminOrdersComponent {
   fulfillmentMethodLabel(method: string | null): string {
     switch (method) {
       case 'store_pickup':
-        return 'მაღაზიიდან გატანა';
+        return 'ადგილიდან გაყიდვა';
       case 'courier':
         return 'საკურიერო მომსახურება';
       default:
