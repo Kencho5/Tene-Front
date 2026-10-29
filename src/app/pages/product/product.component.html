@@ -109,6 +109,18 @@
                 </span>
               </button>
               }
+              @if (isAdmin()) {
+              <a
+                [routerLink]="['/admin/products', product.data.id, 'edit']"
+                class="border-hairline text-platinum-80 hover:bg-platinum-10 flex h-16 w-16 items-center justify-center rounded-md border transition-colors"
+                aria-label="რედაქტირება"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 20H8L18.5 9.5C19.6 8.4 19.6 6.6 18.5 5.5C17.4 4.4 15.6 4.4 14.5 5.5L4 16V20Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                  <path d="M13.5 6.5L17.5 10.5" stroke="currentColor" stroke-width="1.5" />
+                </svg>
+              </a>
+              }
             </div>
 
             <!-- Main video -->
@@ -200,8 +212,10 @@
           </div>
 
           <!-- Mobile thumbs -->
-          @if (colorImages().length + productVideos().length > 1) {
-          <div class="hide-scrollbar mt-3 flex gap-2 overflow-x-auto pb-1 sm:hidden">
+          @if (colorImages().length + productVideos().length > 1 || isAdmin()) {
+          <div class="mt-3 flex items-center gap-2 sm:hidden">
+          <div class="hide-scrollbar flex min-w-0 flex-1 gap-2 overflow-x-auto pb-1">
+            @if (colorImages().length + productVideos().length > 1) {
             @for (image of colorImages(); track image.image_uuid) {
             <button
               type="button"
@@ -244,6 +258,20 @@
               </span>
             </button>
             }
+            }
+          </div>
+          @if (isAdmin()) {
+          <a
+            [routerLink]="['/admin/products', product.data.id, 'edit']"
+            class="border-hairline text-platinum-80 hover:bg-platinum-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-md border transition-colors"
+            aria-label="რედაქტირება"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M4 20H8L18.5 9.5C19.6 8.4 19.6 6.6 18.5 5.5C17.4 4.4 15.6 4.4 14.5 5.5L4 16V20Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+              <path d="M13.5 6.5L17.5 10.5" stroke="currentColor" stroke-width="1.5" />
+            </svg>
+          </a>
+          }
           </div>
           }
         </div>

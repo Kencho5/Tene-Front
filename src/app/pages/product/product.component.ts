@@ -65,6 +65,8 @@ export class ProductComponent {
   private readonly router = inject(Router);
   private readonly sanitizer = inject(DomSanitizer);
 
+  readonly isAdmin = this.authService.isAdmin;
+
   readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
