@@ -71,7 +71,7 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit(): void {
     this.seoService.setMetaTags({
-      title: 'პროდუქცია — USB კაბელები, დამტენები და ტექნიკა | Tene',
+      title: 'სუპერსწრაფი დამტენები 1 საათში დატენიან შენ ტელეფონს',
       description:
         'სრული კატალოგი: USB Type-C, Lightning და Micro-USB კაბელები, სწრაფი დამტენები, ყურსასმენები, მობილურები და აქსესუარები. ოფიციალური გარანტია, მიწოდება საქართველოს მასშტაბით.',
       url: 'https://tene.ge',

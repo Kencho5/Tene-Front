@@ -485,6 +485,20 @@
             />
             <span class="text-platinum-100 text-sm font-medium">გატარებულია ფინაში</span>
           </label>
+          <label
+            class="border-hairline-strong/60 flex cursor-pointer items-center gap-2.5 rounded-xl border px-3.5 py-2.5"
+            [class.pointer-events-none]="isUpdatingPayment(order.id)"
+            [class.opacity-50]="isUpdatingPayment(order.id)"
+          >
+            <input
+              type="checkbox"
+              class="accent-green-60 h-[18px] w-[18px] shrink-0 cursor-pointer"
+              [checked]="order.is_payment_received"
+              [disabled]="isUpdatingPayment(order.id)"
+              (change)="onPaymentReceivedToggle(order, $any($event.target).checked)"
+            />
+            <span class="text-platinum-100 text-sm font-medium">თანხა მიღებულია</span>
+          </label>
         </div>
 
         <!-- Expanded detail -->
@@ -783,6 +797,11 @@
               ფინა
             </th>
             <th
+              class="text-platinum-50 px-4 py-3 text-center text-xs font-medium tracking-wider uppercase"
+            >
+              თანხის მიღება
+            </th>
+            <th
               class="text-platinum-50 px-4 py-3 text-right text-xs font-medium tracking-wider uppercase"
             >
               სტატუსი
@@ -1031,6 +1050,26 @@
                     [checked]="order.is_fina_cleared"
                     [disabled]="isUpdatingFina(order.id)"
                     (change)="onFinaClearedToggle(order, $any($event.target).checked)"
+                  />
+                </label>
+              </div>
+            </td>
+
+            <!-- Payment received -->
+            <td class="px-4 py-3" (click)="$event.stopPropagation()">
+              <div class="flex justify-center">
+                <label
+                  class="inline-flex cursor-pointer items-center"
+                  [class.pointer-events-none]="isUpdatingPayment(order.id)"
+                  [class.opacity-50]="isUpdatingPayment(order.id)"
+                  [title]="order.is_payment_received ? 'თანხა მიღებულია' : 'თანხა არ არის მიღებული'"
+                >
+                  <input
+                    type="checkbox"
+                    class="accent-green-60 h-[18px] w-[18px] cursor-pointer"
+                    [checked]="order.is_payment_received"
+                    [disabled]="isUpdatingPayment(order.id)"
+                    (change)="onPaymentReceivedToggle(order, $any($event.target).checked)"
                   />
                 </label>
               </div>

@@ -216,6 +216,7 @@ export interface Order {
   is_installment_sale: boolean;
   is_product_exchange: boolean;
   is_fina_cleared: boolean;
+  is_payment_received: boolean;
   created_by?: OrderCreator;
 }
 

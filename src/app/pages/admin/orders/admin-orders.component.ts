@@ -32,7 +32,11 @@ import { ToastService } from '@core/services/toast.service';
 
 type MultiFilterKey = 'status' | 'payment_method' | 'delivery_type' | 'fulfillment_method';
 
-type FlagKey = 'is_fina_cleared' | 'is_installment_sale' | 'is_product_exchange';
+type FlagKey =
+  | 'is_fina_cleared'
+  | 'is_payment_received'
+  | 'is_installment_sale'
+  | 'is_product_exchange';
 
 interface FilterChip {
   key: string;
@@ -107,6 +111,7 @@ export class AdminOrdersComponent {
 
   readonly flagOptions: ReadonlyArray<{ key: FlagKey; label: string }> = [
     { key: 'is_fina_cleared', label: 'გატარებულია ფინაში' },
+    { key: 'is_payment_received', label: 'თანხა მიღებულია' },
     { key: 'is_installment_sale', label: 'გაყიდულია განვადებით' },
     { key: 'is_product_exchange', label: 'პროდუქტის შეცვლა' },
   ];
@@ -186,6 +191,7 @@ export class AdminOrdersComponent {
 
   readonly updatingStatus = signal<ReadonlySet<number>>(new Set());
   readonly updatingFina = signal<ReadonlySet<number>>(new Set());
+  readonly updatingPayment = signal<ReadonlySet<number>>(new Set());
 
   readonly orderToDelete = signal<Order | null>(null);
   readonly isDeleting = signal(false);
@@ -193,6 +199,7 @@ export class AdminOrdersComponent {
 
   private readonly statusOverrides = signal<Record<number, OrderStatus>>({});
   private readonly finaOverrides = signal<Record<number, boolean>>({});
+  private readonly paymentOverrides = signal<Record<number, boolean>>({});
 
   readonly params = toSignal(this.route.queryParams, {
     initialValue: {} as Params,
@@ -229,7 +236,7 @@ export class AdminOrdersComponent {
 
   readonly source = computed(() => (this.params()['source'] as string) ?? 'web');
   readonly isAdminSource = computed(() => this.source() === 'admin');
-  readonly columnCount = computed(() => (this.isAdminSource() ? 10 : 9));
+  readonly columnCount = computed(() => (this.isAdminSource() ? 11 : 10));
 
   readonly activeFilterCount = computed(() => this.filterChips().length);
 
@@ -309,12 +316,21 @@ export class AdminOrdersComponent {
   readonly orders = computed(() => {
     const overrides = this.statusOverrides();
     const finance = this.finaOverrides();
+    const payment = this.paymentOverrides();
     return this.searchResponse.value().orders.map((order) => {
       const status = overrides[order.id] ?? order.status;
       const isFinaCleared = finance[order.id] ?? order.is_fina_cleared;
-      return status === order.status && isFinaCleared === order.is_fina_cleared
+      const isPaymentReceived = payment[order.id] ?? order.is_payment_received;
+      return status === order.status &&
+        isFinaCleared === order.is_fina_cleared &&
+        isPaymentReceived === order.is_payment_received
         ? order
-        : { ...order, status, is_fina_cleared: isFinaCleared };
+        : {
+            ...order,
+            status,
+            is_fina_cleared: isFinaCleared,
+            is_payment_received: isPaymentReceived,
+          };
     });
   });
   readonly totalOrders = computed(() => this.searchResponse.value().total);
@@ -452,6 +468,7 @@ export class AdminOrdersComponent {
   private emptyFlags(): Record<FlagKey, string> {
     return {
       is_fina_cleared: '',
+      is_payment_received: '',
       is_installment_sale: '',
       is_product_exchange: '',
     };
@@ -506,6 +523,7 @@ export class AdminOrdersComponent {
       delivery_type: multi.delivery_type.join(',') || undefined,
       fulfillment_method: multi.fulfillment_method.join(',') || undefined,
       is_fina_cleared: flags.is_fina_cleared || undefined,
+      is_payment_received: flags.is_payment_received || undefined,
       is_installment_sale: flags.is_installment_sale || undefined,
       is_product_exchange: flags.is_product_exchange || undefined,
       city: this.draftCity() || undefined,
@@ -553,6 +571,7 @@ export class AdminOrdersComponent {
       delivery_type: undefined,
       fulfillment_method: undefined,
       is_fina_cleared: undefined,
+      is_payment_received: undefined,
       is_installment_sale: undefined,
       is_product_exchange: undefined,
       city: undefined,
@@ -743,6 +762,35 @@ export class AdminOrdersComponent {
 
   private clearUpdatingFina(orderId: number): void {
     this.updatingFina.update((set) => {
+      const next = new Set(set);
+      next.delete(orderId);
+      return next;
+    });
+  }
+
+  isUpdatingPayment(orderId: number): boolean {
+    return this.updatingPayment().has(orderId);
+  }
+
+  onPaymentReceivedToggle(order: Order, checked: boolean): void {
+    if (checked === order.is_payment_received || this.isUpdatingPayment(order.id)) return;
+
+    this.updatingPayment.update((set) => new Set(set).add(order.id));
+
+    this.adminService.updateOrderPaymentReceived(order.id, checked).subscribe({
+      next: (updated) => {
+        this.paymentOverrides.update((m) => ({
+          ...m,
+          [order.id]: updated.is_payment_received,
+        }));
+        this.clearUpdatingPayment(order.id);
+      },
+      error: () => this.clearUpdatingPayment(order.id),
+    });
+  }
+
+  private clearUpdatingPayment(orderId: number): void {
+    this.updatingPayment.update((set) => {
       const next = new Set(set);
       next.delete(orderId);
       return next;

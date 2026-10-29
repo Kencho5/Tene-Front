@@ -57,6 +57,7 @@ export interface CreateOrderRequest {
 
 export interface UpdateOrderRequest extends CreateOrderRequest {
   is_fina_cleared?: boolean;
+  is_payment_received?: boolean;
 }
 
 export interface OrderItemFields {

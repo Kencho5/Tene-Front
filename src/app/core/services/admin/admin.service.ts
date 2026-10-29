@@ -197,6 +197,10 @@ export class AdminService {
     return this.updateOrder(id, { is_fina_cleared: isFinaCleared });
   }
 
+  updateOrderPaymentReceived(id: number, isPaymentReceived: boolean): Observable<Order> {
+    return this.updateOrder(id, { is_payment_received: isPaymentReceived });
+  }
+
   getOrderCreators(): Observable<OrderCreator[]> {
     return this.http.get<OrderCreator[]>('/admin/orders/creators');
   }
