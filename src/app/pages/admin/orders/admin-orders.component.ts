@@ -76,8 +76,11 @@ export class AdminOrdersComponent {
     { label: 'ვადაგასული', value: 'expired' },
     { label: 'მომზადებულია', value: 'prepared' },
     { label: 'გაგზავნილია', value: 'shipped' },
+    { label: 'გაგზავნილია (ლოკაცია)', value: 'shipped_location' },
+    { label: 'გაგზავნილია (ონვეი)', value: 'shipped_onway' },
     { label: 'FINA-ში გატარებულია', value: 'finance_cleared' },
     { label: 'თანხა დაბრუნებულია', value: 'refunded' },
+    { label: 'თანხა დაბრუნებულია ნაწილობრივ', value: 'partially_refunded' },
   ];
 
   readonly sourceOptions: ComboboxItems[] = [
@@ -411,8 +414,14 @@ export class AdminOrdersComponent {
         return 'გაგზავნილია';
       case 'finance_cleared':
         return 'FINA-ში გატარებულია';
+      case 'shipped_location':
+        return 'გაგზავნილია (ლოკაცია)';
+      case 'shipped_onway':
+        return 'გაგზავნილია (ონვეი)';
       case 'refunded':
         return 'თანხა დაბრუნებულია';
+      case 'partially_refunded':
+        return 'თანხა დაბრუნებულია ნაწილობრივ';
       default:
         return status;
     }

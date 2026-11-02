@@ -174,8 +174,11 @@ export type OrderStatus =
   | 'processing'
   | 'prepared'
   | 'shipped'
+  | 'shipped_location'
+  | 'shipped_onway'
   | 'finance_cleared'
-  | 'refunded';
+  | 'refunded'
+  | 'partially_refunded';
 
 export interface Order {
   id: number;

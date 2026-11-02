@@ -57,11 +57,15 @@ export class OrdersComponent {
       case 'prepared':
         return 'მომზადებულია';
       case 'shipped':
+      case 'shipped_location':
+      case 'shipped_onway':
         return 'გაგზავნილია';
       case 'finance_cleared':
         return 'დადასტურებული';
       case 'refunded':
         return 'თანხა დაბრუნებულია';
+      case 'partially_refunded':
+        return 'თანხა დაბრუნებულია ნაწილობრივ';
     }
   }
 

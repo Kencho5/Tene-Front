@@ -58,8 +58,11 @@ export class AdminOrderFormComponent {
     { label: 'მუშავდება', value: 'processing' },
     { label: 'მომზადებულია', value: 'prepared' },
     { label: 'გაგზავნილია', value: 'shipped' },
+    { label: 'გაგზავნილია (ლოკაცია)', value: 'shipped_location' },
+    { label: 'გაგზავნილია (ონვეი)', value: 'shipped_onway' },
     { label: 'FINA-ში გატარებულია', value: 'finance_cleared' },
     { label: 'თანხა დაბრუნებულია', value: 'refunded' },
+    { label: 'თანხა დაბრუნებულია ნაწილობრივ', value: 'partially_refunded' },
   ];
 
   readonly paymentMethodOptions: ComboboxItems[] = [
