@@ -254,6 +254,10 @@ export interface OrderSearchResponse {
   orders: Order[];
   total: number;
   total_amount: number;
+  web_amount: number;
+  admin_amount: number;
+  web_count: number;
+  admin_count: number;
   limit: number;
   offset: number;
 }

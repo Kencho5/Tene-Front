@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   linkedSignal,
   signal,
@@ -22,6 +23,7 @@ import { ProductFacets, ProductSearchResponse } from '@core/interfaces/products.
 import { getColorLabel } from '@utils/colors';
 import { map } from 'rxjs';
 import { CableType } from '@core/interfaces/admin/cable-types.interface';
+import { SeoService } from '@core/services/seo/seo.service';
 
 @Component({
   selector: 'app-search',
@@ -133,7 +135,32 @@ export class SearchComponent {
   private readonly router = inject(Router);
   private readonly productsService = inject(ProductsService);
   private readonly categoriesService = inject(CategoriesService);
+  private readonly seoService = inject(SeoService);
   private debounceTimer?: number;
+
+  readonly seoTitle = computed(() => {
+    const children = this.selectedChildren();
+    const parent = this.selectedParent();
+    const query = this.searchTerm().trim();
+
+    if (children.length) return `${children.map((c) => c.name).join(', ')} — ფასები, ყიდვა ონლაინ | Tene`;
+    if (parent) return `${parent.name} — ფასები, ყიდვა ონლაინ | Tene`;
+    if (query) return `${query} — ძიების შედეგები | Tene`;
+    return 'პროდუქტების ძიება | Tene';
+  });
+
+  constructor() {
+    effect(() => {
+      const title = this.seoTitle();
+      const total = this.totalProducts();
+      const countLabel = total > 0 ? `${total}+ პროდუქტი` : 'ფართო არჩევანი';
+      this.seoService.setMetaTags({
+        title,
+        description: `${title.split(' — ')[0]}: ${countLabel}, ოფიციალური გარანტია, სწრაფი მიწოდება საქართველოს მასშტაბით. შეადარეთ ფასები Tene.ge-ზე.`,
+        type: 'website',
+      });
+    });
+  }
 
   readonly getColorLabel = getColorLabel;
 

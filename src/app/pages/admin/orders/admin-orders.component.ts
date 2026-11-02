@@ -209,7 +209,17 @@ export class AdminOrdersComponent {
   });
 
   readonly searchResponse = rxResource({
-    defaultValue: { orders: [], total: 0, total_amount: 0, limit: 0, offset: 0 },
+    defaultValue: {
+      orders: [],
+      total: 0,
+      total_amount: 0,
+      web_amount: 0,
+      admin_amount: 0,
+      web_count: 0,
+      admin_count: 0,
+      limit: 0,
+      offset: 0,
+    },
     params: () => {
       const p = this.normalizedParams();
       if (!p['limit']) p['limit'] = '12';
@@ -338,6 +348,10 @@ export class AdminOrdersComponent {
   });
   readonly totalOrders = computed(() => this.searchResponse.value().total);
   readonly totalAmount = computed(() => this.searchResponse.value().total_amount);
+  readonly webAmount = computed(() => this.searchResponse.value().web_amount);
+  readonly adminAmount = computed(() => this.searchResponse.value().admin_amount);
+  readonly webCount = computed(() => this.searchResponse.value().web_count);
+  readonly adminCount = computed(() => this.searchResponse.value().admin_count);
 
   readonly fromDate = signal(
     this.toDateInput(this.route.snapshot.queryParams['from_date'] as string),
@@ -448,8 +462,8 @@ export class AdminOrdersComponent {
     return trimmed;
   }
 
-  onSourceChange(value: string): void {
-    if (value === this.source()) return;
+  onSourceChange(value: string | undefined): void {
+    if (!value || value === this.source()) return;
     this.updateQueryParams({
       source: value,
       payment_method: undefined,
