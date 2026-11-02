@@ -176,6 +176,8 @@ export type OrderStatus =
   | 'shipped'
   | 'shipped_location'
   | 'shipped_onway'
+  | 'shipped_same_day'
+  | 'shipped_one_hour'
   | 'finance_cleared'
   | 'refunded'
   | 'partially_refunded';

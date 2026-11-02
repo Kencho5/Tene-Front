@@ -60,6 +60,8 @@ export class AdminOrderFormComponent {
     { label: 'გაგზავნილია', value: 'shipped' },
     { label: 'გაგზავნილია (ლოკაცია)', value: 'shipped_location' },
     { label: 'გაგზავნილია (ონვეი)', value: 'shipped_onway' },
+    { label: 'გაგზავნილია-იმავე დღე', value: 'shipped_same_day' },
+    { label: 'გაგზავნილია-1 საათში', value: 'shipped_one_hour' },
     { label: 'FINA-ში გატარებულია', value: 'finance_cleared' },
     { label: 'თანხა დაბრუნებულია', value: 'refunded' },
     { label: 'თანხა დაბრუნებულია ნაწილობრივ', value: 'partially_refunded' },

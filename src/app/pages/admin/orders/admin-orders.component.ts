@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { OutsideClickDirective } from '@core/directives/outside-click.directive';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import {
   Order,
@@ -48,6 +49,7 @@ interface FilterChip {
   selector: 'app-admin-orders',
   imports: [
     SharedModule,
+    OutsideClickDirective,
     DropdownComponent,
     MultiDropdownComponent,
     PaginationComponent,
@@ -78,14 +80,18 @@ export class AdminOrdersComponent {
     { label: 'გაგზავნილია', value: 'shipped' },
     { label: 'გაგზავნილია (ლოკაცია)', value: 'shipped_location' },
     { label: 'გაგზავნილია (ონვეი)', value: 'shipped_onway' },
+    { label: 'გაგზავნილია-იმავე დღე', value: 'shipped_same_day' },
+    { label: 'გაგზავნილია-1 საათში', value: 'shipped_one_hour' },
     { label: 'FINA-ში გატარებულია', value: 'finance_cleared' },
     { label: 'თანხა დაბრუნებულია', value: 'refunded' },
     { label: 'თანხა დაბრუნებულია ნაწილობრივ', value: 'partially_refunded' },
   ];
 
+  readonly revenueOpen = signal(false);
+
   readonly sourceOptions: ComboboxItems[] = [
     { label: 'საიტიდან', value: 'web' },
-    { label: 'ხელით დამატებული', value: 'admin' },
+    { label: 'ხელით', value: 'admin' },
   ];
 
   readonly paymentMethodOptions: ComboboxItems[] = [
@@ -352,7 +358,6 @@ export class AdminOrdersComponent {
   readonly adminAmount = computed(() => this.searchResponse.value().admin_amount);
   readonly webCount = computed(() => this.searchResponse.value().web_count);
   readonly adminCount = computed(() => this.searchResponse.value().admin_count);
-
   readonly fromDate = signal(
     this.toDateInput(this.route.snapshot.queryParams['from_date'] as string),
   );
@@ -432,6 +437,10 @@ export class AdminOrdersComponent {
         return 'გაგზავნილია (ლოკაცია)';
       case 'shipped_onway':
         return 'გაგზავნილია (ონვეი)';
+      case 'shipped_same_day':
+        return 'გაგზავნილია-იმავე დღე';
+      case 'shipped_one_hour':
+        return 'გაგზავნილია-1 საათში';
       case 'refunded':
         return 'თანხა დაბრუნებულია';
       case 'partially_refunded':
