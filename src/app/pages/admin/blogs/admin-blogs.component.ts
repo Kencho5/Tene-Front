@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
+import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
+import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { SharedModule } from '@shared/shared.module';
 import { catchError, finalize, of, tap } from 'rxjs';
 import { AdminService } from '@core/services/admin/admin.service';
@@ -10,7 +12,7 @@ import { BlogListResponse, BlogStatus } from '@core/interfaces/admin/blogs.inter
 
 @Component({
   selector: 'app-admin-blogs',
-  imports: [SharedModule, PaginationComponent],
+  imports: [SharedModule, PaginationComponent, DropdownComponent],
   templateUrl: './admin-blogs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -55,7 +57,14 @@ export class AdminBlogsComponent {
   );
   readonly showingTo = computed(() => Math.min(this.offset() + this.limit(), this.totalBlogs()));
 
-  setStatusFilter(status: BlogStatus | undefined): void {
+  readonly statusOptions: ComboboxItems[] = [
+    { label: 'ყველა', value: 'all' },
+    { label: 'დრაფტი', value: 'draft' },
+    { label: 'გამოქვეყნებული', value: 'published' },
+  ];
+
+  setStatusFilter(value: string | undefined): void {
+    const status = value === 'draft' || value === 'published' ? value : undefined;
     this.updateQueryParams({ status, offset: 0 });
   }
 

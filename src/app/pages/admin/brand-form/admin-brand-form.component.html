@@ -1,73 +1,40 @@
-<div class="mx-auto max-w-2xl space-y-4">
-  <!-- Header -->
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-lg font-semibold text-platinum-100">
-        {{ pageTitle() }}
-      </h1>
-      <p class="mt-0.5 text-sm text-platinum-50">
-        @if (isEditMode()) {
-          ბრენდის ID: {{ brandId() }}
-        } @else {
-          შეავსეთ ყველა სავალდებულო ველი
-        }
-      </p>
-    </div>
-  </div>
+<div class="mx-auto max-w-2xl">
+  <h1 class="text-platinum-100 mb-6 text-xl font-semibold tracking-tight sm:mb-8 sm:text-2xl">{{ pageTitle() }}</h1>
 
-  <!-- Form -->
-  <form (submit)="onSubmit($event)" novalidate class="space-y-4">
-    <!-- Basic Information Card -->
-    <div class="rounded-2xl border border-hairline-strong/60 bg-white">
-      <div class="border-b border-hairline-strong/60 px-5 py-3">
-        <h2 class="text-sm font-semibold text-platinum-100">ძირითადი ინფორმაცია</h2>
-      </div>
-
-      <div class="flex flex-col gap-4 px-5 py-4">
-        <div>
-        <label class="mb-1.5 block text-sm font-medium text-platinum-70">სახელი *</label>
+  <form (submit)="onSubmit($event)" novalidate>
+    <section class="pb-8">
+      <label class="block">
+        <span class="text-platinum-70 mb-1.5 block text-sm font-medium">სახელი <span class="text-valencia-60">*</span></span>
         <app-input
           [formField]="brandForm.name"
           [error]="submitted() && brandForm.name().invalid()"
+          customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !px-3 shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
           type="text"
           placeholder="ბრენდის სახელი"
         />
-        </div>
-      </div>
-    </div>
+      </label>
+    </section>
 
-    <!-- Form Actions -->
-    <div class="flex items-center justify-end gap-2">
+    <div class="border-hairline-strong/50 flex flex-col-reverse gap-2 border-t pt-6 sm:flex-row sm:justify-end">
       <button
         type="button"
         (click)="cancel()"
-        class="inline-flex h-9 items-center rounded-full border border-hairline-strong/60 bg-white px-4 text-sm font-medium text-platinum-80 transition-colors hover:bg-platinum-10/60"
+        class="text-platinum-80 border-hairline-strong/70 inline-flex h-11 w-full items-center justify-center rounded-lg border bg-white px-4 text-[15px] font-medium shadow-[0_1px_1px_rgba(33,33,33,0.04)] hover:bg-neutral-50 sm:h-10 sm:w-auto sm:text-sm"
       >
         გაუქმება
       </button>
       <button
         type="submit"
         [disabled]="isLoading()"
-        class="inline-flex h-9 items-center gap-1.5 rounded-full bg-green-60 px-5 text-sm font-medium text-white transition-colors hover:bg-green-70 disabled:cursor-not-allowed disabled:opacity-60"
+        class="bg-green-60 hover:bg-green-70 focus-visible:outline-green-60 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg px-4 text-[15px] font-medium text-white shadow-[0_1px_1px_rgba(33,33,33,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60 sm:h-10 sm:w-auto sm:text-sm"
       >
         @if (isLoading()) {
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 16 16"
-            fill="none"
-            class="animate-spin"
-          >
-            <path
-              d="M8 2V4M8 12V14M14 8H12M4 8H2M12.2426 3.75736L10.8284 5.17157M5.17157 10.8284L3.75736 12.2426M12.2426 12.2426L10.8284 10.8284M5.17157 5.17157L3.75736 3.75736"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="animate-spin" aria-hidden="true">
+            <path d="M8 2a6 6 0 1 1-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
           </svg>
-          <span>მუშავდება...</span>
+          ინახება...
         } @else {
-          <span>{{ isEditMode() ? "განახლება" : "დამატება" }}</span>
+          {{ isEditMode() ? 'შენახვა' : 'დამატება' }}
         }
       </button>
     </div>

@@ -163,25 +163,17 @@ export class TaskEditorComponent implements OnInit {
     () => this.priorityOptions.find((o) => o.value === this.priority())?.label ?? '',
   );
 
-  private readonly stateMetaMap: Record<TaskState, { classes: string; dot: string }> = {
-    todo: { classes: 'bg-platinum-10 text-platinum-70 border border-platinum-30/60', dot: 'bg-platinum-50' },
-    in_progress: { classes: 'bg-blue-50 text-blue-700 border border-blue-200/70', dot: 'bg-blue-500' },
-    review: { classes: 'bg-amber-50 text-amber-700 border border-amber-200/70', dot: 'bg-amber-500' },
-    done: { classes: 'bg-green-10 text-green-70 border border-green-30/70', dot: 'bg-green-60' },
-  };
-  private readonly priorityMetaMap: Record<TaskPriority, { classes: string }> = {
-    low: { classes: 'bg-platinum-10 text-platinum-60 border border-platinum-30/60' },
-    medium: { classes: 'bg-blue-50 text-blue-700 border border-blue-200/70' },
-    high: { classes: 'bg-amber-50 text-amber-700 border border-amber-200/70' },
-    urgent: { classes: 'bg-valencia-10 text-valencia-60 border border-valencia-30/60' },
+  private readonly stateDotMap: Record<TaskState, string> = {
+    todo: 'bg-platinum-40',
+    in_progress: 'bg-blue-500',
+    review: 'bg-amber-500',
+    done: 'bg-green-60',
   };
 
-  readonly stateMeta = computed(() => this.stateMetaMap[this.state()]);
-  readonly priorityMeta = computed(() => this.priorityMetaMap[this.priority()]);
-
+  readonly stateDot = computed(() => this.stateDotMap[this.state()]);
   private formatDate(iso: string): string {
     const d = new Date(iso);
-    if (isNaN(d.getTime())) return '—';
+    if (isNaN(d.getTime())) return '';
     return new Intl.DateTimeFormat('ka-GE', {
       day: '2-digit',
       month: 'short',
@@ -193,7 +185,7 @@ export class TaskEditorComponent implements OnInit {
 
   readonly createdAt = computed(() => {
     const t = this.task();
-    return t ? this.formatDate(t.created_at) : '—';
+    return t ? this.formatDate(t.created_at) : '';
   });
 
   readonly acceptList = ALL_TYPES.join(',');

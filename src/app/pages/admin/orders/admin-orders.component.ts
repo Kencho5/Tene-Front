@@ -87,8 +87,6 @@ export class AdminOrdersComponent {
     { label: 'თანხა დაბრუნებულია ნაწილობრივ', value: 'partially_refunded' },
   ];
 
-  readonly revenueOpen = signal(false);
-
   readonly sourceOptions: ComboboxItems[] = [
     { label: 'საიტიდან', value: 'web' },
     { label: 'ხელით', value: 'admin' },
@@ -256,7 +254,7 @@ export class AdminOrdersComponent {
 
   readonly source = computed(() => (this.params()['source'] as string) ?? 'web');
   readonly isAdminSource = computed(() => this.source() !== 'web');
-  readonly columnCount = computed(() => (this.isAdminSource() ? 11 : 10));
+  readonly columnCount = computed(() => (this.isAdminSource() ? 9 : 8));
 
   readonly activeFilterCount = computed(() => this.filterChips().length);
 
@@ -354,11 +352,12 @@ export class AdminOrdersComponent {
     });
   });
   readonly totalOrders = computed(() => this.searchResponse.value().total);
-  readonly totalAmount = computed(() => this.searchResponse.value().total_amount);
   readonly webAmount = computed(() => this.searchResponse.value().web_amount);
   readonly adminAmount = computed(() => this.searchResponse.value().admin_amount);
   readonly webCount = computed(() => this.searchResponse.value().web_count);
   readonly adminCount = computed(() => this.searchResponse.value().admin_count);
+  readonly totalAmount = computed(() => this.searchResponse.value().total_amount);
+  readonly revenueOpen = signal(false);
   readonly fromDate = signal(
     this.toDateInput(this.route.snapshot.queryParams['from_date'] as string),
   );
@@ -596,7 +595,7 @@ export class AdminOrdersComponent {
     this.searchQuery.set('');
     this.fromDate.set('');
     this.toDate.set('');
-    this.selectedPreset.set('');
+    this.selectedPreset.set('all');
     this.updateQueryParams({
       search: undefined,
       status: undefined,
@@ -833,6 +832,7 @@ export class AdminOrdersComponent {
   onFromDateChange(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.fromDate.set(value);
+    this.selectedPreset.set(value || this.toDate() ? '' : 'all');
     this.updateQueryParams({
       from_date: value ? this.startOfLocalDay(value) : undefined,
       offset: 0,
@@ -842,6 +842,7 @@ export class AdminOrdersComponent {
   onToDateChange(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.toDate.set(value);
+    this.selectedPreset.set(value || this.fromDate() ? '' : 'all');
     this.updateQueryParams({
       to_date: value ? this.endOfLocalDay(value) : undefined,
       offset: 0,
@@ -849,6 +850,7 @@ export class AdminOrdersComponent {
   }
 
   readonly datePresets: ComboboxItems[] = [
+    { label: 'ყველა დრო', value: 'all' },
     { label: 'დღეს', value: 'today' },
     { label: 'გუშინ', value: 'yesterday' },
     { label: 'გუშინწინ', value: 'day_before' },
@@ -859,12 +861,14 @@ export class AdminOrdersComponent {
     { label: 'წინა თვის', value: 'last_month' },
   ];
 
-  readonly selectedPreset = signal('');
+  readonly selectedPreset = signal(
+    this.route.snapshot.queryParams['from_date'] || this.route.snapshot.queryParams['to_date'] ? '' : 'all',
+  );
 
   constructor() {
-    const qp = this.route.snapshot.queryParams;
-    if (!qp['from_date'] && !qp['to_date']) {
-      this.selectPreset('today');
+    const { from_date, to_date } = this.route.snapshot.queryParams;
+    if (!from_date && !to_date) {
+      this.selectPreset('today', true);
     }
   }
 
@@ -883,8 +887,12 @@ export class AdminOrdersComponent {
     return new Date(`${value}T23:59:59.999`).toISOString();
   }
 
-  selectPreset(value: string | undefined): void {
+  selectPreset(value: string | undefined, replaceUrl = false): void {
     if (!value) return;
+    if (value === 'all') {
+      this.clearDates();
+      return;
+    }
     this.selectedPreset.set(value);
 
     const today = new Date();
@@ -928,17 +936,20 @@ export class AdminOrdersComponent {
 
     this.fromDate.set(fromStr);
     this.toDate.set(toStr);
-    this.updateQueryParams({
-      from_date: this.startOfLocalDay(fromStr),
-      to_date: this.endOfLocalDay(toStr),
-      offset: 0,
-    });
+    this.updateQueryParams(
+      {
+        from_date: this.startOfLocalDay(fromStr),
+        to_date: this.endOfLocalDay(toStr),
+        offset: 0,
+      },
+      replaceUrl,
+    );
   }
 
   clearDates(): void {
     this.fromDate.set('');
     this.toDate.set('');
-    this.selectedPreset.set('');
+    this.selectedPreset.set('all');
     this.updateQueryParams({
       from_date: undefined,
       to_date: undefined,
@@ -1134,11 +1145,15 @@ export class AdminOrdersComponent {
     this.lightboxActiveId.set(imageId);
   }
 
-  private updateQueryParams(params: Record<string, string | number | undefined>): void {
+  private updateQueryParams(
+    params: Record<string, string | number | undefined>,
+    replaceUrl = false,
+  ): void {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: params,
       queryParamsHandling: 'merge',
+      replaceUrl,
     });
   }
 }

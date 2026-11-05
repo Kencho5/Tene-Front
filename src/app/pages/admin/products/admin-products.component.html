@@ -1,77 +1,60 @@
-<div class="space-y-4">
-  <!-- Header -->
-  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <h1 class="text-platinum-100 text-lg font-semibold">
-      პროდუქტები <span class="text-platinum-50 font-normal">({{ totalProducts() }})</span>
+<div class="flex flex-col gap-5">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <h1 class="text-platinum-100 text-xl font-semibold tracking-tight sm:text-2xl">
+      პროდუქტები
+      <span class="text-platinum-50 ml-1 text-base font-normal tabular-nums">{{ totalProducts() }}</span>
     </h1>
-
     <a
       [routerLink]="['/admin/products/new']"
-      class="bg-green-60 hover:bg-green-70 inline-flex h-9 items-center justify-center gap-1.5 rounded-full px-4 text-sm font-medium text-white transition-colors"
+      class="bg-green-60 hover:bg-green-70 focus-visible:outline-green-60 inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-lg px-4 text-[15px] font-medium text-white shadow-[0_1px_1px_rgba(33,33,33,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 sm:h-9 sm:w-auto sm:px-3.5 sm:text-sm"
     >
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-        <path
-          d="M8 3.33337V12.6667M3.33334 8.00004H12.6667"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-        />
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M8 3.33v9.34M3.33 8h9.34" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
       </svg>
       ახალი პროდუქტი
     </a>
   </div>
 
-  <!-- Filters -->
-  <div class="flex flex-col gap-3">
-    <!-- Search -->
-    <div class="flex flex-col gap-2 sm:flex-row">
-      <div class="flex min-w-0 flex-1 gap-2">
-        <div class="relative min-w-0 flex-1">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 20 20"
-            fill="none"
-            class="text-platinum-40 pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-          >
-            <path
-              d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          <input
-            type="text"
-            [value]="searchQuery()"
-            (input)="onSearchInput($event)"
-            placeholder="ძიება სახელით ან SKU-ით..."
-            class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
-          />
-          @if (searchQuery()) {
+  <div>
+    <div class="grid gap-2 *:min-w-0 md:flex md:items-center">
+      <div class="relative w-full md:flex-1">
+        <label for="product-search" class="sr-only">პროდუქტის ძიება</label>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          class="text-platinum-50 pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 sm:left-3"
+          aria-hidden="true"
+        >
+          <circle cx="7" cy="7" r="4.75" stroke="currentColor" stroke-width="1.4" />
+          <path d="m10.5 10.5 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        </svg>
+        <input
+          id="product-search"
+          type="text"
+          autocomplete="off"
+          [value]="searchQuery()"
+          (input)="onSearchInput($event)"
+          placeholder="ძიება სახელით ან SKU-ით"
+          class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white pr-10 pl-10 text-[15px] text-ellipsis shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:h-9 sm:pr-9 sm:pl-9 sm:text-sm"
+        />
+        @if (searchQuery()) {
           <button
             type="button"
             (click)="clearSearch()"
-            class="text-platinum-40 hover:text-platinum-70 absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
+            aria-label="ძიების გასუფთავება"
+            class="text-platinum-40 hover:text-platinum-70 absolute top-1/2 right-1.5 inline-flex size-9 -translate-y-1/2 items-center justify-center rounded-md sm:size-7"
           >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M12 4L4 12M4 4L12 12"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M12 4 4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
-          }
-        </div>
+        }
       </div>
 
-      <!-- Dropdowns row -->
-      <div class="grid grid-cols-2 gap-2 sm:flex sm:w-auto">
-        <!-- Category Filter -->
-        <div class="col-span-2 min-w-0 sm:w-[240px]">
+      <div class="grid grid-cols-2 gap-2 *:min-w-0 md:flex">
+        <div class="col-span-2 md:w-[240px]">
           <app-combobox
             [selectedValue]="selectedCategoryValue()"
             (selectedValueChange)="onCategoryChange($event)"
@@ -79,217 +62,192 @@
             searchPlaceholder="ძიება..."
             notFoundText="კატეგორია ვერ მოიძებნა"
             [items]="categoryItems()"
-            [customClass]="'!rounded-xl text-sm'"
+            customClass="!h-11 sm:!h-9 !text-[15px] sm:!text-sm !rounded-lg !border-hairline-strong/70 !px-3 !shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
           />
         </div>
-
-        <!-- Sort Dropdown -->
-        <div class="min-w-0 sm:w-[190px]">
+        <div class="md:w-[190px]">
           <app-dropdown
             [selectedValue]="params()['sort_by']"
             (selectedValueChange)="onSortChange($event)"
             placeholder="სორტირება"
             [items]="sortOptions"
-            [customClass]="'!rounded-xl text-sm'"
+            customClass="!h-11 sm:!h-9 !text-[15px] sm:!text-sm !rounded-lg !border-hairline-strong/70 !px-3 !shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
           />
         </div>
-
-        <!-- Status Filter -->
-        <div class="min-w-0 sm:w-[190px]">
+        <div class="md:w-[160px]">
           <app-dropdown
-            [selectedValue]="
-              params()['enabled'] === 'true'
-                ? 'enabled'
-                : params()['enabled'] === 'false'
-                  ? 'disabled'
-                  : 'all'
-            "
+            [selectedValue]="statusFilter()"
             (selectedValueChange)="onStatusChange($event)"
             placeholder="სტატუსი"
             [items]="statusOptions"
-            [customClass]="'!rounded-xl text-sm'"
+            customClass="!h-11 sm:!h-9 !text-[15px] sm:!text-sm !rounded-lg !border-hairline-strong/70 !px-3 !shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
           />
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Mobile Card List -->
-  <div class="sm:hidden">
-    @if (searchResponse.isLoading()) {
-    <div class="space-y-3">
-      @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
-      <div class="flex gap-3 rounded-2xl bg-platinum-10/60 p-4">
-        <div class="bg-platinum-10 h-24 w-24 shrink-0 animate-pulse rounded-lg"></div>
-        <div class="min-w-0 flex-1 space-y-2">
-          <div class="bg-platinum-10 h-4 w-3/4 animate-pulse rounded-sm"></div>
-          <div class="bg-platinum-10 h-3 w-1/3 animate-pulse rounded-sm"></div>
-          <div class="bg-platinum-10 h-3 w-1/2 animate-pulse rounded-sm"></div>
-          <div class="bg-platinum-10 h-4 w-16 animate-pulse rounded-sm"></div>
-        </div>
-      </div>
+  <div>
+    <ul role="list" class="space-y-3 md:hidden">
+      @if (searchResponse.isLoading()) {
+        @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
+          <li class="border-hairline-strong/70 flex gap-4 rounded-xl border bg-white p-4">
+            <div class="size-16 shrink-0 animate-pulse rounded-md bg-neutral-100"></div>
+            <div class="min-w-0 flex-1 space-y-2">
+              <div class="h-4 w-3/4 animate-pulse rounded-sm bg-neutral-100"></div>
+              <div class="h-3 w-1/3 animate-pulse rounded-sm bg-neutral-100"></div>
+            </div>
+          </li>
+        }
+      } @else if (products().length === 0) {
+        <li><ng-container *ngTemplateOutlet="emptyState" /></li>
+      } @else {
+        @for (product of products(); track product.data.id) {
+          <li class="border-hairline-strong/70 rounded-xl border bg-white">
+            <div class="flex items-start gap-4 p-4">
+              <a [routerLink]="getProductLink(product)" class="shrink-0" [class.opacity-50]="!product.data.enabled" tabindex="-1">
+                <ng-container *ngTemplateOutlet="thumb; context: { $implicit: product, size: 'size-16' }" />
+              </a>
+              <div class="min-w-0 flex-1">
+                <a
+                  [routerLink]="getProductLink(product)"
+                  class="hover:text-green-70 line-clamp-2 text-[15px] leading-snug"
+                  [class]="product.data.enabled ? 'text-platinum-90' : 'text-platinum-50'"
+                >
+                  {{ product.data.name }}
+                </a>
+                <p class="text-platinum-50 mt-1 truncate text-sm">
+                  {{ product.data.sku }} ·
+                  <span class="tabular-nums" [class.text-valencia-60]="product.data.quantity === 0">{{ product.data.quantity }} მარაგი</span>
+                </p>
+                <p class="mt-2 flex flex-wrap items-baseline gap-x-2">
+                  <ng-container *ngTemplateOutlet="price; context: { $implicit: product }" />
+                </p>
+                @if (product.categories && product.categories.length > 0) {
+                  <div class="mt-3 flex flex-wrap items-start gap-1.5">
+                    @for (category of product.categories.slice(0, 2); track category.id) {
+                      <span class="text-platinum-70 max-w-full truncate rounded-md bg-neutral-100 px-2 py-1 text-[13px]">{{ category.name }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="border-hairline-strong/70 flex items-center gap-1 border-t py-1.5 pr-2 pl-4">
+              <button
+                type="button"
+                role="switch"
+                [attr.aria-checked]="product.data.enabled"
+                (click)="toggleProductStatus(product.data.id, product.data.enabled)"
+                class="text-platinum-70 mr-auto flex h-11 items-center gap-2.5 text-[15px]"
+              >
+                <ng-container *ngTemplateOutlet="switchTrack; context: { $implicit: product.data.enabled }" />
+                {{ product.data.enabled ? 'აქტიური' : 'გამორთული' }}
+              </button>
+              <ng-container *ngTemplateOutlet="actions; context: { $implicit: product }" />
+            </div>
+          </li>
+        }
       }
-    </div>
-    } @else if (products().length === 0) {
-    <div class="border-hairline-strong/60 rounded-2xl border bg-white px-4 py-16 text-center">
-      <div class="flex flex-col items-center gap-2">
-        <svg width="44" height="44" viewBox="0 0 48 48" fill="none" class="text-platinum-30">
-          <path
-            d="M42 30V18L24 9L6 18V30L24 39L42 30Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M6 18L24 27L42 18M24 39V27"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <p class="text-platinum-70 text-sm font-medium">პროდუქტები არ მოიძებნა</p>
-        <p class="text-platinum-50 text-xs">სცადეთ სხვა ძებნის პარამეტრები</p>
-      </div>
-    </div>
-    } @else {
-    <div class="space-y-3">
-      @for (product of products(); track product.data.id) {
-      <div
-        class="border-hairline-strong/60 flex gap-3.5 rounded-2xl border bg-white p-4 transition-colors"
-        [class.opacity-45]="!product.data.enabled"
-      >
-        <div class="flex shrink-0 flex-col items-center gap-1.5">
-          <a [routerLink]="getProductLink(product)">
-            @if (getProductImage(product)) {
-            <div class="border-hairline-strong/60 h-24 w-24 overflow-hidden rounded-lg border">
-              <img
-                [src]="getProductImage(product)"
-                [alt]="product.data.name"
-                class="h-full w-full object-cover"
-              />
-            </div>
-            } @else {
-            <div
-              class="border-hairline-strong/60 bg-platinum-10 flex h-24 w-24 items-center justify-center rounded-lg border"
-            >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" class="text-platinum-30">
-                <path
-                  d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
-                  stroke="currentColor"
-                  stroke-width="1.4"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
+    </ul>
+
+    <div class="hidden md:block">
+      <table class="w-full table-fixed">
+        <thead>
+          <tr class="border-hairline-strong/70 border-b">
+            <th scope="col" class="text-platinum-50 w-[44%] py-2 pr-3 pl-2 text-left text-[13px] font-medium whitespace-nowrap">პროდუქტი</th>
+            <th scope="col" class="text-platinum-50 hidden w-[20%] px-3 py-2 text-left text-[13px] font-medium whitespace-nowrap lg:table-cell">კატეგორია</th>
+            <th scope="col" class="text-platinum-50 w-[11%] px-3 py-2 text-center text-[13px] font-medium whitespace-nowrap">ფასი</th>
+            <th scope="col" class="text-platinum-50 w-[11%] px-3 py-2 text-center text-[13px] font-medium whitespace-nowrap">მარაგი</th>
+            <th scope="col" class="text-platinum-50 w-[11%] px-3 py-2 text-center text-[13px] font-medium whitespace-nowrap">სტატუსი</th>
+            <th scope="col" class="w-[80px] py-2 pr-2 pl-2"><span class="sr-only">მოქმედებები</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (searchResponse.isLoading()) {
+            @for (skeleton of [1, 2, 3, 4, 5, 6]; track skeleton) {
+              <tr class="border-hairline-strong/50 border-b">
+                <td class="py-4 pr-3 pl-2">
+                  <div class="flex items-center gap-3.5">
+                    <div class="size-11 shrink-0 animate-pulse rounded-md bg-neutral-100"></div>
+                    <div class="w-full space-y-1.5">
+                      <div class="h-3.5 w-3/4 animate-pulse rounded-sm bg-neutral-100"></div>
+                      <div class="h-3 w-24 animate-pulse rounded-sm bg-neutral-100"></div>
+                    </div>
+                  </div>
+                </td>
+                <td class="hidden px-3 py-4 lg:table-cell"><div class="h-3.5 w-28 animate-pulse rounded-sm bg-neutral-100"></div></td>
+                <td class="px-3 py-4"><div class="mx-auto h-3.5 w-14 animate-pulse rounded-sm bg-neutral-100"></div></td>
+                <td class="px-3 py-4"><div class="mx-auto h-3.5 w-8 animate-pulse rounded-sm bg-neutral-100"></div></td>
+                <td class="px-3 py-4"><div class="mx-auto h-5 w-9 animate-pulse rounded-full bg-neutral-100"></div></td>
+                <td class="py-4 pr-2 pl-2"></td>
+              </tr>
             }
-          </a>
-          <div class="mt-auto flex w-24 gap-1">
-            <a
-              [routerLink]="['/admin/products', product.data.id, 'edit']"
-              class="border-hairline-strong/60 text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex h-9 flex-1 items-center justify-center rounded-full border transition-colors"
-              aria-label="რედაქტირება"
-            >
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M11.3333 2.00004C11.5084 1.82494 11.7163 1.68605 11.9451 1.59129C12.1739 1.49653 12.419 1.44775 12.6666 1.44775C12.9143 1.44775 13.1594 1.49653 13.3882 1.59129C13.617 1.68605 13.8249 1.82494 14 2.00004C14.1751 2.17513 14.314 2.383 14.4087 2.61178C14.5035 2.84055 14.5523 3.08569 14.5523 3.33337C14.5523 3.58106 14.5035 3.8262 14.4087 4.05497C14.314 4.28375 14.1751 4.49162 14 4.66671L5.00001 13.6667L1.33334 14.6667L2.33334 11L11.3333 2.00004Z"
-                  stroke="currentColor"
-                  stroke-width="1.4"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </a>
-            <button
-              type="button"
-              (click)="openDeleteModal(product.data.id)"
-              class="border-hairline-strong/60 text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex h-9 flex-1 items-center justify-center rounded-full border transition-colors"
-              aria-label="წაშლა"
-            >
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M2 4H3.33333H14"
-                  stroke="currentColor"
-                  stroke-width="1.4"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M5.33334 4.00004V2.66671C5.33334 2.31309 5.47381 1.97395 5.72386 1.7239C5.97391 1.47385 6.31305 1.33337 6.66668 1.33337H9.33334C9.68697 1.33337 10.0261 1.47385 10.2762 1.7239C10.5262 1.97395 10.6667 2.31309 10.6667 2.66671V4.00004M12.6667 4.00004V13.3334C12.6667 13.687 12.5262 14.0261 12.2762 14.2762C12.0261 14.5262 11.687 14.6667 11.3333 14.6667H4.66668C4.31305 14.6667 3.97391 14.5262 3.72386 14.2762C3.47381 14.0261 3.33334 13.687 3.33334 13.3334V4.00004H12.6667Z"
-                  stroke="currentColor"
-                  stroke-width="1.4"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="flex min-w-0 flex-1 flex-col">
-          <a
-            [routerLink]="getProductLink(product)"
-            class="text-platinum-100 hover:text-green-70 block text-sm font-medium leading-snug transition-colors"
-          >
-            {{ product.data.name }}
-          </a>
-          <p class="text-platinum-40 mt-1 text-xs">SKU: {{ product.data.sku }}</p>
-          @if (product.categories && product.categories.length > 0) {
-          <div class="mt-2 flex flex-wrap gap-1">
-            @for (category of product.categories.slice(0, 2); track category.id) {
-            <span
-              class="border-platinum-30/60 bg-platinum-10 text-platinum-60 inline-flex rounded-full border px-2 py-0.5 text-[11px] font-medium"
-            >
-              {{ category.name }}
-            </span>
+          } @else if (products().length === 0) {
+            <tr>
+              <td colspan="6"><ng-container *ngTemplateOutlet="emptyState" /></td>
+            </tr>
+          } @else {
+            @for (product of products(); track product.data.id) {
+              <tr class="border-hairline-strong/50 border-b hover:bg-neutral-50">
+                <td class="py-4 pr-3 pl-2">
+                  <div class="flex items-center gap-3.5">
+                    <div class="shrink-0" [class.opacity-50]="!product.data.enabled">
+                      <ng-container *ngTemplateOutlet="thumb; context: { $implicit: product, size: 'size-11' }" />
+                    </div>
+                    <div class="min-w-0">
+                      <a
+                        [routerLink]="getProductLink(product)"
+                        class="hover:text-green-70 block truncate text-[15px]"
+                        [class]="product.data.enabled ? 'text-platinum-90' : 'text-platinum-50'"
+                        [title]="product.data.name"
+                      >
+                        {{ product.data.name }}
+                      </a>
+                      <p class="text-platinum-50 mt-0.5 truncate text-[13px]">{{ product.data.sku }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="hidden px-3 py-4 lg:table-cell">
+                  @if (product.categories && product.categories.length > 0) {
+                    <p class="text-platinum-60 truncate text-[15px]">
+                      @for (category of product.categories.slice(0, 2); track category.id) {
+                        {{ category.name }}@if (!$last) {, }
+                      }
+                    </p>
+                  } @else {
+                    <span class="text-platinum-30">-</span>
+                  }
+                </td>
+                <td class="px-3 py-4 text-center whitespace-nowrap">
+                  <div class="flex flex-col items-center">
+                    <ng-container *ngTemplateOutlet="price; context: { $implicit: product }" />
+                  </div>
+                </td>
+                <td class="px-3 py-4 text-center text-[15px] whitespace-nowrap tabular-nums" [class]="product.data.quantity > 0 ? 'text-platinum-60' : 'text-valencia-60 font-medium'">
+                  {{ product.data.quantity }}
+                </td>
+                <td class="px-3 py-4 text-center">
+                  <button
+                    type="button"
+                    role="switch"
+                    [attr.aria-checked]="product.data.enabled"
+                    [attr.aria-label]="product.data.name + ': აქტიური'"
+                    (click)="toggleProductStatus(product.data.id, product.data.enabled)"
+                    class="focus-visible:outline-green-60 inline-flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2"
+                  >
+                    <ng-container *ngTemplateOutlet="switchTrack; context: { $implicit: product.data.enabled }" />
+                  </button>
+                </td>
+                <td class="py-4 pr-2 pl-2">
+                  <ng-container *ngTemplateOutlet="actions; context: { $implicit: product }" />
+                </td>
+              </tr>
             }
-          </div>
           }
-          <div class="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-            @if (product.data.discounted_price !== null) {
-            <span class="text-platinum-100 text-sm font-semibold">
-              {{ discountedPrice(product) | number: "1.2-2" }} ₾
-            </span>
-            <span class="text-platinum-40 text-xs line-through">{{ product.data.price }} ₾</span>
-            } @else {
-            <span class="text-platinum-100 text-sm font-semibold">{{ product.data.price }} ₾</span>
-            }
-            <span class="text-platinum-40 text-xs">·</span>
-            @if (product.data.quantity > 0) {
-            <span class="text-platinum-50 text-xs">{{ product.data.quantity }} მარაგი</span>
-            } @else {
-            <span class="text-valencia-60 text-xs font-medium">0 მარაგი</span>
-            }
-          </div>
-          <button
-            type="button"
-            (click)="toggleProductStatus(product.data.id, product.data.enabled)"
-            class="border-hairline-strong/60 text-platinum-60 hover:bg-platinum-10 mt-3 flex h-9 w-full items-center justify-between gap-2 rounded-full border px-3 text-xs font-medium transition-colors"
-            [attr.aria-label]="product.data.enabled ? 'გამორთვა' : 'ჩართვა'"
-          >
-            <span>{{ product.data.enabled ? "ჩართულია" : "გამორთულია" }}</span>
-            <span
-              class="relative inline-flex h-[18px] w-8 shrink-0 items-center rounded-full transition-colors"
-              [class.bg-green-60]="product.data.enabled"
-              [class.bg-platinum-30]="!product.data.enabled"
-            >
-              <span
-                class="inline-block h-3 w-3 transform rounded-full bg-white shadow-xs transition-transform"
-                [class.translate-x-[17px]]="product.data.enabled"
-                [class.translate-x-[3px]]="!product.data.enabled"
-              ></span>
-            </span>
-          </button>
-        </div>
-      </div>
-      }
+        </tbody>
+      </table>
     </div>
-    }
-  </div>
 
-  <!-- Mobile Pagination -->
-  <div class="sm:hidden">
     <app-pagination
       [currentPage]="currentPage()"
       [totalPages]="totalPages()"
@@ -301,316 +259,119 @@
       (limitChange)="onLimitChangeValue($event)"
     />
   </div>
-
-  <!-- Table (sm+) -->
-  <div class="border-hairline-strong/60 hidden overflow-visible rounded-2xl border bg-white sm:block">
-    <div class="overflow-x-auto rounded-t-2xl">
-      <table class="w-full">
-        <thead>
-          <tr class="border-hairline-strong/60 bg-platinum-10/40 border-b">
-            <th
-              class="text-platinum-50 px-4 py-3 text-left text-xs font-medium tracking-wider uppercase"
-            >
-              პროდუქტი
-            </th>
-            <th
-              class="text-platinum-50 hidden px-4 py-3 text-left text-xs font-medium tracking-wider uppercase md:table-cell"
-            >
-              კატეგორია
-            </th>
-            <th
-              class="text-platinum-50 px-4 py-3 text-left text-xs font-medium tracking-wider uppercase"
-            >
-              ფასი
-            </th>
-            <th
-              class="text-platinum-50 hidden px-4 py-3 text-left text-xs font-medium tracking-wider uppercase lg:table-cell"
-            >
-              მარაგი
-            </th>
-            <th
-              class="text-platinum-50 hidden px-4 py-3 text-left text-xs font-medium tracking-wider uppercase xl:table-cell"
-            >
-              სტატუსი
-            </th>
-            <th
-              class="text-platinum-50 px-4 py-3 text-right text-xs font-medium tracking-wider uppercase"
-            >
-              მოქმედებები
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          @if (searchResponse.isLoading()) { @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
-          <tr class="border-hairline-strong/60 border-b last:border-b-0">
-            <td class="px-4 py-3.5">
-              <div class="flex items-center gap-3">
-                <div class="bg-platinum-10 h-11 w-11 animate-pulse rounded-lg"></div>
-                <div class="space-y-1.5">
-                  <div class="bg-platinum-10 h-4 w-32 animate-pulse rounded-sm"></div>
-                  <div class="bg-platinum-10 h-3 w-20 animate-pulse rounded-sm"></div>
-                </div>
-              </div>
-            </td>
-            <td class="hidden px-4 py-3.5 md:table-cell">
-              <div class="bg-platinum-10 h-4 w-24 animate-pulse rounded-sm"></div>
-            </td>
-            <td class="px-4 py-3.5">
-              <div class="bg-platinum-10 h-4 w-14 animate-pulse rounded-sm"></div>
-            </td>
-            <td class="hidden px-4 py-3.5 lg:table-cell">
-              <div class="bg-platinum-10 h-4 w-10 animate-pulse rounded-sm"></div>
-            </td>
-            <td class="hidden px-4 py-3.5 xl:table-cell">
-              <div class="bg-platinum-10 h-5 w-9 animate-pulse rounded-full"></div>
-            </td>
-            <td class="px-4 py-3.5">
-              <div class="flex justify-end gap-1">
-                <div class="bg-platinum-10 h-8 w-8 animate-pulse rounded-full"></div>
-                <div class="bg-platinum-10 h-8 w-8 animate-pulse rounded-full"></div>
-              </div>
-            </td>
-          </tr>
-          } } @else if (products().length === 0) {
-          <tr>
-            <td colspan="6" class="px-4 py-16 text-center">
-              <div class="flex flex-col items-center gap-2">
-                <svg
-                  width="44"
-                  height="44"
-                  viewBox="0 0 48 48"
-                  fill="none"
-                  class="text-platinum-30"
-                >
-                  <path
-                    d="M42 30V18L24 9L6 18V30L24 39L42 30Z"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M6 18L24 27L42 18M24 39V27"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                <p class="text-platinum-70 text-sm font-medium">პროდუქტები არ მოიძებნა</p>
-                <p class="text-platinum-50 text-xs">სცადეთ სხვა ძებნის პარამეტრები</p>
-              </div>
-            </td>
-          </tr>
-          } @else { @for (product of products(); track product.data.id) {
-          <tr
-            class="border-hairline-strong/60 hover:bg-platinum-10/50 border-b transition-colors last:border-b-0"
-            [class.opacity-45]="!product.data.enabled"
-          >
-            <!-- Product -->
-            <td class="px-4 py-3 max-w-[420px]">
-              <div class="flex items-center gap-3">
-                @if (getProductImage(product)) {
-                <div
-                  class="border-hairline-strong/60 h-11 w-11 shrink-0 overflow-hidden rounded-lg border"
-                >
-                  <img
-                    [src]="getProductImage(product)"
-                    [alt]="product.data.name"
-                    class="h-full w-full object-cover"
-                  />
-                </div>
-                } @else {
-                <div
-                  class="border-hairline-strong/60 bg-platinum-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border"
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    class="text-platinum-40"
-                  >
-                    <path
-                      d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
-                      stroke="currentColor"
-                      stroke-width="1.4"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-                }
-                <div class="min-w-0 flex-1">
-                  <a
-                    [routerLink]="getProductLink(product)"
-                    class="text-platinum-100 hover:text-green-70 block break-words text-sm font-medium transition-colors"
-                  >
-                    {{ product.data.name }}
-                  </a>
-                  <p class="text-platinum-50 truncate text-xs">SKU: {{ product.data.sku }}</p>
-                </div>
-              </div>
-            </td>
-
-            <!-- Category -->
-            <td class="hidden px-4 py-3 md:table-cell">
-              @if (product.categories && product.categories.length > 0) {
-              <div class="flex flex-wrap gap-1.5">
-                @for ( category of product.categories.slice(0, 2); track category.id ) {
-                <span
-                  class="border-platinum-30/60 bg-platinum-10 text-platinum-70 inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium"
-                >
-                  {{ category.name }}
-                </span>
-                }
-              </div>
-              } @else {
-              <span class="text-platinum-40 text-xs">--</span>
-              }
-            </td>
-
-            <!-- Price -->
-            <td class="px-4 py-3 whitespace-nowrap">
-              @if (product.data.discounted_price !== null) {
-              <p class="text-platinum-100 text-sm font-semibold">
-                {{ discountedPrice(product) | number: "1.2-2" }} ₾
-              </p>
-              <p class="text-platinum-40 text-xs line-through">{{ product.data.price }} ₾</p>
-              } @else {
-              <p class="text-platinum-100 text-sm font-semibold">{{ product.data.price }} ₾</p>
-              }
-            </td>
-
-            <!-- Stock -->
-            <td class="hidden px-4 py-3 lg:table-cell">
-              @if (product.data.quantity > 0) {
-              <span class="text-platinum-90 text-sm">{{ product.data.quantity }}</span>
-              } @else {
-              <span class="text-valencia-60 text-sm font-medium">0</span>
-              }
-            </td>
-
-            <!-- Status Toggle -->
-            <td class="hidden px-4 py-3 xl:table-cell">
-              <button
-                type="button"
-                (click)="toggleProductStatus(product.data.id, product.data.enabled)"
-                class="focus:ring-green-60 relative inline-flex h-[22px] w-10 items-center rounded-full transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
-                [class.bg-green-60]="product.data.enabled"
-                [class.bg-platinum-30]="!product.data.enabled"
-                [attr.aria-label]="product.data.enabled ? 'გამორთვა' : 'ჩართვა'"
-              >
-                <span
-                  class="inline-block h-4 w-4 transform rounded-full bg-white shadow-xs transition-transform"
-                  [class.translate-x-[21px]]="product.data.enabled"
-                  [class.translate-x-[3px]]="!product.data.enabled"
-                ></span>
-              </button>
-            </td>
-
-            <!-- Actions -->
-            <td class="px-4 py-3">
-              <div class="flex items-center justify-end gap-1">
-                <a
-                  [routerLink]="['/admin/products', product.data.id, 'edit']"
-                  class="text-platinum-40 hover:bg-platinum-10 hover:text-platinum-80 flex items-center justify-center rounded-full p-2 transition-colors"
-                  aria-label="რედაქტირება"
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M11.3333 2.00004C11.5084 1.82494 11.7163 1.68605 11.9451 1.59129C12.1739 1.49653 12.419 1.44775 12.6666 1.44775C12.9143 1.44775 13.1594 1.49653 13.3882 1.59129C13.617 1.68605 13.8249 1.82494 14 2.00004C14.1751 2.17513 14.314 2.383 14.4087 2.61178C14.5035 2.84055 14.5523 3.08569 14.5523 3.33337C14.5523 3.58106 14.5035 3.8262 14.4087 4.05497C14.314 4.28375 14.1751 4.49162 14 4.66671L5.00001 13.6667L1.33334 14.6667L2.33334 11L11.3333 2.00004Z"
-                      stroke="currentColor"
-                      stroke-width="1.4"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </a>
-                <button
-                  type="button"
-                  (click)="openDeleteModal(product.data.id)"
-                  class="text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex items-center justify-center rounded-full p-2 transition-colors"
-                  aria-label="წაშლა"
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M2 4H3.33333H14"
-                      stroke="currentColor"
-                      stroke-width="1.4"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M5.33334 4.00004V2.66671C5.33334 2.31309 5.47381 1.97395 5.72386 1.7239C5.97391 1.47385 6.31305 1.33337 6.66668 1.33337H9.33334C9.68697 1.33337 10.0261 1.47385 10.2762 1.7239C10.5262 1.97395 10.6667 2.31309 10.6667 2.66671V4.00004M12.6667 4.00004V13.3334C12.6667 13.687 12.5262 14.0261 12.2762 14.2762C12.0261 14.5262 11.687 14.6667 11.3333 14.6667H4.66668C4.31305 14.6667 3.97391 14.5262 3.72386 14.2762C3.47381 14.0261 3.33334 13.687 3.33334 13.3334V4.00004H12.6667Z"
-                      stroke="currentColor"
-                      stroke-width="1.4"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </td>
-          </tr>
-          } }
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Pagination -->
-    <div class="px-4">
-      <app-pagination
-        [currentPage]="currentPage()"
-        [totalPages]="totalPages()"
-        [totalItems]="totalProducts()"
-        [showingFrom]="showingFrom()"
-        [showingTo]="showingTo()"
-        [limit]="limit()"
-        (pageChange)="onPageChange($event)"
-        (limitChange)="onLimitChangeValue($event)"
-      />
-    </div>
-  </div>
 </div>
+
+<ng-template #thumb let-product let-size="size">
+  @let image = getProductImage(product);
+  <span class="border-hairline-strong/70 flex items-center justify-center overflow-hidden rounded-md border bg-white" [class]="size">
+    @if (image) {
+      <img [src]="image" [alt]="product.data.name" loading="lazy" class="size-full object-contain p-1" />
+    } @else {
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-platinum-30" aria-hidden="true">
+        <path d="M21 15V9l-9-4.5L3 9v6l9 4.5 9-4.5Z M3 9l9 4.5L21 9M12 19.5v-6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    }
+  </span>
+</ng-template>
+
+<ng-template #price let-product>
+  @if (product.data.discounted_price !== null) {
+    <span class="text-platinum-100 text-[15px] font-semibold tabular-nums sm:text-sm">{{ discountedPrice(product) | number: '1.2-2' }} ₾</span>
+    <span class="text-platinum-40 text-[13px] tabular-nums line-through sm:text-xs">{{ product.data.price }} ₾</span>
+  } @else {
+    <span class="text-platinum-100 text-[15px] font-semibold tabular-nums sm:text-sm">{{ product.data.price }} ₾</span>
+  }
+</ng-template>
+
+<ng-template #switchTrack let-enabled>
+  <span
+    class="relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors"
+    [class]="enabled ? 'bg-green-60' : 'bg-neutral-300'"
+    aria-hidden="true"
+  >
+    <span
+      class="inline-block size-4 rounded-full bg-white shadow-[0_1px_2px_rgba(33,33,33,0.2)] transition-transform"
+      [class]="enabled ? 'translate-x-[18px]' : 'translate-x-0.5'"
+    ></span>
+  </span>
+</ng-template>
+
+<ng-template #actions let-product>
+  <div class="flex shrink-0 items-center justify-end gap-0.5">
+    <a
+      [routerLink]="['/admin/products', product.data.id, 'edit']"
+      [attr.aria-label]="product.data.name + ': რედაქტირება'"
+      class="text-platinum-50 hover:text-platinum-90 inline-flex size-11 items-center justify-center rounded-md hover:bg-neutral-100 md:size-8"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M11.33 2A1.88 1.88 0 0 1 14 4.67l-9 9-3.67 1 1-3.67 9-9Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+    <button
+      type="button"
+      (click)="openDeleteModal(product.data.id)"
+      [attr.aria-label]="product.data.name + ': წაშლა'"
+      class="text-platinum-50 hover:text-valencia-70 hover:bg-valencia-10 inline-flex size-11 items-center justify-center rounded-md md:size-8"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M2.67 4h10.66M6.33 4V2.67h3.34V4M4 4l.67 9.33h6.66L12 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #emptyState>
+  <div class="flex flex-col items-center px-4 py-16 text-center">
+    <span class="flex size-10 items-center justify-center rounded-full bg-neutral-100">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="text-platinum-50" aria-hidden="true">
+        <path d="M21 15V9l-9-4.5L3 9v6l9 4.5 9-4.5Z M3 9l9 4.5L21 9M12 19.5v-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </span>
+    <p class="text-platinum-90 mt-3 text-[15px] font-medium sm:text-sm">პროდუქტები ვერ მოიძებნა</p>
+    @if (searchQuery()) {
+      <button
+        type="button"
+        (click)="clearSearch()"
+        class="text-platinum-80 border-hairline-strong/70 mt-4 inline-flex h-10 items-center rounded-lg border bg-white px-3.5 text-sm font-medium shadow-[0_1px_1px_rgba(33,33,33,0.04)] hover:bg-neutral-50 sm:h-8"
+      >
+        ძიების გასუფთავება
+      </button>
+    }
+  </div>
+</ng-template>
 
 @if (isDeleteModalOpen()) {
-<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-  <div class="absolute inset-0 bg-black/20" (click)="closeDeleteModal()"></div>
-  <div class="relative w-full max-w-[440px] rounded-2xl bg-white shadow-xl">
-    <div class="border-hairline-strong/60 flex items-center justify-between border-b px-5 py-4">
-      <h2 class="text-platinum-100 text-base font-semibold">პროდუქტის წაშლა</h2>
-      <button
-        type="button"
-        (click)="closeDeleteModal()"
-        class="text-platinum-40 hover:text-platinum-100 hover:bg-platinum-10 rounded-full p-1.5 transition-colors"
-      >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-        </svg>
-      </button>
-    </div>
-
-    <div class="px-5 py-5">
-      <p class="text-platinum-70 text-sm">დარწმუნებული ხართ, რომ გსურთ ამ პროდუქტის წაშლა?</p>
-    </div>
-
-    <div class="border-hairline-strong/60 flex items-center justify-end gap-2 border-t px-5 py-4">
-      <button
-        type="button"
-        (click)="closeDeleteModal()"
-        class="border-hairline-strong/60 text-platinum-80 hover:bg-platinum-10/60 inline-flex h-9 items-center rounded-full border bg-white px-4 text-sm font-medium transition-colors"
-      >
-        გაუქმება
-      </button>
-      <button
-        type="button"
-        (click)="confirmDelete()"
-        class="bg-valencia-60 hover:bg-valencia-70 inline-flex h-9 items-center rounded-full px-4 text-sm font-medium text-white transition-colors"
-      >
-        წაშლა
-      </button>
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="bg-platinum-100/30 absolute inset-0" (click)="closeDeleteModal()" aria-hidden="true"></div>
+    <div
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="delete-product-title"
+      aria-describedby="delete-product-desc"
+      class="relative w-full max-w-[420px] rounded-xl bg-white shadow-[0_0_0_1px_rgba(33,33,33,0.06),0_16px_48px_rgba(33,33,33,0.16)]"
+    >
+      <div class="px-5 pt-5">
+        <h2 id="delete-product-title" class="text-platinum-100 text-base font-semibold">პროდუქტის წაშლა</h2>
+        <p id="delete-product-desc" class="text-platinum-60 mt-1.5 text-sm">
+          დარწმუნებული ხართ, რომ გსურთ ამ პროდუქტის წაშლა? ეს მოქმედება შეუქცევადია.
+        </p>
+      </div>
+      <div class="border-hairline-strong/70 mt-5 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-neutral-50 px-5 py-3 sm:flex-row sm:justify-end">
+        <button
+          type="button"
+          (click)="closeDeleteModal()"
+          class="text-platinum-80 border-hairline-strong/70 inline-flex h-11 items-center justify-center rounded-lg border bg-white px-3.5 text-[15px] font-medium shadow-[0_1px_1px_rgba(33,33,33,0.04)] hover:bg-neutral-50 sm:h-9 sm:text-sm"
+        >
+          გაუქმება
+        </button>
+        <button
+          type="button"
+          (click)="confirmDelete()"
+          class="bg-valencia-60 hover:bg-valencia-70 inline-flex h-11 items-center justify-center rounded-lg px-3.5 text-[15px] font-medium text-white sm:h-9 sm:text-sm"
+        >
+          წაშლა
+        </button>
+      </div>
     </div>
   </div>
-</div>
 }

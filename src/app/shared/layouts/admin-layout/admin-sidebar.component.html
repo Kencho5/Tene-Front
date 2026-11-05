@@ -1,0 +1,109 @@
+<ng-template #navLink let-item>
+  <a
+    [routerLink]="item.route"
+    routerLinkActive
+    ariaCurrentWhenActive="page"
+    (click)="closeMobile()"
+    [attr.title]="collapsed() ? item.label : null"
+    [class.lg:justify-center]="collapsed()"
+    [class.lg:px-0]="collapsed()"
+    class="group flex h-8 items-center gap-2.5 rounded-md px-2.5 text-sm text-platinum-70 hover:bg-neutral-200/50 hover:text-platinum-100 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-green-60 aria-[current=page]:bg-white aria-[current=page]:font-medium aria-[current=page]:text-green-80 aria-[current=page]:shadow-[0_0_0_1px_rgba(33,33,33,0.06),0_1px_2px_rgba(33,33,33,0.08)]"
+  >
+    <app-admin-nav-icon
+      [icon]="item.icon"
+      class="text-platinum-40 group-hover:text-platinum-70 group-aria-[current=page]:text-green-60"
+    />
+    <span class="truncate" [class.lg:sr-only]="collapsed()">{{ item.label }}</span>
+  </a>
+</ng-template>
+
+<div
+  class="flex h-16 shrink-0 items-center px-5"
+  [class.lg:justify-center]="collapsed()"
+  [class.lg:px-0]="collapsed()"
+>
+  <a
+    routerLink="/"
+    class="flex items-center rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-60"
+    aria-label="მთავარი საიტი"
+  >
+    <img ngSrc="/logo.svg" width="90" height="38" priority alt="" class="h-7 w-auto" [class.lg:hidden]="collapsed()" />
+    @if (collapsed()) {
+      <span class="hidden size-8 items-center justify-center rounded-lg bg-green-10 lg:flex" aria-hidden="true">
+        <img ngSrc="/logo.svg" width="90" height="38" alt="" class="h-4 w-auto" />
+      </span>
+    }
+  </a>
+
+  <button
+    type="button"
+    (click)="closeMobile()"
+    aria-label="მენიუს დახურვა"
+    class="ml-auto inline-flex size-8 items-center justify-center rounded-md text-platinum-50 hover:bg-neutral-100 hover:text-platinum-100 focus-visible:outline-2 focus-visible:outline-green-60 lg:hidden"
+  >
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M12 4 4 12M4 4l8 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+    </svg>
+  </button>
+</div>
+
+<nav class="flex flex-1 flex-col overflow-x-hidden overflow-y-auto px-3 py-4" aria-label="ადმინ ნავიგაცია">
+  @for (section of sections(); track $index) {
+    <section [class.mt-6]="!$first" [attr.aria-label]="section.title ?? null">
+      @if (section.title) {
+        <h2
+          class="mb-1 flex h-6 items-center truncate px-2.5 font-body text-xs font-medium text-platinum-50"
+          [class.lg:sr-only]="collapsed()"
+        >
+          {{ section.title }}
+        </h2>
+      }
+      @if (!$first) {
+        <div class="mx-2.5 mb-3 hidden h-px bg-neutral-200" [class.lg:block]="collapsed()" aria-hidden="true"></div>
+      }
+      <ul role="list" class="space-y-0.5">
+        @for (item of section.items; track item.route) {
+          <li>
+            <ng-container *ngTemplateOutlet="navLink; context: { $implicit: item }" />
+          </li>
+        }
+      </ul>
+    </section>
+  }
+</nav>
+
+<div
+  class="flex shrink-0 items-center gap-1 p-3"
+  [class.lg:flex-col]="collapsed()"
+>
+  <a
+    routerLink="/"
+    [attr.title]="collapsed() ? 'მაღაზია' : null"
+    [class.lg:justify-center]="collapsed()"
+    [class.lg:w-full]="collapsed()"
+    [class.lg:px-0]="collapsed()"
+    class="group flex h-8 min-w-0 flex-1 items-center gap-2.5 rounded-md px-2.5 text-sm text-platinum-70 hover:bg-neutral-200/50 hover:text-platinum-100 focus-visible:outline-2 focus-visible:outline-green-60"
+  >
+    <app-admin-nav-icon icon="store" class="text-platinum-40 group-hover:text-platinum-70" />
+    <span class="truncate" [class.lg:sr-only]="collapsed()">მაღაზია</span>
+  </a>
+
+  <button
+    type="button"
+    (click)="toggleCollapsed()"
+    [attr.aria-label]="collapsed() ? 'გვერდითი მენიუს გაშლა' : 'გვერდითი მენიუს ჩაკეცვა'"
+    [attr.aria-expanded]="!collapsed()"
+    [attr.title]="collapsed() ? 'გაშლა' : 'ჩაკეცვა'"
+    class="hidden size-8 shrink-0 items-center justify-center rounded-md text-platinum-40 hover:bg-neutral-200/50 hover:text-platinum-100 focus-visible:outline-2 focus-visible:outline-green-60 lg:inline-flex"
+  >
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M6 2.5v11M2.5 4.5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-7Z"
+        stroke="currentColor"
+        stroke-width="1.3"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </button>
+</div>

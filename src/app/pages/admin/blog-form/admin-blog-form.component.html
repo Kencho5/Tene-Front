@@ -1,306 +1,192 @@
-<div class="mx-auto max-w-4xl space-y-4">
-  <!-- Header -->
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-lg font-semibold text-platinum-100">
-        {{ pageTitle() }}
-      </h1>
-      <p class="mt-0.5 text-sm text-platinum-50">
-        @if (isEditMode()) {
-          სტატიის ID: {{ blogId() }}
-        } @else {
-          შეავსეთ ყველა სავალდებულო ველი
-        }
-      </p>
-    </div>
-  </div>
+<div class="mx-auto max-w-3xl">
+  <h1 class="text-platinum-100 mb-6 text-xl font-semibold tracking-tight sm:mb-8 sm:text-2xl">{{ pageTitle() }}</h1>
 
-  <!-- Form -->
-  <form (submit)="onSubmit($event)" novalidate class="space-y-4">
-    <!-- Basic Information Card -->
-    <div class="rounded-2xl border border-hairline-strong/60 bg-white">
-      <div class="border-b border-hairline-strong/60 px-5 py-3">
-        <h2 class="text-sm font-semibold text-platinum-100">ძირითადი ინფორმაცია</h2>
-      </div>
-      <div class="px-5 py-4">
-
-      <div class="flex flex-col gap-4">
-        <!-- Title -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-platinum-70">სათაური *</label>
+  <form (submit)="onSubmit($event)" novalidate>
+    <section class="border-hairline-strong/50 border-b pb-8">
+      <h2 class="text-platinum-100 text-base font-semibold">ძირითადი</h2>
+      <div class="mt-4 grid gap-4 *:min-w-0 sm:grid-cols-2">
+        <label class="block sm:col-span-2">
+          <span class="text-platinum-70 mb-1.5 block text-sm font-medium">სათაური <span class="text-valencia-60">*</span></span>
           <input
             type="text"
             [formField]="blogForm.title"
             (input)="onTitleInput()"
             placeholder="სტატიის სათაური"
             [attr.aria-invalid]="submitted() && blogForm.title().invalid() ? 'true' : null"
-            [ngClass]="{
-              'border-valencia-50 focus:border-valencia-50 focus:ring-valencia-50':
-                submitted() && blogForm.title().invalid(),
-              'border-hairline-strong/60 focus:border-platinum-30 focus:ring-platinum-30':
-                !(submitted() && blogForm.title().invalid()),
-            }"
-            class="h-11 w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-platinum-100 placeholder:text-platinum-40 focus:outline-hidden focus:ring-1"
+            [class.!border-valencia-60]="submitted() && blogForm.title().invalid()"
+            class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:h-10 sm:text-sm"
           />
-        </div>
-
-        <!-- Slug -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-platinum-70">
-            Slug
-            <span class="font-normal text-platinum-50">(ცარიელის შემთხვევაში სათაურიდან)</span>
-          </label>
+          @if (submitted() && blogForm.title().invalid()) {
+            <span class="text-valencia-60 mt-1.5 block text-[13px] sm:text-xs">სათაური აუცილებელია</span>
+          }
+        </label>
+        <label class="block">
+          <span class="text-platinum-70 mb-1.5 block text-sm font-medium">Slug</span>
           <input
             type="text"
             [formField]="blogForm.slug"
             (input)="onSlugInput()"
             placeholder="my-post"
-            class="h-11 w-full rounded-xl border border-hairline-strong/60 bg-white px-3.5 py-2.5 text-sm text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 focus:outline-hidden focus:ring-1 focus:ring-platinum-30"
+            class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 font-mono text-[15px] shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:h-10 sm:text-[13px]"
           />
-        </div>
-
-        <!-- Excerpt -->
+          <span class="text-platinum-50 mt-1.5 block text-[13px] sm:text-xs">თუ ცარიელია, შეიქმნება სათაურიდან</span>
+        </label>
         <div>
-          <label class="mb-1.5 block text-sm font-medium text-platinum-70">მოკლე აღწერა</label>
-          <textarea
-            [formField]="blogForm.excerpt"
-            rows="2"
-            placeholder="მოკლე შეჯამება..."
-            class="w-full rounded-xl border border-hairline-strong/60 bg-white px-3.5 py-2.5 text-sm text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 focus:outline-hidden focus:ring-1 focus:ring-platinum-30"
-          ></textarea>
-        </div>
-
-        <!-- Status -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-platinum-70">სტატუსი</label>
+          <span class="text-platinum-70 mb-1.5 block text-sm font-medium">სტატუსი</span>
           <app-dropdown
             [items]="statusOptions"
             [selectedValue]="status()"
             (selectedValueChange)="onStatusChange($event)"
             placeholder="აირჩიეთ სტატუსი"
+            customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !border-hairline-strong/70 !px-3 !shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
           />
         </div>
+        <label class="block sm:col-span-2">
+          <span class="text-platinum-70 mb-1.5 block text-sm font-medium">მოკლე აღწერა</span>
+          <textarea
+            [formField]="blogForm.excerpt"
+            rows="2"
+            placeholder="მოკლე შეჯამება"
+            class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 block w-full resize-y rounded-lg border bg-white px-3 py-2.5 text-[15px] shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:text-sm"
+          ></textarea>
+        </label>
       </div>
-      </div>
-    </div>
+    </section>
 
-    <!-- Content Card -->
-    <div class="rounded-2xl border border-hairline-strong/60 bg-white">
-      <div class="border-b border-hairline-strong/60 px-5 py-3">
-        <h2 class="text-sm font-semibold text-platinum-100">შინაარსი *</h2>
+    <section class="border-hairline-strong/50 border-b py-8">
+      <h2 class="text-platinum-100 text-base font-semibold">შინაარსი <span class="text-valencia-60">*</span></h2>
+      <div class="mt-4">
+        <app-rich-text-editor
+          [value]="blogForm.content().value()"
+          (valueChange)="onContentChanged($event)"
+          [invalid]="submitted() && blogForm.content().invalid()"
+          [uploadHandler]="uploadInEditor"
+          (uploadError)="onUploadError($event)"
+          placeholder="ბლოგის სრული ტექსტი..."
+        />
+        @if (submitted() && blogForm.content().invalid()) {
+          <p role="alert" class="text-valencia-60 mt-1.5 text-[13px] sm:text-xs">შინაარსი აუცილებელია</p>
+        }
       </div>
-      <div class="px-5 py-4">
-      <app-rich-text-editor
-        [value]="blogForm.content().value()"
-        (valueChange)="onContentChanged($event)"
-        [invalid]="submitted() && blogForm.content().invalid()"
-        [uploadHandler]="uploadInEditor"
-        (uploadError)="onUploadError($event)"
-        placeholder="ბლოგის სრული ტექსტი..."
-      />
-      @if (submitted() && blogForm.content().invalid()) {
-        <p role="alert" class="mt-1.5 text-xs text-valencia-50">შინაარსი აუცილებელია</p>
-      }
-      </div>
-    </div>
+    </section>
 
-    <!-- Media Card -->
-    <div class="rounded-2xl border border-hairline-strong/60 bg-white">
-      <div class="border-b border-hairline-strong/60 px-5 py-3">
-        <h2 class="text-sm font-semibold text-platinum-100">მთავარი სურათი</h2>
-      </div>
-      <div class="px-5 py-4">
-      <p class="mb-4 text-xs text-platinum-50">
-        ატვირთეთ სურათები და მონიშნეთ მთავარი — ის გამოჩნდება ბლოგის სიაში ფოტოდ.
-      </p>
+    <section class="py-8">
+      <h2 class="text-platinum-100 text-base font-semibold">მთავარი სურათი</h2>
 
       <label
-        class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-hairline-strong/60 bg-platinum-10/40 px-4 py-8 text-center transition-colors hover:bg-platinum-10"
+        class="border-hairline-strong hover:border-green-60 mt-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed bg-neutral-50 px-6 py-8 text-center hover:bg-white"
       >
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" class="text-platinum-40">
-          <path
-            d="M12 16V4m0 0L8 8m4-4 4 4"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
-        </svg>
-        <span class="text-sm font-medium text-platinum-70">ატვირთეთ სურათები</span>
-        <span class="text-xs text-platinum-50">პირველი სურათი ავტომატურად ხდება მთავარი</span>
-        <input
-          type="file"
-          multiple
-          [accept]="acceptList"
-          (change)="onFilesPicked($event)"
-          class="hidden"
-        />
+        <span class="border-hairline-strong/70 text-platinum-60 flex size-10 items-center justify-center rounded-full border bg-white shadow-[0_1px_1px_rgba(33,33,33,0.04)]">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 10.5V3m0 0L5 6m3-3 3 3M3 10.5v1A1.5 1.5 0 0 0 4.5 13h7a1.5 1.5 0 0 0 1.5-1.5v-1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <span class="text-platinum-90 mt-3 text-[15px] font-medium sm:text-sm">აირჩიეთ სურათები</span>
+        <span class="text-platinum-50 mt-0.5 text-sm sm:text-[13px]">პირველი სურათი ხდება მთავარი</span>
+        <input type="file" multiple [accept]="acceptList" (change)="onFilesPicked($event)" class="sr-only" />
       </label>
 
       @if (visibleSavedMedia().length > 0 || pending().length > 0) {
-        <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <!-- Existing media -->
+        <ul class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
           @for (media of visibleSavedMedia(); track media.media_uuid) {
-            <div class="group border-hairline-strong/60 relative rounded-2xl border bg-white">
-              <!-- Image -->
-              <div class="relative aspect-square overflow-hidden rounded-t-lg">
+            @let isMain = media.is_thumbnail && !pendingThumbnailChosen();
+            <li class="group min-w-0">
+              <div
+                class="relative aspect-square overflow-hidden rounded-lg border bg-neutral-50"
+                [class]="isMain ? 'border-green-60 ring-green-60 ring-1' : 'border-hairline-strong/50'"
+              >
                 @if (media.media_type === 'video') {
-                  <video [src]="media.url" class="h-full w-full object-cover" muted></video>
+                  <video [src]="media.url" class="size-full object-cover" muted></video>
                 } @else {
-                  <img [src]="media.url" alt="" class="h-full w-full object-cover" />
+                  <img [src]="media.url" alt="" class="size-full object-cover" />
                 }
-                <!-- Remove Button -->
+                @if (isMain) {
+                  <span class="bg-green-60 absolute top-2 left-2 rounded px-1.5 py-0.5 text-xs font-medium text-white">მთავარი</span>
+                }
                 <button
                   type="button"
                   (click)="markSavedForDelete(media)"
-                  class="bg-valencia-60 absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full text-white transition-opacity"
-                  aria-label="წაშლა"
+                  aria-label="სურათის წაშლა"
+                  class="text-platinum-70 hover:text-valencia-60 absolute top-1.5 right-1.5 flex size-9 items-center justify-center rounded-md bg-white/90 shadow-[0_0_0_1px_rgba(33,33,33,0.08)] sm:size-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
                 >
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                    <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M2.67 4h10.66M6.33 4V2.67h3.34V4M4 4l.67 9.33h6.66L12 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </button>
-                <!-- Primary Badge -->
-                @if (media.is_thumbnail && !pendingThumbnailChosen()) {
-                  <div class="bg-green-60 absolute top-2 left-2 rounded-md px-2 py-0.5 text-xs font-medium text-white">
-                    მთავარი
-                  </div>
-                }
               </div>
-
-              <!-- Controls -->
-              @if (media.media_type === 'image') {
-                <div class="p-3">
-                  <button
-                    type="button"
-                    (click)="setSavedThumbnail(media)"
-                    [disabled]="thumbnailUpdating() !== null || (media.is_thumbnail && !pendingThumbnailChosen())"
-                    class="border-hairline-strong/60 hover:border-green-60 flex w-full cursor-pointer items-center gap-2 rounded-full border px-3 py-2 transition-all disabled:cursor-default"
-                    [class.border-green-60]="media.is_thumbnail && !pendingThumbnailChosen()"
-                    [class.bg-green-10]="media.is_thumbnail && !pendingThumbnailChosen()"
-                  >
-                    <div
-                      class="border-platinum-30 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full border-2 transition-all"
-                      [class.border-green-60]="media.is_thumbnail && !pendingThumbnailChosen()"
-                      [class.bg-green-60]="media.is_thumbnail && !pendingThumbnailChosen()"
-                    >
-                      @if (thumbnailUpdating() === media.media_uuid) {
-                        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" class="text-platinum-50 animate-spin">
-                          <path d="M8 2V4M8 12V14M14 8H12M4 8H2M12.2426 3.75736L10.8284 5.17157M5.17157 10.8284L3.75736 12.2426M12.2426 12.2426L10.8284 10.8284M5.17157 5.17157L3.75736 3.75736" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                        </svg>
-                      } @else if (media.is_thumbnail && !pendingThumbnailChosen()) {
-                        <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                          <path d="M10 3L4.5 8.5L2 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                      }
-                    </div>
-                    <span
-                      class="text-sm font-medium transition-colors"
-                      [class.text-green-60]="media.is_thumbnail && !pendingThumbnailChosen()"
-                      [class.text-platinum-70]="!(media.is_thumbnail && !pendingThumbnailChosen())"
-                    >
-                      დააყენე მთავარად
-                    </span>
-                  </button>
-                </div>
+              @if (media.media_type === 'image' && !isMain) {
+                <button
+                  type="button"
+                  (click)="setSavedThumbnail(media)"
+                  [disabled]="thumbnailUpdating() !== null"
+                  class="text-platinum-70 hover:text-green-70 mt-1 inline-flex h-10 items-center gap-1.5 text-sm disabled:opacity-50 sm:h-7 sm:text-[13px]"
+                >
+                  @if (thumbnailUpdating() === media.media_uuid) {
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" class="animate-spin" aria-hidden="true">
+                      <path d="M8 2a6 6 0 1 1-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                  }
+                  მთავარად დაყენება
+                </button>
               }
-            </div>
+            </li>
           }
-
-          <!-- Pending uploads -->
           @for (item of pending(); track item.id) {
-            <div class="group border-hairline-strong/60 relative rounded-2xl border bg-white">
-              <!-- Image -->
-              <div class="relative aspect-square overflow-hidden rounded-t-lg">
-                <img [src]="item.previewUrl" alt="" class="h-full w-full object-cover" />
-                <!-- Remove Button -->
+            <li class="group min-w-0">
+              <div
+                class="relative aspect-square overflow-hidden rounded-lg border bg-neutral-50"
+                [class]="item.isThumbnail ? 'border-green-60 ring-green-60 ring-1' : 'border-hairline-strong/50'"
+              >
+                <img [src]="item.previewUrl" alt="" class="size-full object-cover" />
+                @if (item.isThumbnail) {
+                  <span class="bg-green-60 absolute top-2 left-2 rounded px-1.5 py-0.5 text-xs font-medium text-white">მთავარი</span>
+                }
                 <button
                   type="button"
                   (click)="removePending(item.id)"
-                  class="bg-valencia-60 absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full text-white transition-opacity"
-                  aria-label="წაშლა"
+                  aria-label="სურათის წაშლა"
+                  class="text-platinum-70 hover:text-valencia-60 absolute top-1.5 right-1.5 flex size-9 items-center justify-center rounded-md bg-white/90 shadow-[0_0_0_1px_rgba(33,33,33,0.08)] sm:size-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
                 >
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                    <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M2.67 4h10.66M6.33 4V2.67h3.34V4M4 4l.67 9.33h6.66L12 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </button>
-                <!-- Primary Badge -->
-                @if (item.isThumbnail) {
-                  <div class="bg-green-60 absolute top-2 left-2 rounded-md px-2 py-0.5 text-xs font-medium text-white">
-                    მთავარი
-                  </div>
-                }
               </div>
-
-              <!-- Controls -->
-              <div class="p-3">
+              @if (!item.isThumbnail) {
                 <button
                   type="button"
                   (click)="setPendingThumbnail(item.id)"
-                  [disabled]="item.isThumbnail"
-                  class="border-hairline-strong/60 hover:border-green-60 flex w-full cursor-pointer items-center gap-2 rounded-full border px-3 py-2 transition-all disabled:cursor-default"
-                  [class.border-green-60]="item.isThumbnail"
-                  [class.bg-green-10]="item.isThumbnail"
+                  class="text-platinum-70 hover:text-green-70 mt-1 h-10 text-sm sm:h-7 sm:text-[13px]"
                 >
-                  <div
-                    class="border-platinum-30 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full border-2 transition-all"
-                    [class.border-green-60]="item.isThumbnail"
-                    [class.bg-green-60]="item.isThumbnail"
-                  >
-                    @if (item.isThumbnail) {
-                      <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                        <path d="M10 3L4.5 8.5L2 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                      </svg>
-                    }
-                  </div>
-                  <span
-                    class="text-sm font-medium transition-colors"
-                    [class.text-green-60]="item.isThumbnail"
-                    [class.text-platinum-70]="!item.isThumbnail"
-                  >
-                    დააყენე მთავარად
-                  </span>
+                  მთავარად დაყენება
                 </button>
-              </div>
-            </div>
+              }
+            </li>
           }
-        </div>
+        </ul>
       }
-      </div>
-    </div>
+    </section>
 
-    <!-- Form Actions -->
-    <div class="flex items-center justify-end gap-2">
+    <div class="border-hairline-strong/50 flex flex-col-reverse gap-2 border-t pt-6 sm:flex-row sm:justify-end">
       <button
         type="button"
         (click)="cancel()"
-        class="inline-flex h-9 items-center rounded-full border border-hairline-strong/60 bg-white px-4 text-sm font-medium text-platinum-80 transition-colors hover:bg-platinum-10/60"
+        class="text-platinum-80 border-hairline-strong/70 inline-flex h-11 w-full items-center justify-center rounded-lg border bg-white px-4 text-[15px] font-medium shadow-[0_1px_1px_rgba(33,33,33,0.04)] hover:bg-neutral-50 sm:h-10 sm:w-auto sm:text-sm"
       >
         გაუქმება
       </button>
       <button
         type="submit"
         [disabled]="isLoading()"
-        class="inline-flex h-9 items-center gap-1.5 rounded-full bg-green-60 px-5 text-sm font-medium text-white transition-colors hover:bg-green-70 disabled:cursor-not-allowed disabled:opacity-60"
+        class="bg-green-60 hover:bg-green-70 focus-visible:outline-green-60 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg px-4 text-[15px] font-medium text-white shadow-[0_1px_1px_rgba(33,33,33,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60 sm:h-10 sm:w-auto sm:text-sm"
       >
         @if (isLoading()) {
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="animate-spin">
-            <path
-              d="M8 2V4M8 12V14M14 8H12M4 8H2M12.2426 3.75736L10.8284 5.17157M5.17157 10.8284L3.75736 12.2426M12.2426 12.2426L10.8284 10.8284M5.17157 5.17157L3.75736 3.75736"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="animate-spin" aria-hidden="true">
+            <path d="M8 2a6 6 0 1 1-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
           </svg>
-          <span>მუშავდება...</span>
+          ინახება...
         } @else {
-          <span>{{ isEditMode() ? "განახლება" : "დამატება" }}</span>
+          {{ isEditMode() ? 'შენახვა' : 'დამატება' }}
         }
       </button>
     </div>

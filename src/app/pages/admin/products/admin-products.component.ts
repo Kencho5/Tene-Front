@@ -53,6 +53,11 @@ export class AdminProductsComponent {
     initialValue: {} as Params,
   });
 
+  readonly statusFilter = computed(() => {
+    const enabled = this.params()['enabled'];
+    return enabled === 'true' ? 'enabled' : enabled === 'false' ? 'disabled' : 'all';
+  });
+
   readonly categoryTree = rxResource({
     defaultValue: [] as CategoryTreeNode[],
     stream: () => this.categoriesService.getCategoryTree().pipe(map((res) => res.categories)),

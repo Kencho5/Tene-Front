@@ -1,82 +1,109 @@
-<div class="mx-auto max-w-2xl space-y-4">
-  <!-- Header -->
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-lg font-semibold text-platinum-100">
-        მომხმარებლის რედაქტირება
+<div class="mx-auto max-w-2xl">
+  <div class="mb-6 flex items-center gap-3 sm:mb-8">
+    <span
+      class="bg-neutral-100 text-platinum-70 flex size-11 shrink-0 items-center justify-center rounded-full text-base font-medium uppercase sm:size-12 sm:text-lg"
+      aria-hidden="true"
+    >
+      {{ (userModel().name || '?').trim().charAt(0) }}
+    </span>
+    <div class="min-w-0">
+      <h1 class="text-platinum-100 truncate text-xl font-semibold tracking-tight sm:text-2xl">
+        {{ userModel().name || 'მომხმარებელი' }}
       </h1>
-      <p class="mt-0.5 text-sm text-platinum-50">
-        მომხმარებლის ID: {{ userId() }}
+      <p class="text-platinum-50 truncate text-[15px] tabular-nums sm:text-sm">
+        #{{ userId() }}
+        @if (userModel().email) {
+          · {{ userModel().email }}
+        }
       </p>
     </div>
   </div>
 
-  <!-- Form -->
-  <form (submit)="onSubmit(); $event.preventDefault()" novalidate class="space-y-4">
-    <div class="rounded-2xl border border-hairline-strong/60 bg-white">
-      <div class="border-b border-hairline-strong/60 px-5 py-3">
-        <h2 class="text-sm font-semibold text-platinum-100">მომხმარებლის ინფორმაცია</h2>
-      </div>
-
-      <div class="flex flex-col gap-4 px-5 py-4">
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-platinum-70">სახელი *</label>
-          <app-input [formField]="userForm.name" type="text" placeholder="სახელი" />
-        </div>
-
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-platinum-70">ელ-ფოსტა *</label>
-          <app-input [formField]="userForm.email" type="email" placeholder="ელ-ფოსტა" />
-        </div>
-
-        <!-- Role -->
-        <div>
-          <label for="role" class="mb-1.5 block text-sm font-medium text-platinum-70">
-            როლი *
-          </label>
-          <app-dropdown
-            [selectedValue]="userModel().role"
-            (selectedValueChange)="onRoleChange($event)"
-            [items]="roleOptions"
-            placeholder="აირჩიეთ როლი"
-          />
-        </div>
-
-        <!-- Delivery price -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-platinum-70">
-            მიწოდების ფასი (₾)
-          </label>
+  <form (submit)="onSubmit(); $event.preventDefault()" novalidate>
+    <section class="border-hairline-strong/50 border-b pb-8">
+      <h2 class="text-platinum-100 text-base font-semibold">პროფილი</h2>
+      <div class="mt-4 grid gap-4 *:min-w-0 sm:grid-cols-2">
+        <label class="block">
+          <span class="text-platinum-70 mb-1.5 block text-sm font-medium">სახელი <span class="text-valencia-60">*</span></span>
           <app-input
-            [formField]="userForm.deliveryPrice"
-            type="number"
-            placeholder="მიწოდების ფასი"
+            [formField]="userForm.name"
+            customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !px-3 shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
+            [error]="submitted() && userForm.name().invalid()"
+            errorMessage="სახელი აუცილებელია"
+            type="text"
+            placeholder="სახელი"
           />
-          <p class="mt-1 text-xs text-platinum-50">
-            ცარიელი ველი — სტანდარტული მიწოდების ფასი
-          </p>
-        </div>
+        </label>
+        <label class="block">
+          <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ელ. ფოსტა <span class="text-valencia-60">*</span></span>
+          <app-input
+            [formField]="userForm.email"
+            customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !px-3 shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
+            [error]="submitted() && userForm.email().invalid()"
+            errorMessage="შეიყვანეთ ვალიდური ელ. ფოსტა"
+            type="email"
+            placeholder="name@example.com"
+          />
+        </label>
       </div>
-    </div>
+    </section>
 
-    <!-- Actions -->
-    <div class="flex justify-end gap-2">
+    <section class="border-hairline-strong/50 border-b py-8">
+      <h2 class="text-platinum-100 text-base font-semibold">როლი</h2>
+      <p class="text-platinum-50 mt-1 text-sm">განსაზღვრავს ადმინ პანელზე წვდომას</p>
+      <div
+        role="radiogroup"
+        aria-label="როლი"
+        class="mt-4 flex h-11 w-full rounded-lg bg-neutral-100 p-1 sm:h-10"
+      >
+        @for (option of roleOptions; track option.value) {
+          <button
+            type="button"
+            role="radio"
+            [attr.aria-checked]="userModel().role === option.value"
+            (click)="onRoleChange(option.value)"
+            class="text-platinum-60 hover:text-platinum-90 aria-checked:text-platinum-100 flex-1 truncate rounded-md px-2 text-[15px] aria-checked:bg-white aria-checked:font-medium aria-checked:shadow-[0_0_0_1px_rgba(33,33,33,0.06),0_1px_2px_rgba(33,33,33,0.08)] sm:text-sm"
+          >
+            {{ option.label }}
+          </button>
+        }
+      </div>
+    </section>
+
+    <section class="py-8">
+      <h2 class="text-platinum-100 text-base font-semibold">მიწოდება</h2>
+      <label class="mt-4 block sm:max-w-xs">
+        <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ინდივიდუალური ფასი (₾)</span>
+        <app-input
+          [formField]="userForm.deliveryPrice"
+          customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !px-3 shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
+          type="number"
+          placeholder="სტანდარტული"
+        />
+        <span class="text-platinum-50 mt-1.5 block text-[13px] sm:text-xs">თუ ცარიელია, გამოიყენება სტანდარტული ფასი</span>
+      </label>
+    </section>
+
+    <div class="border-hairline-strong/50 flex flex-col-reverse gap-2 border-t pt-6 sm:flex-row sm:justify-end">
       <button
         type="button"
         (click)="cancel()"
-        class="inline-flex h-9 items-center rounded-full border border-hairline-strong/60 bg-white px-4 text-sm font-medium text-platinum-80 transition-colors hover:bg-platinum-10/60"
+        class="text-platinum-80 border-hairline-strong/70 inline-flex h-11 w-full items-center justify-center rounded-lg border bg-white px-4 text-[15px] font-medium shadow-[0_1px_1px_rgba(33,33,33,0.04)] hover:bg-neutral-50 sm:h-10 sm:w-auto sm:text-sm"
       >
         გაუქმება
       </button>
       <button
         type="submit"
         [disabled]="isSubmitting()"
-        class="inline-flex h-9 items-center gap-1.5 rounded-full bg-green-60 px-5 text-sm font-medium text-white transition-colors hover:bg-green-70 disabled:cursor-not-allowed disabled:opacity-60"
+        class="bg-green-60 hover:bg-green-70 focus-visible:outline-green-60 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg px-4 text-[15px] font-medium text-white shadow-[0_1px_1px_rgba(33,33,33,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60 sm:h-10 sm:w-auto sm:text-sm"
       >
         @if (isSubmitting()) {
-          <span>შენახვა...</span>
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="animate-spin" aria-hidden="true">
+            <path d="M8 2a6 6 0 1 1-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          ინახება...
         } @else {
-          <span>შენახვა</span>
+          შენახვა
         }
       </button>
     </div>

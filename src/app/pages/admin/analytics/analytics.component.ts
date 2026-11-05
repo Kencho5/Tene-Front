@@ -9,8 +9,7 @@ import {
   effect,
   signal,
 } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { AdminService } from '@core/services/admin/admin.service';
+import { rxResource } from '@angular/core/rxjs-interop';import { AdminService } from '@core/services/admin/admin.service';
 import { AnalyticsResponse } from '@core/interfaces/admin/analytics.interface';
 import { SharedModule } from '@shared/shared.module';
 import { Chart, registerables } from 'chart.js';
@@ -41,9 +40,11 @@ const TOOLTIP_CONFIG = {
   boxPadding: 4,
 };
 
-const GRID_COLOR = 'rgba(0, 0, 0, 0.04)';
-const TICK_COLOR = '#888888';
+const GRID_COLOR = 'rgba(33, 33, 33, 0.06)';
+const TICK_COLOR = '#8a8a8a';
 const LABEL_COLOR = '#505050';
+const BAR_COLOR = '#20c45f';
+const BAR_HOVER_COLOR = '#0fa44d';
 
 @Component({
   selector: 'app-analytics',
@@ -74,7 +75,7 @@ export class AnalyticsComponent implements OnDestroy {
     const from = this.fromDate();
     const to = this.toDate();
     if (!from && !to) return 'სრული პერიოდი';
-    return `${from || '...'} – ${to || '...'}`;
+    return `${from || '...'} - ${to || '...'}`;
   });
 
   readonly analyticsResource = rxResource({
@@ -272,8 +273,8 @@ export class AnalyticsComponent implements OnDestroy {
           {
             label: 'ნახვები',
             data: days.map((d) => d.views),
-            backgroundColor: 'rgba(26, 164, 74, 0.75)',
-            hoverBackgroundColor: '#1aa44a',
+            backgroundColor: BAR_COLOR,
+            hoverBackgroundColor: BAR_HOVER_COLOR,
             borderRadius: 4,
             maxBarThickness: 32,
           },
@@ -322,22 +323,22 @@ export class AnalyticsComponent implements OnDestroy {
           {
             label: 'ნახვები',
             data: sorted.map((h) => h.views),
-            borderColor: '#1aa44a',
+            borderColor: BAR_COLOR,
             backgroundColor: (context) => {
               const ctx = context.chart.ctx;
               const gradient = ctx.createLinearGradient(0, 0, 0, context.chart.height);
-              gradient.addColorStop(0, 'rgba(26, 164, 74, 0.12)');
-              gradient.addColorStop(1, 'rgba(26, 164, 74, 0.01)');
+              gradient.addColorStop(0, 'rgba(32, 196, 95, 0.14)');
+              gradient.addColorStop(1, 'rgba(32, 196, 95, 0)');
               return gradient;
             },
-            borderWidth: 2.5,
+            borderWidth: 2,
             fill: true,
-            tension: 0.4,
+            tension: 0.35,
             pointRadius: 0,
-            pointHoverRadius: 6,
-            pointHoverBackgroundColor: '#1aa44a',
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: BAR_COLOR,
             pointHoverBorderColor: '#fff',
-            pointHoverBorderWidth: 2.5,
+            pointHoverBorderWidth: 2,
           },
         ],
       },
@@ -375,7 +376,6 @@ export class AnalyticsComponent implements OnDestroy {
     this.mostViewedChart?.destroy();
 
     const items = data.most_viewed.slice(0, 8);
-    const maxViews = Math.max(...items.map((p) => p.views));
 
     this.mostViewedChart = new Chart(canvas, {
       type: 'bar',
@@ -385,11 +385,8 @@ export class AnalyticsComponent implements OnDestroy {
           {
             label: 'ნახვები',
             data: items.map((p) => p.views),
-            backgroundColor: items.map((p) => {
-              const ratio = p.views / maxViews;
-              const alpha = 0.35 + ratio * 0.65;
-              return `rgba(26, 164, 74, ${alpha})`;
-            }),
+            backgroundColor: BAR_COLOR,
+            hoverBackgroundColor: BAR_HOVER_COLOR,
             borderRadius: 4,
             barPercentage: 0.65,
             categoryPercentage: 0.85,
@@ -440,10 +437,8 @@ export class AnalyticsComponent implements OnDestroy {
           {
             label: 'კონვერსია %',
             data: items.map((p) => Number(p.conversion_pct)),
-            backgroundColor: items.map((p) => {
-              const pct = Number(p.conversion_pct);
-              return pct >= 5 ? 'rgba(26, 164, 74, 0.8)' : pct >= 2 ? 'rgba(245, 166, 35, 0.8)' : 'rgba(255, 30, 7, 0.65)';
-            }),
+            backgroundColor: BAR_COLOR,
+            hoverBackgroundColor: BAR_HOVER_COLOR,
             borderRadius: 4,
             barPercentage: 0.65,
             categoryPercentage: 0.85,

@@ -1,0 +1,167 @@
+<header class="mx-4 flex h-16 items-center gap-2 border-b border-neutral-200/80 sm:mx-6 sm:gap-3 lg:mx-8">
+  <button
+    type="button"
+    (click)="menuToggle.emit()"
+    aria-label="მენიუს გახსნა"
+    class="inline-flex size-8 shrink-0 items-center justify-center rounded-md text-platinum-60 transition-colors hover:bg-neutral-200/50 hover:text-platinum-100 focus-visible:outline-2 focus-visible:outline-green-60 lg:hidden"
+  >
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+    </svg>
+  </button>
+
+  <button
+    type="button"
+    (click)="goBack()"
+    aria-label="უკან"
+    title="უკან"
+    class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border border-neutral-200 bg-white text-platinum-60 shadow-[0_1px_1px_rgba(33,33,33,0.04)] transition-colors hover:bg-neutral-50 hover:text-platinum-100 focus-visible:outline-2 focus-visible:outline-green-60"
+  >
+    <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <path d="M11.25 13.5 6.75 9l4.5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+
+  <div class="relative min-w-0 flex-1 sm:max-w-md">
+    <label for="admin-search" class="sr-only">გვერდების ძიება</label>
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-platinum-50"
+      aria-hidden="true"
+    >
+      <circle cx="7" cy="7" r="4.75" stroke="currentColor" stroke-width="1.4" />
+      <path d="m10.5 10.5 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+    </svg>
+    <input
+      #searchInput
+      id="admin-search"
+      type="text"
+      role="combobox"
+      autocomplete="off"
+      aria-autocomplete="list"
+      aria-controls="admin-search-results"
+      [attr.aria-expanded]="showResults()"
+      [attr.aria-activedescendant]="activeOptionId()"
+      placeholder="ძიება"
+      [value]="query()"
+      (input)="onQuery(searchInput.value)"
+      (focus)="searchFocused.set(true)"
+      (blur)="searchFocused.set(false)"
+      (keydown)="onSearchKeydown($event)"
+      class="h-9 w-full rounded-lg border border-transparent bg-neutral-100 pl-9 pr-12 text-sm text-platinum-100 transition-[background-color,border-color,box-shadow] placeholder:text-platinum-50 hover:bg-neutral-200/60 focus:border-green-60 focus:bg-white focus:outline-none focus:ring-3 focus:ring-green-60/15"
+    />
+    <kbd
+      class="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 items-center rounded border border-neutral-200 bg-white px-1.5 py-0.5 font-sans text-[11px] font-medium text-platinum-50 sm:inline-flex"
+      aria-hidden="true"
+    >
+      ⌘K
+    </kbd>
+
+    @if (showResults()) {
+      <ul
+        id="admin-search-results"
+        role="listbox"
+        aria-label="ძიების შედეგები"
+        class="absolute inset-x-0 top-full z-50 mt-1.5 max-h-80 overflow-y-auto rounded-lg border border-neutral-200 bg-white p-1 shadow-[0_8px_24px_rgba(33,33,33,0.12)]"
+      >
+        @for (result of results(); track result.route; let i = $index) {
+          <li
+            role="option"
+            [id]="'admin-search-option-' + i"
+            [attr.aria-selected]="i === activeIndex()"
+            (mousedown)="$event.preventDefault()"
+            (mouseenter)="activeIndex.set(i)"
+            (click)="select(result)"
+            [class.bg-neutral-100]="i === activeIndex()"
+            [class.text-platinum-100]="i === activeIndex()"
+            class="flex cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-2 text-sm text-platinum-80"
+          >
+            <app-admin-nav-icon [icon]="result.icon" class="text-platinum-40" />
+            <span class="truncate">{{ result.label }}</span>
+            <span class="ml-auto shrink-0 text-xs text-platinum-50">{{ result.section }}</span>
+          </li>
+        } @empty {
+          <li role="presentation" class="px-2.5 py-6 text-center text-sm text-platinum-50">შედეგი ვერ მოიძებნა</li>
+        }
+      </ul>
+    }
+  </div>
+
+  <div #accountMenu class="relative ml-auto shrink-0">
+    @if (user(); as currentUser) {
+      <button
+        type="button"
+        (click)="toggleAccount()"
+        aria-haspopup="menu"
+        [attr.aria-expanded]="accountOpen()"
+        aria-controls="admin-account-menu"
+        aria-label="ანგარიშის მენიუ"
+        class="flex items-center gap-1.5 rounded-full p-0.5 pr-1.5 text-platinum-50 transition-colors hover:bg-neutral-200/50 hover:text-platinum-100 focus-visible:outline-2 focus-visible:outline-green-60"
+      >
+        <span class="flex size-8 items-center justify-center rounded-full bg-green-60 text-xs font-semibold text-white">
+          {{ initial() }}
+        </span>
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+
+      @if (accountOpen()) {
+        <div
+          id="admin-account-menu"
+          role="menu"
+          class="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-[0_8px_24px_rgba(33,33,33,0.12)]"
+        >
+          <div class="flex items-center gap-3 border-b border-neutral-200/80 px-3.5 py-3">
+            <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-green-60 text-sm font-semibold text-white">
+              {{ initial() }}
+            </span>
+            <div class="min-w-0">
+              <p class="truncate text-sm font-medium text-platinum-100">{{ currentUser.name }}</p>
+              <p class="truncate text-xs text-platinum-50">{{ currentUser.email }}</p>
+            </div>
+          </div>
+          <div class="p-1">
+            <a
+              routerLink="/"
+              role="menuitem"
+              (click)="accountOpen.set(false)"
+              class="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm text-platinum-80 transition-colors hover:bg-neutral-100 hover:text-platinum-100 focus-visible:bg-neutral-100 focus-visible:outline-none"
+            >
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" class="text-platinum-40" aria-hidden="true">
+                <path
+                  d="M2.5 7.5 10 2.5l7.5 5v8.75c0 .69-.56 1.25-1.25 1.25H3.75c-.69 0-1.25-.56-1.25-1.25V7.5Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              მთავარი საიტი
+            </a>
+            <button
+              type="button"
+              role="menuitem"
+              (click)="onLogout()"
+              class="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-sm text-valencia-70 transition-colors hover:bg-valencia-10 focus-visible:bg-valencia-10 focus-visible:outline-none"
+            >
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path
+                  d="M7.5 17.5H4.17A1.67 1.67 0 0 1 2.5 15.83V4.17A1.67 1.67 0 0 1 4.17 2.5H7.5M13.33 14.17 17.5 10l-4.17-4.17M17.5 10h-10"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              გასვლა
+            </button>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</header>

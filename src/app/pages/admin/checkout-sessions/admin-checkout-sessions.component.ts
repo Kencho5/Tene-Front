@@ -172,6 +172,9 @@ export class AdminCheckoutSessionsComponent {
     return (session.last_step_index ?? -1) >= index;
   }
 
+  stepsCompleted(session: CheckoutSession): number {
+    return Math.min((session.last_step_index ?? -1) + 1, this.steps.length);
+  }
   orderStatusLabel(status: string | null): string {
     switch (status) {
       case 'approved':
@@ -185,7 +188,7 @@ export class AdminCheckoutSessionsComponent {
       case 'expired':
         return 'ვადაგასული';
       default:
-        return status ?? '—';
+        return status ?? '';
     }
   }
 

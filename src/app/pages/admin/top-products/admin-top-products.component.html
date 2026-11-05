@@ -1,16 +1,15 @@
-<div class="space-y-4">
-  <!-- Header -->
-  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <h1 class="text-platinum-100 text-lg font-semibold">
-      ტოპ პროდუქტები <span class="text-platinum-50 font-normal">({{ selected().length }})</span>
+<div class="mx-auto flex max-w-3xl flex-col gap-5">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <h1 class="text-platinum-100 text-xl font-semibold tracking-tight sm:text-2xl">
+      ტოპ პროდუქტები
+      <span class="text-platinum-50 ml-1 text-base font-normal tabular-nums">{{ selected().length }}</span>
     </h1>
-
-    <div class="flex items-center gap-2">
+    <div class="grid grid-cols-2 gap-2 sm:flex">
       <button
         type="button"
         (click)="reset()"
         [disabled]="!isDirty() || saving()"
-        class="border-hairline-strong/60 text-platinum-80 hover:bg-platinum-10/60 inline-flex h-9 items-center rounded-full border bg-white px-4 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+        class="text-platinum-80 border-hairline-strong/70 inline-flex h-11 items-center justify-center rounded-lg border bg-white px-3.5 text-[15px] font-medium shadow-[0_1px_1px_rgba(33,33,33,0.04)] hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50 sm:h-9 sm:text-sm"
       >
         გაუქმება
       </button>
@@ -18,195 +17,156 @@
         type="button"
         (click)="save()"
         [disabled]="!isDirty() || saving()"
-        class="bg-green-60 hover:bg-green-70 inline-flex h-9 items-center justify-center gap-1.5 rounded-full px-4 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+        class="bg-green-60 hover:bg-green-70 focus-visible:outline-green-60 inline-flex h-11 items-center justify-center gap-2 rounded-lg px-3.5 text-[15px] font-medium text-white shadow-[0_1px_1px_rgba(33,33,33,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 sm:h-9 sm:text-sm"
       >
-        @if (saving()) { შენახვა... } @else { შენახვა }
+        @if (saving()) {
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="animate-spin" aria-hidden="true">
+            <path d="M8 2a6 6 0 1 1-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          ინახება...
+        } @else {
+          შენახვა
+        }
       </button>
     </div>
   </div>
 
-  <!-- Add product search -->
-  <div class="border-hairline-strong/60 rounded-2xl border bg-white">
-    <div class="border-hairline-strong/60 border-b px-5 py-3">
-      <h2 class="text-platinum-100 text-sm font-semibold">პროდუქტის დამატება</h2>
-    </div>
-    <div class="px-5 py-4">
-    <div class="relative">
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 20 20"
-        fill="none"
-        class="text-platinum-40 pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-      >
-        <path
-          d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-      <input
-        type="text"
-        [value]="searchQuery()"
-        (input)="onSearchInput($event)"
-        placeholder="ძიება პროდუქტის სახელით..."
-        class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
-      />
-      @if (searchQuery()) {
+  <div class="relative">
+    <label for="top-product-search" class="sr-only">პროდუქტის დამატება</label>
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      class="text-platinum-50 pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 sm:left-3"
+      aria-hidden="true"
+    >
+      <circle cx="7" cy="7" r="4.75" stroke="currentColor" stroke-width="1.4" />
+      <path d="m10.5 10.5 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+    </svg>
+    <input
+      id="top-product-search"
+      type="text"
+      autocomplete="off"
+      [value]="searchQuery()"
+      (input)="onSearchInput($event)"
+      placeholder="მოძებნე პროდუქტი დასამატებლად"
+      class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white pr-10 pl-10 text-[15px] text-ellipsis shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:h-9 sm:pr-9 sm:pl-9 sm:text-sm"
+    />
+    @if (searchQuery()) {
       <button
         type="button"
         (click)="clearSearch()"
-        class="text-platinum-40 hover:text-platinum-70 absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
+        aria-label="ძიების გასუფთავება"
+        class="text-platinum-40 hover:text-platinum-70 absolute top-1/2 right-1.5 inline-flex size-9 -translate-y-1/2 items-center justify-center rounded-md sm:size-7"
       >
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-          <path
-            d="M12 4L4 12M4 4L12 12"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M12 4 4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
         </svg>
       </button>
-      }
-    </div>
+    }
 
     @if (searchTerm()) {
-    <div class="border-hairline-strong/60 mt-3 max-h-72 overflow-y-auto rounded-xl border">
-      @if (searchResource.isLoading()) {
-      <div class="text-platinum-50 p-4 text-center text-sm">იძებნება...</div>
-      } @else if (searchResults().length === 0) {
-      <div class="text-platinum-50 p-4 text-center text-sm">პროდუქტი ვერ მოიძებნა</div>
-      } @else { @for (product of searchResults(); track product.data.id) {
-      <button
-        type="button"
-        (click)="addProduct(product)"
-        class="border-hairline-strong/60 hover:bg-platinum-10 flex w-full items-center gap-3 border-b px-3 py-2 text-left transition-colors last:border-b-0"
-      >
-        <div class="border-hairline-strong/60 bg-platinum-10 h-10 w-10 shrink-0 overflow-hidden rounded-lg border">
-          @if (getImage(product)) {
-          <img
-            [src]="getImage(product)"
-            [alt]="product.data.name"
-            class="h-full w-full object-cover"
-          />
+      <div class="border-hairline-strong/70 absolute inset-x-0 top-full z-30 mt-1.5 max-h-80 overflow-y-auto rounded-lg border bg-white p-1 shadow-[0_8px_24px_rgba(33,33,33,0.12)]">
+        @if (searchResource.isLoading()) {
+          <p class="text-platinum-50 px-3 py-6 text-center text-sm">იძებნება...</p>
+        } @else if (searchResults().length === 0) {
+          <p class="text-platinum-50 px-3 py-6 text-center text-sm">პროდუქტი ვერ მოიძებნა</p>
+        } @else {
+          @for (product of searchResults(); track product.data.id) {
+            <button
+              type="button"
+              (click)="addProduct(product)"
+              class="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left hover:bg-neutral-50"
+            >
+              <ng-container *ngTemplateOutlet="thumb; context: { $implicit: product }" />
+              <span class="min-w-0 flex-1">
+                <span class="text-platinum-90 block truncate text-[15px] sm:text-sm">{{ product.data.name }}</span>
+                <span class="text-platinum-50 block truncate text-[13px]">{{ product.data.sku }}</span>
+              </span>
+              <span class="text-green-70 shrink-0 text-sm font-medium">დამატება</span>
+            </button>
           }
-        </div>
-        <div class="min-w-0 flex-1">
-          <p class="text-platinum-100 truncate text-sm font-medium">{{ product.data.name }}</p>
-          <p class="text-platinum-50 truncate text-xs">SKU: {{ product.data.sku }}</p>
-        </div>
-        <span class="border-hairline-strong/60 text-platinum-80 inline-flex h-7 shrink-0 items-center rounded-full border bg-white px-3 text-xs font-medium">დამატება</span>
-      </button>
-      } }
-    </div>
+        }
+      </div>
     }
-    </div>
   </div>
 
-  <!-- Selected list -->
-  <div class="border-hairline-strong/60 rounded-2xl border bg-white">
-    <div class="border-hairline-strong/60 border-b px-5 py-3">
-      <h2 class="text-platinum-100 text-sm font-semibold">აქტიური სია</h2>
-    </div>
-
+  <ol class="divide-hairline-strong/50 border-hairline-strong/70 divide-y border-y">
     @if (topResource.isLoading()) {
-    <div class="space-y-2 px-5 py-4">
-      @for (s of [1,2,3,4]; track s) {
-      <div class="bg-platinum-10 h-14 animate-pulse rounded-xl"></div>
+      @for (s of [1, 2, 3, 4]; track s) {
+        <li class="flex items-center gap-3 py-3">
+          <div class="h-3 w-5 animate-pulse rounded-sm bg-neutral-100"></div>
+          <div class="size-11 animate-pulse rounded-md bg-neutral-100"></div>
+          <div class="flex-1 space-y-1.5">
+            <div class="h-3.5 w-2/3 animate-pulse rounded-sm bg-neutral-100"></div>
+            <div class="h-3 w-24 animate-pulse rounded-sm bg-neutral-100"></div>
+          </div>
+        </li>
       }
-    </div>
     } @else if (selected().length === 0) {
-    <div class="p-10 text-center">
-      <p class="text-platinum-70 text-sm font-medium">სია ცარიელია</p>
-      <p class="text-platinum-50 mt-1 text-xs">ჩაამატე პროდუქტი ზემოთა ძიებიდან</p>
-    </div>
-    } @else {
-    <ul>
-      @for (product of selected(); track product.data.id; let i = $index, count = $count) {
-      <li class="border-hairline-strong/60 hover:bg-platinum-10/50 flex items-center gap-3 border-b px-5 py-2.5 transition-colors last:border-b-0">
-        <span class="text-platinum-50 w-6 shrink-0 text-center text-xs font-semibold">
-          {{ i + 1 }}
+      <li class="flex flex-col items-center px-4 py-16 text-center">
+        <span class="flex size-10 items-center justify-center rounded-full bg-neutral-100">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" class="text-platinum-50" aria-hidden="true">
+            <path d="m8 2 1.8 3.7 4 .6-2.9 2.8.7 4L8 11.2 4.4 13.1l.7-4L2.2 6.3l4-.6L8 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+          </svg>
         </span>
-
-        <div class="border-hairline-strong/60 bg-platinum-10 h-11 w-11 shrink-0 overflow-hidden rounded-lg border">
-          @if (getImage(product)) {
-          <img
-            [src]="getImage(product)"
-            [alt]="product.data.name"
-            class="h-full w-full object-cover"
-          />
-          }
-        </div>
-
-        <div class="min-w-0 flex-1">
-          <p class="text-platinum-100 truncate text-sm font-medium">{{ product.data.name }}</p>
-          <p class="text-platinum-50 truncate text-xs">SKU: {{ product.data.sku }}</p>
-        </div>
-
-        <div class="flex items-center gap-1">
-          <button
-            type="button"
-            (click)="moveUp(i)"
-            [disabled]="i === 0"
-            class="text-platinum-50 hover:bg-platinum-10 hover:text-platinum-90 flex h-8 w-8 items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-30"
-            aria-label="ზემოთ"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M4 10L8 6L12 10"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </button>
-          <button
-            type="button"
-            (click)="moveDown(i)"
-            [disabled]="i === count - 1"
-            class="text-platinum-50 hover:bg-platinum-10 hover:text-platinum-90 flex h-8 w-8 items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-30"
-            aria-label="ქვემოთ"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M4 6L8 10L12 6"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </button>
-          <button
-            type="button"
-            (click)="removeProduct(product.data.id)"
-            class="text-platinum-40 hover:bg-valencia-10 hover:text-valencia-60 flex h-8 w-8 items-center justify-center rounded-full transition-colors"
-            aria-label="წაშლა"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M2 4H3.33333H14"
-                stroke="currentColor"
-                stroke-width="1.4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M5.33334 4.00004V2.66671C5.33334 2.31309 5.47381 1.97395 5.72386 1.7239C5.97391 1.47385 6.31305 1.33337 6.66668 1.33337H9.33334C9.68697 1.33337 10.0261 1.47385 10.2762 1.7239C10.5262 1.97395 10.6667 2.31309 10.6667 2.66671V4.00004M12.6667 4.00004V13.3334C12.6667 13.687 12.5262 14.0261 12.2762 14.2762C12.0261 14.5262 11.687 14.6667 11.3333 14.6667H4.66668C4.31305 14.6667 3.97391 14.5262 3.72386 14.2762C3.47381 14.0261 3.33334 13.687 3.33334 13.3334V4.00004H12.6667Z"
-                stroke="currentColor"
-                stroke-width="1.4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
+        <p class="text-platinum-90 mt-3 text-[15px] font-medium sm:text-sm">სია ცარიელია</p>
       </li>
+    } @else {
+      @for (product of selected(); track product.data.id; let i = $index, count = $count) {
+        <li class="flex items-center gap-3 py-3">
+          <span class="text-platinum-50 w-5 shrink-0 text-right text-sm tabular-nums">{{ i + 1 }}</span>
+          <ng-container *ngTemplateOutlet="thumb; context: { $implicit: product }" />
+          <div class="min-w-0 flex-1">
+            <p class="text-platinum-90 truncate text-[15px]">{{ product.data.name }}</p>
+            <p class="text-platinum-50 mt-0.5 truncate text-[13px]">{{ product.data.sku }}</p>
+          </div>
+          <div class="flex shrink-0 items-center">
+            <button
+              type="button"
+              (click)="moveUp(i)"
+              [disabled]="i === 0"
+              [attr.aria-label]="product.data.name + ': ზემოთ'"
+              class="text-platinum-50 hover:text-platinum-90 inline-flex size-9 items-center justify-center rounded-md hover:bg-neutral-100 disabled:pointer-events-none disabled:opacity-30 sm:size-8"
+            >
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 13V3m0 0L4.5 6.5M8 3l3.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              (click)="moveDown(i)"
+              [disabled]="i === count - 1"
+              [attr.aria-label]="product.data.name + ': ქვემოთ'"
+              class="text-platinum-50 hover:text-platinum-90 inline-flex size-9 items-center justify-center rounded-md hover:bg-neutral-100 disabled:pointer-events-none disabled:opacity-30 sm:size-8"
+            >
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 3v10m0 0-3.5-3.5M8 13l3.5-3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              (click)="removeProduct(product.data.id)"
+              [attr.aria-label]="product.data.name + ': წაშლა'"
+              class="text-platinum-50 hover:text-valencia-70 hover:bg-valencia-10 inline-flex size-9 items-center justify-center rounded-md sm:size-8"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M2.67 4h10.66M6.33 4V2.67h3.34V4M4 4l.67 9.33h6.66L12 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </li>
       }
-    </ul>
     }
-  </div>
+  </ol>
 </div>
+
+<ng-template #thumb let-product>
+  @let image = getImage(product);
+  <span class="border-hairline-strong/70 flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-md border bg-white">
+    @if (image) {
+      <img [src]="image" [alt]="product.data.name" loading="lazy" class="size-full object-contain p-1" />
+    }
+  </span>
+</ng-template>

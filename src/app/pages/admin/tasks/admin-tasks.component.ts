@@ -58,6 +58,8 @@ export class AdminTasksComponent {
     done: 0,
   });
 
+  readonly mobileState = signal<TaskState>('todo');
+
   toggleCollapse(state: TaskState): void {
     this.collapsed.update((c) => ({ ...c, [state]: !c[state] }));
   }

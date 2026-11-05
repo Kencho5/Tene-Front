@@ -1,251 +1,259 @@
-<div class="space-y-4">
-  <h1 class="text-platinum-100 text-lg font-semibold">
-    ჩექაუთის სესიები <span class="text-platinum-50 font-normal">({{ totalSessions() }})</span>
+<div class="flex flex-col gap-5">
+  <h1 class="text-platinum-100 text-xl font-semibold tracking-tight sm:text-2xl">
+    ჩექაუთის სესიები
+    <span class="text-platinum-50 ml-1 text-base font-normal tabular-nums">{{ totalSessions() }}</span>
   </h1>
 
-  <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-    <div class="relative flex-1">
+  <div class="grid gap-2 *:min-w-0 sm:flex sm:items-center">
+    <div class="relative w-full sm:max-w-sm">
+      <label for="session-search" class="sr-only">სესიის ძიება</label>
       <svg
         width="16"
         height="16"
-        viewBox="0 0 20 20"
+        viewBox="0 0 16 16"
         fill="none"
-        class="text-platinum-40 pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
+        class="text-platinum-50 pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 sm:left-3"
+        aria-hidden="true"
       >
-        <path
-          d="M16.6653 16.6667L13.4431 13.4445M15.1839 9.2593C15.1839 12.5321 12.5308 15.1852 9.25795 15.1852C5.98516 15.1852 3.33203 12.5321 3.33203 9.2593C3.33203 5.9865 5.98516 3.33337 9.25795 3.33337C12.5308 3.33337 15.1839 5.9865 15.1839 9.2593Z"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
+        <circle cx="7" cy="7" r="4.75" stroke="currentColor" stroke-width="1.4" />
+        <path d="m10.5 10.5 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
       </svg>
       <input
+        id="session-search"
         type="text"
+        autocomplete="off"
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
-        placeholder="ძიება Session ID ან User ID-ით..."
-        class="border-hairline-strong/60 text-platinum-100 placeholder:text-platinum-40 focus:border-platinum-30 h-11 w-full rounded-xl border bg-white py-2 pr-9 pl-9 text-sm outline-hidden transition-colors"
+        placeholder="Session ID ან User ID"
+        class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white pr-10 pl-10 text-[15px] text-ellipsis shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:h-9 sm:pr-9 sm:pl-9 sm:text-sm"
       />
       @if (searchQuery()) {
-      <button
-        type="button"
-        (click)="clearSearch()"
-        class="text-platinum-40 hover:text-platinum-70 absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
-      >
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-          <path
-            d="M12 4L4 12M4 4L12 12"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
-        </svg>
-      </button>
+        <button
+          type="button"
+          (click)="clearSearch()"
+          aria-label="ძიების გასუფთავება"
+          class="text-platinum-40 hover:text-platinum-70 absolute top-1/2 right-1.5 inline-flex size-9 -translate-y-1/2 items-center justify-center rounded-md sm:size-7"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M12 4 4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
       }
     </div>
 
-    <div class="w-full sm:w-[170px]">
-      <app-dropdown
-        [selectedValue]="params()['step'] ?? 'all'"
-        (selectedValueChange)="onStepChange($event)"
-        placeholder="ეტაპი"
-        [items]="stepOptions"
-      />
-    </div>
-
-    <div class="w-full sm:w-[170px]">
-      <app-dropdown
-        [selectedValue]="params()['outcome'] ?? 'all'"
-        (selectedValueChange)="onOutcomeChange($event)"
-        placeholder="შედეგი"
-        [items]="outcomeOptions"
-      />
+    <div class="grid grid-cols-2 gap-2 *:min-w-0 sm:flex">
+      <div class="sm:w-[190px]">
+        <app-dropdown
+          [selectedValue]="params()['step'] ?? 'all'"
+          (selectedValueChange)="onStepChange($event)"
+          placeholder="ეტაპი"
+          [items]="stepOptions"
+          customClass="!h-11 sm:!h-9 !text-[15px] sm:!text-sm !rounded-lg !border-hairline-strong/70 !px-3 !shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
+        />
+      </div>
+      <div class="sm:w-[160px]">
+        <app-dropdown
+          [selectedValue]="params()['outcome'] ?? 'all'"
+          (selectedValueChange)="onOutcomeChange($event)"
+          placeholder="შედეგი"
+          [items]="outcomeOptions"
+          customClass="!h-11 sm:!h-9 !text-[15px] sm:!text-sm !rounded-lg !border-hairline-strong/70 !px-3 !shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
+        />
+      </div>
     </div>
   </div>
 
-  @if (loading()) {
-  <div class="space-y-3">
-    @for (skeleton of [1, 2, 3, 4, 5, 6]; track skeleton) {
-    <div class="border-hairline-strong/60 space-y-2 rounded-2xl border bg-white p-4">
-      <div class="bg-platinum-10 h-4 w-1/3 animate-pulse rounded-sm"></div>
-      <div class="bg-platinum-10 h-3 w-1/4 animate-pulse rounded-sm"></div>
-    </div>
-    }
-  </div>
-  } @else if (sessions().length === 0) {
-  <div class="border-hairline-strong/60 rounded-2xl border bg-white px-4 py-16 text-center">
-    <p class="text-platinum-70 text-sm font-medium">სესიები არ მოიძებნა</p>
-  </div>
-  } @else {
-  <div class="space-y-3">
-    @for (session of sessions(); track session.session_id) {
-    <div class="border-hairline-strong/60 overflow-hidden rounded-2xl border bg-white">
-      <button
-        type="button"
-        (click)="toggleExpand(session)"
-        class="hover:bg-platinum-10/40 block w-full px-4 py-4 text-left transition-colors"
-      >
-        <!-- Top row: who + status -->
-        <div class="flex items-start justify-between gap-3">
-          <div class="min-w-0">
-            <p class="text-platinum-100 truncate text-sm font-semibold">{{ displayName(session) }}</p>
-            @if (session.fields['email']) {
-            <p class="text-platinum-50 mt-0.5 truncate text-sm">{{ session.fields['email'] }}</p>
-            } @if (session.fields['phone_number']) {
-            <p class="text-platinum-50 text-sm">{{ session.fields['phone_number'] }}</p>
-            }
-          </div>
-
-          @if (session.purchased) {
-          <span
-            class="shrink-0 rounded-full px-2.5 py-1 text-xs font-medium"
-            [class]="isPaid(session) ? 'bg-green-10 text-green-70' : 'bg-cream-10 text-cream-80'"
-          >
-            {{ isPaid(session) ? 'გადახდილი' : orderStatusLabel(session.order_status) }}
-          </span>
-          } @else {
-          <span
-            class="bg-platinum-10 text-platinum-60 shrink-0 rounded-full px-2.5 py-1 text-xs font-medium"
-          >
-            მიტოვებული
-          </span>
-          }
-        </div>
-
-        <!-- Step progress -->
-        <div class="mt-4 flex items-center justify-between">
-          @for (step of steps; track step.key; let i = $index) {
-          <div class="flex flex-1 flex-col items-center gap-1.5 text-center">
-            <div
-              class="flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium"
-              [class]="stepReached(session, i)
-                      ? 'bg-green-60 text-white'
-                      : 'bg-platinum-10 text-platinum-40'"
-            >
-              {{ i + 1 }}
+  <div>
+    <ul class="divide-hairline-strong/50 border-hairline-strong/70 divide-y border-y">
+      @if (loading()) {
+        @for (skeleton of [1, 2, 3, 4, 5, 6]; track skeleton) {
+          <li class="flex items-center gap-4 py-4">
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-40 animate-pulse rounded-sm bg-neutral-100"></div>
+              <div class="h-3.5 w-56 animate-pulse rounded-sm bg-neutral-100"></div>
             </div>
-            <span
-              class="text-[11px]"
-              [class]="stepReached(session, i) ? 'text-platinum-70' : 'text-platinum-40'"
-            >
-              {{ step.label }}
-            </span>
-          </div>
-          @if (!$last) {
-          <div
-            class="mb-4 h-0.5 flex-1"
-            [class]="stepReached(session, i + 1) ? 'bg-green-60' : 'bg-platinum-10'"
-          ></div>
-          } }
-        </div>
-
-        <!-- Footer: meta + expand hint -->
-        <div class="text-platinum-40 mt-3 flex items-center justify-between text-xs">
-          <span>
-            {{ formatDate(session.last_activity_at) }} {{ formatTime(session.last_activity_at) }}
-          </span>
-          <span class="text-platinum-60 flex items-center gap-1 font-medium">
-            {{ isExpanded(session) ? 'დახურვა' : 'დეტალები' }}
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 20 20"
-              fill="none"
-              class="transition-transform"
-              [class.rotate-180]="isExpanded(session)"
-            >
-              <path
-                d="M5 7.5L10 12.5L15 7.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
+            <div class="hidden h-1.5 w-40 animate-pulse rounded-full bg-neutral-100 sm:block"></div>
+            <div class="h-6 w-20 animate-pulse rounded-full bg-neutral-100"></div>
+          </li>
+        }
+      } @else if (sessions().length === 0) {
+        <li class="flex flex-col items-center px-4 py-16 text-center">
+          <span class="flex size-10 items-center justify-center rounded-full bg-neutral-100">
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" class="text-platinum-50" aria-hidden="true">
+              <path d="M2.5 3h1.6l1.5 7.25h6.4L13.5 5H5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="6.25" cy="12.75" r="1" fill="currentColor" />
+              <circle cx="11.25" cy="12.75" r="1" fill="currentColor" />
             </svg>
           </span>
-        </div>
-      </button>
-
-      @if (isExpanded(session)) {
-      <div class="border-hairline-strong/60 bg-platinum-10 space-y-4 border-t px-4 py-4">
-        @if (session.order_id) {
-        <div class="border-hairline-strong/60 flex items-center gap-4 rounded-2xl border bg-white px-4 py-2.5">
-          <span class="text-platinum-50 w-28 shrink-0 text-sm">შეკვეთა</span>
-          <span class="text-platinum-100 font-mono text-xs break-all">{{ session.order_id }}</span>
-        </div>
-        } @if (fieldGroupsFor(session); as groups) { @if (groups.length > 0) {
-        @for (group of groups; track group.title) {
-        <section>
-          <h3 class="text-platinum-100 mb-2 text-sm font-semibold">
-            {{ group.title }}
-          </h3>
-          <dl class="border-hairline-strong/60 divide-hairline-strong/60 divide-y overflow-hidden rounded-2xl border bg-white">
-            @for (entry of group.entries; track entry.label) {
-            <div class="flex gap-4 px-4 py-2.5">
-              <dt class="text-platinum-50 w-28 shrink-0 text-sm">{{ entry.label }}</dt>
-              <dd class="text-platinum-100 min-w-0 text-sm font-medium break-words">{{ entry.value }}</dd>
-            </div>
-            }
-          </dl>
-        </section>
-        }
-        } @else {
-        <p class="text-platinum-50 text-sm">მონაცემები არ შეუყვანია</p>
-        } }
-
-        @if (session.cart && session.cart.length > 0) {
-        <section>
-          <h3 class="text-platinum-100 mb-2 text-sm font-semibold">
-            პროდუქტები ({{ session.cart.length }})
-          </h3>
-          <ul class="border-hairline-strong/60 divide-hairline-strong/60 divide-y overflow-hidden rounded-2xl border bg-white">
-            @for (item of session.cart; track $index) {
-            <li class="flex items-center gap-3 px-4 py-2.5">
-              <div
-                class="bg-surface-10 border-hairline-strong/60 flex aspect-square w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border"
-              >
-                <img
-                  [src]="cartImageUrl(item)"
-                  [alt]="item.name"
-                  width="48"
-                  height="48"
-                  loading="lazy"
-                  class="h-full w-full object-contain p-1"
-                />
-              </div>
+          <p class="text-platinum-90 mt-3 text-[15px] font-medium sm:text-sm">სესიები ვერ მოიძებნა</p>
+          @if (searchQuery()) {
+            <button
+              type="button"
+              (click)="clearSearch()"
+              class="text-green-70 mt-3 h-11 px-2 text-[15px] font-medium hover:underline sm:h-auto sm:text-sm"
+            >
+              ძიების გასუფთავება
+            </button>
+          }
+        </li>
+      } @else {
+        @for (session of sessions(); track session.session_id) {
+          @let expanded = isExpanded(session);
+          <li>
+            <button
+              type="button"
+              (click)="toggleExpand(session)"
+              [attr.aria-expanded]="expanded"
+              class="group block w-full py-4 text-left"
+            >
+              <div class="flex items-start gap-3">
               <div class="min-w-0 flex-1">
-                <p class="text-platinum-90 truncate text-sm">{{ item.name }}</p>
-                <p class="text-platinum-50 mt-0.5 text-xs">
-                  {{ item.color }}
-                  @if (item.cable_config) {
-                  · {{ item.cable_config.watts }}W / {{ item.cable_config.length_cm }}სმ
+                <div class="flex items-center gap-2">
+                  <p class="text-platinum-100 truncate text-[15px] font-medium sm:text-sm">{{ displayName(session) }}</p>
+                  @if (session.purchased && (isPaid(session) || orderStatusLabel(session.order_status))) {
+                    <span
+                      class="shrink-0 rounded-full px-2 py-0.5 text-xs font-medium"
+                      [class]="isPaid(session) ? 'bg-green-10 text-green-70' : 'bg-cream-10 text-cream-80'"
+                    >
+                      {{ isPaid(session) ? 'გადახდილი' : orderStatusLabel(session.order_status) }}
+                    </span>
+                  } @else if (!session.purchased) {
+                    <span class="text-platinum-60 shrink-0 rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium">მიტოვებული</span>
                   }
-                </p>
-                <p class="text-platinum-40 font-mono text-[11px]">{{ item.product_id }}</p>
+                </div>
+                @if (session.fields['email'] || session.fields['phone_number']) {
+                  <p class="text-platinum-50 mt-0.5 truncate text-sm sm:text-[13px]">
+                    {{ session.fields['email'] }}
+                    @if (session.fields['email'] && session.fields['phone_number']) {
+                      ·
+                    }
+                    <span class="tabular-nums">{{ session.fields['phone_number'] }}</span>
+                  </p>
+                }
               </div>
-              <span class="text-platinum-70 shrink-0 text-sm tabular-nums">×{{ item.quantity }}</span>
-            </li>
+
+              <div class="flex shrink-0 items-center gap-2">
+                <span class="text-platinum-50 text-right text-[13px] whitespace-nowrap tabular-nums">
+                  {{ formatDate(session.last_activity_at) }}
+                  <span class="block sm:inline">{{ formatTime(session.last_activity_at) }}</span>
+                </span>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  class="text-platinum-40 group-hover:text-platinum-80 transition-transform"
+                  [class.rotate-180]="expanded"
+                  aria-hidden="true"
+                >
+                  <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+              </div>
+
+              <span class="sr-only">ეტაპი {{ stepsCompleted(session) }} / {{ steps.length }}</span>
+              <span class="mt-4 flex" aria-hidden="true">
+                @for (step of steps; track step.key; let i = $index) {
+                  @let done = stepReached(session, i);
+                  <span class="relative flex min-w-0 flex-1 flex-col items-center gap-1.5 text-center">
+                    @if (!$first) {
+                      <span
+                        class="absolute top-3 right-1/2 h-px w-full"
+                        [class]="done ? 'bg-green-60' : 'bg-hairline-strong/70'"
+                      ></span>
+                    }
+                    <span
+                      class="relative flex size-6 items-center justify-center rounded-full text-xs font-medium tabular-nums"
+                      [class]="done ? 'bg-green-60 text-white' : 'border-hairline-strong/70 text-platinum-40 border bg-white'"
+                    >
+                      {{ i + 1 }}
+                    </span>
+                    <span class="w-full truncate px-1 text-xs" [class]="done ? 'text-platinum-80' : 'text-platinum-40'">{{ step.label }}</span>
+                  </span>
+                }
+              </span>
+            </button>
+
+            @if (expanded) {
+              <div class="mb-4 space-y-5 rounded-lg bg-neutral-50 p-3 sm:p-4">
+                @if (session.order_id) {
+                  <dl class="border-hairline-strong/50 rounded-lg border bg-white">
+                    <div class="flex gap-4 px-4 py-3">
+                      <dt class="text-platinum-50 w-28 shrink-0 text-sm sm:w-36">შეკვეთა</dt>
+                      <dd class="text-platinum-100 min-w-0 font-mono text-[13px] break-all">{{ session.order_id }}</dd>
+                    </div>
+                  </dl>
+                }
+
+                @let groups = fieldGroupsFor(session);
+                @for (group of groups; track group.title) {
+                  <section>
+                    <h3 class="text-platinum-100 mb-2 text-sm font-semibold">{{ group.title }}</h3>
+                    <dl class="border-hairline-strong/50 divide-hairline-strong/50 divide-y rounded-lg border bg-white">
+                      @for (entry of group.entries; track entry.label) {
+                        <div class="flex gap-4 px-4 py-3">
+                          <dt class="text-platinum-50 w-28 shrink-0 text-sm sm:w-36">{{ entry.label }}</dt>
+                          <dd class="text-platinum-100 min-w-0 text-sm font-medium break-words">{{ entry.value }}</dd>
+                        </div>
+                      }
+                    </dl>
+                  </section>
+                } @empty {
+                  <p class="text-platinum-50 px-1 text-sm">მონაცემები არ შეუყვანია</p>
+                }
+
+                @if (session.cart && session.cart.length > 0) {
+                  <section>
+                    <h3 class="text-platinum-100 mb-2 text-sm font-semibold">
+                      პროდუქტები <span class="text-platinum-50 font-normal tabular-nums">{{ session.cart.length }}</span>
+                    </h3>
+                    <ul class="border-hairline-strong/50 divide-hairline-strong/50 divide-y rounded-lg border bg-white">
+                      @for (item of session.cart; track $index) {
+                        <li class="flex items-center gap-3 px-4 py-3">
+                          <div class="border-hairline-strong/50 flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-neutral-50">
+                            <img
+                              [src]="cartImageUrl(item)"
+                              [alt]="item.name"
+                              width="44"
+                              height="44"
+                              loading="lazy"
+                              class="size-full object-contain p-1"
+                            />
+                          </div>
+                          <div class="min-w-0 flex-1">
+                            <p class="text-platinum-90 truncate text-sm">{{ item.name }}</p>
+                            <p class="text-platinum-50 truncate text-[13px] sm:text-xs">
+                              {{ item.color }}
+                              @if (item.cable_config) {
+                                · {{ item.cable_config.watts }}W / {{ item.cable_config.length_cm }}სმ
+                              }
+                              · <span class="font-mono">{{ item.product_id }}</span>
+                            </p>
+                          </div>
+                          <span class="text-platinum-70 shrink-0 text-sm tabular-nums">×{{ item.quantity }}</span>
+                        </li>
+                      }
+                    </ul>
+                  </section>
+                }
+              </div>
             }
-          </ul>
-        </section>
+          </li>
         }
-      </div>
       }
-    </div>
+    </ul>
+
+    @if (!loading() && totalPages() > 1) {
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [totalItems]="totalSessions()"
+        [showingFrom]="showingFrom()"
+        [showingTo]="showingTo()"
+        [limit]="limit()"
+        (pageChange)="onPageChange($event)"
+        (limitChange)="onLimitChangeValue($event)"
+      />
     }
   </div>
-
-  @if (totalPages() > 1) {
-  <app-pagination
-    [currentPage]="currentPage()"
-    [totalPages]="totalPages()"
-    [totalItems]="totalSessions()"
-    [showingFrom]="showingFrom()"
-    [showingTo]="showingTo()"
-    [limit]="limit()"
-    (pageChange)="onPageChange($event)"
-    (limitChange)="onLimitChangeValue($event)"
-  />
-  } }
 </div>

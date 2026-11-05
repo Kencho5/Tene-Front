@@ -1,111 +1,83 @@
-<div
-  class="flex flex-col gap-4 border-t border-hairline py-4 sm:flex-row sm:items-center sm:justify-between sm:px-0"
+<nav
+  aria-label="გვერდები"
+  class="flex flex-col gap-4 py-5 sm:flex-row sm:items-center sm:justify-between"
 >
-  <!-- Left: Results info & per page selector -->
   <div class="flex items-center justify-between gap-3 sm:justify-start">
-    <p class="text-sm text-platinum-60">
+    <p class="text-platinum-60 text-[15px] tabular-nums">
       {{ showingFrom() }}-{{ showingTo() }} / {{ totalItems() }}
     </p>
 
-    <app-dropdown
-      [selectedValue]="limit().toString()"
-      (selectedValueChange)="onLimitChange($event)"
-      [items]="limitOptions"
-    />
+    <div class="w-[88px]">
+      <app-dropdown
+        [selectedValue]="limit().toString()"
+        (selectedValueChange)="onLimitChange($event)"
+        [items]="limitOptions"
+        customClass="!h-11 sm:!h-10 !gap-1 !rounded-lg !border-hairline-strong/70 !px-3 !text-[15px] shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
+      />
+    </div>
   </div>
 
-  <!-- Right: Page navigation -->
-  <div class="flex items-center justify-center gap-1.5 sm:justify-end sm:gap-2">
-    <!-- Previous button -->
-    <button
-      type="button"
-      (click)="previousPage()"
-      [disabled]="currentPage() === 1"
-      [class.opacity-50]="currentPage() === 1"
-      [class.cursor-not-allowed]="currentPage() === 1"
-      class="flex h-11 w-11 items-center justify-center rounded-xl border border-hairline text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent sm:h-9 sm:w-9"
-      aria-label="წინა გვერდი"
-    >
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path
-          d="M10 12L6 8L10 4"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </button>
+  @if (totalPages() > 1) {
+    <div class="flex items-center justify-center gap-1.5 sm:justify-end">
+      <button
+        type="button"
+        (click)="previousPage()"
+        [disabled]="currentPage() === 1"
+        aria-label="წინა გვერდი"
+        class="border-hairline-strong/70 text-platinum-70 hover:text-platinum-100 inline-flex size-11 shrink-0 items-center justify-center rounded-lg border bg-white shadow-[0_1px_1px_rgba(33,33,33,0.04)] hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white sm:size-10"
+      >
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 12 6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
 
-    <!-- Page numbers (mobile) -->
-    <div class="flex items-center gap-1 sm:hidden">
-      @for (pageNum of mobilePageNumbers(); track $index) {
-        @if (pageNum === -1) {
-          <span class="flex h-11 w-11 items-center justify-center text-sm text-platinum-40">
-            ...
-          </span>
-        } @else {
-          <button
-            type="button"
-            (click)="goToPage(pageNum)"
-            [class.bg-green-60]="currentPage() === pageNum"
-            [class.text-white]="currentPage() === pageNum"
-            [class.border-green-60]="currentPage() === pageNum"
-            [class.text-platinum-60]="currentPage() !== pageNum"
-            [class.border-hairline]="currentPage() !== pageNum"
-            [class.hover:bg-platinum-10]="currentPage() !== pageNum"
-            class="flex h-11 w-11 items-center justify-center rounded-xl border text-sm font-medium transition-colors"
-          >
-            {{ pageNum }}
-          </button>
+      <div class="flex items-center gap-1.5 sm:hidden">
+        @for (pageNum of mobilePageNumbers(); track $index) {
+          @if (pageNum === -1) {
+            <span class="text-platinum-40 flex size-11 items-center justify-center text-[15px]" aria-hidden="true">…</span>
+          } @else {
+            <button
+              type="button"
+              (click)="goToPage(pageNum)"
+              [attr.aria-current]="currentPage() === pageNum ? 'page' : null"
+              [attr.aria-label]="'გვერდი ' + pageNum"
+              class="border-hairline-strong/70 text-platinum-70 hover:text-platinum-100 aria-[current=page]:border-green-60 aria-[current=page]:bg-green-60 inline-flex size-11 items-center justify-center rounded-lg border bg-white text-[15px] font-medium tabular-nums shadow-[0_1px_1px_rgba(33,33,33,0.04)] hover:bg-neutral-50 aria-[current=page]:text-white aria-[current=page]:hover:bg-green-70"
+            >
+              {{ pageNum }}
+            </button>
+          }
         }
-      }
-    </div>
+      </div>
 
-    <!-- Page numbers (desktop) -->
-    <div class="hidden items-center gap-1 sm:flex">
-      @for (pageNum of pageNumbers(); track $index) {
-        @if (pageNum === -1) {
-          <span class="flex h-9 w-9 items-center justify-center text-sm text-platinum-40">
-            ...
-          </span>
-        } @else {
-          <button
-            type="button"
-            (click)="goToPage(pageNum)"
-            [class.bg-green-60]="currentPage() === pageNum"
-            [class.text-white]="currentPage() === pageNum"
-            [class.border-green-60]="currentPage() === pageNum"
-            [class.text-platinum-60]="currentPage() !== pageNum"
-            [class.border-hairline]="currentPage() !== pageNum"
-            [class.hover:bg-platinum-10]="currentPage() !== pageNum"
-            class="flex h-9 w-9 items-center justify-center rounded-xl border text-sm font-medium transition-colors"
-          >
-            {{ pageNum }}
-          </button>
+      <div class="hidden items-center gap-1.5 sm:flex">
+        @for (pageNum of pageNumbers(); track $index) {
+          @if (pageNum === -1) {
+            <span class="text-platinum-40 flex size-10 items-center justify-center text-[15px]" aria-hidden="true">…</span>
+          } @else {
+            <button
+              type="button"
+              (click)="goToPage(pageNum)"
+              [attr.aria-current]="currentPage() === pageNum ? 'page' : null"
+              [attr.aria-label]="'გვერდი ' + pageNum"
+              class="border-hairline-strong/70 text-platinum-70 hover:text-platinum-100 aria-[current=page]:border-green-60 aria-[current=page]:bg-green-60 inline-flex h-10 min-w-10 items-center justify-center rounded-lg border bg-white px-2 text-[15px] font-medium tabular-nums shadow-[0_1px_1px_rgba(33,33,33,0.04)] hover:bg-neutral-50 aria-[current=page]:text-white aria-[current=page]:hover:bg-green-70"
+            >
+              {{ pageNum }}
+            </button>
+          }
         }
-      }
-    </div>
+      </div>
 
-    <!-- Next button -->
-    <button
-      type="button"
-      (click)="nextPage()"
-      [disabled]="currentPage() === totalPages()"
-      [class.opacity-50]="currentPage() === totalPages()"
-      [class.cursor-not-allowed]="currentPage() === totalPages()"
-      class="flex h-11 w-11 items-center justify-center rounded-xl border border-hairline text-platinum-60 transition-colors hover:bg-platinum-10 disabled:hover:bg-transparent sm:h-9 sm:w-9"
-      aria-label="შემდეგი გვერდი"
-    >
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path
-          d="M6 12L10 8L6 4"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </button>
-  </div>
-</div>
+      <button
+        type="button"
+        (click)="nextPage()"
+        [disabled]="currentPage() === totalPages()"
+        aria-label="შემდეგი გვერდი"
+        class="border-hairline-strong/70 text-platinum-70 hover:text-platinum-100 inline-flex size-11 shrink-0 items-center justify-center rounded-lg border bg-white shadow-[0_1px_1px_rgba(33,33,33,0.04)] hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white sm:size-10"
+      >
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="m6 12 4-4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+    </div>
+  }
+</nav>

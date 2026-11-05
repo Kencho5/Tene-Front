@@ -16,7 +16,6 @@ import { AdminService } from '@core/services/admin/admin.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { UserRole } from '@core/interfaces/admin/users.interface';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
-import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 
 interface UserFormData {
   name: string;
@@ -27,7 +26,7 @@ interface UserFormData {
 
 @Component({
   selector: 'app-admin-user-form',
-  imports: [SharedModule, InputComponent, FormField, DropdownComponent],
+  imports: [SharedModule, InputComponent, FormField],
   templateUrl: './admin-user-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -38,9 +37,11 @@ export class AdminUserFormComponent {
   private readonly toastService = inject(ToastService);
 
   readonly isSubmitting = signal<boolean>(false);
+  readonly submitted = signal<boolean>(false);
 
   readonly roleOptions: ComboboxItems[] = [
     { label: 'მომხმარებელი', value: 'user' },
+    { label: 'ოპერატორი', value: 'operator' },
     { label: 'ადმინი', value: 'admin' },
   ];
 
@@ -96,6 +97,9 @@ export class AdminUserFormComponent {
 
   onSubmit(): void {
     if (this.isSubmitting()) return;
+
+    this.submitted.set(true);
+    if (this.userForm().invalid()) return;
 
     this.isSubmitting.set(true);
 

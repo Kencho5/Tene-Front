@@ -3,11 +3,18 @@ import { Task, TaskPriority, TaskState } from '@core/interfaces/admin/tasks.inte
 import { OutsideClickDirective } from '@core/directives/outside-click.directive';
 import { SharedModule } from '@shared/shared.module';
 
-const PRIORITY_META: Record<TaskPriority, { label: string; classes: string }> = {
-  low: { label: 'დაბალი', classes: 'bg-platinum-10 text-platinum-60 border border-platinum-30/60' },
-  medium: { label: 'საშუალო', classes: 'bg-blue-50 text-blue-700 border border-blue-200/70' },
-  high: { label: 'მაღალი', classes: 'bg-amber-50 text-amber-700 border border-amber-200/70' },
-  urgent: { label: 'სასწრაფო', classes: 'bg-valencia-10 text-valencia-60 border border-valencia-30/60' },
+const PRIORITY_META: Record<TaskPriority, { label: string; level: number }> = {
+  low: { label: 'დაბალი', level: 1 },
+  medium: { label: 'საშუალო', level: 2 },
+  high: { label: 'მაღალი', level: 3 },
+  urgent: { label: 'სასწრაფო', level: 4 },
+};
+
+const STATE_DOTS: Record<TaskState, string> = {
+  todo: 'bg-platinum-40',
+  in_progress: 'bg-blue-500',
+  review: 'bg-amber-500',
+  done: 'bg-green-60',
 };
 
 const STATE_LABELS: Record<TaskState, string> = {
@@ -36,6 +43,7 @@ export class TaskCardComponent {
 
   readonly states: TaskState[] = ['todo', 'in_progress', 'review', 'done'];
   readonly stateLabels = STATE_LABELS;
+  readonly stateDots = STATE_DOTS;
 
   readonly priorityMeta = computed(() => PRIORITY_META[this.task().priority]);
 
