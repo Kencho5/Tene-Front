@@ -92,6 +92,7 @@ export class AdminOrdersComponent {
   readonly sourceOptions: ComboboxItems[] = [
     { label: 'საიტიდან', value: 'web' },
     { label: 'ხელით', value: 'admin' },
+    { label: 'ჯამური', value: 'all' },
   ];
 
   readonly paymentMethodOptions: ComboboxItems[] = [
@@ -254,7 +255,7 @@ export class AdminOrdersComponent {
   ]);
 
   readonly source = computed(() => (this.params()['source'] as string) ?? 'web');
-  readonly isAdminSource = computed(() => this.source() === 'admin');
+  readonly isAdminSource = computed(() => this.source() !== 'web');
   readonly columnCount = computed(() => (this.isAdminSource() ? 11 : 10));
 
   readonly activeFilterCount = computed(() => this.filterChips().length);
