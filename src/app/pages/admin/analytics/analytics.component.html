@@ -5,13 +5,47 @@
       <h1 class="text-platinum-100 text-lg font-semibold">ანალიტიკა</h1>
       <p class="text-platinum-50 mt-0.5 text-sm">პროდუქტების ნახვები და კონვერსიები</p>
     </div>
-    <div class="w-full sm:w-48">
-      <app-dropdown
-        [items]="periodOptions"
-        [selectedValue]="selectedPeriod()"
-        (selectedValueChange)="onPeriodChange($event)"
-        placeholder="სრული პერიოდი"
-      />
+    <div class="grid w-full grid-cols-1 gap-2 sm:flex sm:w-auto sm:items-center">
+      <div class="min-w-0 sm:w-[160px]">
+        <app-dropdown
+          [items]="datePresets"
+          [selectedValue]="selectedPreset()"
+          (selectedValueChange)="selectPreset($event)"
+          placeholder="თარიღი"
+        />
+      </div>
+      <div class="border-hairline-strong/60 flex h-11 items-center gap-1.5 rounded-xl border bg-white px-3">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" class="text-platinum-40 shrink-0">
+          <path d="M6.667 2.5v2.5M13.333 2.5v2.5M3.333 7.5h13.334M4.167 4.167h11.666c.46 0 .834.373.834.833v11.667c0 .46-.373.833-.834.833H4.167a.833.833 0 0 1-.834-.833V5c0-.46.373-.833.834-.833Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <input
+          type="date"
+          [value]="fromDate()"
+          (change)="onFromDateChange($event)"
+          [max]="toDate() || null"
+          class="text-platinum-100 min-w-0 flex-1 bg-transparent text-sm outline-hidden sm:flex-none"
+        />
+        <span class="text-platinum-30">–</span>
+        <input
+          type="date"
+          [value]="toDate()"
+          (change)="onToDateChange($event)"
+          [min]="fromDate() || null"
+          class="text-platinum-100 min-w-0 flex-1 bg-transparent text-sm outline-hidden sm:flex-none"
+        />
+        @if (fromDate() || toDate()) {
+        <button
+          type="button"
+          (click)="clearDates()"
+          class="text-platinum-40 hover:text-platinum-70 ml-0.5 transition-colors"
+          title="თარიღის გასუფთავება"
+        >
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+        }
+      </div>
     </div>
   </div>
 
@@ -96,6 +130,27 @@
       } @else {
       <p class="text-platinum-50 mt-3 text-2xl font-semibold">--</p>
       <p class="text-platinum-50 mt-0.5 text-[13px]">მონაცემები არ არის</p>
+      }
+    </div>
+  </div>
+
+  <!-- Views by Day Chart (Full Width) -->
+  <div class="rounded-2xl border border-hairline-strong/60 bg-white">
+    <div class="border-hairline-strong/60 flex items-center justify-between border-b px-5 py-3">
+      <div>
+        <h2 class="text-platinum-100 text-sm font-semibold">ნახვები დღეების მიხედვით</h2>
+        <p class="text-platinum-50 mt-0.5 text-xs">დღიური ტრაფიკი — {{ periodLabel() }}</p>
+      </div>
+    </div>
+    <div class="px-5 pt-4 pb-5">
+      @if (viewsByDay().length > 0) {
+      <div class="h-[300px]">
+        <canvas #viewsByDayCanvas aria-label="ნახვები დღეების მიხედვით" role="img"></canvas>
+      </div>
+      } @else {
+      <div class="flex h-[300px] items-center justify-center">
+        <p class="text-platinum-40 text-sm">მონაცემები არ არის</p>
+      </div>
       }
     </div>
   </div>

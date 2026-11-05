@@ -17,11 +17,16 @@ import { Chart, registerables } from 'chart.js';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 
-const PERIOD_OPTIONS: ComboboxItems[] = [
-  { value: 'today', label: 'დღეს' },
-  { value: 'yesterday', label: 'გუშინ' },
-  { value: '7days', label: 'ბოლო 7 დღე' },
-  { value: '30days', label: 'ბოლო 30 დღე' },
+const DATE_PRESETS: ComboboxItems[] = [
+  { label: 'დღეს', value: 'today' },
+  { label: 'გუშინ', value: 'yesterday' },
+  { label: 'გუშინწინ', value: 'day_before' },
+  { label: '3 დღის წინ', value: 'three_days_ago' },
+  { label: '7 დღის', value: 'last_7' },
+  { label: '10 დღის', value: 'last_10' },
+  { label: '30 დღის', value: 'last_30' },
+  { label: 'ამ თვის', value: 'this_month' },
+  { label: 'წინა თვის', value: 'last_month' },
 ];
 
 Chart.register(...registerables);
@@ -50,28 +55,27 @@ export class AnalyticsComponent implements OnDestroy {
   private readonly adminService = inject(AdminService);
 
   private viewsByHourCanvas = viewChild<ElementRef<HTMLCanvasElement>>('viewsByHourCanvas');
+  private viewsByDayCanvas = viewChild<ElementRef<HTMLCanvasElement>>('viewsByDayCanvas');
   private mostViewedCanvas = viewChild<ElementRef<HTMLCanvasElement>>('mostViewedCanvas');
   private conversionCanvas = viewChild<ElementRef<HTMLCanvasElement>>('conversionCanvas');
   private viewsByHourChart: Chart | null = null;
+  private viewsByDayChart: Chart | null = null;
   private mostViewedChart: Chart | null = null;
   private conversionChart: Chart | null = null;
 
-  readonly periodOptions = PERIOD_OPTIONS;
-  readonly selectedPeriod = signal<string | undefined>('today');
+  readonly datePresets = DATE_PRESETS;
+  readonly selectedPreset = signal('');
+  readonly fromDate = signal('');
+  readonly toDate = signal('');
 
   readonly periodLabel = computed(() => {
-    const labels: Record<string, string> = {
-      today: 'დღეს',
-      yesterday: 'გუშინ',
-      '7days': 'ბოლო 7 დღე',
-      '30days': 'ბოლო 30 დღე',
-    };
-    return labels[this.selectedPeriod() ?? ''] ?? '';
+    const preset = DATE_PRESETS.find((p) => p.value === this.selectedPreset());
+    if (preset) return preset.label;
+    const from = this.fromDate();
+    const to = this.toDate();
+    if (!from && !to) return 'სრული პერიოდი';
+    return `${from || '...'} – ${to || '...'}`;
   });
-
-  onPeriodChange(value: string | undefined): void {
-    this.selectedPeriod.set(value ?? '30days');
-  }
 
   readonly analyticsResource = rxResource({
     defaultValue: {
@@ -79,11 +83,32 @@ export class AnalyticsComponent implements OnDestroy {
       trending_this_week: [],
       unique_viewers: [],
       views_by_hour: [],
+      views_by_day: [],
       high_views_low_sales: [],
       conversion_rates: [],
     } as AnalyticsResponse,
-    params: () => this.selectedPeriod(),
-    stream: ({ params: period }) => this.adminService.getAnalytics(period),
+    params: () => ({
+      from_date: this.fromDate() ? this.startOfLocalDay(this.fromDate()) : undefined,
+      to_date: this.toDate() ? this.endOfLocalDay(this.toDate()) : undefined,
+    }),
+    stream: ({ params }) => this.adminService.getAnalytics(params),
+  });
+
+  readonly viewsByDay = computed(() => {
+    const rows = this.data().views_by_day;
+    const counts = new Map(rows.map((r) => [r.day.slice(0, 10), r.views]));
+    const start = this.fromDate() || rows[0]?.day.slice(0, 10);
+    const end = this.toDate() || rows[rows.length - 1]?.day.slice(0, 10);
+    if (!start || !end) return [];
+    const days: { day: string; views: number }[] = [];
+    const cursor = new Date(`${start}T00:00:00`);
+    const last = new Date(`${end}T00:00:00`);
+    while (cursor <= last) {
+      const key = this.localDateInput(cursor);
+      days.push({ day: key, views: counts.get(key) ?? 0 });
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return days;
   });
 
   readonly data = computed(() => this.analyticsResource.value());
@@ -110,15 +135,22 @@ export class AnalyticsComponent implements OnDestroy {
   });
 
   constructor() {
+    this.selectPreset('today');
+
     effect(() => {
       const analytics = this.data();
+      const days = this.viewsByDay();
       const vCanvas = this.viewsByHourCanvas();
+      const dCanvas = this.viewsByDayCanvas();
       const mCanvas = this.mostViewedCanvas();
       const cCanvas = this.conversionCanvas();
       if (!analytics || this.analyticsResource.isLoading()) return;
 
       if (vCanvas && analytics.views_by_hour.length > 0) {
         this.createViewsByHourChart(vCanvas.nativeElement, analytics);
+      }
+      if (dCanvas && days.length > 0) {
+        this.createViewsByDayChart(dCanvas.nativeElement, days);
       }
       if (mCanvas && analytics.most_viewed.length > 0) {
         this.createMostViewedChart(mCanvas.nativeElement, analytics);
@@ -131,6 +163,7 @@ export class AnalyticsComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.viewsByHourChart?.destroy();
+    this.viewsByDayChart?.destroy();
     this.mostViewedChart?.destroy();
     this.conversionChart?.destroy();
   }
@@ -138,6 +171,142 @@ export class AnalyticsComponent implements OnDestroy {
   formatHour(hour: number): string {
     const h = Math.floor(hour);
     return `${h.toString().padStart(2, '0')}:00`;
+  }
+
+  selectPreset(value: string | undefined): void {
+    if (!value) return;
+
+    const today = new Date();
+    let from = new Date();
+    let to = new Date();
+
+    switch (value) {
+      case 'today':
+        break;
+      case 'yesterday':
+        from.setDate(today.getDate() - 1);
+        to.setDate(today.getDate() - 1);
+        break;
+      case 'day_before':
+        from.setDate(today.getDate() - 2);
+        to.setDate(today.getDate() - 2);
+        break;
+      case 'three_days_ago':
+        from.setDate(today.getDate() - 3);
+        to.setDate(today.getDate() - 3);
+        break;
+      case 'last_7':
+        from.setDate(today.getDate() - 7);
+        break;
+      case 'last_10':
+        from.setDate(today.getDate() - 10);
+        break;
+      case 'last_30':
+        from.setDate(today.getDate() - 30);
+        break;
+      case 'this_month':
+        from = new Date(today.getFullYear(), today.getMonth(), 1);
+        break;
+      case 'last_month':
+        from = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        to = new Date(today.getFullYear(), today.getMonth(), 0);
+        break;
+      default:
+        return;
+    }
+
+    this.selectedPreset.set(value);
+    this.fromDate.set(this.localDateInput(from));
+    this.toDate.set(this.localDateInput(to));
+  }
+
+  onFromDateChange(event: Event): void {
+    this.selectedPreset.set('');
+    this.fromDate.set((event.target as HTMLInputElement).value);
+  }
+
+  onToDateChange(event: Event): void {
+    this.selectedPreset.set('');
+    this.toDate.set((event.target as HTMLInputElement).value);
+  }
+
+  clearDates(): void {
+    this.selectedPreset.set('');
+    this.fromDate.set('');
+    this.toDate.set('');
+  }
+
+  private localDateInput(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  private startOfLocalDay(value: string): string {
+    return new Date(`${value}T00:00:00`).toISOString();
+  }
+
+  private endOfLocalDay(value: string): string {
+    return new Date(`${value}T23:59:59.999`).toISOString();
+  }
+
+  private formatDay(value: string): string {
+    return new Date(`${value}T00:00:00`).toLocaleDateString('ka-GE', {
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+
+  private createViewsByDayChart(
+    canvas: HTMLCanvasElement,
+    days: { day: string; views: number }[],
+  ): void {
+    this.viewsByDayChart?.destroy();
+
+    this.viewsByDayChart = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: days.map((d) => this.formatDay(d.day)),
+        datasets: [
+          {
+            label: 'ნახვები',
+            data: days.map((d) => d.views),
+            backgroundColor: 'rgba(26, 164, 74, 0.75)',
+            hoverBackgroundColor: '#1aa44a',
+            borderRadius: 4,
+            maxBarThickness: 32,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { intersect: false, mode: 'index' },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            ...TOOLTIP_CONFIG,
+            callbacks: {
+              label: (item) => `${item.raw} ნახვა`,
+            },
+          },
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: TICK_COLOR, font: { size: 11 }, maxRotation: 0, autoSkipPadding: 16 },
+            border: { display: false },
+          },
+          y: {
+            grid: { color: GRID_COLOR, drawTicks: false },
+            ticks: { color: TICK_COLOR, font: { size: 11 }, precision: 0, padding: 8 },
+            border: { display: false },
+            beginAtZero: true,
+          },
+        },
+      },
+    });
   }
 
   private createViewsByHourChart(canvas: HTMLCanvasElement, data: AnalyticsResponse): void {

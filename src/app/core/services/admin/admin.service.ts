@@ -360,10 +360,11 @@ export class AdminService {
     return this.http.delete<HttpStatusCode>(`/admin/cable-types/${typeId}/variants/${variantId}`);
   }
 
-  getAnalytics(period?: string): Observable<AnalyticsResponse> {
-    return this.http.get<AnalyticsResponse>('/admin/analytics', {
-      ...(period && { params: { period } }),
-    });
+  getAnalytics(range: { from_date?: string; to_date?: string } = {}): Observable<AnalyticsResponse> {
+    let params = new HttpParams();
+    if (range.from_date) params = params.set('from_date', range.from_date);
+    if (range.to_date) params = params.set('to_date', range.to_date);
+    return this.http.get<AnalyticsResponse>('/admin/analytics', { params });
   }
 
   // Task Management

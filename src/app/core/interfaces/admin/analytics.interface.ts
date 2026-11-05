@@ -23,6 +23,11 @@ export interface ViewsByHour {
   views: number;
 }
 
+export interface ViewsByDay {
+  day: string;
+  views: number;
+}
+
 export interface HighViewsLowSales {
   product_id: string;
   product_name: string;
@@ -43,6 +48,7 @@ export interface AnalyticsResponse {
   trending_this_week: TrendingProduct[];
   unique_viewers: UniqueViewersProduct[];
   views_by_hour: ViewsByHour[];
+  views_by_day: ViewsByDay[];
   high_views_low_sales: HighViewsLowSales[];
   conversion_rates: ConversionRate[];
 }
