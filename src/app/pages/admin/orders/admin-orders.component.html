@@ -495,6 +495,66 @@
           </svg>
         </button>
 
+        @if (isSelected(order.id)) {
+        <div class="border-hairline-strong/60 mt-3 border-t pt-3">
+          <p class="text-green-70 mb-2 text-xs font-semibold tracking-wide uppercase">
+            პროდუქტები ({{ order.items.length }})
+          </p>
+          <div class="space-y-2.5">
+            @for (item of order.items; track item.id) {
+            <div class="flex items-center gap-3">
+              @if (getItemImageUrl(item); as imgUrl) {
+              <div class="border-hairline-strong/60 h-12 w-12 shrink-0 overflow-hidden rounded-lg border">
+                <img
+                  [src]="imgUrl"
+                  [alt]="item.product_name"
+                  class="h-full w-full object-cover"
+                />
+              </div>
+              } @else {
+              <div
+                class="border-hairline-strong/60 bg-platinum-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  class="text-platinum-40"
+                >
+                  <path
+                    d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              }
+              <div class="min-w-0 flex-1">
+                <a
+                  [routerLink]="getProductRoute(item)"
+                  class="text-platinum-100 block truncate text-sm font-medium"
+                >
+                  {{ item.product_name }}
+                </a>
+                <p class="text-platinum-50 mt-0.5 text-xs">
+                  {{ item.quantity }} ცალი × {{ formatItemAmount(item.price_at_purchase) }}
+                </p>
+                @if (item.product_sku) {
+                <p class="text-platinum-40 font-mono text-[11px]">{{ item.product_sku }}</p>
+                }
+              </div>
+              <span class="text-platinum-100 shrink-0 text-sm font-semibold">
+                {{ formatItemAmount(item.price_at_purchase * item.quantity) }}
+              </span>
+            </div>
+            }
+          </div>
+        </div>
+        }
+
         <!-- Status -->
         <div class="border-hairline-strong/60 mt-3 flex flex-col gap-2.5 border-t pt-3">
           <app-dropdown
@@ -537,67 +597,8 @@
         <!-- Expanded detail -->
         @if (isSelected(order.id)) {
         <div class="border-hairline-strong/60 mt-3 space-y-3 border-t pt-3">
-          <!-- Items -->
-          <div>
-            <p class="text-green-70 mb-2 text-xs font-semibold tracking-wide uppercase">
-              პროდუქტები ({{ order.items.length }})
-            </p>
-            <div class="space-y-2.5">
-              @for (item of order.items; track item.id) {
-              <div class="flex items-center gap-3">
-                @if (getItemImageUrl(item); as imgUrl) {
-                <div class="border-hairline-strong/60 h-12 w-12 shrink-0 overflow-hidden rounded-lg border">
-                  <img
-                    [src]="imgUrl"
-                    [alt]="item.product_name"
-                    class="h-full w-full object-cover"
-                  />
-                </div>
-                } @else {
-                <div
-                  class="border-hairline-strong/60 bg-platinum-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border"
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    class="text-platinum-40"
-                  >
-                    <path
-                      d="M21 15V9L12 4.5L3 9V15L12 19.5L21 15Z"
-                      stroke="currentColor"
-                      stroke-width="1.4"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-                }
-                <div class="min-w-0 flex-1">
-                  <a
-                    [routerLink]="getProductRoute(item)"
-                    class="text-platinum-100 block truncate text-sm font-medium"
-                  >
-                    {{ item.product_name }}
-                  </a>
-                  <p class="text-platinum-50 mt-0.5 text-xs">
-                    {{ item.quantity }} ცალი × {{ formatItemAmount(item.price_at_purchase) }}
-                  </p>
-                  @if (item.product_sku) {
-                  <p class="text-platinum-40 font-mono text-[11px]">{{ item.product_sku }}</p>
-                  }
-                </div>
-                <span class="text-platinum-100 shrink-0 text-sm font-semibold">
-                  {{ formatItemAmount(item.price_at_purchase * item.quantity) }}
-                </span>
-              </div>
-              }
-            </div>
-          </div>
-
           <!-- Customer -->
-          <dl class="border-hairline-strong/60 grid grid-cols-2 gap-x-4 gap-y-2 border-t pt-3">
+          <dl class="grid grid-cols-2 gap-x-4 gap-y-2">
             @if (order.customer_type === 'company') {
             <div class="col-span-2">
               <dt class="text-platinum-50 text-xs">ორგანიზაცია</dt>
