@@ -82,6 +82,7 @@ export class AdminOrdersComponent {
     { label: 'გაგზავნილია (ონვეი)', value: 'shipped_onway' },
     { label: 'გაგზავნილია-იმავე დღე', value: 'shipped_same_day' },
     { label: 'გაგზავნილია-1 საათში', value: 'shipped_one_hour' },
+    { label: 'ადგილიდან გაყიდვა', value: 'sold_on_site' },
     { label: 'FINA-ში გატარებულია', value: 'finance_cleared' },
     { label: 'თანხა დაბრუნებულია', value: 'refunded' },
     { label: 'თანხა დაბრუნებულია ნაწილობრივ', value: 'partially_refunded' },
@@ -441,6 +442,8 @@ export class AdminOrdersComponent {
         return 'გაგზავნილია-იმავე დღე';
       case 'shipped_one_hour':
         return 'გაგზავნილია-1 საათში';
+      case 'sold_on_site':
+        return 'ადგილიდან გაყიდვა';
       case 'refunded':
         return 'თანხა დაბრუნებულია';
       case 'partially_refunded':
@@ -1046,6 +1049,7 @@ export class AdminOrdersComponent {
       case 'approved':
       case 'shipped':
       case 'finance_cleared':
+      case 'sold_on_site':
         return 'bg-success';
       case 'pending':
       case 'processing':

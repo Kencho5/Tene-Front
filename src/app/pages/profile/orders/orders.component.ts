@@ -62,6 +62,8 @@ export class OrdersComponent {
       case 'shipped_same_day':
       case 'shipped_one_hour':
         return 'გაგზავნილია';
+      case 'sold_on_site':
+        return 'ადგილიდან გაყიდვა';
       case 'finance_cleared':
         return 'დადასტურებული';
       case 'refunded':

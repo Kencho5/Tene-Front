@@ -178,6 +178,7 @@ export type OrderStatus =
   | 'shipped_onway'
   | 'shipped_same_day'
   | 'shipped_one_hour'
+  | 'sold_on_site'
   | 'finance_cleared'
   | 'refunded'
   | 'partially_refunded';

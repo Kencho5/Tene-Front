@@ -136,7 +136,7 @@ export class AnalyticsComponent implements OnDestroy {
   });
 
   constructor() {
-    this.selectPreset('today');
+    this.selectPreset('last_30');
 
     effect(() => {
       const analytics = this.data();
