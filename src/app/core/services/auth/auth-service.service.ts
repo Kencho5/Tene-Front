@@ -11,7 +11,7 @@ import {
   RegisterVerifyFields,
   User,
 } from '@core/interfaces/auth.interface';
-import { PosthogService } from '@core/services/posthog.service';
+import { ClarityService } from '@core/services/clarity.service';
 
 const TOKEN_KEY = 'token';
 
@@ -22,7 +22,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly posthog = inject(PosthogService);
+  private readonly clarity = inject(ClarityService);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   private readonly userSignal = signal<User | null>(null);
@@ -82,7 +82,7 @@ export class AuthService {
     this.tokenSignal.set(token);
     if (this.isBrowser) localStorage.setItem(TOKEN_KEY, token);
 
-    this.posthog.identify(String(user.user_id), { email: user.email, name: user.name });
+    this.clarity.identify(String(user.user_id), user.name);
 
     if (user.role === 'admin' || user.role === 'operator') {
       this.router.navigate(['/admin']);
@@ -95,7 +95,6 @@ export class AuthService {
     this.userSignal.set(null);
     this.tokenSignal.set(null);
     if (this.isBrowser) localStorage.removeItem(TOKEN_KEY);
-    this.posthog.reset();
     this.router.navigate(['/auth/login']);
   }
 

@@ -4,7 +4,7 @@ import { ViewportScroller } from '@angular/common';
 import { filter, pairwise } from 'rxjs';
 import { RouterOutlet } from '@angular/router';
 import { ToastComponent } from '@shared/components/ui/toast/toast.component';
-import { PosthogService } from '@core/services/posthog.service';
+import { ClarityService } from '@core/services/clarity.service';
 import { MetaPixelService } from '@core/services/meta-pixel.service';
 
 @Component({
@@ -15,11 +15,11 @@ import { MetaPixelService } from '@core/services/meta-pixel.service';
 export class AppComponent implements OnInit {
   private router = inject(Router);
   private viewportScroller = inject(ViewportScroller);
-  private posthog = inject(PosthogService);
+  private clarity = inject(ClarityService);
   private metaPixel = inject(MetaPixelService);
 
   ngOnInit() {
-    this.posthog.init();
+    this.clarity.init();
     this.metaPixel.init();
     this.viewportScroller.setHistoryScrollRestoration('auto');
 

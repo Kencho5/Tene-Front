@@ -3,5 +3,5 @@ export const environment = {
   apiUrl: '/api',
   google_client_id: '1094512636497-fkebm4p0rt83p0m4ohbrhgu6liq481ts.apps.googleusercontent.com',
   product_image_url: 'https://assets.tene.ge',
-  posthog_key: 'phc_inC3Y36EEapcwV1az3449lwPad4dE3btpx9VmAGvSJn',
+  clarity_id: 'z9kju1ywob',
 };
