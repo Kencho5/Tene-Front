@@ -251,95 +251,91 @@ export class ProductComponent {
     },
   });
 
-  readonly comboSelection = signal<{ offerId: number; productIds: string[] } | null>(null);
+  readonly comboExcluded = signal<Record<number, string[]>>({});
 
   readonly comboViews = computed(() => {
     const offers = this.comboOffersResource.value();
     const mainRegular = this.finalPrice();
+    const excluded = this.comboExcluded();
     const visible = this.isCable()
       ? offers.filter((o) => o.pricing_type === 'addon_price')
       : offers;
 
     return visible
       .map((offer) => {
-        const priced = priceCombo(offer, mainRegular, offer.items.map((i) => i.product_id));
-        const lines = offer.items
-          .filter((i) => i.product)
-          .map((item) => {
-            const line = priced.addons.find((a) => a.productId === item.product_id)!;
-            const image = defaultComboImage(item.product!);
-            return {
-              item,
-              product: item.product!,
-              image,
-              available: image !== null,
-              regularPrice: line.regularPrice,
-              comboPrice: line.unitPrice,
-            };
-          });
         const isBundle = offer.pricing_type === 'bundle_price';
-        const regularTotal =
-          mainRegular + lines.reduce((sum, l) => sum + l.regularPrice, 0);
+        const removed = excluded[offer.id] ?? [];
+        const candidates = offer.items.filter((i) => i.product);
+        const includedIds = candidates
+          .filter((i) => defaultComboImage(i.product!) && (isBundle || !removed.includes(i.product_id)))
+          .map((i) => i.product_id);
+        const priced = priceCombo(offer, mainRegular, includedIds);
+
+        const lines = candidates.map((item) => {
+          const image = defaultComboImage(item.product!);
+          const priceLine = priced.addons.find((a) => a.productId === item.product_id);
+          const regularPrice = calculateDiscount(item.product!.data);
+          return {
+            item,
+            product: item.product!,
+            image,
+            available: image !== null,
+            included: includedIds.includes(item.product_id),
+            regularPrice,
+            comboPrice: priceLine?.unitPrice ?? (item.combo_price == null ? regularPrice : Number(item.combo_price)),
+          };
+        });
+
+        const included = lines.filter((l) => l.included);
+        const total = priced.main.unitPrice + priced.addons.reduce((sum, a) => sum + a.unitPrice, 0);
+        const regularTotal = mainRegular + included.reduce((sum, l) => sum + l.regularPrice, 0);
+
         return {
           offer,
           lines,
           isBundle,
-          available: isBundle ? lines.every((l) => l.available) : lines.some((l) => l.available),
-          bundlePrice: Number(offer.bundle_price ?? 0),
+          mainPrice: priced.main.unitPrice,
+          total,
           regularTotal,
+          count: included.length + 1,
+          canBuy: isBundle ? lines.every((l) => l.available) : included.length > 0,
         };
       })
       .filter((view) => view.lines.length > 0);
   });
 
-  isComboItemSelected(offerId: number, productId: string): boolean {
-    const selection = this.comboSelection();
-    return selection?.offerId === offerId && selection.productIds.includes(productId);
+  removeComboItem(offerId: number, productId: string): void {
+    this.comboExcluded.update((state) => ({
+      ...state,
+      [offerId]: [...(state[offerId] ?? []), productId],
+    }));
   }
 
-  isComboOfferSelected(offerId: number): boolean {
-    return this.comboSelection()?.offerId === offerId;
-  }
-
-  toggleComboItem(offer: ComboOffer, productId: string): void {
-    const selection = this.comboSelection();
-    if (!selection || selection.offerId !== offer.id) {
-      this.comboSelection.set({ offerId: offer.id, productIds: [productId] });
-      return;
-    }
-    const productIds = selection.productIds.includes(productId)
-      ? selection.productIds.filter((id) => id !== productId)
-      : [...selection.productIds, productId];
-    this.comboSelection.set(productIds.length ? { offerId: offer.id, productIds } : null);
-  }
-
-  toggleComboBundle(offer: ComboOffer): void {
-    if (this.isComboOfferSelected(offer.id)) {
-      this.comboSelection.set(null);
-      return;
-    }
-    this.comboSelection.set({
-      offerId: offer.id,
-      productIds: offer.items.map((i) => i.product_id),
-    });
-  }
-
-  skipCombo(): void {
-    this.comboSelection.set(null);
+  restoreComboItem(offerId: number, productId: string): void {
+    this.comboExcluded.update((state) => ({
+      ...state,
+      [offerId]: (state[offerId] ?? []).filter((id) => id !== productId),
+    }));
   }
 
   readonly comboImageUrl = (productId: string, image: ProductImage | null): string =>
     image ? getProductImageUrl(productId, image.image_uuid, image.extension) : '';
 
-  private buildComboLines(main: CartItem): CartItem[] | null {
-    const selection = this.comboSelection();
-    if (!selection) return null;
-    const offer = this.comboOffersResource
-      .value()
-      .find((o) => o.id === selection.offerId);
-    if (!offer) return null;
+  buyCombo(offerId: number): void {
+    const view = this.comboViews().find((v) => v.offer.id === offerId);
+    if (!view?.canBuy) return;
+    const main = this.buildMainItem();
+    if (!main) return;
+    const productIds = view.lines.filter((l) => l.included).map((l) => l.item.product_id);
+    const lines = this.buildComboLines(view.offer, productIds, main);
+    if (!lines) return;
+    this.cartService.addCombo(lines);
+    this.quantity.set(1);
+    this.router.navigate(['/cart']);
+  }
 
-    const priced = priceCombo(offer, this.finalPrice(), selection.productIds);
+  private buildComboLines(offer: ComboOffer, productIds: string[], main: CartItem): CartItem[] | null {
+    const priced = priceCombo(offer, this.finalPrice(), productIds);
     if (priced.addons.length === 0) return null;
     const group = newComboGroupId();
     const comboBase = {
@@ -606,7 +602,7 @@ export class ProductComponent {
 
     effect(() => {
       this.product_id();
-      this.comboSelection.set(null);
+      this.comboExcluded.set({});
     });
 
     effect(() => {
@@ -806,25 +802,25 @@ export class ProductComponent {
     this.selectImage(imageId);
   }
 
-  addToCart(): void {
+  private buildMainItem(): CartItem | null {
     const productData = this.product();
     const color = this.selectedColor();
     const imageId = this.selectedImageId();
 
-    if (!productData || !color || !imageId) return;
+    if (!productData || !color || !imageId) return null;
 
     if (this.isCable() && !this.hasSelectedLength()) {
       this.lengthError.set(true);
       this.lengthSection()?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
+      return null;
     }
 
     const selectedImage = productData.images.find((img) => img.image_uuid === imageId);
-    if (!selectedImage) return;
+    if (!selectedImage || selectedImage.quantity === 0) return null;
 
     const cable = this.cableConfig();
 
-    const mainItem: CartItem = {
+    return {
       product: productData.data,
       quantity: this.quantity(),
       selectedColor: color,
@@ -833,16 +829,15 @@ export class ProductComponent {
       selectedImageQuantity: selectedImage.quantity,
       ...(cable ? { cableConfig: cable } : {}),
     };
+  }
 
-    const comboLines = this.buildComboLines(mainItem);
-    if (comboLines) {
-      this.cartService.addCombo(comboLines);
-    } else {
-      this.cartService.addItem(mainItem);
-    }
+  addToCart(): void {
+    const mainItem = this.buildMainItem();
+    if (!mainItem) return;
+
+    this.cartService.addItem(mainItem);
 
     this.quantity.set(1);
-    this.comboSelection.set(null);
     this.router.navigate(['/cart']);
   }
 
