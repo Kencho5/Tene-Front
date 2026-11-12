@@ -15,6 +15,10 @@ export interface CheckoutCartItem {
     watts: number;
     length_cm: number;
   };
+  combo?: {
+    offer_id: number;
+    group: string;
+  };
 }
 
 export interface CheckoutAnalyticsEvent {

@@ -942,6 +942,9 @@ export class CheckoutComponent {
             },
           }
         : {}),
+      ...(item.combo
+        ? { combo: { offer_id: item.combo.offerId, group: item.combo.group } }
+        : {}),
     })),
   );
 

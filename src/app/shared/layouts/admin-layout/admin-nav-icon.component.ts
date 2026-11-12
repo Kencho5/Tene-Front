@@ -37,6 +37,11 @@ import { AdminNavIcon } from './admin-nav';
           @case ('top-products') {
             <path d="m8 1.75 1.9 3.85 4.25.62-3.08 3 .73 4.23L8 11.45l-3.8 2 .73-4.23-3.08-3 4.25-.62L8 1.75Z" />
           }
+          @case ('combo-offers') {
+            <rect x="1.75" y="5.25" width="7" height="9" rx="1.5" />
+            <path d="M5.25 5.25V3.25c0-.83.67-1.5 1.5-1.5h6c.83 0 1.5.67 1.5 1.5v6c0 .83-.67 1.5-1.5 1.5h-4" />
+            <path d="M5.25 8v3.5M3.5 9.75H7" />
+          }
           @case ('categories') {
             <rect x="2" y="2" width="5" height="5" rx="1.25" />
             <rect x="9" y="2" width="5" height="5" rx="1.25" />

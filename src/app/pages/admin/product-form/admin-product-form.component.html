@@ -614,6 +614,15 @@
       </button>
     </div>
   </form>
+
+  <section class="border-hairline-strong/50 mt-8 border-t py-8">
+    <h2 class="text-platinum-100 mb-4 text-base font-semibold">კომბო შეთავაზებები</h2>
+    @if (productId(); as id) {
+      <app-combo-offers-manager [mainProductId]="id" />
+    } @else {
+      <p class="text-platinum-50 text-sm">კომბო შეთავაზების დასამატებლად ჯერ შეინახეთ პროდუქტი.</p>
+    }
+  </section>
 </div>
 
 <ng-template #addButton let-kind>

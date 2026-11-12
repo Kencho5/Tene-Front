@@ -58,6 +58,7 @@ import {
 } from '@core/interfaces/admin/payment-link.interface';
 import { CheckoutSessionSearchResponse } from '@core/interfaces/admin/checkout-sessions.interface';
 import { CreateOrderRequest, UpdateOrderRequest } from '@core/interfaces/admin/orders.interface';
+import { ComboOffer, ComboOfferRequest } from '@core/interfaces/combo-offers.interface';
 import {
   BlogCreatePayload,
   BlogListParams,
@@ -162,6 +163,28 @@ export class AdminService {
 
   updateTopProducts(productIds: string[]): Observable<HttpStatusCode> {
     return this.http.put<HttpStatusCode>('/admin/top-products', { product_ids: productIds });
+  }
+
+  // Combo Offers
+  getComboOffers(mainProductId?: string): Observable<ComboOffer[]> {
+    const query = mainProductId ? `?main_product_id=${encodeURIComponent(mainProductId)}` : '';
+    return this.http.get<ComboOffer[]>(`/admin/combo-offers${query}`);
+  }
+
+  createComboOffer(payload: ComboOfferRequest): Observable<ComboOffer> {
+    return this.http.post<ComboOffer>('/admin/combo-offers', payload);
+  }
+
+  updateComboOffer(id: number, payload: ComboOfferRequest): Observable<ComboOffer> {
+    return this.http.put<ComboOffer>(`/admin/combo-offers/${id}`, payload);
+  }
+
+  setComboOfferEnabled(id: number, enabled: boolean): Observable<ComboOffer> {
+    return this.http.patch<ComboOffer>(`/admin/combo-offers/${id}/enabled`, { enabled });
+  }
+
+  deleteComboOffer(id: number): Observable<void> {
+    return this.http.delete<void>(`/admin/combo-offers/${id}`);
   }
 
   // Order Management

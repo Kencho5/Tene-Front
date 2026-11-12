@@ -25,6 +25,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { getProductImageUrl } from '@utils/product-image-url';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { ComboboxComponent } from '@shared/components/ui/combobox/combobox.component';
+import { ComboOffersManagerComponent } from '@shared/components/admin/combo-offers-manager/combo-offers-manager.component';
 import { flattenCategoryTree } from '@utils/category';
 import { generateProductSlug } from '@utils/slug';
 import { colorLabels } from '@utils/colors';
@@ -56,7 +57,7 @@ interface ImageWithMetadata {
 
 @Component({
   selector: 'app-admin-product-form',
-  imports: [SharedModule, InputComponent, FormField, ComboboxComponent],
+  imports: [SharedModule, InputComponent, FormField, ComboboxComponent, ComboOffersManagerComponent],
   templateUrl: './admin-product-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

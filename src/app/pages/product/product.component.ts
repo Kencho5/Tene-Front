@@ -16,7 +16,9 @@ import { ProductsService } from '@core/services/products/products.service';
 import { catchError, of, map } from 'rxjs';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductResponse, ProductImage } from '@core/interfaces/products.interface';
+import { CartItem, ProductResponse, ProductImage } from '@core/interfaces/products.interface';
+import { ComboOffer } from '@core/interfaces/combo-offers.interface';
+import { defaultComboImage, newComboGroupId, priceCombo } from '@utils/combo';
 import { ImageComponent } from '@shared/components/ui/image/image.component';
 import {
   BreadcrumbComponent,
@@ -237,6 +239,150 @@ export class ProductComponent {
   readonly selectedImageQuantity = computed(() => {
     return this.displayImage()?.quantity ?? 0;
   });
+
+  readonly comboOffersResource = rxResource({
+    defaultValue: [] as ComboOffer[],
+    params: () => this.product()?.data.id,
+    stream: ({ params: productId }) => {
+      if (!productId) return of([] as ComboOffer[]);
+      return this.productsService
+        .getComboOffers(productId)
+        .pipe(catchError(() => of([] as ComboOffer[])));
+    },
+  });
+
+  readonly comboSelection = signal<{ offerId: number; productIds: string[] } | null>(null);
+
+  readonly comboViews = computed(() => {
+    const offers = this.comboOffersResource.value();
+    const mainRegular = this.finalPrice();
+    const visible = this.isCable()
+      ? offers.filter((o) => o.pricing_type === 'addon_price')
+      : offers;
+
+    return visible
+      .map((offer) => {
+        const priced = priceCombo(offer, mainRegular, offer.items.map((i) => i.product_id));
+        const lines = offer.items
+          .filter((i) => i.product)
+          .map((item) => {
+            const line = priced.addons.find((a) => a.productId === item.product_id)!;
+            const image = defaultComboImage(item.product!);
+            return {
+              item,
+              product: item.product!,
+              image,
+              available: image !== null,
+              regularPrice: line.regularPrice,
+              comboPrice: line.unitPrice,
+            };
+          });
+        const isBundle = offer.pricing_type === 'bundle_price';
+        const regularTotal =
+          mainRegular + lines.reduce((sum, l) => sum + l.regularPrice, 0);
+        return {
+          offer,
+          lines,
+          isBundle,
+          available: isBundle ? lines.every((l) => l.available) : lines.some((l) => l.available),
+          bundlePrice: Number(offer.bundle_price ?? 0),
+          regularTotal,
+        };
+      })
+      .filter((view) => view.lines.length > 0);
+  });
+
+  isComboItemSelected(offerId: number, productId: string): boolean {
+    const selection = this.comboSelection();
+    return selection?.offerId === offerId && selection.productIds.includes(productId);
+  }
+
+  isComboOfferSelected(offerId: number): boolean {
+    return this.comboSelection()?.offerId === offerId;
+  }
+
+  toggleComboItem(offer: ComboOffer, productId: string): void {
+    const selection = this.comboSelection();
+    if (!selection || selection.offerId !== offer.id) {
+      this.comboSelection.set({ offerId: offer.id, productIds: [productId] });
+      return;
+    }
+    const productIds = selection.productIds.includes(productId)
+      ? selection.productIds.filter((id) => id !== productId)
+      : [...selection.productIds, productId];
+    this.comboSelection.set(productIds.length ? { offerId: offer.id, productIds } : null);
+  }
+
+  toggleComboBundle(offer: ComboOffer): void {
+    if (this.isComboOfferSelected(offer.id)) {
+      this.comboSelection.set(null);
+      return;
+    }
+    this.comboSelection.set({
+      offerId: offer.id,
+      productIds: offer.items.map((i) => i.product_id),
+    });
+  }
+
+  skipCombo(): void {
+    this.comboSelection.set(null);
+  }
+
+  readonly comboImageUrl = (productId: string, image: ProductImage | null): string =>
+    image ? getProductImageUrl(productId, image.image_uuid, image.extension) : '';
+
+  private buildComboLines(main: CartItem): CartItem[] | null {
+    const selection = this.comboSelection();
+    if (!selection) return null;
+    const offer = this.comboOffersResource
+      .value()
+      .find((o) => o.id === selection.offerId);
+    if (!offer) return null;
+
+    const priced = priceCombo(offer, this.finalPrice(), selection.productIds);
+    if (priced.addons.length === 0) return null;
+    const group = newComboGroupId();
+    const comboBase = {
+      offerId: offer.id,
+      group,
+      title: offer.title,
+      pricingType: offer.pricing_type,
+    };
+
+    const addons: CartItem[] = [];
+    for (const line of priced.addons) {
+      const product = offer.items.find((i) => i.product_id === line.productId)?.product;
+      const image = product ? defaultComboImage(product) : null;
+      if (!product || !image) return null;
+      addons.push({
+        product: product.data,
+        quantity: main.quantity,
+        selectedColor: image.color,
+        selectedImageId: image.image_uuid,
+        selectedImageExtension: image.extension,
+        selectedImageQuantity: image.quantity,
+        combo: {
+          ...comboBase,
+          isMain: false,
+          unitPrice: line.unitPrice,
+          regularPrice: line.regularPrice,
+        },
+      });
+    }
+
+    return [
+      {
+        ...main,
+        combo: {
+          ...comboBase,
+          isMain: true,
+          unitPrice: priced.main.unitPrice,
+          regularPrice: priced.main.regularPrice,
+        },
+      },
+      ...addons,
+    ];
+  }
 
   readonly selectedVideoIndex = signal<number | null>(null);
 
@@ -459,6 +605,11 @@ export class ProductComponent {
     });
 
     effect(() => {
+      this.product_id();
+      this.comboSelection.set(null);
+    });
+
+    effect(() => {
       const product = this.product();
       if (!product) return;
       if (!this.hasSpecifications()) {
@@ -673,7 +824,7 @@ export class ProductComponent {
 
     const cable = this.cableConfig();
 
-    this.cartService.addItem({
+    const mainItem: CartItem = {
       product: productData.data,
       quantity: this.quantity(),
       selectedColor: color,
@@ -681,9 +832,17 @@ export class ProductComponent {
       selectedImageExtension: selectedImage.extension,
       selectedImageQuantity: selectedImage.quantity,
       ...(cable ? { cableConfig: cable } : {}),
-    });
+    };
+
+    const comboLines = this.buildComboLines(mainItem);
+    if (comboLines) {
+      this.cartService.addCombo(comboLines);
+    } else {
+      this.cartService.addItem(mainItem);
+    }
 
     this.quantity.set(1);
+    this.comboSelection.set(null);
     this.router.navigate(['/cart']);
   }
 

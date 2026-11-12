@@ -86,6 +86,17 @@ export interface CartItem {
     price: number;
     warranty: string;
   };
+  combo?: CartItemCombo;
+}
+
+export interface CartItemCombo {
+  offerId: number;
+  group: string;
+  title: string;
+  pricingType: 'addon_price' | 'bundle_price';
+  isMain: boolean;
+  unitPrice: number;
+  regularPrice: number;
 }
 
 export interface CheckoutFields {
@@ -146,6 +157,7 @@ export interface CheckoutRequest {
     quantity: number;
     color: string;
     cable_config?: { watts: number; length_cm: number };
+    combo?: { offer_id: number; group: string };
   }[];
 }
 
@@ -252,6 +264,10 @@ export interface OrderItem {
   product_image: ProductImage | null;
   created_at: string;
   cable_config?: { watts: number; length_cm: number } | null;
+  combo_offer_id?: number | null;
+  combo_title?: string | null;
+  combo_group?: string | null;
+  regular_price?: number | string | null;
 }
 
 export interface OrderSearchResponse {

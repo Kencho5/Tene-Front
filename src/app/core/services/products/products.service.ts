@@ -6,6 +6,7 @@ import {
   ProductSearchResponse,
 } from '@core/interfaces/products.interface';
 import { CableType } from '@core/interfaces/admin/cable-types.interface';
+import { ComboOffer } from '@core/interfaces/combo-offers.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -29,6 +30,10 @@ export class ProductsService {
 
   getRelatedProducts(productId: string): Observable<ProductResponse[]> {
     return this.http.get<ProductResponse[]>(`/products/${productId}/related`);
+  }
+
+  getComboOffers(productId: string): Observable<ComboOffer[]> {
+    return this.http.get<ComboOffer[]>(`/products/${productId}/combo-offers`);
   }
 
   getFacets(params: string): Observable<ProductFacets> {

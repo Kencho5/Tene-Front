@@ -1,0 +1,275 @@
+<div class="border-hairline-strong/70 rounded-xl border bg-white p-4 shadow-[0_1px_2px_rgba(33,33,33,0.06)] sm:p-5">
+  <div class="flex items-center justify-between gap-3">
+    <h3 class="text-platinum-100 text-[15px] font-semibold">
+      {{ isEdit() ? 'კომბოს რედაქტირება' : 'ახალი კომბო' }}
+    </h3>
+    <label class="text-platinum-70 inline-flex cursor-pointer items-center gap-2 text-sm">
+      <span>აქტიური</span>
+      <button
+        type="button"
+        role="switch"
+        [attr.aria-checked]="enabled()"
+        (click)="enabled.set(!enabled())"
+        class="relative h-6 w-10 rounded-full transition-colors"
+        [ngClass]="enabled() ? 'bg-green-60' : 'bg-platinum-20'"
+      >
+        <span
+          class="absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow transition-transform"
+          [class.translate-x-4]="enabled()"
+        ></span>
+      </button>
+    </label>
+  </div>
+
+  <div class="mt-4 grid gap-4">
+    <div>
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ძირითადი პროდუქტი <span class="text-valencia-60">*</span></span>
+      @if (mainProduct(); as main) {
+        <div class="border-hairline-strong/70 flex items-center gap-3 rounded-lg border p-2">
+          <img [src]="imageUrl(main)" alt="" class="bg-surface-10 size-10 shrink-0 rounded-md object-contain" />
+          <div class="min-w-0 flex-1">
+            <p class="text-platinum-100 truncate text-sm font-medium">{{ main.data.name }}</p>
+            <p class="text-platinum-50 text-xs tabular-nums">{{ main.data.sku }} · {{ regularPrice(main) | number: '1.2-2' }} ₾</p>
+          </div>
+          @if (!fixedMainProduct()) {
+            <button
+              type="button"
+              (click)="clearMain()"
+              class="text-platinum-50 hover:text-platinum-80 rounded-md px-2 py-1 text-xs font-medium hover:bg-neutral-50"
+            >
+              შეცვლა
+            </button>
+          }
+        </div>
+      } @else {
+        <div class="relative">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            class="text-platinum-50 pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 sm:left-3"
+            aria-hidden="true"
+          >
+            <circle cx="7" cy="7" r="4.75" stroke="currentColor" stroke-width="1.4" />
+            <path d="m10.5 10.5 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+          </svg>
+          <input
+            type="text"
+            autocomplete="off"
+            [value]="mainQuery()"
+            (input)="onMainSearch($event)"
+            placeholder="მოძებნე ძირითადი პროდუქტი"
+            class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white pr-3 pl-10 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:pl-9 sm:text-sm"
+            [class.border-valencia-60]="submitted() && !mainProduct()"
+          />
+          @if (mainTerm()) {
+            <div class="border-hairline-strong/70 absolute inset-x-0 top-full z-30 mt-1.5 max-h-72 overflow-y-auto rounded-lg border bg-white p-1 shadow-[0_8px_24px_rgba(33,33,33,0.12)]">
+              @if (mainSearch.isLoading()) {
+                <p class="text-platinum-50 px-3 py-5 text-center text-sm">იძებნება...</p>
+              } @else if (mainSearch.value().length === 0) {
+                <p class="text-platinum-50 px-3 py-5 text-center text-sm">პროდუქტი ვერ მოიძებნა</p>
+              } @else {
+                @for (product of mainSearch.value(); track product.data.id) {
+                  <button
+                    type="button"
+                    (click)="selectMain(product)"
+                    class="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left hover:bg-neutral-50"
+                  >
+                    <img [src]="imageUrl(product)" alt="" class="bg-surface-10 size-9 shrink-0 rounded-md object-contain" />
+                    <span class="text-platinum-100 min-w-0 flex-1 truncate text-sm">{{ product.data.name }}</span>
+                    <span class="text-platinum-60 shrink-0 text-xs tabular-nums">{{ regularPrice(product) | number: '1.2-2' }} ₾</span>
+                  </button>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">სათაური <span class="text-valencia-60">*</span></span>
+      <input
+        type="text"
+        [value]="title()"
+        (input)="title.set(inputValue($event))"
+        class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm"
+        [class.border-valencia-60]="submitted() && !title().trim()"
+      />
+    </label>
+
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">აღწერა</span>
+      <textarea
+        rows="2"
+        [value]="description()"
+        (input)="description.set(inputValue($event))"
+        class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 w-full resize-y rounded-lg border bg-white px-3 py-2 text-[15px] outline-hidden focus:ring-3 sm:text-sm"
+      ></textarea>
+    </label>
+
+    <div>
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ფასის ტიპი</span>
+      <div role="radiogroup" class="grid gap-2 sm:grid-cols-2">
+        <button
+          type="button"
+          role="radio"
+          [attr.aria-checked]="!isBundle()"
+          (click)="pricingType.set('addon_price')"
+          class="rounded-lg border p-3 text-left transition-colors"
+          [ngClass]="!isBundle() ? 'border-green-60 bg-green-10/50' : 'border-hairline-strong/70 hover:bg-neutral-50'"
+        >
+          <span class="text-platinum-100 block text-sm font-medium">დამატებითი პროდუქტის ფასი</span>
+        </button>
+        <button
+          type="button"
+          role="radio"
+          [attr.aria-checked]="isBundle()"
+          (click)="pricingType.set('bundle_price')"
+          class="rounded-lg border p-3 text-left transition-colors"
+          [ngClass]="isBundle() ? 'border-green-60 bg-green-10/50' : 'border-hairline-strong/70 hover:bg-neutral-50'"
+        >
+          <span class="text-platinum-100 block text-sm font-medium">ფიქსირებული ფასი</span>
+        </button>
+      </div>
+    </div>
+
+    @if (isBundle()) {
+      <label class="block">
+        <span class="text-platinum-70 mb-1.5 block text-sm font-medium">კომბოს ფასი (₾) <span class="text-valencia-60">*</span></span>
+        <input
+          type="number"
+          min="0"
+          step="0.01"
+          [value]="bundlePrice()"
+          (input)="bundlePrice.set(inputValue($event))"
+          placeholder="0.00"
+          class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] tabular-nums outline-hidden focus:ring-3 sm:h-10 sm:w-48 sm:text-sm"
+          [class.border-valencia-60]="submitted() && bundlePriceInvalid()"
+        />
+      </label>
+    }
+
+    <div>
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">შეთავაზებული პროდუქტები <span class="text-valencia-60">*</span></span>
+
+      @if (items().length > 0) {
+        <ul class="border-hairline-strong/70 divide-hairline-strong/50 mb-2 divide-y rounded-lg border">
+          @for (item of items(); track item.product.data.id) {
+            <li class="flex flex-wrap items-center gap-3 p-2 sm:flex-nowrap">
+              <img [src]="imageUrl(item.product)" alt="" class="bg-surface-10 size-10 shrink-0 rounded-md object-contain" />
+              <div class="min-w-0 flex-1">
+                <p class="text-platinum-100 truncate text-sm font-medium">{{ item.product.data.name }}</p>
+                <p class="text-platinum-50 text-xs tabular-nums">ჩვეულებრივი: {{ regularPrice(item.product) | number: '1.2-2' }} ₾</p>
+              </div>
+              @if (!isBundle()) {
+                <label class="flex items-center gap-1.5">
+                  <span class="text-platinum-60 text-xs">კომბო ფასი</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    [value]="item.comboPrice"
+                    (input)="setItemPrice(item.product.data.id, inputValue($event))"
+                    class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-9 w-24 rounded-md border bg-white px-2 text-sm tabular-nums outline-hidden focus:ring-3"
+                    [class.border-valencia-60]="submitted() && isPriceInvalid(item.comboPrice)"
+                  />
+                  <span class="text-platinum-60 text-xs">₾</span>
+                </label>
+              }
+              <button
+                type="button"
+                (click)="removeItem(item.product.data.id)"
+                aria-label="წაშლა"
+                class="text-platinum-40 hover:text-valencia-60 inline-flex size-8 items-center justify-center rounded-md hover:bg-neutral-50"
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M12 4 4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+
+      <div class="relative">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          class="text-platinum-50 pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 sm:left-3"
+          aria-hidden="true"
+        >
+          <circle cx="7" cy="7" r="4.75" stroke="currentColor" stroke-width="1.4" />
+          <path d="m10.5 10.5 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        </svg>
+        <input
+          type="text"
+          autocomplete="off"
+          [value]="itemQuery()"
+          (input)="onItemSearch($event)"
+          placeholder="მოძებნე პროდუქტი დასამატებლად"
+          class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white pr-3 pl-10 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:pl-9 sm:text-sm"
+          [class.border-valencia-60]="submitted() && items().length === 0"
+        />
+        @if (itemTerm()) {
+          <div class="border-hairline-strong/70 absolute inset-x-0 top-full z-30 mt-1.5 max-h-72 overflow-y-auto rounded-lg border bg-white p-1 shadow-[0_8px_24px_rgba(33,33,33,0.12)]">
+            @if (itemSearch.isLoading()) {
+              <p class="text-platinum-50 px-3 py-5 text-center text-sm">იძებნება...</p>
+            } @else if (itemResults().length === 0) {
+              <p class="text-platinum-50 px-3 py-5 text-center text-sm">პროდუქტი ვერ მოიძებნა</p>
+            } @else {
+              @for (product of itemResults(); track product.data.id) {
+                <button
+                  type="button"
+                  (click)="addItem(product)"
+                  class="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left hover:bg-neutral-50"
+                >
+                  <img [src]="imageUrl(product)" alt="" class="bg-surface-10 size-9 shrink-0 rounded-md object-contain" />
+                  <span class="text-platinum-100 min-w-0 flex-1 truncate text-sm">{{ product.data.name }}</span>
+                  <span class="text-platinum-60 shrink-0 text-xs tabular-nums">{{ regularPrice(product) | number: '1.2-2' }} ₾</span>
+                </button>
+              }
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (mainProduct() && items().length > 0) {
+      <div class="bg-surface-10 flex flex-wrap items-baseline justify-between gap-2 rounded-lg px-3 py-2.5 text-sm">
+        <span class="text-platinum-70">ჯამი კომბოთი</span>
+        <span class="tabular-nums">
+          <span class="text-platinum-100 font-semibold">{{ comboTotal() | number: '1.2-2' }} ₾</span>
+          @if (regularTotal() > comboTotal()) {
+            <span class="text-platinum-40 ml-2 line-through">{{ regularTotal() | number: '1.2-2' }} ₾</span>
+          }
+        </span>
+      </div>
+    }
+
+    @if ((submitted() && validationError()) || error()) {
+      <p class="text-valencia-60 text-sm">{{ error() || validationError() }}</p>
+    }
+  </div>
+
+  <div class="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+    <button
+      type="button"
+      (click)="cancel()"
+      class="text-platinum-80 border-hairline-strong/70 inline-flex h-11 items-center justify-center rounded-lg border bg-white px-4 text-[15px] font-medium shadow-[0_1px_1px_rgba(33,33,33,0.04)] hover:bg-neutral-50 sm:h-9 sm:text-sm"
+    >
+      გაუქმება
+    </button>
+    <button
+      type="button"
+      (click)="submit()"
+      [disabled]="saving()"
+      class="bg-green-60 hover:bg-green-70 inline-flex h-11 items-center justify-center gap-2 rounded-lg px-4 text-[15px] font-medium text-white shadow-[0_1px_1px_rgba(33,33,33,0.08)] disabled:cursor-not-allowed disabled:opacity-60 sm:h-9 sm:text-sm"
+    >
+      {{ saving() ? 'ინახება...' : 'შენახვა' }}
+    </button>
+  </div>
+</div>

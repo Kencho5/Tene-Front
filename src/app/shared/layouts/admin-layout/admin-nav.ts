@@ -6,6 +6,7 @@ export type AdminNavIcon =
   | 'checkout'
   | 'products'
   | 'top-products'
+  | 'combo-offers'
   | 'brands'
   | 'categories'
   | 'cable-specs'
@@ -46,6 +47,7 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
     items: [
       { label: 'პროდუქტები', route: '/admin/products', icon: 'products' },
       { label: 'ტოპ პროდუქტები', route: '/admin/top-products', icon: 'top-products' },
+      { label: 'კომბო შეთავაზებები', route: '/admin/combo-offers', icon: 'combo-offers' },
       { label: 'კატეგორიები', route: '/admin/categories', icon: 'categories' },
       { label: 'ბრენდები', route: '/admin/brands', icon: 'brands' },
       { label: 'კაბელის ტიპები', route: '/admin/cable-types', icon: 'cable-specs' },

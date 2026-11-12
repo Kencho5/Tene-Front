@@ -182,6 +182,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'combo-offers',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/combo-offers/admin-combo-offers.component').then(
+            (m) => m.AdminComboOffersComponent,
+          ),
+      },
+      {
         path: 'products/new',
         canActivate: [adminOnlyGuard],
         loadComponent: () =>

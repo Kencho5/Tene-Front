@@ -179,6 +179,9 @@
             <p class="text-platinum-50 mt-0.5 text-xs">
               {{ formatItemAmount(item.price_at_purchase) }} {{ o.currency }} × {{ item.quantity }}
             </p>
+            @if (item.combo_title) {
+            <p class="text-green-70 text-[11px] font-medium">კომბო · {{ item.combo_title }}</p>
+            }
             @if (item.product_sku) {
             <p class="text-platinum-40 font-mono text-[11px]">{{ item.product_sku }}</p>
             }
