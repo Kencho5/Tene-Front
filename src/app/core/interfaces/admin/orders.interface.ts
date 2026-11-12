@@ -20,7 +20,8 @@ export type PaymentMethod =
   | 'transfer_extra'
   | 'cash_on_delivery'
   | 'consignment'
-  | 'gift';
+  | 'gift'
+  | 'no';
 
 export type FulfillmentMethod = 'store_pickup' | 'courier';
 

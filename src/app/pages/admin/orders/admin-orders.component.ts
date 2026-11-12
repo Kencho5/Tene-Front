@@ -86,6 +86,7 @@ export class AdminOrdersComponent {
     { label: 'FINA-ში გატარებულია', value: 'finance_cleared' },
     { label: 'თანხა დაბრუნებულია', value: 'refunded' },
     { label: 'თანხა დაბრუნებულია ნაწილობრივ', value: 'partially_refunded' },
+    { label: 'გატანა', value: 'taken_out' },
   ];
 
   readonly sourceOptions: ComboboxItems[] = [
@@ -106,6 +107,7 @@ export class AdminOrdersComponent {
     { label: 'კურიერთან გადახდა', value: 'cash_on_delivery' },
     { label: 'კონსიგნაცია', value: 'consignment' },
     { label: 'საჩუქარი', value: 'gift' },
+    { label: 'no', value: 'no' },
   ];
 
   readonly deliveryTypeOptions: ComboboxItems[] = [
@@ -448,6 +450,8 @@ export class AdminOrdersComponent {
         return 'თანხა დაბრუნებულია';
       case 'partially_refunded':
         return 'თანხა დაბრუნებულია ნაწილობრივ';
+      case 'taken_out':
+        return 'გატანა';
       default:
         return status;
     }
@@ -647,6 +651,8 @@ export class AdminOrdersComponent {
         return 'კონსიგნაცია';
       case 'gift':
         return 'საჩუქარი';
+      case 'no':
+        return 'no';
       default:
         return '—';
     }

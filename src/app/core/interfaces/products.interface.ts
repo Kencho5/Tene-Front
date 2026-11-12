@@ -181,7 +181,8 @@ export type OrderStatus =
   | 'sold_on_site'
   | 'finance_cleared'
   | 'refunded'
-  | 'partially_refunded';
+  | 'partially_refunded'
+  | 'taken_out';
 
 export interface Order {
   id: number;

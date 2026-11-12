@@ -70,6 +70,8 @@ export class OrdersComponent {
         return 'თანხა დაბრუნებულია';
       case 'partially_refunded':
         return 'თანხა დაბრუნებულია ნაწილობრივ';
+      case 'taken_out':
+        return 'გატანა';
     }
   }
 

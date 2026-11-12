@@ -66,6 +66,7 @@ export class AdminOrderFormComponent {
     { label: 'FINA-ში გატარებულია', value: 'finance_cleared' },
     { label: 'თანხა დაბრუნებულია', value: 'refunded' },
     { label: 'თანხა დაბრუნებულია ნაწილობრივ', value: 'partially_refunded' },
+    { label: 'გატანა', value: 'taken_out' },
   ];
 
   readonly paymentMethodOptions: ComboboxItems[] = [
@@ -79,6 +80,7 @@ export class AdminOrderFormComponent {
     { label: 'კურიერთან გადახდა', value: 'cash_on_delivery' },
     { label: 'კონსიგნაცია', value: 'consignment' },
     { label: 'საჩუქარი', value: 'gift' },
+    { label: 'no', value: 'no' },
   ];
 
   readonly fulfillmentMethodOptions: ComboboxItems[] = [
