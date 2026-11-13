@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from '@core/services/auth/auth-service.service';
 import { LoadingService } from '@core/services/loading.service';
+import { AdminThemeService } from '@core/services/admin/admin-theme.service';
 import { SpinnerComponent } from '@shared/components/ui/spinner/spinner.component';
 import { ADMIN_NAV_SECTIONS, AdminNavSection, OPERATOR_ROUTES } from './admin-nav';
 import { AdminSidebarComponent } from './admin-sidebar.component';
@@ -12,10 +13,15 @@ import { AdminHeaderComponent } from './admin-header.component';
   imports: [RouterOutlet, SpinnerComponent, AdminSidebarComponent, AdminHeaderComponent],
   templateUrl: './admin-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'admin-theme',
+    '[class.admin-dark]': 'theme.dark()',
+  },
 })
 export class AdminLayoutComponent {
   private readonly authService = inject(AuthService);
   protected readonly loadingService = inject(LoadingService);
+  protected readonly theme = inject(AdminThemeService);
 
   protected readonly user = this.authService.user;
   protected readonly sidebarCollapsed = signal(false);

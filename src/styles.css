@@ -195,3 +195,83 @@ textarea::placeholder {
     animation: none;
   }
 }
+
+.admin-theme {
+  display: contents;
+  color: var(--color-platinum-100);
+}
+
+.admin-dark {
+  color-scheme: dark;
+
+  --color-white: #17191e;
+  --color-black: #000000;
+
+  --color-neutral-50: #111317;
+  --color-neutral-100: #22252c;
+  --color-neutral-200: #2e323a;
+  --color-neutral-300: #3c414b;
+
+  --color-gray-200: #2e323a;
+
+  --color-platinum-5: #1b1e24;
+  --color-platinum-10: #1f2228;
+  --color-platinum-20: #2a2e36;
+  --color-platinum-30: #3a3f49;
+  --color-platinum-40: #737a88;
+  --color-platinum-50: #8f96a3;
+  --color-platinum-60: #a6acb7;
+  --color-platinum-70: #b9bec7;
+  --color-platinum-80: #cbcfd6;
+  --color-platinum-90: #dcdfe4;
+  --color-platinum-100: #eceef1;
+
+  --color-surface-10: #1b1e24;
+  --color-surface-20: #20232a;
+  --color-surface-30: #282c34;
+
+  --color-hairline: #262a31;
+  --color-hairline-strong: #343943;
+
+  --color-green-10: rgb(32 196 95 / 0.12);
+  --color-green-20: rgb(32 196 95 / 0.2);
+  --color-green-80: #3ccf74;
+  --color-green-90: #7fdc9e;
+
+  --color-valencia-10: rgb(255 82 38 / 0.12);
+  --color-valencia-20: rgb(255 82 38 / 0.2);
+  --color-valencia-70: #ff5a3c;
+
+  --color-cream-10: rgb(245 166 35 / 0.12);
+  --color-cream-80: #f7c152;
+}
+
+.admin-dark
+  :is(
+    [class~='text-white'],
+    [class~='text-white/40'],
+    [class~='text-white/70'],
+    [class~='text-white/80'],
+    [class~='fill-white'],
+    [class~='bg-white/10'],
+    [class~='bg-white/20'],
+    [class~='border-white/40'],
+    [class~='aria-[current=page]:text-white'][aria-current='page']
+  ) {
+  --color-white: #ffffff;
+}
+
+.admin-dark [class*='bg-platinum-100/'] {
+  --color-platinum-100: #000000;
+}
+
+.admin-dark :is(input, textarea, select):-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-white) inset !important;
+  box-shadow: 0 0 0px 1000px var(--color-white) inset !important;
+  -webkit-text-fill-color: var(--color-platinum-100) !important;
+  background-color: var(--color-white) !important;
+}
+
+.admin-dark :is(input, textarea)::placeholder {
+  color: var(--color-platinum-40);
+}

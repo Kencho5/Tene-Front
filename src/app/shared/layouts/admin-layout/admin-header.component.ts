@@ -12,6 +12,7 @@ import {
 import { Location } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { User } from '@core/interfaces/auth.interface';
+import { AdminThemeService } from '@core/services/admin/admin-theme.service';
 import { AdminNavItem, AdminNavSection } from './admin-nav';
 import { AdminNavIconComponent } from './admin-nav-icon.component';
 
@@ -33,6 +34,7 @@ interface SearchResult extends AdminNavItem {
 export class AdminHeaderComponent {
   private readonly router = inject(Router);
   private readonly location = inject(Location);
+  protected readonly theme = inject(AdminThemeService);
 
   readonly sections = input.required<AdminNavSection[]>();
   readonly user = input<User | null>(null);

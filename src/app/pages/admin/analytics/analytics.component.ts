@@ -15,6 +15,7 @@ import { SharedModule } from '@shared/shared.module';
 import { Chart, registerables } from 'chart.js';
 import { ComboboxItems } from '@core/interfaces/combobox.interface';
 import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
+import { AdminThemeService } from '@core/services/admin/admin-theme.service';
 
 const DATE_PRESETS: ComboboxItems[] = [
   { label: 'დღეს', value: 'today' },
@@ -40,9 +41,8 @@ const TOOLTIP_CONFIG = {
   boxPadding: 4,
 };
 
-const GRID_COLOR = 'rgba(33, 33, 33, 0.06)';
-const TICK_COLOR = '#8a8a8a';
-const LABEL_COLOR = '#505050';
+const LIGHT_COLORS = { grid: 'rgba(33, 33, 33, 0.06)', tick: '#8a8a8a', label: '#505050', point: '#fff' };
+const DARK_COLORS = { grid: 'rgba(255, 255, 255, 0.07)', tick: '#8f96a3', label: '#b9bec7', point: '#17191e' };
 const BAR_COLOR = '#20c45f';
 const BAR_HOVER_COLOR = '#0fa44d';
 
@@ -54,6 +54,8 @@ const BAR_HOVER_COLOR = '#0fa44d';
 })
 export class AnalyticsComponent implements OnDestroy {
   private readonly adminService = inject(AdminService);
+  private readonly theme = inject(AdminThemeService);
+  private colors = LIGHT_COLORS;
 
   private viewsByHourCanvas = viewChild<ElementRef<HTMLCanvasElement>>('viewsByHourCanvas');
   private viewsByDayCanvas = viewChild<ElementRef<HTMLCanvasElement>>('viewsByDayCanvas');
@@ -145,6 +147,7 @@ export class AnalyticsComponent implements OnDestroy {
       const dCanvas = this.viewsByDayCanvas();
       const mCanvas = this.mostViewedCanvas();
       const cCanvas = this.conversionCanvas();
+      this.colors = this.theme.dark() ? DARK_COLORS : LIGHT_COLORS;
       if (!analytics || this.analyticsResource.isLoading()) return;
 
       if (vCanvas && analytics.views_by_hour.length > 0) {
@@ -296,12 +299,12 @@ export class AnalyticsComponent implements OnDestroy {
         scales: {
           x: {
             grid: { display: false },
-            ticks: { color: TICK_COLOR, font: { size: 11 }, maxRotation: 0, autoSkipPadding: 16 },
+            ticks: { color: this.colors.tick, font: { size: 11 }, maxRotation: 0, autoSkipPadding: 16 },
             border: { display: false },
           },
           y: {
-            grid: { color: GRID_COLOR, drawTicks: false },
-            ticks: { color: TICK_COLOR, font: { size: 11 }, precision: 0, padding: 8 },
+            grid: { color: this.colors.grid, drawTicks: false },
+            ticks: { color: this.colors.tick, font: { size: 11 }, precision: 0, padding: 8 },
             border: { display: false },
             beginAtZero: true,
           },
@@ -337,7 +340,7 @@ export class AnalyticsComponent implements OnDestroy {
             pointRadius: 0,
             pointHoverRadius: 5,
             pointHoverBackgroundColor: BAR_COLOR,
-            pointHoverBorderColor: '#fff',
+            pointHoverBorderColor: this.colors.point,
             pointHoverBorderWidth: 2,
           },
         ],
@@ -358,12 +361,12 @@ export class AnalyticsComponent implements OnDestroy {
         scales: {
           x: {
             grid: { display: false },
-            ticks: { color: TICK_COLOR, font: { size: 11 }, maxRotation: 0, autoSkipPadding: 16 },
+            ticks: { color: this.colors.tick, font: { size: 11 }, maxRotation: 0, autoSkipPadding: 16 },
             border: { display: false },
           },
           y: {
-            grid: { color: GRID_COLOR, drawTicks: false },
-            ticks: { color: TICK_COLOR, font: { size: 11 }, precision: 0, padding: 8 },
+            grid: { color: this.colors.grid, drawTicks: false },
+            ticks: { color: this.colors.tick, font: { size: 11 }, precision: 0, padding: 8 },
             border: { display: false },
             beginAtZero: true,
           },
@@ -409,14 +412,14 @@ export class AnalyticsComponent implements OnDestroy {
         },
         scales: {
           x: {
-            grid: { color: GRID_COLOR, drawTicks: false },
-            ticks: { color: TICK_COLOR, font: { size: 11 }, precision: 0, padding: 8 },
+            grid: { color: this.colors.grid, drawTicks: false },
+            ticks: { color: this.colors.tick, font: { size: 11 }, precision: 0, padding: 8 },
             border: { display: false },
             beginAtZero: true,
           },
           y: {
             grid: { display: false },
-            ticks: { color: LABEL_COLOR, font: { size: 11 }, padding: 4 },
+            ticks: { color: this.colors.label, font: { size: 11 }, padding: 4 },
             border: { display: false },
           },
         },
@@ -461,9 +464,9 @@ export class AnalyticsComponent implements OnDestroy {
         },
         scales: {
           x: {
-            grid: { color: GRID_COLOR, drawTicks: false },
+            grid: { color: this.colors.grid, drawTicks: false },
             ticks: {
-              color: TICK_COLOR,
+              color: this.colors.tick,
               font: { size: 11 },
               callback: (value) => `${value}%`,
               padding: 8,
@@ -473,7 +476,7 @@ export class AnalyticsComponent implements OnDestroy {
           },
           y: {
             grid: { display: false },
-            ticks: { color: LABEL_COLOR, font: { size: 11 }, padding: 4 },
+            ticks: { color: this.colors.label, font: { size: 11 }, padding: 4 },
             border: { display: false },
           },
         },

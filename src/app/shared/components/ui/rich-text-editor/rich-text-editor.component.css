@@ -106,6 +106,33 @@
   padding: 0.1rem 0.3rem;
   font-size: 0.85em;
 }
+:host-context(.admin-dark) .rte-btn {
+  color: #b9bec7;
+}
+:host-context(.admin-dark) .rte-btn:hover {
+  background-color: rgba(255, 255, 255, 0.07);
+}
+:host-context(.admin-dark) .rte-btn.is-active {
+  background-color: #eceef1;
+  color: #17191e;
+}
+:host-context(.admin-dark) ::ng-deep .rte-content .ProseMirror {
+  color: #eceef1;
+}
+:host-context(.admin-dark) ::ng-deep .rte-content .ProseMirror blockquote {
+  border-left-color: #3c414b;
+  color: #a6acb7;
+}
+:host-context(.admin-dark) ::ng-deep .rte-content .ProseMirror a {
+  color: #60a5fa;
+}
+:host-context(.admin-dark) ::ng-deep .rte-content .ProseMirror :is(pre, code) {
+  background: #22252c;
+}
+:host-context(.admin-dark) ::ng-deep .rte-content .ProseMirror.is-editor-empty:first-child::before,
+:host-context(.admin-dark) ::ng-deep .rte-content .ProseMirror p.is-empty:first-child::before {
+  color: #737a88;
+}
 /* Placeholder when empty */
 ::ng-deep .rte-content .ProseMirror.is-editor-empty:first-child::before,
 ::ng-deep .rte-content .ProseMirror p.is-empty:first-child::before {
