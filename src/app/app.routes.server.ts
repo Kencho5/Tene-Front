@@ -38,6 +38,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender,
   },
   {
+    path: 'where-to-buy',
+    renderMode: RenderMode.Prerender,
+  },
+  {
     path: 'about',
     renderMode: RenderMode.Prerender,
   },

@@ -1,0 +1,21 @@
+<div class="container px-4 py-12 xl:px-0">
+  <h1 class="text-2xl sm:text-4xl">სად იყიდება ტენე</h1>
+  <p class="text-platinum-50 mt-2">ტენეს პროდუქცია იყიდება ქვემოთ ჩამოთვლილი ქსელების ყველა ფილიალში</p>
+
+  <ul class="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
+    @for (retailer of retailers; track retailer.name) {
+    <li class="border-hairline overflow-hidden rounded-2xl border">
+      <img
+        [src]="retailer.logo"
+        [alt]="retailer.name"
+        loading="lazy"
+        class="border-hairline aspect-[5/4] w-full border-b"
+        [style.background]="retailer.background"
+        [class.object-cover]="retailer.fit === 'cover'"
+        [class.object-contain]="retailer.fit === 'contain'"
+      />
+      <p class="p-4 font-medium">{{ retailer.name }}</p>
+    </li>
+    }
+  </ul>
+</div>

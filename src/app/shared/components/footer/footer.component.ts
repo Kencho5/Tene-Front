@@ -55,6 +55,7 @@ export class FooterComponent {
     ],
     კომპანია: [
       { label: 'ჩვენ შესახებ', route: '/coming-soon' },
+      { label: 'სად იყიდება ტენე', route: '/where-to-buy' },
       { label: 'ბლოგი', route: '/blog' },
       { label: 'კონტაქტი', route: '/contact' },
     ],

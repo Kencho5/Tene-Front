@@ -2,6 +2,11 @@ import { NavUrl } from '@core/interfaces/navbar.interface';
 
 export const navUrls: NavUrl[] = [
   {
+    url: 'where-to-buy',
+    name: 'სად იყიდება ტენე',
+    icon: 'store',
+  },
+  {
     url: '/',
     name: 'პროდუქცია',
     icon: 'products',

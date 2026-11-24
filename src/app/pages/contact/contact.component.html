@@ -30,6 +30,40 @@
         </div>
       </div>
 
+      <a
+        routerLink="/where-to-buy"
+        class="border-hairline hover:border-green-60/40 flex items-start gap-4 rounded-2xl border p-5 transition-colors"
+      >
+        <div class="bg-green-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M4 9.5 5.5 4h13L20 9.5H4zM5 12v8h14v-8M10 20v-4h4v4"
+              stroke="#0BB705"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div>
+          <p class="text-platinum-50 text-sm">სად იყიდება ტენე (ყველა ფილიალი)</p>
+          <div class="mt-2 flex flex-wrap gap-2">
+            @for (retailer of retailers; track retailer.name) {
+            <img
+              [src]="retailer.logo"
+              [alt]="retailer.name"
+              [title]="retailer.name"
+              loading="lazy"
+              class="size-9 rounded-lg ring-1 ring-black/5"
+              [style.background]="retailer.background"
+              [class.object-cover]="retailer.fit === 'cover'"
+              [class.object-contain]="retailer.fit === 'contain'"
+            />
+            }
+          </div>
+        </div>
+      </a>
+
       <!-- Working Hours -->
       <div class="border-hairline flex items-start gap-4 rounded-2xl border p-5">
         <div class="bg-green-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl">
