@@ -1,4 +1,4 @@
-<div class="mx-auto max-w-2xl">
+<div class="mx-auto max-w-3xl">
   <h1 class="text-platinum-100 mb-6 text-xl font-semibold tracking-tight sm:mb-8 sm:text-2xl">
     {{ isEditMode ? 'კომპანიის რედაქტირება' : 'ახალი კომპანია' }}
   </h1>
@@ -11,88 +11,109 @@
     </div>
   } @else {
     <form (submit)="onSubmit($event)" novalidate>
-      <section class="grid gap-4 pb-8 sm:grid-cols-2">
-        <label class="block sm:col-span-2">
-          <span class="text-platinum-70 mb-1.5 block text-sm font-medium">დასახელება <span class="text-valencia-60">*</span></span>
-          <input
-            type="text"
-            [formField]="companyForm.name"
-            placeholder="მაგ. შპს ალფა"
-            [class.border-valencia-50]="submitted() && companyForm.name().invalid()"
-            class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:h-10 sm:text-sm"
-          />
-        </label>
-        <label class="block">
-          <span class="text-platinum-70 mb-1.5 block text-sm font-medium">საიდენტიფიკაციო კოდი <span class="text-valencia-60">*</span></span>
-          <input
-            type="text"
-            inputmode="numeric"
-            [formField]="companyForm.identification_code"
-            placeholder="9 ან 11 ციფრი"
-            [class.border-valencia-50]="submitted() && companyForm.identification_code().invalid()"
-            class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] tabular-nums shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:h-10 sm:text-sm"
-          />
-        </label>
-        <label class="block">
-          <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ტიპი <span class="text-valencia-60">*</span></span>
-          <select
-            [formField]="companyForm.company_type"
-            class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:h-10 sm:text-sm"
-          >
-            @for (item of typeItems; track item.value) {
-              <option [value]="item.value">{{ item.label }}</option>
+      <section class="border-hairline-strong/50 border-b pb-8">
+        <h2 class="text-platinum-100 text-base font-semibold">ძირითადი</h2>
+
+        <div class="mt-4 grid gap-4 *:min-w-0 sm:grid-cols-2">
+          <label class="block sm:col-span-2">
+            <span class="text-platinum-70 mb-1.5 block text-sm font-medium">დასახელება <span class="text-valencia-60">*</span></span>
+            <app-input
+              [formField]="companyForm.name"
+              [error]="submitted() && companyForm.name().invalid()"
+              customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !px-3 shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
+              type="text"
+              placeholder="მაგ. შპს ალფა"
+            />
+            @if (submitted() && companyForm.name().invalid()) {
+              <span class="text-valencia-60 mt-1.5 block text-[13px] sm:text-xs">დასახელება აუცილებელია</span>
             }
-          </select>
-        </label>
+          </label>
+
+          <label class="block">
+            <span class="text-platinum-70 mb-1.5 block text-sm font-medium">საიდენტიფიკაციო კოდი <span class="text-valencia-60">*</span></span>
+            <app-input
+              [formField]="companyForm.identification_code"
+              [error]="submitted() && companyForm.identification_code().invalid()"
+              customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !px-3 tabular-nums shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
+              type="text"
+              placeholder="9 ან 11 ციფრი"
+            />
+            @if (submitted() && companyForm.identification_code().invalid()) {
+              <span class="text-valencia-60 mt-1.5 block text-[13px] sm:text-xs">საიდენტიფიკაციო კოდი აუცილებელია</span>
+            }
+          </label>
+
+          <div>
+            <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ტიპი <span class="text-valencia-60">*</span></span>
+            <app-dropdown
+              [selectedValue]="model().company_type"
+              (selectedValueChange)="companyForm.company_type().value.set($event ?? '')"
+              [items]="typeItems"
+              [clearable]="false"
+              placeholder="აირჩიეთ ტიპი"
+              customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !border-hairline-strong/70 !px-3 !shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
+            />
+          </div>
+        </div>
       </section>
 
-      <section class="border-hairline-strong/50 grid gap-4 border-t py-8 sm:grid-cols-2">
-        <h2 class="text-platinum-100 text-base font-semibold sm:col-span-2">გადახდის პირობები</h2>
-        <label class="block">
-          <span class="text-platinum-70 mb-1.5 block text-sm font-medium">გადახდის ვადა (დღე)</span>
-          <input
-            type="number"
-            step="1"
-            [formField]="companyForm.payment_terms_days"
-            class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] tabular-nums shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:h-10 sm:text-sm"
-          />
-          <span class="text-platinum-50 mt-1.5 block text-[13px] sm:text-xs">ინვოისის გამოწერიდან რამდენ დღეში უნდა გადაიხადოს</span>
-        </label>
-        <label class="block sm:col-span-2">
-          <span class="text-platinum-70 mb-1.5 block text-sm font-medium">პირობები ინვოისზე</span>
-          <textarea
-            rows="3"
-            [formField]="companyForm.payment_terms"
-            placeholder="მაგ. საბანკო რეკვიზიტები ან გადახდის წესი"
-            class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 w-full resize-y rounded-lg border bg-white px-3 py-2.5 text-[15px] shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:text-sm"
-          ></textarea>
-        </label>
+      <section class="border-hairline-strong/50 border-b py-8">
+        <h2 class="text-platinum-100 text-base font-semibold">გადახდა</h2>
+
+        <div class="mt-4 grid gap-4 *:min-w-0 sm:grid-cols-2">
+          <label class="block">
+            <span class="text-platinum-70 mb-1.5 block text-sm font-medium">გადახდის ვადა (დღე)</span>
+            <app-input
+              [formField]="companyForm.payment_terms_days"
+              customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !px-3 tabular-nums shadow-[0_1px_1px_rgba(33,33,33,0.04)]"
+              type="number"
+              placeholder="15"
+            />
+            <span class="text-platinum-50 mt-1.5 block text-[13px] sm:text-xs">ინვოისის გამოწერიდან დღეების რაოდენობა</span>
+          </label>
+
+          <label class="block sm:col-span-2">
+            <span class="text-platinum-70 mb-1.5 block text-sm font-medium">პირობები ინვოისზე</span>
+            <textarea
+              rows="3"
+              [formField]="companyForm.payment_terms"
+              placeholder="მაგ. საბანკო რეკვიზიტები ან გადახდის წესი"
+              class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 block w-full resize-y rounded-lg border bg-white px-3 py-2.5 text-[15px] shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:text-sm"
+            ></textarea>
+          </label>
+        </div>
       </section>
 
-      <section class="border-hairline-strong/50 space-y-4 border-t py-8">
+      <section class="py-8">
         <h2 class="text-platinum-100 text-base font-semibold">პარამეტრები</h2>
-        <label class="flex items-start gap-3">
-          <input type="checkbox" [formField]="companyForm.is_active" class="accent-green-60 mt-0.5 size-4" />
-          <span>
-            <span class="text-platinum-90 block text-sm font-medium">აქტიური კლიენტი</span>
-            <span class="text-platinum-50 block text-[13px]">გათიშული კომპანია ავტომატურად არააქტიურად ჩაითვლება</span>
-          </span>
-        </label>
-        <label class="flex items-start gap-3">
-          <input type="checkbox" [formField]="companyForm.requires_confirmation" class="accent-green-60 mt-0.5 size-4" />
-          <span>
-            <span class="text-platinum-90 block text-sm font-medium">გატანა საჭიროებს დადასტურებას</span>
-            <span class="text-platinum-50 block text-[13px]">თუ გამორთულია, ინვოისი გატანის დაფიქსირებისთანავე შეიქმნება და გაიგზავნება</span>
-          </span>
-        </label>
-        <label class="block">
-          <span class="text-platinum-70 mb-1.5 block text-sm font-medium">შენიშვნა</span>
-          <textarea
-            rows="3"
-            [formField]="companyForm.notes"
-            class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 w-full resize-y rounded-lg border bg-white px-3 py-2.5 text-[15px] shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:text-sm"
-          ></textarea>
-        </label>
+
+        <div class="mt-4 space-y-3">
+          <label class="border-hairline-strong/70 flex min-h-14 cursor-pointer items-center gap-3 rounded-lg border px-4 py-3">
+            <input type="checkbox" [formField]="companyForm.is_active" class="accent-green-60 size-5 shrink-0 cursor-pointer sm:size-[18px]" />
+            <span class="min-w-0">
+              <span class="text-platinum-90 block text-[15px] sm:text-sm">აქტიური კლიენტი</span>
+              <span class="text-platinum-50 block text-[13px] sm:text-xs">გათიშული კომპანია არააქტიურად ჩაითვლება</span>
+            </span>
+          </label>
+
+          <label class="border-hairline-strong/70 flex min-h-14 cursor-pointer items-center gap-3 rounded-lg border px-4 py-3">
+            <input type="checkbox" [formField]="companyForm.requires_confirmation" class="accent-green-60 size-5 shrink-0 cursor-pointer sm:size-[18px]" />
+            <span class="min-w-0">
+              <span class="text-platinum-90 block text-[15px] sm:text-sm">გატანა საჭიროებს დადასტურებას</span>
+              <span class="text-platinum-50 block text-[13px] sm:text-xs">გამორთვის შემთხვევაში ინვოისი გატანის დაფიქსირებისას შეიქმნება და გაიგზავნება</span>
+            </span>
+          </label>
+
+          <label class="block pt-1">
+            <span class="text-platinum-70 mb-1.5 block text-sm font-medium">შენიშვნა</span>
+            <textarea
+              rows="3"
+              [formField]="companyForm.notes"
+              placeholder="შიდა შენიშვნა"
+              class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 block w-full resize-y rounded-lg border bg-white px-3 py-2.5 text-[15px] shadow-[0_1px_1px_rgba(33,33,33,0.04)] outline-hidden focus:ring-3 sm:text-sm"
+            ></textarea>
+          </label>
+        </div>
       </section>
 
       <div class="border-hairline-strong/50 flex flex-col-reverse gap-2 border-t pt-6 sm:flex-row sm:justify-end">
@@ -106,9 +127,16 @@
         <button
           type="submit"
           [disabled]="isSaving()"
-          class="bg-green-60 hover:bg-green-70 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg px-4 text-[15px] font-medium text-white shadow-[0_1px_1px_rgba(33,33,33,0.08)] disabled:cursor-not-allowed disabled:opacity-60 sm:h-10 sm:w-auto sm:text-sm"
+          class="bg-green-60 hover:bg-green-70 focus-visible:outline-green-60 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg px-4 text-[15px] font-medium text-white shadow-[0_1px_1px_rgba(33,33,33,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60 sm:h-10 sm:w-auto sm:text-sm"
         >
-          {{ isSaving() ? 'ინახება...' : isEditMode ? 'შენახვა' : 'დამატება' }}
+          @if (isSaving()) {
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="animate-spin" aria-hidden="true">
+              <path d="M8 2a6 6 0 1 1-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            ინახება...
+          } @else {
+            {{ isEditMode ? 'შენახვა' : 'დამატება' }}
+          }
         </button>
       </div>
     </form>

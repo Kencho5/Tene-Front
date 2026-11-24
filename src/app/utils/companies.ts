@@ -91,7 +91,7 @@ export const BADGE_NEUTRAL = BADGE_GRAY;
 export const EXPIRY_WARNING_DAYS = 30;
 
 export function formatDate(value: string | null | undefined): string {
-  if (!value) return '—';
+  if (!value) return '-';
   const [datePart] = value.split('T');
   const [y, m, d] = datePart.split('-');
   if (!y || !m || !d) return value;
@@ -99,7 +99,7 @@ export function formatDate(value: string | null | undefined): string {
 }
 
 export function formatDateTime(value: string | null | undefined): string {
-  if (!value) return '—';
+  if (!value) return '-';
   const date = new Date(value);
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
@@ -113,12 +113,12 @@ const moneyFormatter = new Intl.NumberFormat('ka-GE', {
 const kgFormatter = new Intl.NumberFormat('ka-GE', { maximumFractionDigits: 2 });
 
 export function formatMoney(value: string | number | null | undefined): string {
-  if (value === null || value === undefined || value === '') return '—';
+  if (value === null || value === undefined || value === '') return '-';
   return `${moneyFormatter.format(Number(value))} ₾`;
 }
 
 export function formatKg(value: string | number | null | undefined): string {
-  if (value === null || value === undefined || value === '') return '—';
+  if (value === null || value === undefined || value === '') return '-';
   return `${kgFormatter.format(Number(value))} კგ`;
 }
 

@@ -35,7 +35,7 @@
           <h2 class="mb-4 sm:mb-6">{{ title }}</h2>
 
           <div class="flex flex-col gap-3 text-sm text-platinum-50 sm:gap-4">
-            @for (link of links[title]; track link.route) {
+            @for (link of links[title]; track link.label) {
               <a [routerLink]="link.route" class="transition-colors hover:text-green-60">{{
                 link.label
               }}</a>

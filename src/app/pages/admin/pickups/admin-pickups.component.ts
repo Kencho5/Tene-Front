@@ -130,6 +130,12 @@ export class AdminPickupsComponent {
   });
 
   readonly addressItems = computed(() => this.selectedCompanyResource.value()?.addresses ?? []);
+  readonly addressOptions = computed<ComboboxItems[]>(() =>
+    this.addressItems().map((a) => ({
+      value: String(a.id),
+      label: a.label ? `${a.label}, ${a.address}` : a.address,
+    })),
+  );
 
   readonly applicableTariff = computed(() => {
     const company = this.selectedCompanyResource.value();
@@ -312,7 +318,7 @@ export class AdminPickupsComponent {
     } else {
       this.toastService.add(
         `ინვოისი ${number} შეიქმნა`,
-        delivery?.error || 'ელფოსტით გაგზავნა ვერ მოხერხდა — სცადეთ ინვოისების გვერდიდან',
+        delivery?.error || 'ელფოსტით გაგზავნა ვერ მოხერხდა. სცადეთ ინვოისების გვერდიდან',
         7000,
         'error',
       );

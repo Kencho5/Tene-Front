@@ -177,36 +177,46 @@
   (submitted)="save()"
 >
   <div class="grid gap-4 sm:grid-cols-2">
-    <label class="block sm:col-span-2">
+    <div class="sm:col-span-2">
       <span class="text-platinum-70 mb-1.5 block text-sm font-medium">კომპანია <span class="text-valencia-60">*</span></span>
-      <select [formField]="pickupForm.company_id" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm">
-        <option value="">აირჩიეთ კომპანია</option>
-        @for (item of companyItems(); track item.value) {
-          <option [value]="item.value">{{ item.label }}</option>
-        }
-      </select>
-    </label>
-    <label class="block sm:col-span-2">
+      <app-dropdown
+        [selectedValue]="model().company_id"
+        (selectedValueChange)="pickupForm.company_id().value.set($event ?? '')"
+        [items]="companyItems()"
+        [clearable]="false"
+        [fixedPanel]="true"
+        placeholder="აირჩიეთ კომპანია"
+        customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !border-hairline-strong/70 !px-3"
+      />
+    </div>
+    <div class="sm:col-span-2">
       <span class="text-platinum-70 mb-1.5 block text-sm font-medium">მომსახურების მისამართი</span>
-      <select [formField]="pickupForm.address_id" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm">
-        <option value="">{{ addressItems().length === 0 ? 'მისამართი არ არის დამატებული' : 'აირჩიეთ მისამართი' }}</option>
-        @for (address of addressItems(); track address.id) {
-          <option [value]="address.id">{{ address.label ? address.label + ' — ' : '' }}{{ address.address }}</option>
-        }
-      </select>
-    </label>
+      <app-dropdown
+        [selectedValue]="model().address_id"
+        (selectedValueChange)="pickupForm.address_id().value.set($event ?? '')"
+        [items]="addressOptions()"
+        [disabled]="addressOptions().length === 0"
+        [fixedPanel]="true"
+        [placeholder]="addressOptions().length === 0 ? 'მისამართი არ არის დამატებული' : 'აირჩიეთ მისამართი'"
+        customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !border-hairline-strong/70 !px-3"
+      />
+    </div>
     <label class="block">
       <span class="text-platinum-70 mb-1.5 block text-sm font-medium">გატანის თარიღი <span class="text-valencia-60">*</span></span>
       <input type="date" [formField]="pickupForm.pickup_date" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
     </label>
-    <label class="block">
+    <div>
       <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ნარჩენის ტიპი <span class="text-valencia-60">*</span></span>
-      <select [formField]="pickupForm.waste_type" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm">
-        @for (item of wasteItems; track item.value) {
-          <option [value]="item.value">{{ item.label }}</option>
-        }
-      </select>
-    </label>
+      <app-dropdown
+        [selectedValue]="model().waste_type"
+        (selectedValueChange)="pickupForm.waste_type().value.set($event ?? '')"
+        [items]="wasteItems"
+        [clearable]="false"
+        [fixedPanel]="true"
+        placeholder="აირჩიეთ ტიპი"
+        customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !border-hairline-strong/70 !px-3"
+      />
+    </div>
     <label class="block">
       <span class="text-platinum-70 mb-1.5 block text-sm font-medium">რაოდენობა (კგ) <span class="text-valencia-60">*</span></span>
       <input type="number" step="0.01" inputmode="decimal" [formField]="pickupForm.quantity_kg" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] tabular-nums outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
@@ -251,7 +261,7 @@
     @if (selectedCompanyResource.value(); as company) {
       @if (!company.requires_confirmation && !dialog()?.id) {
         <p class="rounded-lg bg-amber-50 px-3 py-2 text-[13px] text-amber-800 sm:col-span-2">
-          ამ კომპანიაზე დადასტურება არ არის საჭირო — ინვოისი დაფიქსირებისთანავე შეიქმნება და გაიგზავნება.
+          ამ კომპანიაზე დადასტურება არ არის საჭირო. ინვოისი დაფიქსირებისთანავე შეიქმნება და გაიგზავნება.
         </p>
       }
     }

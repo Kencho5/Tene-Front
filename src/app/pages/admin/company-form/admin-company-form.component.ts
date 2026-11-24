@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyRequest, CompanyType } from '@core/interfaces/admin/companies.interface';
 import { CompaniesService } from '@core/services/admin/companies.service';
 import { ToastService } from '@core/services/toast.service';
+import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
+import { InputComponent } from '@shared/components/ui/input/input.component';
 import { SharedModule } from '@shared/shared.module';
 import { COMPANY_TYPE_ITEMS, blankToNull, errorMessage } from '@utils/companies';
 
@@ -20,7 +22,7 @@ interface CompanyFormModel {
 
 @Component({
   selector: 'app-admin-company-form',
-  imports: [SharedModule, FormField],
+  imports: [SharedModule, FormField, InputComponent, DropdownComponent],
   templateUrl: './admin-company-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

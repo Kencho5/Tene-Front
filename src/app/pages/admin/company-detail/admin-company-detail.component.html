@@ -79,7 +79,7 @@
           [class.text-platinum-100]="c.contract_days_left === null || c.contract_days_left > expiryWarningDays"
         >
           @if (c.contract_days_left === null) {
-            —
+            -
           } @else if (c.contract_days_left < 0) {
             ვადაგასულია {{ -c.contract_days_left }} დღით
           } @else {
@@ -169,7 +169,7 @@
             </div>
             @if (invoiceRecipients().length === 0) {
               <p class="mb-3 rounded-lg bg-amber-50 px-3 py-2 text-[13px] text-amber-800">
-                ინვოისის მიმღები არ არის მონიშნული — ინვოისები ელფოსტაზე ვერ გაიგზავნება.
+                ინვოისის მიმღები არ არის მონიშნული. ინვოისები ელფოსტაზე არ გაიგზავნება.
               </p>
             }
             @if (c.contacts.length === 0) {
@@ -542,14 +542,18 @@
   (submitted)="saveTariff()"
 >
   <div class="grid gap-4 sm:grid-cols-2">
-    <label class="block">
+    <div>
       <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ნარჩენის ტიპი</span>
-      <select [formField]="tariffForm.waste_type" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm">
-        @for (item of wasteItems; track item.value) {
-          <option [value]="item.value">{{ item.label }}</option>
-        }
-      </select>
-    </label>
+      <app-dropdown
+        [selectedValue]="tariffModel().waste_type"
+        (selectedValueChange)="tariffForm.waste_type().value.set($event ?? '')"
+        [items]="wasteItems"
+        [clearable]="false"
+        [fixedPanel]="true"
+        placeholder="აირჩიეთ ტიპი"
+        customClass="!h-11 sm:!h-10 !text-[15px] sm:!text-sm !rounded-lg !border-hairline-strong/70 !px-3"
+      />
+    </div>
     <label class="block">
       <span class="text-platinum-70 mb-1.5 block text-sm font-medium">მოქმედებს <span class="text-valencia-60">*</span></span>
       <input type="date" [formField]="tariffForm.effective_from" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />

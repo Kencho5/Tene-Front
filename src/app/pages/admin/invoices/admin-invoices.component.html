@@ -176,7 +176,7 @@
                   <span [class.text-green-80]="delivery.success" [class.text-valencia-70]="!delivery.success" class="font-medium">
                     {{ delivery.success ? 'გაიგზავნა' : 'ვერ გაიგზავნა' }}
                   </span>
-                  <span class="text-platinum-60 ml-1 break-all">{{ delivery.recipients.join(', ') || '—' }}</span>
+                  <span class="text-platinum-60 ml-1 break-all">{{ delivery.recipients.join(', ') || '-' }}</span>
                   @if (delivery.error) {
                     <span class="text-platinum-50 block text-[13px]">{{ delivery.error }}</span>
                   }

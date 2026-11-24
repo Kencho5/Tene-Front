@@ -11,6 +11,7 @@ import {
 import { CompaniesService } from '@core/services/admin/companies.service';
 import { ToastService } from '@core/services/toast.service';
 import { AdminDialogComponent } from '@shared/components/admin/admin-dialog/admin-dialog.component';
+import { DropdownComponent } from '@shared/components/ui/dropdown/dropdown.component';
 import { SharedModule } from '@shared/shared.module';
 import { Observable, of, switchMap } from 'rxjs';
 import {
@@ -57,7 +58,7 @@ const CONTRACT_FILE_TYPES = [
 
 @Component({
   selector: 'app-admin-company-detail',
-  imports: [SharedModule, FormField, AdminDialogComponent],
+  imports: [SharedModule, FormField, AdminDialogComponent, DropdownComponent],
   templateUrl: './admin-company-detail.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

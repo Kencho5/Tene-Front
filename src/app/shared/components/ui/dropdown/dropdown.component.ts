@@ -27,6 +27,7 @@ export class DropdownComponent {
   readonly items = input.required<ComboboxItems[]>();
   readonly disabled = input<boolean>(false);
   readonly fixedPanel = input<boolean>(false);
+  readonly clearable = input<boolean>(true);
 
   readonly selectedValueChange = output<string>();
 
@@ -63,7 +64,7 @@ export class DropdownComponent {
   selectItem(value: string): void {
     const item = this.items().find((i) => i.value === value);
     if (item?.disabled) return;
-    const newValue = this.selectedValue() === value ? '' : value;
+    const newValue = this.selectedValue() === value && this.clearable() ? '' : value;
     this.selectedValueChange.emit(newValue);
     this.selectedValue.set(newValue);
     this.opened.set(false);
