@@ -1,0 +1,194 @@
+<div class="flex flex-col gap-5">
+  <h1 class="text-platinum-100 text-xl font-semibold tracking-tight sm:text-2xl">
+    ინვოისები
+    <span class="text-platinum-50 ml-1 text-base font-normal tabular-nums">{{ total() }}</span>
+  </h1>
+
+  <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-center">
+    <div class="lg:w-[220px]">
+      <app-dropdown
+        [items]="companyItems()"
+        [selectedValue]="companyFilter()"
+        (selectedValueChange)="setFilter('company_id', $event)"
+        placeholder="ყველა კომპანია"
+        [customClass]="dropdownClass"
+      />
+    </div>
+    <div class="lg:w-[200px]">
+      <app-dropdown
+        [items]="statusItems"
+        [selectedValue]="statusFilter()"
+        (selectedValueChange)="setFilter('status', $event)"
+        placeholder="სტატუსი"
+        [customClass]="dropdownClass"
+      />
+    </div>
+    <div class="border-hairline-strong/70 flex h-11 items-center gap-2 rounded-lg border bg-white px-3 shadow-[0_1px_1px_rgba(33,33,33,0.04)] sm:h-9">
+      <input type="date" aria-label="დან" [value]="fromFilter()" [max]="toFilter() || null" (change)="onDateFilter('from', $event)" class="text-platinum-90 min-w-0 flex-1 bg-transparent text-[15px] outline-hidden sm:text-sm" />
+      <span class="text-platinum-30" aria-hidden="true">–</span>
+      <input type="date" aria-label="მდე" [value]="toFilter()" [min]="fromFilter() || null" (change)="onDateFilter('to', $event)" class="text-platinum-90 min-w-0 flex-1 bg-transparent text-[15px] outline-hidden sm:text-sm" />
+    </div>
+    @if (hasFilters()) {
+      <button type="button" (click)="clearFilters()" class="text-platinum-60 hover:text-platinum-100 h-9 px-2 text-left text-sm font-medium">
+        გასუფთავება
+      </button>
+    }
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-[860px]">
+      <thead>
+        <tr class="border-hairline-strong/70 border-b">
+          <th scope="col" class="text-platinum-50 py-2 pr-3 pl-2 text-left text-[13px] font-medium">ნომერი</th>
+          <th scope="col" class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">კომპანია</th>
+          <th scope="col" class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">მომსახურება</th>
+          <th scope="col" class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">გამოწერა / ვადა</th>
+          <th scope="col" class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">თანხა</th>
+          <th scope="col" class="text-platinum-50 py-2 pr-2 pl-3 text-left text-[13px] font-medium">სტატუსი</th>
+        </tr>
+      </thead>
+      <tbody class="divide-hairline-strong/50 border-hairline-strong/50 divide-y border-b">
+        @if (invoicesResource.isLoading() && invoices().length === 0) {
+          @for (row of [1, 2, 3, 4, 5]; track row) {
+            <tr>
+              <td colspan="6" class="py-4 pl-2"><div class="h-4 w-full animate-pulse rounded-sm bg-neutral-100"></div></td>
+            </tr>
+          }
+        } @else if (invoicesResource.error()) {
+          <tr>
+            <td colspan="6" class="px-4 py-16 text-center">
+              <p class="text-platinum-90 text-sm font-medium">ინვოისების ჩატვირთვა ვერ მოხერხდა</p>
+              <button type="button" (click)="invoicesResource.reload()" class="text-green-70 mt-2 text-sm font-medium">თავიდან ცდა</button>
+            </td>
+          </tr>
+        } @else if (invoices().length === 0) {
+          <tr>
+            <td colspan="6" class="text-platinum-60 px-4 py-16 text-center text-sm">
+              ინვოისები ვერ მოიძებნა
+              <span class="text-platinum-50 mt-1 block text-[13px]">ინვოისი იქმნება გატანის დადასტურებისას</span>
+            </td>
+          </tr>
+        } @else {
+          @for (invoice of invoices(); track invoice.id) {
+            <tr class="cursor-pointer hover:bg-neutral-50" (click)="open(invoice)">
+              <td class="py-3 pr-3 pl-2">
+                <button type="button" class="text-platinum-90 hover:text-green-70 text-sm font-medium tabular-nums" (click)="$event.stopPropagation(); open(invoice)">
+                  {{ invoice.invoice_number }}
+                </button>
+              </td>
+              <td class="text-platinum-80 px-3 py-3 text-sm">{{ invoice.company_name }}</td>
+              <td class="text-platinum-70 px-3 py-3 text-sm">
+                {{ wasteLabels[invoice.waste_type] }} · {{ formatKg(invoice.quantity_kg) }}
+                <span class="text-platinum-50 block text-[13px] tabular-nums">გატანა {{ formatDate(invoice.pickup_date) }}</span>
+              </td>
+              <td class="text-platinum-70 px-3 py-3 text-sm tabular-nums">
+                {{ formatDate(invoice.issue_date) }}
+                <span class="text-platinum-50 block text-[13px]">{{ formatDate(invoice.due_date) }}</span>
+              </td>
+              <td class="text-platinum-100 px-3 py-3 text-right text-sm font-medium tabular-nums">{{ formatMoney(invoice.total) }}</td>
+              <td class="py-3 pr-2 pl-3">
+                <span [class]="statusBadge[invoice.status]">{{ statusLabels[invoice.status] }}</span>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (total() > 0) {
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [totalItems]="total()"
+      [showingFrom]="showingFrom()"
+      [showingTo]="showingTo()"
+      [limit]="limit()"
+      (pageChange)="onPageChange($event)"
+      (limitChange)="onLimitChange($event)"
+    />
+  }
+</div>
+
+<app-admin-dialog
+  [open]="!!openId()"
+  [title]="detail() ? 'ინვოისი ' + detail()!.invoice_number : 'ინვოისი'"
+  submitText=""
+  widthClass="sm:max-w-[820px]"
+  (closed)="close()"
+>
+  @if (detailResource.isLoading() && !detail()) {
+    <div class="h-96 animate-pulse rounded-lg bg-neutral-100"></div>
+  } @else if (detail(); as invoice) {
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2 text-sm">
+          <span [class]="statusBadge[invoice.status]">{{ statusLabels[invoice.status] }}</span>
+          <span class="text-platinum-60">{{ invoice.company_name }}</span>
+          <span class="text-platinum-100 font-semibold tabular-nums">{{ formatMoney(invoice.total) }}</span>
+          @if (invoice.paid_at) {
+            <span class="text-platinum-50 text-[13px]">გადახდილია {{ formatDateTime(invoice.paid_at) }}</span>
+          }
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            (click)="send()"
+            [disabled]="isSending()"
+            class="bg-green-60 hover:bg-green-70 inline-flex h-10 items-center gap-1.5 rounded-lg px-3 text-sm font-medium text-white disabled:opacity-60 sm:h-9"
+          >
+            {{ isSending() ? 'იგზავნება...' : invoice.last_sent_at ? 'ხელახლა გაგზავნა' : 'გაგზავნა' }}
+          </button>
+          <button
+            type="button"
+            (click)="togglePaid()"
+            [disabled]="isUpdatingPayment()"
+            class="text-platinum-80 border-hairline-strong/70 inline-flex h-10 items-center rounded-lg border bg-white px-3 text-sm font-medium hover:bg-neutral-50 disabled:opacity-60 sm:h-9"
+          >
+            {{ invoice.status === 'paid' ? 'გადახდის გაუქმება' : 'გადახდილად მონიშვნა' }}
+          </button>
+          <button
+            type="button"
+            (click)="openInNewTab()"
+            class="text-platinum-80 border-hairline-strong/70 inline-flex h-10 items-center rounded-lg border bg-white px-3 text-sm font-medium hover:bg-neutral-50 sm:h-9"
+          >
+            ბეჭდვა
+          </button>
+        </div>
+      </div>
+
+      <iframe
+        title="ინვოისის ასლი"
+        sandbox=""
+        [srcdoc]="detailHtml()"
+        class="border-hairline-strong/70 h-[480px] w-full rounded-lg border bg-neutral-50"
+      ></iframe>
+
+      <div>
+        <h3 class="text-platinum-100 mb-2 text-sm font-semibold">გაგზავნის ისტორია</h3>
+        @if (invoice.deliveries.length === 0) {
+          <p class="text-platinum-50 text-sm">ინვოისი ჯერ არ გაგზავნილა</p>
+        } @else {
+          <ul class="divide-hairline-strong/50 border-hairline-strong/70 divide-y rounded-lg border">
+            @for (delivery of invoice.deliveries; track delivery.id) {
+              <li class="flex flex-col gap-0.5 px-3 py-2.5 text-sm sm:flex-row sm:items-center sm:justify-between">
+                <div class="min-w-0">
+                  <span [class.text-green-80]="delivery.success" [class.text-valencia-70]="!delivery.success" class="font-medium">
+                    {{ delivery.success ? 'გაიგზავნა' : 'ვერ გაიგზავნა' }}
+                  </span>
+                  <span class="text-platinum-60 ml-1 break-all">{{ delivery.recipients.join(', ') || '—' }}</span>
+                  @if (delivery.error) {
+                    <span class="text-platinum-50 block text-[13px]">{{ delivery.error }}</span>
+                  }
+                </div>
+                <span class="text-platinum-50 shrink-0 text-[13px] tabular-nums">
+                  {{ formatDateTime(delivery.sent_at) }}{{ delivery.sent_by_name ? ' · ' + delivery.sent_by_name : '' }}
+                </span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+  }
+</app-admin-dialog>

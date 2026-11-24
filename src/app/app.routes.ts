@@ -386,6 +386,62 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin/tasks/admin-tasks.component').then((m) => m.AdminTasksComponent),
       },
+      {
+        path: 'companies',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/companies/admin-companies.component').then(
+            (m) => m.AdminCompaniesComponent,
+          ),
+      },
+      {
+        path: 'companies/new',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/company-form/admin-company-form.component').then(
+            (m) => m.AdminCompanyFormComponent,
+          ),
+      },
+      {
+        path: 'companies/:id/edit',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/company-form/admin-company-form.component').then(
+            (m) => m.AdminCompanyFormComponent,
+          ),
+      },
+      {
+        path: 'companies/:id',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/company-detail/admin-company-detail.component').then(
+            (m) => m.AdminCompanyDetailComponent,
+          ),
+      },
+      {
+        path: 'pickups',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/pickups/admin-pickups.component').then(
+            (m) => m.AdminPickupsComponent,
+          ),
+      },
+      {
+        path: 'invoices',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/invoices/admin-invoices.component').then(
+            (m) => m.AdminInvoicesComponent,
+          ),
+      },
+      {
+        path: 'company-reports',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () =>
+          import('./pages/admin/company-reports/admin-company-reports.component').then(
+            (m) => m.AdminCompanyReportsComponent,
+          ),
+      },
     ],
   },
 

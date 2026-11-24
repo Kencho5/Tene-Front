@@ -1,0 +1,223 @@
+<div class="flex flex-col gap-6">
+  <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+    <div>
+      <h1 class="text-platinum-100 text-xl font-semibold tracking-tight sm:text-2xl">ანგარიშგება</h1>
+      <p class="text-platinum-50 mt-0.5 text-sm">{{ periodLabel() }}</p>
+    </div>
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+      <div class="sm:w-[200px]">
+        <app-dropdown
+          [items]="exportItems"
+          [selectedValue]="exportDataset()"
+          (selectedValueChange)="exportDataset.set($event || 'all')"
+          placeholder="მონაცემები"
+          [customClass]="dropdownClass"
+        />
+      </div>
+      <button
+        type="button"
+        (click)="exportExcel()"
+        [disabled]="isExporting()"
+        class="bg-green-60 hover:bg-green-70 inline-flex h-11 items-center justify-center gap-1.5 rounded-lg px-4 text-[15px] font-medium text-white shadow-[0_1px_1px_rgba(33,33,33,0.08)] disabled:opacity-60 sm:h-9 sm:px-3.5 sm:text-sm"
+      >
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 2.5v8M4.75 7.5 8 10.75l3.25-3.25M2.75 13.25h10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        {{ isExporting() ? 'იტვირთება...' : 'Excel-ში ჩამოტვირთვა' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-center">
+    <div class="lg:w-[240px]">
+      <app-dropdown
+        [items]="companyItems()"
+        [selectedValue]="companyFilter()"
+        (selectedValueChange)="setCompany($event)"
+        placeholder="ყველა კომპანია"
+        [customClass]="dropdownClass"
+      />
+    </div>
+    <div class="lg:w-[170px]">
+      <app-dropdown
+        [items]="periodPresets"
+        [selectedValue]="selectedPreset()"
+        (selectedValueChange)="selectPreset($event)"
+        placeholder="პერიოდი"
+        [customClass]="dropdownClass"
+      />
+    </div>
+    <div class="border-hairline-strong/70 flex h-11 items-center gap-2 rounded-lg border bg-white px-3 shadow-[0_1px_1px_rgba(33,33,33,0.04)] sm:h-9">
+      <input type="date" aria-label="დან" [value]="fromFilter()" [max]="toFilter() || null" (change)="onDateChange('from', $event)" class="text-platinum-90 min-w-0 flex-1 bg-transparent text-[15px] outline-hidden sm:text-sm" />
+      <span class="text-platinum-30" aria-hidden="true">–</span>
+      <input type="date" aria-label="მდე" [value]="toFilter()" [min]="fromFilter() || null" (change)="onDateChange('to', $event)" class="text-platinum-90 min-w-0 flex-1 bg-transparent text-[15px] outline-hidden sm:text-sm" />
+    </div>
+    @if (companyFilter() || fromFilter() || toFilter()) {
+      <button type="button" (click)="clearFilters()" class="text-platinum-60 hover:text-platinum-100 h-9 px-2 text-left text-sm font-medium">
+        გასუფთავება
+      </button>
+    }
+  </div>
+
+  @if (reportResource.error()) {
+    <div class="py-16 text-center">
+      <p class="text-platinum-90 text-sm font-medium">ანგარიშის ჩატვირთვა ვერ მოხერხდა</p>
+      <button type="button" (click)="reportResource.reload()" class="text-green-70 mt-2 text-sm font-medium">თავიდან ცდა</button>
+    </div>
+  } @else {
+    <section>
+      <h2 class="text-platinum-100 mb-3 text-base font-semibold">კომპანიები</h2>
+      <dl class="border-hairline-strong/70 grid grid-cols-2 border-y sm:grid-cols-3 lg:grid-cols-6">
+        @for (
+          stat of [
+            { label: 'სულ', value: report()?.companies_total, tone: '' },
+            { label: 'აქტიური', value: report()?.active, tone: 'text-green-80' },
+            { label: 'ნაკლებად აქტიური', value: report()?.less_active, tone: 'text-amber-700' },
+            { label: 'არააქტიური', value: report()?.inactive, tone: 'text-platinum-60' },
+            { label: 'ვადაგასული ხელშეკრულება', value: report()?.contracts_expired, tone: 'text-valencia-70' },
+            { label: 'იწურება 30 დღეში', value: report()?.contracts_expiring, tone: 'text-amber-700' },
+          ];
+          track stat.label
+        ) {
+          <div class="border-hairline-strong/50 border-b py-4 pr-4 odd:border-r sm:border-r lg:border-b-0 lg:pl-4 lg:first:pl-0 lg:last:border-r-0">
+            <dt class="text-platinum-50 text-[13px]">{{ stat.label }}</dt>
+            <dd class="mt-1 text-xl font-semibold tabular-nums sm:text-2xl" [class]="stat.tone || 'text-platinum-100'">
+              @if (reportResource.isLoading() && !report()) {
+                <span class="block h-8 w-12 animate-pulse rounded-sm bg-neutral-100"></span>
+              } @else {
+                {{ stat.value ?? 0 }}
+              }
+            </dd>
+          </div>
+        }
+      </dl>
+    </section>
+
+    <div class="grid gap-8 lg:grid-cols-2">
+      <section>
+        <div class="mb-3 flex items-baseline justify-between">
+          <h2 class="text-platinum-100 text-base font-semibold">გატანილი მასალა</h2>
+          <span class="text-platinum-60 text-sm">
+            {{ report()?.pickups_count ?? 0 }} გატანა
+            @if (report()?.pickups_pending) {
+              · <span class="text-amber-700">{{ report()?.pickups_pending }} დასადასტურებელი</span>
+            }
+          </span>
+        </div>
+        <ul class="flex flex-col gap-4">
+          @for (waste of report()?.waste_totals ?? []; track waste.waste_type) {
+            <li>
+              <div class="flex items-baseline justify-between text-sm">
+                <span class="text-platinum-80">{{ wasteLabels[waste.waste_type] }}</span>
+                <span class="text-platinum-100 font-semibold tabular-nums">{{ formatKg(waste.quantity_kg) }}</span>
+              </div>
+              <div class="mt-1.5 h-2 overflow-hidden rounded-full bg-neutral-100">
+                <div class="bg-green-60 h-full rounded-full" [style.width.%]="(+waste.quantity_kg / maxWasteKg()) * 100"></div>
+              </div>
+              <p class="text-platinum-50 mt-1 text-xs tabular-nums">{{ waste.pickups_count }} გატანა · {{ formatMoney(waste.amount) }}</p>
+            </li>
+          }
+        </ul>
+        <p class="text-platinum-60 border-hairline-strong/50 mt-4 border-t pt-3 text-sm">
+          სულ: <strong class="text-platinum-100 tabular-nums">{{ formatKg(totalWasteKg()) }}</strong>
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-platinum-100 mb-3 text-base font-semibold">ინვოისები</h2>
+        <dl class="grid grid-cols-2 gap-3">
+          <div class="border-hairline-strong/70 rounded-lg border px-4 py-3">
+            <dt class="text-platinum-50 text-[13px]">საერთო თანხა</dt>
+            <dd class="text-platinum-100 mt-1 text-lg font-semibold tabular-nums">{{ formatMoney(report()?.invoices?.total_amount ?? 0) }}</dd>
+            <dd class="text-platinum-50 text-xs">{{ report()?.invoices?.invoices_count ?? 0 }} ინვოისი</dd>
+          </div>
+          <div class="border-hairline-strong/70 rounded-lg border px-4 py-3">
+            <dt class="text-platinum-50 text-[13px]">გადახდილი</dt>
+            <dd class="text-green-80 mt-1 text-lg font-semibold tabular-nums">{{ formatMoney(report()?.invoices?.paid_amount ?? 0) }}</dd>
+            <dd class="text-platinum-50 text-xs">{{ report()?.invoices?.paid_count ?? 0 }} ინვოისი</dd>
+          </div>
+          <div class="border-hairline-strong/70 rounded-lg border px-4 py-3">
+            <dt class="text-platinum-50 text-[13px]">გადაუხდელი</dt>
+            <dd class="text-platinum-100 mt-1 text-lg font-semibold tabular-nums">{{ formatMoney(report()?.invoices?.unpaid_amount ?? 0) }}</dd>
+            <dd class="text-platinum-50 text-xs">{{ report()?.invoices?.unpaid_count ?? 0 }} ინვოისი</dd>
+          </div>
+          <div class="border-hairline-strong/70 rounded-lg border px-4 py-3">
+            <dt class="text-platinum-50 text-[13px]">ვადაგადაცილებული</dt>
+            <dd class="text-valencia-70 mt-1 text-lg font-semibold tabular-nums">{{ formatMoney(report()?.invoices?.overdue_amount ?? 0) }}</dd>
+            <dd class="text-platinum-50 text-xs">{{ report()?.invoices?.overdue_count ?? 0 }} ინვოისი</dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+
+    <section>
+      <h2 class="text-platinum-100 mb-3 text-base font-semibold">კომპანიების მიხედვით</h2>
+      @if ((report()?.per_company ?? []).length === 0) {
+        <p class="text-platinum-50 rounded-lg bg-neutral-50 px-4 py-8 text-center text-sm">არჩეულ პერიოდში გატანები არ არის</p>
+      } @else {
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[720px] text-sm">
+            <thead>
+              <tr class="border-hairline-strong/70 border-b">
+                <th class="text-platinum-50 py-2 pr-3 text-left text-[13px] font-medium">კომპანია</th>
+                <th class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">პლასტმასი</th>
+                <th class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">ქაღალდი</th>
+                <th class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">ალუმინი</th>
+                <th class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">სულ</th>
+                <th class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">გატანა</th>
+                <th class="text-platinum-50 py-2 pl-3 text-right text-[13px] font-medium">ღირებულება</th>
+              </tr>
+            </thead>
+            <tbody class="divide-hairline-strong/50 divide-y">
+              @for (row of report()?.per_company ?? []; track row.company_id) {
+                <tr class="hover:bg-neutral-50">
+                  <td class="py-2.5 pr-3">
+                    <a [routerLink]="['/admin/companies', row.company_id]" class="text-platinum-90 hover:text-green-70 font-medium">{{ row.company_name }}</a>
+                  </td>
+                  <td class="text-platinum-70 px-3 py-2.5 text-right tabular-nums">{{ formatKg(row.plastic_kg) }}</td>
+                  <td class="text-platinum-70 px-3 py-2.5 text-right tabular-nums">{{ formatKg(row.paper_kg) }}</td>
+                  <td class="text-platinum-70 px-3 py-2.5 text-right tabular-nums">{{ formatKg(row.aluminum_kg) }}</td>
+                  <td class="text-platinum-100 px-3 py-2.5 text-right font-medium tabular-nums">{{ formatKg(row.total_kg) }}</td>
+                  <td class="text-platinum-70 px-3 py-2.5 text-right tabular-nums">{{ row.pickups_count }}</td>
+                  <td class="text-platinum-100 py-2.5 pl-3 text-right tabular-nums">{{ formatMoney(row.amount) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+    <section>
+      <h2 class="text-platinum-100 mb-3 text-base font-semibold">ყურადღების საჭირო ხელშეკრულებები</h2>
+      @if (attentionContracts().length === 0) {
+        <p class="text-platinum-50 rounded-lg bg-neutral-50 px-4 py-6 text-center text-sm">ვადაგასული ან მალე ამოწურვადი ხელშეკრულება არ არის</p>
+      } @else {
+        <ul class="divide-hairline-strong/50 border-hairline-strong/70 divide-y rounded-lg border">
+          @for (contract of attentionContracts(); track contract.id) {
+            <li class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="min-w-0">
+                <a [routerLink]="['/admin/companies', contract.company_id]" [queryParams]="{ tab: 'contracts' }" class="text-platinum-90 hover:text-green-70 text-sm font-medium">
+                  {{ contract.company_name }}
+                </a>
+                <p class="text-platinum-50 text-[13px] tabular-nums">
+                  {{ contract.contract_number || 'ხელშეკრულება' }} · {{ formatDate(contract.end_date) }}
+                </p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-platinum-60 text-[13px] tabular-nums">
+                  @if (contract.days_left < 0) {
+                    {{ -contract.days_left }} დღის წინ
+                  } @else {
+                    {{ contract.days_left }} დღე დარჩა
+                  }
+                </span>
+                <span [class]="contractBadge[contract.status]">{{ contractLabels[contract.status] }}</span>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  }
+</div>

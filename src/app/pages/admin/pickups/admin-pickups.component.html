@@ -1,0 +1,271 @@
+<div class="flex flex-col gap-5">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <h1 class="text-platinum-100 text-xl font-semibold tracking-tight sm:text-2xl">
+      გატანები
+      <span class="text-platinum-50 ml-1 text-base font-normal tabular-nums">{{ total() }}</span>
+    </h1>
+    <button
+      type="button"
+      (click)="openCreate()"
+      class="bg-green-60 hover:bg-green-70 inline-flex h-11 items-center justify-center gap-1.5 rounded-lg px-4 text-[15px] font-medium text-white shadow-[0_1px_1px_rgba(33,33,33,0.08)] sm:h-9 sm:px-3.5 sm:text-sm"
+    >
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M8 3.33v9.34M3.33 8h9.34" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      გატანის დაფიქსირება
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-center">
+    <div class="lg:w-[220px]">
+      <app-dropdown
+        [items]="companyItems()"
+        [selectedValue]="companyFilter()"
+        (selectedValueChange)="setFilter('company_id', $event)"
+        placeholder="ყველა კომპანია"
+        [customClass]="dropdownClass"
+      />
+    </div>
+    <div class="lg:w-[160px]">
+      <app-dropdown
+        [items]="wasteItems"
+        [selectedValue]="wasteFilter()"
+        (selectedValueChange)="setFilter('waste_type', $event)"
+        placeholder="ნარჩენის ტიპი"
+        [customClass]="dropdownClass"
+      />
+    </div>
+    <div class="lg:w-[180px]">
+      <app-dropdown
+        [items]="statusItems"
+        [selectedValue]="statusFilter()"
+        (selectedValueChange)="setFilter('status', $event)"
+        placeholder="სტატუსი"
+        [customClass]="dropdownClass"
+      />
+    </div>
+    <div class="border-hairline-strong/70 flex h-11 items-center gap-2 rounded-lg border bg-white px-3 shadow-[0_1px_1px_rgba(33,33,33,0.04)] sm:h-9">
+      <input type="date" aria-label="დან" [value]="fromFilter()" [max]="toFilter() || null" (change)="onDateFilter('from', $event)" class="text-platinum-90 min-w-0 flex-1 bg-transparent text-[15px] outline-hidden sm:text-sm" />
+      <span class="text-platinum-30" aria-hidden="true">–</span>
+      <input type="date" aria-label="მდე" [value]="toFilter()" [min]="fromFilter() || null" (change)="onDateFilter('to', $event)" class="text-platinum-90 min-w-0 flex-1 bg-transparent text-[15px] outline-hidden sm:text-sm" />
+    </div>
+    @if (hasFilters()) {
+      <button type="button" (click)="clearFilters()" class="text-platinum-60 hover:text-platinum-100 h-9 px-2 text-left text-sm font-medium">
+        გასუფთავება
+      </button>
+    }
+  </div>
+
+  @if (total() > 0) {
+    <div class="text-platinum-60 flex flex-wrap gap-x-6 gap-y-1 text-sm">
+      <span>სულ: <strong class="text-platinum-100 tabular-nums">{{ formatKg(pickupsResource.value()?.total_quantity_kg) }}</strong></span>
+      <span>ღირებულება: <strong class="text-platinum-100 tabular-nums">{{ formatMoney(pickupsResource.value()?.total_amount) }}</strong></span>
+    </div>
+  }
+
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-[880px]">
+      <thead>
+        <tr class="border-hairline-strong/70 border-b">
+          <th scope="col" class="text-platinum-50 py-2 pr-3 pl-2 text-left text-[13px] font-medium">თარიღი</th>
+          <th scope="col" class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">კომპანია</th>
+          <th scope="col" class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">ნარჩენი</th>
+          <th scope="col" class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">რაოდენობა</th>
+          <th scope="col" class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">ღირებულება</th>
+          <th scope="col" class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">სტატუსი</th>
+          <th scope="col" class="w-[180px] py-2 pr-2"><span class="sr-only">მოქმედებები</span></th>
+        </tr>
+      </thead>
+      <tbody class="divide-hairline-strong/50 border-hairline-strong/50 divide-y border-b">
+        @if (pickupsResource.isLoading() && pickups().length === 0) {
+          @for (row of [1, 2, 3, 4, 5]; track row) {
+            <tr>
+              <td colspan="7" class="py-4 pl-2"><div class="h-4 w-full animate-pulse rounded-sm bg-neutral-100"></div></td>
+            </tr>
+          }
+        } @else if (pickupsResource.error()) {
+          <tr>
+            <td colspan="7" class="px-4 py-16 text-center">
+              <p class="text-platinum-90 text-sm font-medium">გატანების ჩატვირთვა ვერ მოხერხდა</p>
+              <button type="button" (click)="pickupsResource.reload()" class="text-green-70 mt-2 text-sm font-medium">თავიდან ცდა</button>
+            </td>
+          </tr>
+        } @else if (pickups().length === 0) {
+          <tr>
+            <td colspan="7" class="text-platinum-60 px-4 py-16 text-center text-sm">გატანები ვერ მოიძებნა</td>
+          </tr>
+        } @else {
+          @for (pickup of pickups(); track pickup.id) {
+            <tr class="hover:bg-neutral-50">
+              <td class="text-platinum-80 py-3 pr-3 pl-2 text-sm tabular-nums">{{ formatDate(pickup.pickup_date) }}</td>
+              <td class="px-3 py-3">
+                <a [routerLink]="['/admin/companies', pickup.company_id]" class="text-platinum-90 hover:text-green-70 text-sm font-medium">{{ pickup.company_name }}</a>
+                @if (pickup.address_snapshot) {
+                  <p class="text-platinum-50 mt-0.5 max-w-[260px] truncate text-[13px]" [title]="pickup.address_snapshot">{{ pickup.address_snapshot }}</p>
+                }
+              </td>
+              <td class="text-platinum-80 px-3 py-3 text-sm">{{ wasteLabels[pickup.waste_type] }}</td>
+              <td class="text-platinum-100 px-3 py-3 text-right text-sm tabular-nums">{{ formatKg(pickup.quantity_kg) }}</td>
+              <td class="px-3 py-3 text-right text-sm tabular-nums">
+                <span class="text-platinum-100">{{ formatMoney(pickup.amount) }}</span>
+                @if (pickup.amount_overridden) {
+                  <span class="text-platinum-50 block text-xs">ხელით</span>
+                } @else if (pickup.unit_price) {
+                  <span class="text-platinum-50 block text-xs">{{ formatMoney(pickup.unit_price) }}/კგ</span>
+                }
+              </td>
+              <td class="px-3 py-3">
+                <span [class]="statusBadge[pickup.status]">{{ statusLabels[pickup.status] }}</span>
+                @if (pickup.invoice_number) {
+                  <a routerLink="/admin/invoices" [queryParams]="{ open: pickup.invoice_id }" class="text-platinum-50 hover:text-green-70 mt-0.5 block text-[13px]">{{ pickup.invoice_number }}</a>
+                }
+              </td>
+              <td class="py-3 pr-2">
+                @if (pickup.status === 'pending') {
+                  <div class="flex items-center justify-end gap-1">
+                    <button
+                      type="button"
+                      (click)="confirm(pickup)"
+                      [disabled]="busyPickupId() === pickup.id"
+                      class="bg-green-60 hover:bg-green-70 inline-flex h-9 items-center rounded-lg px-3 text-sm font-medium text-white disabled:opacity-60 sm:h-8"
+                    >
+                      {{ busyPickupId() === pickup.id ? '...' : 'დადასტურება' }}
+                    </button>
+                    <button type="button" (click)="openEdit(pickup)" aria-label="რედაქტირება" class="text-platinum-50 hover:text-platinum-90 inline-flex size-9 items-center justify-center rounded-md hover:bg-neutral-100 sm:size-8">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M11.33 2A1.88 1.88 0 0 1 14 4.67l-9 9-3.67 1 1-3.67 9-9Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </button>
+                    <button type="button" (click)="deleteTarget.set(pickup)" aria-label="წაშლა" class="text-platinum-50 hover:text-valencia-70 hover:bg-valencia-10 inline-flex size-9 items-center justify-center rounded-md sm:size-8">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M2.67 4h10.66M6.33 4V2.67h3.34V4M4 4l.67 9.33h6.66L12 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </button>
+                  </div>
+                } @else {
+                  <p class="text-platinum-50 text-right text-xs">{{ pickup.confirmed_by_name }}</p>
+                }
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (total() > 0) {
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [totalItems]="total()"
+      [showingFrom]="showingFrom()"
+      [showingTo]="showingTo()"
+      [limit]="limit()"
+      (pageChange)="onPageChange($event)"
+      (limitChange)="onLimitChange($event)"
+    />
+  }
+</div>
+
+<app-admin-dialog
+  [open]="!!dialog()"
+  [title]="dialog()?.id ? 'გატანის რედაქტირება' : 'გატანის დაფიქსირება'"
+  [submitText]="dialog()?.id ? 'შენახვა' : 'დაფიქსირება'"
+  [busy]="isSaving()"
+  widthClass="sm:max-w-[560px]"
+  (closed)="dialog.set(null)"
+  (submitted)="save()"
+>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block sm:col-span-2">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">კომპანია <span class="text-valencia-60">*</span></span>
+      <select [formField]="pickupForm.company_id" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm">
+        <option value="">აირჩიეთ კომპანია</option>
+        @for (item of companyItems(); track item.value) {
+          <option [value]="item.value">{{ item.label }}</option>
+        }
+      </select>
+    </label>
+    <label class="block sm:col-span-2">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">მომსახურების მისამართი</span>
+      <select [formField]="pickupForm.address_id" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm">
+        <option value="">{{ addressItems().length === 0 ? 'მისამართი არ არის დამატებული' : 'აირჩიეთ მისამართი' }}</option>
+        @for (address of addressItems(); track address.id) {
+          <option [value]="address.id">{{ address.label ? address.label + ' — ' : '' }}{{ address.address }}</option>
+        }
+      </select>
+    </label>
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">გატანის თარიღი <span class="text-valencia-60">*</span></span>
+      <input type="date" [formField]="pickupForm.pickup_date" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ნარჩენის ტიპი <span class="text-valencia-60">*</span></span>
+      <select [formField]="pickupForm.waste_type" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm">
+        @for (item of wasteItems; track item.value) {
+          <option [value]="item.value">{{ item.label }}</option>
+        }
+      </select>
+    </label>
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">რაოდენობა (კგ) <span class="text-valencia-60">*</span></span>
+      <input type="number" step="0.01" inputmode="decimal" [formField]="pickupForm.quantity_kg" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] tabular-nums outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <div>
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">მომსახურების ღირებულება</span>
+      @if (model().manual_amount) {
+        <input type="number" step="0.01" inputmode="decimal" aria-label="ღირებულება (₾)" [formField]="pickupForm.amount" placeholder="₾" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] tabular-nums outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+      } @else {
+        <div class="flex h-11 items-center rounded-lg bg-neutral-50 px-3 text-[15px] tabular-nums sm:h-10 sm:text-sm">
+          @if (estimatedAmount() !== null) {
+            <span class="text-platinum-100 font-medium">{{ formatMoney(estimatedAmount()) }}</span>
+          } @else if (applicableTariff()) {
+            <span class="text-platinum-50">{{ formatMoney(applicableTariff()!.price_per_kg) }}/კგ</span>
+          } @else {
+            <span class="text-valencia-70 text-[13px]">ტარიფი არ არის</span>
+          }
+        </div>
+      }
+    </div>
+    <label class="flex items-start gap-3 sm:col-span-2">
+      <input type="checkbox" [formField]="pickupForm.manual_amount" class="accent-green-60 mt-0.5 size-4" />
+      <span>
+        <span class="text-platinum-90 block text-sm font-medium">ღირებულების ხელით მითითება</span>
+        <span class="text-platinum-50 block text-[13px]">
+          @if (applicableTariff(); as tariff) {
+            ავტომატურად: {{ formatMoney(tariff.price_per_kg) }}/კგ
+            @if (+tariff.fixed_fee > 0) {
+              + {{ formatMoney(tariff.fixed_fee) }}
+            }
+            ({{ formatDate(tariff.effective_from) }}-ის ტარიფი)
+          } @else {
+            ამ ნარჩენზე და თარიღზე ტარიფი განსაზღვრული არ არის
+          }
+        </span>
+      </span>
+    </label>
+    <label class="block sm:col-span-2">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">შენიშვნა</span>
+      <textarea rows="2" [formField]="pickupForm.notes" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 w-full resize-y rounded-lg border bg-white px-3 py-2.5 text-[15px] outline-hidden focus:ring-3 sm:text-sm"></textarea>
+    </label>
+    @if (selectedCompanyResource.value(); as company) {
+      @if (!company.requires_confirmation && !dialog()?.id) {
+        <p class="rounded-lg bg-amber-50 px-3 py-2 text-[13px] text-amber-800 sm:col-span-2">
+          ამ კომპანიაზე დადასტურება არ არის საჭირო — ინვოისი დაფიქსირებისთანავე შეიქმნება და გაიგზავნება.
+        </p>
+      }
+    }
+  </div>
+</app-admin-dialog>
+
+<app-admin-dialog
+  [open]="!!deleteTarget()"
+  title="გატანის წაშლა"
+  [description]="'წაიშლება ' + (deleteTarget()?.company_name ?? '') + '-ის გატანა ' + formatDate(deleteTarget()?.pickup_date) + '-დან.'"
+  submitText="წაშლა"
+  [danger]="true"
+  [busy]="isSaving()"
+  widthClass="sm:max-w-[420px]"
+  (closed)="deleteTarget.set(null)"
+  (submitted)="confirmDelete()"
+/>

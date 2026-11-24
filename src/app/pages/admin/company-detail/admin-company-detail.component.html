@@ -1,0 +1,582 @@
+@if (companyResource.isLoading() && !company()) {
+  <div class="flex flex-col gap-4">
+    <div class="h-8 w-64 animate-pulse rounded-md bg-neutral-100"></div>
+    <div class="h-4 w-40 animate-pulse rounded-sm bg-neutral-100"></div>
+    <div class="mt-4 h-24 animate-pulse rounded-lg bg-neutral-100"></div>
+  </div>
+} @else if (companyResource.error() && !company()) {
+  <div class="py-16 text-center">
+    <p class="text-platinum-90 text-sm font-medium">კომპანია ვერ ჩაიტვირთა</p>
+    <a routerLink="/admin/companies" class="text-green-70 mt-2 inline-block text-sm font-medium">კომპანიების სია</a>
+  </div>
+} @else if (company(); as c) {
+  <div class="flex flex-col gap-6">
+    <div>
+      <a routerLink="/admin/companies" class="text-platinum-50 hover:text-platinum-90 inline-flex items-center gap-1 text-sm">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        კომპანიები
+      </a>
+      <div class="mt-2 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div class="min-w-0">
+          <h1 class="text-platinum-100 text-xl font-semibold tracking-tight break-words sm:text-2xl">{{ c.name }}</h1>
+          <div class="mt-1.5 flex flex-wrap items-center gap-2 text-sm">
+            <span class="text-platinum-60 tabular-nums">ს/კ {{ c.identification_code }}</span>
+            <span class="text-platinum-30" aria-hidden="true">·</span>
+            <span class="text-platinum-60">{{ typeLabels[c.company_type] }}</span>
+            <span [class]="activityBadge[c.activity_status]">{{ activityLabels[c.activity_status] }}</span>
+            @if (!c.is_active) {
+              <span [class]="contractBadge.expired">გათიშული</span>
+            }
+          </div>
+        </div>
+        <div class="flex shrink-0 flex-wrap gap-2">
+          <a
+            routerLink="/admin/pickups"
+            [queryParams]="{ company_id: c.id, new: 1 }"
+            class="bg-green-60 hover:bg-green-70 inline-flex h-11 items-center justify-center gap-1.5 rounded-lg px-4 text-[15px] font-medium text-white shadow-[0_1px_1px_rgba(33,33,33,0.08)] sm:h-9 sm:px-3.5 sm:text-sm"
+          >
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3.33v9.34M3.33 8h9.34" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+            გატანის დაფიქსირება
+          </a>
+          <a
+            [routerLink]="['/admin/companies', c.id, 'edit']"
+            class="text-platinum-80 border-hairline-strong/70 inline-flex h-11 items-center justify-center rounded-lg border bg-white px-3.5 text-[15px] font-medium shadow-[0_1px_1px_rgba(33,33,33,0.04)] hover:bg-neutral-50 sm:h-9 sm:text-sm"
+          >
+            რედაქტირება
+          </a>
+          <button
+            type="button"
+            (click)="askConfirm('company', c.id, 'კომპანიის წაშლა', 'კომპანია და მისი ყველა მონაცემი წაიშლება. თუ კომპანიას აქვს გატანები, უმჯობესია გახადოთ არააქტიური.')"
+            class="text-valencia-70 hover:bg-valencia-10 inline-flex h-11 items-center justify-center rounded-lg px-3 text-[15px] font-medium sm:h-9 sm:text-sm"
+          >
+            წაშლა
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <dl class="border-hairline-strong/70 grid grid-cols-2 border-y lg:grid-cols-5">
+      <div class="border-hairline-strong/50 border-r border-b py-4 pr-4 lg:border-b-0">
+        <dt class="text-platinum-50 text-[13px]">ხელშეკრულება</dt>
+        <dd class="text-platinum-100 mt-1 text-base font-semibold tabular-nums">
+          @if (c.contract_end_date) {
+            {{ formatDate(c.contract_start_date) }} – {{ formatDate(c.contract_end_date) }}
+          } @else {
+            <span class="text-platinum-40 font-normal">არ არის</span>
+          }
+        </dd>
+      </div>
+      <div class="border-hairline-strong/50 border-b py-4 pl-4 lg:border-r lg:border-b-0 lg:pr-4">
+        <dt class="text-platinum-50 text-[13px]">ვადის ამოწურვამდე</dt>
+        <dd
+          class="mt-1 text-base font-semibold tabular-nums"
+          [class.text-valencia-70]="c.contract_days_left !== null && c.contract_days_left < 0"
+          [class.text-amber-700]="c.contract_days_left !== null && c.contract_days_left >= 0 && c.contract_days_left <= expiryWarningDays"
+          [class.text-platinum-100]="c.contract_days_left === null || c.contract_days_left > expiryWarningDays"
+        >
+          @if (c.contract_days_left === null) {
+            —
+          } @else if (c.contract_days_left < 0) {
+            ვადაგასულია {{ -c.contract_days_left }} დღით
+          } @else {
+            {{ c.contract_days_left }} დღე
+          }
+        </dd>
+      </div>
+      <div class="border-hairline-strong/50 border-r border-b py-4 pr-4 lg:border-b-0 lg:pl-4">
+        <dt class="text-platinum-50 text-[13px]">ბოლო გატანა</dt>
+        <dd class="text-platinum-100 mt-1 text-base font-semibold tabular-nums">{{ formatDate(c.last_pickup_date) }}</dd>
+      </div>
+      <div class="border-hairline-strong/50 border-b py-4 pl-4 lg:border-r lg:border-b-0 lg:pr-4">
+        <dt class="text-platinum-50 text-[13px]">გადახდის პირობები</dt>
+        <dd class="text-platinum-100 mt-1 text-base font-semibold">{{ c.payment_terms_days }} დღე</dd>
+      </div>
+      <div class="col-span-2 py-4 lg:col-span-1 lg:pl-4">
+        <dt class="text-platinum-50 text-[13px]">გადაუხდელი ინვოისები</dt>
+        <dd class="mt-1 text-base font-semibold tabular-nums" [class.text-valencia-70]="c.unpaid_invoices_count > 0">
+          {{ c.unpaid_invoices_count }} · {{ formatMoney(c.unpaid_invoices_total) }}
+        </dd>
+      </div>
+    </dl>
+
+    <div class="border-hairline-strong/70 -mx-4 overflow-x-auto border-b px-4 sm:mx-0 sm:px-0" role="tablist">
+      <div class="flex gap-1">
+        @for (tab of tabs; track tab.id) {
+          <button
+            type="button"
+            role="tab"
+            [attr.aria-selected]="activeTab() === tab.id"
+            (click)="setTab(tab.id)"
+            class="text-platinum-60 hover:text-platinum-100 aria-selected:border-green-60 aria-selected:text-platinum-100 -mb-px h-10 shrink-0 border-b-2 border-transparent px-3 text-sm font-medium whitespace-nowrap"
+          >
+            {{ tab.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    @switch (activeTab()) {
+      @case ('info') {
+        <div class="grid gap-8 lg:grid-cols-2">
+          <section>
+            <div class="mb-3 flex items-center justify-between">
+              <h2 class="text-platinum-100 text-base font-semibold">მომსახურების მისამართები</h2>
+              <button type="button" (click)="openAddress()" class="text-green-70 hover:text-green-80 text-sm font-medium">+ დამატება</button>
+            </div>
+            @if (c.addresses.length === 0) {
+              <p class="text-platinum-50 rounded-lg bg-neutral-50 px-4 py-6 text-center text-sm">მისამართი არ არის დამატებული</p>
+            } @else {
+              <ul class="divide-hairline-strong/50 border-hairline-strong/70 divide-y rounded-lg border">
+                @for (address of c.addresses; track address.id) {
+                  <li class="flex items-start justify-between gap-3 px-4 py-3">
+                    <div class="min-w-0">
+                      <p class="text-platinum-90 text-sm font-medium break-words">{{ address.label || address.address }}</p>
+                      <p class="text-platinum-50 mt-0.5 text-[13px] break-words">
+                        @if (address.label) {
+                          {{ address.address }}
+                        }
+                        @if (address.city) {
+                          {{ address.label ? ' · ' : '' }}{{ address.city }}
+                        }
+                      </p>
+                    </div>
+                    <div class="flex shrink-0 gap-0.5">
+                      <button type="button" (click)="openAddress(address)" [attr.aria-label]="'რედაქტირება'" class="text-platinum-50 hover:text-platinum-90 inline-flex size-9 items-center justify-center rounded-md hover:bg-neutral-100 sm:size-8">
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                          <path d="M11.33 2A1.88 1.88 0 0 1 14 4.67l-9 9-3.67 1 1-3.67 9-9Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </button>
+                      <button type="button" (click)="askConfirm('address', address.id, 'მისამართის წაშლა', 'წაიშლება მისამართი: ' + address.address)" aria-label="წაშლა" class="text-platinum-50 hover:text-valencia-70 hover:bg-valencia-10 inline-flex size-9 items-center justify-center rounded-md sm:size-8">
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                          <path d="M2.67 4h10.66M6.33 4V2.67h3.34V4M4 4l.67 9.33h6.66L12 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </button>
+                    </div>
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+
+          <section>
+            <div class="mb-3 flex items-center justify-between">
+              <h2 class="text-platinum-100 text-base font-semibold">საკონტაქტო პირები</h2>
+              <button type="button" (click)="openContact()" class="text-green-70 hover:text-green-80 text-sm font-medium">+ დამატება</button>
+            </div>
+            @if (invoiceRecipients().length === 0) {
+              <p class="mb-3 rounded-lg bg-amber-50 px-3 py-2 text-[13px] text-amber-800">
+                ინვოისის მიმღები არ არის მონიშნული — ინვოისები ელფოსტაზე ვერ გაიგზავნება.
+              </p>
+            }
+            @if (c.contacts.length === 0) {
+              <p class="text-platinum-50 rounded-lg bg-neutral-50 px-4 py-6 text-center text-sm">საკონტაქტო პირი არ არის დამატებული</p>
+            } @else {
+              <ul class="divide-hairline-strong/50 border-hairline-strong/70 divide-y rounded-lg border">
+                @for (contact of c.contacts; track contact.id) {
+                  <li class="flex items-start justify-between gap-3 px-4 py-3">
+                    <div class="min-w-0">
+                      <p class="text-platinum-90 text-sm font-medium">{{ contact.full_name }}</p>
+                      <p class="text-platinum-50 mt-0.5 text-[13px] break-all">
+                        {{ contact.phone || '' }}{{ contact.phone && contact.email ? ' · ' : '' }}{{ contact.email || '' }}
+                      </p>
+                      <label class="mt-2 inline-flex cursor-pointer items-center gap-2 text-[13px]">
+                        <input
+                          type="checkbox"
+                          class="accent-green-60 size-4"
+                          [checked]="contact.receives_invoices"
+                          (change)="toggleInvoiceRecipient(contact)"
+                        />
+                        <span [class.text-green-80]="contact.receives_invoices" [class.text-platinum-60]="!contact.receives_invoices">იღებს ინვოისებს</span>
+                      </label>
+                    </div>
+                    <div class="flex shrink-0 gap-0.5">
+                      <button type="button" (click)="openContact(contact)" aria-label="რედაქტირება" class="text-platinum-50 hover:text-platinum-90 inline-flex size-9 items-center justify-center rounded-md hover:bg-neutral-100 sm:size-8">
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                          <path d="M11.33 2A1.88 1.88 0 0 1 14 4.67l-9 9-3.67 1 1-3.67 9-9Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </button>
+                      <button type="button" (click)="askConfirm('contact', contact.id, 'საკონტაქტო პირის წაშლა', 'წაიშლება: ' + contact.full_name)" aria-label="წაშლა" class="text-platinum-50 hover:text-valencia-70 hover:bg-valencia-10 inline-flex size-9 items-center justify-center rounded-md sm:size-8">
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                          <path d="M2.67 4h10.66M6.33 4V2.67h3.34V4M4 4l.67 9.33h6.66L12 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </button>
+                    </div>
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+
+          @if (c.payment_terms || c.notes) {
+            <section class="lg:col-span-2">
+              <h2 class="text-platinum-100 mb-2 text-base font-semibold">შენიშვნები</h2>
+              @if (c.payment_terms) {
+                <p class="text-platinum-80 text-sm whitespace-pre-line"><span class="text-platinum-50">გადახდის პირობები:</span> {{ c.payment_terms }}</p>
+              }
+              @if (c.notes) {
+                <p class="text-platinum-80 mt-2 text-sm whitespace-pre-line">{{ c.notes }}</p>
+              }
+            </section>
+          }
+        </div>
+      }
+
+      @case ('contracts') {
+        <section>
+          <div class="mb-3 flex items-center justify-between">
+            <h2 class="text-platinum-100 text-base font-semibold">ხელშეკრულებები</h2>
+            <button type="button" (click)="openContract()" class="text-green-70 hover:text-green-80 text-sm font-medium">+ ახალი ხელშეკრულება</button>
+          </div>
+          @if (c.contracts.length === 0) {
+            <p class="text-platinum-50 rounded-lg bg-neutral-50 px-4 py-8 text-center text-sm">ხელშეკრულება არ არის ატვირთული</p>
+          } @else {
+            <ul class="divide-hairline-strong/50 border-hairline-strong/70 divide-y rounded-lg border">
+              @for (contract of c.contracts; track contract.id) {
+                <li class="flex flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+                  <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <p class="text-platinum-90 text-sm font-medium">{{ contract.contract_number || 'ხელშეკრულება #' + contract.id }}</p>
+                      <span [class]="contractBadge[contract.status]">{{ contractLabels[contract.status] }}</span>
+                    </div>
+                    <p class="text-platinum-60 mt-1 text-[13px] tabular-nums">
+                      {{ formatDate(contract.start_date) }} – {{ formatDate(contract.end_date) }}
+                      @if (contract.status !== 'expired') {
+                        · დარჩა {{ contract.days_left }} დღე
+                      }
+                    </p>
+                    @if (contract.terms) {
+                      <p class="text-platinum-70 mt-1 text-[13px] whitespace-pre-line">{{ contract.terms }}</p>
+                    }
+                    @if (contract.file_url) {
+                      <div class="mt-1.5 flex items-center gap-2 text-[13px]">
+                        <a [href]="contract.file_url" target="_blank" rel="noopener" class="text-green-70 hover:text-green-80 font-medium break-all">
+                          {{ contract.file_name || 'ფაილის ნახვა' }}
+                        </a>
+                        <button type="button" (click)="askConfirm('contract-file', contract.id, 'ფაილის წაშლა', 'ხელშეკრულების ფაილი წაიშლება')" class="text-platinum-50 hover:text-valencia-70">წაშლა</button>
+                      </div>
+                    }
+                  </div>
+                  <div class="flex shrink-0 gap-1">
+                    <button type="button" (click)="openContract(contract)" class="text-platinum-80 border-hairline-strong/70 inline-flex h-9 items-center rounded-lg border bg-white px-3 text-sm font-medium hover:bg-neutral-50 sm:h-8">რედაქტირება</button>
+                    <button type="button" (click)="askConfirm('contract', contract.id, 'ხელშეკრულების წაშლა', 'ხელშეკრულება და მისი ფაილი წაიშლება')" class="text-valencia-70 hover:bg-valencia-10 inline-flex h-9 items-center rounded-lg px-3 text-sm font-medium sm:h-8">წაშლა</button>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </section>
+      }
+
+      @case ('tariffs') {
+        <section class="flex flex-col gap-6">
+          <div>
+            <div class="mb-3 flex items-center justify-between">
+              <h2 class="text-platinum-100 text-base font-semibold">მოქმედი ტარიფები</h2>
+              <button type="button" (click)="openTariff()" class="text-green-70 hover:text-green-80 text-sm font-medium">+ ტარიფის ცვლილება</button>
+            </div>
+            <div class="grid gap-3 sm:grid-cols-3">
+              @for (tariff of c.current_tariffs; track tariff.id) {
+                <div class="border-hairline-strong/70 rounded-lg border px-4 py-3">
+                  <p class="text-platinum-50 text-[13px]">{{ wasteLabels[tariff.waste_type] }}</p>
+                  <p class="text-platinum-100 mt-1 text-lg font-semibold tabular-nums">{{ formatMoney(tariff.price_per_kg) }}<span class="text-platinum-50 text-sm font-normal"> / კგ</span></p>
+                  @if (+tariff.fixed_fee > 0) {
+                    <p class="text-platinum-60 text-[13px]">+ {{ formatMoney(tariff.fixed_fee) }} თითო გატანაზე</p>
+                  }
+                  <p class="text-platinum-50 mt-1 text-xs">{{ formatDate(tariff.effective_from) }}-დან</p>
+                </div>
+              }
+              @for (missing of missingTariffs(); track missing.value) {
+                <button
+                  type="button"
+                  (click)="openTariff(missing.value)"
+                  class="border-hairline-strong text-platinum-50 hover:border-green-60 hover:text-green-70 rounded-lg border border-dashed px-4 py-3 text-left text-sm"
+                >
+                  <span class="block text-[13px]">{{ missing.label }}</span>
+                  <span class="mt-1 block font-medium">ტარიფი არ არის · დამატება</span>
+                </button>
+              }
+            </div>
+            <p class="text-platinum-50 mt-3 text-[13px]">
+              ტარიფის ცვლილება მოქმედებს მითითებული თარიღიდან. უკვე დადასტურებული გატანები ძველი ტარიფით რჩება.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-platinum-100 mb-3 text-base font-semibold">ცვლილებების ისტორია</h2>
+            @if (c.tariff_history.length === 0) {
+              <p class="text-platinum-50 rounded-lg bg-neutral-50 px-4 py-6 text-center text-sm">ისტორია ცარიელია</p>
+            } @else {
+              <div class="overflow-x-auto">
+                <table class="w-full min-w-[560px] text-sm">
+                  <thead>
+                    <tr class="border-hairline-strong/70 border-b">
+                      <th class="text-platinum-50 py-2 pr-3 text-left text-[13px] font-medium">მოქმედებს</th>
+                      <th class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">ნარჩენი</th>
+                      <th class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">ფასი / კგ</th>
+                      <th class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">ფიქს. საფასური</th>
+                      <th class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">შენიშვნა</th>
+                      <th class="w-10"></th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-hairline-strong/50 divide-y">
+                    @for (tariff of c.tariff_history; track tariff.id) {
+                      <tr>
+                        <td class="text-platinum-80 py-2.5 pr-3 tabular-nums">{{ formatDate(tariff.effective_from) }}</td>
+                        <td class="text-platinum-80 px-3 py-2.5">{{ wasteLabels[tariff.waste_type] }}</td>
+                        <td class="text-platinum-100 px-3 py-2.5 text-right tabular-nums">{{ formatMoney(tariff.price_per_kg) }}</td>
+                        <td class="text-platinum-70 px-3 py-2.5 text-right tabular-nums">{{ formatMoney(tariff.fixed_fee) }}</td>
+                        <td class="text-platinum-60 px-3 py-2.5 text-[13px]">
+                          {{ tariff.note || '' }}
+                          @if (tariff.created_by_name) {
+                            <span class="text-platinum-40 block">{{ tariff.created_by_name }} · {{ formatDateTime(tariff.created_at) }}</span>
+                          }
+                        </td>
+                        <td class="py-2.5 text-right">
+                          <button type="button" (click)="askConfirm('tariff', tariff.id, 'ტარიფის წაშლა', 'წაიშლება ' + wasteLabels[tariff.waste_type] + '-ის ტარიფი ' + formatDate(tariff.effective_from) + '-დან. დადასტურებულ გატანებში გამოყენებული ტარიფის წაშლა შეუძლებელია.')" aria-label="წაშლა" class="text-platinum-40 hover:text-valencia-70 hover:bg-valencia-10 inline-flex size-8 items-center justify-center rounded-md">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                              <path d="M2.67 4h10.66M6.33 4V2.67h3.34V4M4 4l.67 9.33h6.66L12 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      @case ('pickups') {
+        <section>
+          <div class="mb-3 flex items-center justify-between">
+            <h2 class="text-platinum-100 text-base font-semibold">ბოლო გატანები</h2>
+            <a routerLink="/admin/pickups" [queryParams]="{ company_id: c.id }" class="text-green-70 hover:text-green-80 text-sm font-medium">ყველა გატანა →</a>
+          </div>
+          @if (pickupsResource.isLoading()) {
+            <div class="h-32 animate-pulse rounded-lg bg-neutral-100"></div>
+          } @else if ((pickupsResource.value()?.pickups ?? []).length === 0) {
+            <p class="text-platinum-50 rounded-lg bg-neutral-50 px-4 py-8 text-center text-sm">გატანები ჯერ არ არის</p>
+          } @else {
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[600px] text-sm">
+                <thead>
+                  <tr class="border-hairline-strong/70 border-b">
+                    <th class="text-platinum-50 py-2 pr-3 text-left text-[13px] font-medium">თარიღი</th>
+                    <th class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">ნარჩენი</th>
+                    <th class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">რაოდენობა</th>
+                    <th class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">ღირებულება</th>
+                    <th class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">სტატუსი</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-hairline-strong/50 divide-y">
+                  @for (pickup of pickupsResource.value()?.pickups; track pickup.id) {
+                    <tr>
+                      <td class="text-platinum-80 py-2.5 pr-3 tabular-nums">{{ formatDate(pickup.pickup_date) }}</td>
+                      <td class="text-platinum-80 px-3 py-2.5">{{ wasteLabels[pickup.waste_type] }}</td>
+                      <td class="text-platinum-100 px-3 py-2.5 text-right tabular-nums">{{ formatKg(pickup.quantity_kg) }}</td>
+                      <td class="text-platinum-100 px-3 py-2.5 text-right tabular-nums">{{ formatMoney(pickup.amount) }}</td>
+                      <td class="px-3 py-2.5">
+                        <span [class]="pickupBadge[pickup.status]">{{ pickupLabels[pickup.status] }}</span>
+                        @if (pickup.invoice_number) {
+                          <span class="text-platinum-50 ml-1.5 text-[13px]">{{ pickup.invoice_number }}</span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+      }
+
+      @case ('invoices') {
+        <section>
+          <div class="mb-3 flex items-center justify-between">
+            <h2 class="text-platinum-100 text-base font-semibold">ინვოისები</h2>
+            <a routerLink="/admin/invoices" [queryParams]="{ company_id: c.id }" class="text-green-70 hover:text-green-80 text-sm font-medium">ყველა ინვოისი →</a>
+          </div>
+          @if (invoicesResource.isLoading()) {
+            <div class="h-32 animate-pulse rounded-lg bg-neutral-100"></div>
+          } @else if ((invoicesResource.value()?.invoices ?? []).length === 0) {
+            <p class="text-platinum-50 rounded-lg bg-neutral-50 px-4 py-8 text-center text-sm">ინვოისები ჯერ არ არის</p>
+          } @else {
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[600px] text-sm">
+                <thead>
+                  <tr class="border-hairline-strong/70 border-b">
+                    <th class="text-platinum-50 py-2 pr-3 text-left text-[13px] font-medium">ნომერი</th>
+                    <th class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">გამოწერა</th>
+                    <th class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">ვადა</th>
+                    <th class="text-platinum-50 px-3 py-2 text-right text-[13px] font-medium">თანხა</th>
+                    <th class="text-platinum-50 px-3 py-2 text-left text-[13px] font-medium">სტატუსი</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-hairline-strong/50 divide-y">
+                  @for (invoice of invoicesResource.value()?.invoices; track invoice.id) {
+                    <tr>
+                      <td class="py-2.5 pr-3">
+                        <a routerLink="/admin/invoices" [queryParams]="{ company_id: c.id, open: invoice.id }" class="text-platinum-90 hover:text-green-70 font-medium">{{ invoice.invoice_number }}</a>
+                      </td>
+                      <td class="text-platinum-70 px-3 py-2.5 tabular-nums">{{ formatDate(invoice.issue_date) }}</td>
+                      <td class="text-platinum-70 px-3 py-2.5 tabular-nums">{{ formatDate(invoice.due_date) }}</td>
+                      <td class="text-platinum-100 px-3 py-2.5 text-right tabular-nums">{{ formatMoney(invoice.total) }}</td>
+                      <td class="px-3 py-2.5"><span [class]="invoiceBadge[invoice.status]">{{ invoiceLabels[invoice.status] }}</span></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+      }
+    }
+  </div>
+}
+
+<app-admin-dialog
+  [open]="!!addressDialog()"
+  [title]="addressDialog()?.id ? 'მისამართის რედაქტირება' : 'ახალი მისამართი'"
+  [busy]="isSaving()"
+  (closed)="addressDialog.set(null)"
+  (submitted)="saveAddress()"
+>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">დასახელება</span>
+      <input type="text" [formField]="addressForm.label" placeholder="მაგ. ფილიალი 1" class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ქალაქი</span>
+      <input type="text" [formField]="addressForm.city" placeholder="თბილისი" class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <label class="block sm:col-span-2">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">მისამართი <span class="text-valencia-60">*</span></span>
+      <input type="text" [formField]="addressForm.address" placeholder="ქუჩა, ნომერი" class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+  </div>
+</app-admin-dialog>
+
+<app-admin-dialog
+  [open]="!!contactDialog()"
+  [title]="contactDialog()?.id ? 'საკონტაქტო პირის რედაქტირება' : 'ახალი საკონტაქტო პირი'"
+  [busy]="isSaving()"
+  (closed)="contactDialog.set(null)"
+  (submitted)="saveContact()"
+>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block sm:col-span-2">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">სახელი და გვარი <span class="text-valencia-60">*</span></span>
+      <input type="text" [formField]="contactForm.full_name" autocomplete="off" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ტელეფონი</span>
+      <input type="tel" [formField]="contactForm.phone" autocomplete="off" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] tabular-nums outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ელფოსტა</span>
+      <input type="email" [formField]="contactForm.email" autocomplete="off" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <label class="flex items-start gap-3 sm:col-span-2">
+      <input type="checkbox" [formField]="contactForm.receives_invoices" class="accent-green-60 mt-0.5 size-4" />
+      <span>
+        <span class="text-platinum-90 block text-sm font-medium">იღებს ინვოისებს</span>
+        <span class="text-platinum-50 block text-[13px]">ინვოისი ავტომატურად გაიგზავნება ამ ელფოსტაზე</span>
+      </span>
+    </label>
+  </div>
+</app-admin-dialog>
+
+<app-admin-dialog
+  [open]="!!contractDialog()"
+  [title]="contractDialog()?.id ? 'ხელშეკრულების რედაქტირება' : 'ახალი ხელშეკრულება'"
+  [busy]="isSaving()"
+  widthClass="sm:max-w-[560px]"
+  (closed)="contractDialog.set(null)"
+  (submitted)="saveContract()"
+>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block sm:col-span-2">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ხელშეკრულების ნომერი</span>
+      <input type="text" [formField]="contractForm.contract_number" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">დაწყება <span class="text-valencia-60">*</span></span>
+      <input type="date" [formField]="contractForm.start_date" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">დასრულება <span class="text-valencia-60">*</span></span>
+      <input type="date" [formField]="contractForm.end_date" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <label class="block sm:col-span-2">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">პირობები</span>
+      <textarea rows="3" [formField]="contractForm.terms" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 w-full resize-y rounded-lg border bg-white px-3 py-2.5 text-[15px] outline-hidden focus:ring-3 sm:text-sm"></textarea>
+    </label>
+    <label class="block sm:col-span-2">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ფაილი (PDF, Word, სურათი)</span>
+      <input
+        type="file"
+        [accept]="contractFileAccept"
+        (change)="onContractFileChange($event)"
+        class="text-platinum-70 file:border-hairline-strong/70 file:text-platinum-80 block w-full text-sm file:mr-3 file:h-9 file:rounded-lg file:border file:bg-white file:px-3 file:text-sm file:font-medium hover:file:bg-neutral-50"
+      />
+      @if (contractDialog()?.id) {
+        <span class="text-platinum-50 mt-1.5 block text-[13px]">ახალი ფაილი ჩაანაცვლებს არსებულს</span>
+      }
+    </label>
+  </div>
+</app-admin-dialog>
+
+<app-admin-dialog
+  [open]="tariffDialogOpen()"
+  title="ტარიფის ცვლილება"
+  description="ახალი ტარიფი გამოიყენება მითითებული თარიღიდან შესრულებულ გატანებზე."
+  [busy]="isSaving()"
+  (closed)="tariffDialogOpen.set(false)"
+  (submitted)="saveTariff()"
+>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ნარჩენის ტიპი</span>
+      <select [formField]="tariffForm.waste_type" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm">
+        @for (item of wasteItems; track item.value) {
+          <option [value]="item.value">{{ item.label }}</option>
+        }
+      </select>
+    </label>
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">მოქმედებს <span class="text-valencia-60">*</span></span>
+      <input type="date" [formField]="tariffForm.effective_from" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ფასი 1 კგ (₾) <span class="text-valencia-60">*</span></span>
+      <input type="number" step="0.01" inputmode="decimal" [formField]="tariffForm.price_per_kg" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] tabular-nums outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <label class="block">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">ფიქს. საფასური გატანაზე (₾)</span>
+      <input type="number" step="0.01" inputmode="decimal" [formField]="tariffForm.fixed_fee" class="border-hairline-strong/70 text-platinum-100 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] tabular-nums outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+    <label class="block sm:col-span-2">
+      <span class="text-platinum-70 mb-1.5 block text-sm font-medium">შენიშვნა</span>
+      <input type="text" [formField]="tariffForm.note" placeholder="მაგ. ხელშეკრულების დანართი №2" class="border-hairline-strong/70 text-platinum-100 placeholder:text-platinum-50 focus:border-green-60 focus:ring-green-60/15 h-11 w-full rounded-lg border bg-white px-3 text-[15px] outline-hidden focus:ring-3 sm:h-10 sm:text-sm" />
+    </label>
+  </div>
+</app-admin-dialog>
+
+<app-admin-dialog
+  [open]="!!confirmState()"
+  [title]="confirmState()?.title ?? ''"
+  [description]="confirmState()?.message ?? ''"
+  submitText="წაშლა"
+  [danger]="true"
+  [busy]="isSaving()"
+  widthClass="sm:max-w-[420px]"
+  (closed)="confirmState.set(null)"
+  (submitted)="runConfirm()"
+/>

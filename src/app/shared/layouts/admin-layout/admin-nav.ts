@@ -13,7 +13,11 @@ export type AdminNavIcon =
   | 'blogs'
   | 'sliders'
   | 'tasks'
-  | 'store';
+  | 'store'
+  | 'companies'
+  | 'pickups'
+  | 'invoices'
+  | 'reports';
 
 export interface AdminNavItem {
   label: string;
@@ -51,6 +55,15 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
       { label: 'კატეგორიები', route: '/admin/categories', icon: 'categories' },
       { label: 'ბრენდები', route: '/admin/brands', icon: 'brands' },
       { label: 'კაბელის ტიპები', route: '/admin/cable-types', icon: 'cable-specs' },
+    ],
+  },
+  {
+    title: 'კორპორატიული კლიენტები',
+    items: [
+      { label: 'კომპანიები', route: '/admin/companies', icon: 'companies' },
+      { label: 'გატანები', route: '/admin/pickups', icon: 'pickups' },
+      { label: 'ინვოისები', route: '/admin/invoices', icon: 'invoices' },
+      { label: 'ანგარიშგება', route: '/admin/company-reports', icon: 'reports' },
     ],
   },
   {
