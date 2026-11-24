@@ -305,7 +305,7 @@
                 'text-valencia-60': selectedImageQuantity() === 0
               }"
             >
-              მარაგშია: {{ selectedImageQuantity() }}
+              {{ selectedImageQuantity() > 0 ? 'მარაგშია' : 'არ არის მარაგში' }}
             </span>
           </p>
 
